@@ -1,2 +1,6 @@
 node_modules/
 .DS_Store
+src/.DS_Store
+src/libraries_v16.json
+src/libraries_v11.json
+serviceWorker.json

@@ -1,11 +1,6 @@
 ## Provisioning
 
-In order to be able to run the project please install the following packages:
+### `npm start`
 
-```
-react-router-dom
-@material-ui/icons
-@material-ui/core 
-fuse.js
-react
-```
+Runs the app in the development mode.<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.

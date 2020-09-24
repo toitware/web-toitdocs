@@ -68,7 +68,7 @@ const theme = createMuiTheme({
   },
 });
 
-//Search bar styling
+// Search bar styling.
 const headerBarStyling = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

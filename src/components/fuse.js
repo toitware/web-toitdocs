@@ -42,33 +42,38 @@ function findAliases(object) {
   iterateObject(object);
 
   function iterateObject(obj) {
-    for (var prop in obj) {
-      if (prop === "return_path") {
-        current_return_path = obj[prop];
-      } else if (prop === "class_name") {
-        current_class_name = obj[prop];
-      }
+    console.log(obj);
+    try {
+      for (var prop in obj) {
+        if (prop === "return_path") {
+          current_return_path = obj[prop];
+        } else if (prop === "class_name") {
+          current_class_name = obj[prop];
+        }
 
-      if (typeof obj[prop] === "object") {
-        iterateObject(obj[prop]);
-      } else {
-        if ((prop === "title") & (obj[prop] === "Aliases")) {
-          obj.statements.map((elem) => {
-            elem.map((eleme) => {
-              eleme.itemized.map((elemen) => {
-                elemen.map((element) => {
-                  if (element.is_code === true) {
-                    var tempObj = element;
-                    tempObj.path =
-                      current_return_path + "/" + current_class_name;
-                    found.push(tempObj);
-                  }
+        if (typeof obj[prop] === "object") {
+          iterateObject(obj[prop]);
+        } else {
+          if ((prop === "title") & (obj[prop] === "Aliases")) {
+            obj.statements.map((elem) => {
+              elem.map((eleme) => {
+                eleme.itemized.map((elemen) => {
+                  elemen.map((element) => {
+                    if (element.is_code === true) {
+                      var tempObj = element;
+                      tempObj.path =
+                        current_return_path + "/" + current_class_name;
+                      found.push(tempObj);
+                    }
+                  });
                 });
               });
             });
-          });
+          }
         }
       }
+    } catch {
+      console.log("ERROR: iterateObject() function failed");
     }
   }
   return found;
