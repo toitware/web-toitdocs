@@ -1,0 +1,18 @@
+html {
+  font-size: 100%; /* 62.5% of 16px = 10px */
+}
+a:link {
+  text-decoration: none;
+  color: #2d4d9d;
+}
+a:visited {
+  text-decoration: none;
+  color: #2d4d9d;
+}
+.functionName {
+  color: #2d4d9d;
+}
+
+pre::first-line {
+  line-height: 0;
+}
