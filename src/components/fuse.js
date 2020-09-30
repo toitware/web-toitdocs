@@ -42,7 +42,6 @@ function findAliases(object) {
   iterateObject(object);
 
   function iterateObject(obj) {
-    console.log(obj);
     try {
       for (var prop in obj) {
         if (prop === "return_path") {

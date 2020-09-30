@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React from "react";
 
 function Parameters(props) {
-  if (props.value !== undefined) {
+  if (![undefined, null].includes(props.value)) {
     let styling = [];
     styling[0] = "<b>";
     styling[1] = "</b>";
@@ -23,7 +23,7 @@ function Parameters(props) {
         return param;
       }
 
-      if (parameter.param_type !== "none" && parameter.param_type !== "any") {
+      if (!["none", "any"].includes(parameter.param_type)) {
         return (
           <span key={i}>
             <span style={parameter.is_named === true ? { color: "blue" } : {}}>

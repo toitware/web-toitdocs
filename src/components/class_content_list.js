@@ -15,31 +15,36 @@ const styles = (theme) => ({
 });
 
 function PrintListStat(object, elem1, elem2) {
-  let output;
-  try {
-    output = object.value.class_structure[elem1].map((element, i) => {
-      return <li key={"print_list_stat_"+i}> {element[elem2]} </li>;
-    });
-  } catch (err) {
-    output = "";
+  let output = [];
+  if (![undefined, null].includes(object.value.class_structure[elem1])) {
+    try {
+      output = object.value.class_structure[elem1].map((element, i) => {
+        return <li key={"print_list_stat_" + i}> {element[elem2]} </li>;
+      });
+    } catch (err) {
+      console.log("ERROR: Crashed while running PrintListStat");
+    }
   }
   return output;
 }
 
 function PrintListMembers(object, elem1, elem2) {
-  let output;
-  try {
-    output = object.value.class_structure.members[elem1].map((element, i) => {
-      return <li key={"print_list_mem_"+i}> {element[elem2]} </li>;
-    });
-  } catch (err) {
-    output = "";
+  let output = [];
+  if (
+    ![undefined, null].includes(object.value.class_structure.members[elem1])
+  ) {
+    try {
+      output = object.value.class_structure.members[elem1].map((element, i) => {
+        return <li key={"print_list_mem_" + i}> {element[elem2]} </li>;
+      });
+    } catch (err) {
+      console.log("ERROR: Crashed while running PrintListMembers");
+    }
   }
   return output;
 }
 
 class ClassContentList extends React.Component {
-
   render() {
     return (
       <div>

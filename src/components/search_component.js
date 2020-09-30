@@ -6,7 +6,7 @@ import data from "../libraries.json";
 function printResult(result, indexJSON) {
   let output = [];
   try {
-    if (JSON.stringify(result) !== "[]") {
+    if (![undefined, null].includes(result.matches)) {
       result.matches.map((elem) => {
         if (elem.key === "text") {
           //For Aliases

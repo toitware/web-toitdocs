@@ -8,6 +8,26 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import data from "../libraries.json";
 import ErrorBoundary from "./error_page";
 
+function LibList(){
+  if (data.libraries !== undefined && data.libraries !== null){
+    return(
+    data.libraries.sort((a, b) => a.lib_name.localeCompare(b.lib_name))
+    .map((libraries, index) => {
+      return (
+        <Link
+          to={`/${libraries.lib_name}`}
+          key={`${index}_${libraries.lib_name}`}
+        >
+          <ListItem button>{libraries.lib_name}</ListItem>
+        </Link>
+      );
+    })
+    );} else {
+      console.log("function LibrariesNav(): No libraries found")
+      return <div id="libraries_found"></div>
+    }
+}
+
 //Listing the libraries for navigation purposes
 const LibrariesNav = () => {
   return (
@@ -22,19 +42,7 @@ const LibrariesNav = () => {
           </ListSubheader>
         }
       >
-        {[]
-          .concat(data.libraries)
-          .sort((a, b) => a.lib_name.localeCompare(b.lib_name))
-          .map((libraries, index) => {
-            return (
-              <Link
-                to={`/${libraries.lib_name}`}
-                key={`${index}_${libraries.lib_name}`}
-              >
-                <ListItem button>{libraries.lib_name}</ListItem>
-              </Link>
-            );
-          })}
+        <LibList/>
       </List>
       </ErrorBoundary>
     </div>

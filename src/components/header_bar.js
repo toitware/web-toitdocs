@@ -16,8 +16,6 @@ import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import { printResult } from "./search_component";
 
-
-
 function HeaderBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);

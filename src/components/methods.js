@@ -20,7 +20,7 @@ function ReturnType({ returnType, returnPath }) {
 }
 
 function Methods(props) {
-  if (props.value !== undefined) {
+  if (props.value !== undefined && props.value !== null) {
     let iterator = 0;
     return []
       .concat(props.value)
@@ -67,7 +67,7 @@ function Methods(props) {
 }
 
 function MethodsInModules(props) {
-  if (props.value.module_functions !== undefined) {
+  if (props.value.module_functions !== undefined && props.value.module_functions !== null ) {
     let iterator = 0;
     return []
       .concat(props.value.module_functions)

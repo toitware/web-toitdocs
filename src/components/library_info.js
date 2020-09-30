@@ -26,7 +26,7 @@ function LibraryModules(match) {
     output = data.libraries
       .find((element) => element.lib_name === match.value.params.libName)
       .lib_modules.map((element, i) => {
-        return <li key={"lib_module_name"+i} > {element.module} </li>;
+        return <li key={"lib_module_name" + i}> {element.module} </li>;
       });
   } catch (err) {
     output = "Error";
@@ -36,36 +36,58 @@ function LibraryModules(match) {
 
 // Description of the library
 const LibraryInfo = ({ match }) => {
-  const {
-    params: { libName },
-  } = match;
-  const library = data.libraries.find(({ lib_name }) => lib_name === libName);
   const classes = useStyles();
+  let propsOk = true;
+  [data.libraries, match.params.libName].forEach((elem) => {
+    if (elem === undefined || elem === null) {
+      propsOk = false;
+    }
+  });
+  if (propsOk) {
+    const {
+      params: { libName },
+    } = match;
 
-  if ("lib_modules" in library && library.lib_modules !== undefined) {
-    return (
-      <Grid container>
-        <Grid item xs={9}>
-          <Box pt={2} pb={2}>
-            <Typography component="h1" variant="h1">
-              Library: {library.lib_name}
-            </Typography>
-          </Box>
-          <Box pt={2} pb={2}>
-            <Box pt={1} pb={1}>
-              <Typography component="h2" variant="h2">
-                Modules
+    const library = data.libraries.find(({ lib_name }) => lib_name === libName);
+
+    if ("lib_modules" in library && library.lib_modules !== undefined) {
+      return (
+        <Grid container>
+          <Grid item xs={9}>
+            <Box pt={2} pb={2}>
+              <Typography component="h1" variant="h1">
+                Library: {library.lib_name}
               </Typography>
             </Box>
-            <Paper variant="outlined" className={classes.paper}>
-              <List>
-                <LibraryModules value={match} />
-              </List>
-            </Paper>
-          </Box>
+            <Box pt={2} pb={2}>
+              <Box pt={1} pb={1}>
+                <Typography component="h2" variant="h2">
+                  Modules
+                </Typography>
+              </Box>
+              <Paper variant="outlined" className={classes.paper}>
+                <List>
+                  <LibraryModules value={match} />
+                </List>
+              </Paper>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    );
+      );
+    } else {
+      return (
+        <Grid containerclassName={classes.root}>
+          <Grid item xs={9}>
+            <Box pt={2} pb={2}>
+              <Typography component="h1" variant="h1">
+                ERROR:
+                <p>Library: {libName} not found</p>
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      );
+    }
   } else {
     return (
       <Grid containerclassName={classes.root}>
@@ -73,7 +95,7 @@ const LibraryInfo = ({ match }) => {
           <Box pt={2} pb={2}>
             <Typography component="h1" variant="h1">
               ERROR:
-              <p>Library: {libName} not found</p>
+              <p>Library not found</p>
             </Typography>
           </Box>
         </Grid>
