@@ -2,21 +2,21 @@
 
 import data from "../libraries.json";
 
-//Returns a list of found results
+// Returns a list of found results.
 function printResult(result, indexJSON) {
   let output = [];
   try {
     if (![undefined, null].includes(result.matches)) {
       result.matches.map((elem) => {
         if (elem.key === "text") {
-          //For Aliases
+          // For Aliases.
           output.push({
             Name: elem.value,
             Type: "alias",
             Path: elem.path,
           });
         } else {
-          //For libraries, modules, classes
+          // For libraries, modules, classes.
           output.push({
             Name: elem.value,
             Type: elem.key,
@@ -33,7 +33,7 @@ function printResult(result, indexJSON) {
   return output;
 }
 
-//Returns the path to the element which allows the routing
+// Returns the path to the element which allows the routing.
 function searchInFuseResults(item, indexJSON) {
   var out = "";
   try {
@@ -57,7 +57,7 @@ function searchInFuseResults(item, indexJSON) {
   return out;
 }
 
-//Returns a path to found library, class, module that's used for routing
+// Returns a path to found library, class, module that's used for routing.
 function searchInLib(which_key, name_to_find, data) {
   let results = [];
   switch (which_key) {
@@ -68,7 +68,7 @@ function searchInLib(which_key, name_to_find, data) {
         }
       }
       break;
-    case 1: //libraries.lib_modules.module
+    case 1: // libraries.lib_modules.module
       for (let lib_i = 0; lib_i < data.libraries.length; lib_i++) {
         for (
           let lib_module_i = 0;
@@ -88,7 +88,7 @@ function searchInLib(which_key, name_to_find, data) {
         }
       }
       break;
-    case 2: //libraries.lib_modules.module_classes.class_name
+    case 2: // libraries.lib_modules.module_classes.class_name
       for (let lib_i = 0; lib_i < data.libraries.length; lib_i++) {
         try {
           for (

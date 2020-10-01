@@ -51,14 +51,14 @@ class ClassContentList extends React.Component {
         <h4>Constructors</h4>
         <ul>{PrintListStat(this.props, "constructors", "function_name")}</ul>
 
+        <h4>Statics</h4>
+        <ul>{PrintListStat(this.props, "statics", "function_name")}</ul>
+
         <h4>Member Fields</h4>
         <ul>{PrintListMembers(this.props, "fields", "field_name")}</ul>
 
         <h4>Member Methods</h4>
         <ul>{PrintListMembers(this.props, "methods", "function_name")}</ul>
-
-        <h4>Statics</h4>
-        <ul>{PrintListStat(this.props, "statics", "function_name")}</ul>
       </div>
     );
   }

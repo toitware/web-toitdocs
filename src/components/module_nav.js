@@ -8,7 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import data from "../libraries.json";
 import ErrorBoundary from "./error_page";
 
-//Listing modules for navigation purposes
+// Listing modules for navigation purposes.
 const ModuleNav = ({ match }) => {
   const {
     params: { libName },

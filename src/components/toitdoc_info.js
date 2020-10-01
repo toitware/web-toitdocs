@@ -76,12 +76,9 @@ function StatementsPrint(i, classes) {
                 </code>
               );
             } else if (
-              (statements.is_code_section !== undefined) &
-              (i.title !== "Examples")
+              statements.is_code_section !== undefined &&
+              i.title !== "Examples"
             ) {
-              {
-                console.log(i);
-              }
               return (
                 <Paper
                   elevation={0}
@@ -95,8 +92,8 @@ function StatementsPrint(i, classes) {
                 </Paper>
               );
             } else if (
-              (statements.is_code_section !== undefined) &
-              (i.title === "Examples")
+              statements.is_code_section !== undefined &&
+              i.title === "Examples"
             ) {
               return (
                 <Paper>
@@ -199,8 +196,7 @@ function StatementsPrint(i, classes) {
   }
 }
 
-//Function that prints the content of currently presented element
-
+// Function that prints the content of currently presented element.
 function Toitdocs(props) {
   const classes = useStyles();
   if (props.value !== undefined) {

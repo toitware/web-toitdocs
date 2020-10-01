@@ -17,8 +17,8 @@ function Extends({ extendText, extendURL }) {
     [undefined, null].includes(extendText) ||
     [undefined, null].includes(extendURL)
   ) {
-    console.log("function Extends(): nothing found")
-    return <div></div>;
+    console.log("function Extends(): nothing found");
+    return null;
   } else {
     return (
       <div>
@@ -54,7 +54,7 @@ function Constructors(props) {
     );
   } else {
     console.log("function Constructors(): no Constructors found");
-    return <div></div>;
+    return null;
   }
 }
 
@@ -84,7 +84,7 @@ function Statics(props) {
     );
   } else {
     console.log("function Statics(): no Statics found");
-    return <div></div>;
+    return null;
   }
 }
 
@@ -191,7 +191,7 @@ const useStyles = makeStyles({
   },
 });
 
-// Returns description of the class
+// Returns the description of the class.
 const ClassInfo = ({ match }) => {
   const classes = useStyles();
   const {

@@ -3,7 +3,7 @@
 import Fuse from "fuse.js";
 import data from "../libraries.json";
 
-//Parameters for searching through libraries, modules and classes
+// Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
   shouldSort: false,
   includeMatches: true,
@@ -20,7 +20,7 @@ const optionsBasic = {
   ],
 };
 
-//Parameters for searching through Aliases
+// Parameters for searching through Aliases.
 const foundAliases = findAliases(data.libraries);
 
 const optionsAliases = {
@@ -39,7 +39,6 @@ function findAliases(object) {
   var found = [];
   var current_return_path;
   var current_class_name;
-  iterateObject(object);
 
   function iterateObject(obj) {
     try {
@@ -75,10 +74,11 @@ function findAliases(object) {
       console.log("ERROR: iterateObject() function failed");
     }
   }
+  iterateObject(object);
   return found;
 }
 
-//Create search modules
+// Create search modules.
 const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
 const fuseBasic = new Fuse([data], optionsBasic, myIndex);
 const fuseAliases = new Fuse(foundAliases, optionsAliases);

@@ -107,7 +107,7 @@ function PrintExpFcn(object) {
   return output;
 }
 
-//Right sidebar that lists the content of module
+// Right sidebar that lists the content of module.
 class ModuleContentList extends React.Component {
   constructor(props) {
     super(props);

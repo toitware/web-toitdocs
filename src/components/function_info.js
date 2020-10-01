@@ -95,7 +95,7 @@ const FunctionInfo = ({ match }) => {
     } else {
       function_info = "Unknown type";
     }
-   if (![undefined, null].includes(function_info)) {
+    if (![undefined, null].includes(function_info)) {
       return (
         <div className={classes.root}>
           <Grid container>
