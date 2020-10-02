@@ -19,19 +19,23 @@ function ListFunctions(props) {
     "constructors",
   ];
   var class_info;
+  var module_classes ={};
+  var export_classes = {};
   const modules = data.libraries
     .find(({ lib_name }) => lib_name === props.libName)
     .lib_modules.find(({ module }) => module === props.moduleName);
 
   if (modules.module_classes !== undefined) {
-    class_info = modules.module_classes.find(
+    module_classes = modules.module_classes.find(
       (elem) => elem.class_name === props.className
     ).class_structure;
-  } else if (modules.export_classes !== undefined) {
-    class_info = modules.export_classes.find(
+  } 
+  if (modules.export_classes !== undefined) {
+    export_classes = modules.export_classes.find(
       (elem) => elem.class_name === props.className
     ).class_structure;
   }
+  class_info = Object.assign(module_classes, export_classes);
 
   function iterateFunctions(obj) {
     for (var prop in obj) {

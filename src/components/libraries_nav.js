@@ -28,7 +28,7 @@ function LibList(){
     }
 }
 
-//Listing the libraries for navigation purposes
+// Listing the libraries for navigation purposes.
 const LibrariesNav = () => {
   return (
     <div className="sideMenu">
