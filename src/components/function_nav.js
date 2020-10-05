@@ -1,4 +1,5 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
+/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
 
 import React from "react";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -56,8 +57,8 @@ function ListFunctions(props) {
           <Link
             to={`/${props.libName}/${props.moduleName}/${props.className}/${
               elem.category.charAt(0).toUpperCase() + elem.category.slice(1)
-            }/${elem.function_name}/${index}`} 
-            
+            }/${elem.function_name}/${index}`}
+
           >
             {elem.function_name}
           </Link>
@@ -69,7 +70,7 @@ function ListFunctions(props) {
 
 const FunctionNav = ({ match }) => {
   const {
-    params: { libName, moduleName, className, functionType, functionName, index },
+    params: { libName, moduleName, className, functionType, functionName, _ },
   } = match;
   return (
     <div className="sideMenu">

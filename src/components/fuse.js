@@ -37,11 +37,9 @@ const optionsAliases = {
 
 function findAliases(object) {
   var found = [];
-  var current_return_path;
-  var current_class_name;
-  iterateObject(object);
+  iterateObject(object, "", "");
 
-  function iterateObject(obj) {
+  function iterateObject(obj, current_return_path, current_class_name) {
     console.log(obj);
     try {
       for (var prop in obj) {
@@ -52,23 +50,24 @@ function findAliases(object) {
         }
 
         if (typeof obj[prop] === "object") {
-          iterateObject(obj[prop]);
+          iterateObject(obj[prop], current_return_path, current_class_name);
         } else {
           if ((prop === "title") & (obj[prop] === "Aliases")) {
-            obj.statements.map((elem) => {
-              elem.map((eleme) => {
-                eleme.itemized.map((elemen) => {
-                  elemen.map((element) => {
+            for (var i = 0; i < obj.statements.length; i++) {
+              for (var j = 0; j < obj.statements[i].length; j++) {
+                for (var k = 0; k < obj.statements[i][j].itemized.length; k++) {
+                  for (var l = 0; l < obj.statements[i][j].itemized[k].length; l++) {
+                    var element = obj.statements[i][j].itemized[k][l];
                     if (element.is_code === true) {
                       var tempObj = element;
                       tempObj.path =
                         current_return_path + "/" + current_class_name;
                       found.push(tempObj);
                     }
-                  });
-                });
-              });
-            });
+                  }
+                }
+              }
+            }
           }
         }
       }

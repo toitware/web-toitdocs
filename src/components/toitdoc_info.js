@@ -74,9 +74,7 @@ function StatementsPrint(i, classes) {
           (statements.is_code_section !== undefined) &
           (i.title !== "Examples")
         ) {
-          {
-            console.log(i);
-          }
+          console.log(i);
           return (
             <Paper
               elevation={0}

@@ -1,4 +1,5 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
+/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
 
 import React from "react";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -10,7 +11,7 @@ import ErrorBoundary from "./error_page";
 
 const ClassNav = ({ match }) => {
   const {
-    params: { libName, moduleName, className },
+    params: { libName, moduleName, _ },
   } = match;
 
   const modules = data.libraries
@@ -35,7 +36,7 @@ const ClassNav = ({ match }) => {
         {[]
           .concat(modules.module_classes)
           .sort((a, b) => a.class_name.localeCompare(b.class_name))
-          .map((classinfo, index) => {
+          .map((classinfo) => {
             return (
               <Link
                 to={`/${libName}/${moduleName}/${classinfo.class_name}`}
