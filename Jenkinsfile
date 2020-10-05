@@ -20,16 +20,16 @@ pipeline {
             }
         }
 
-        stage("test") {
-            steps {
-                sh "npm run test:jenkins"
-            }
-            post {
-                always {
-                    junit "junit.xml"
-                }
-            }
-        }
+        // stage("test") {
+        //     steps {
+        //         sh "npm run test:jenkins"
+        //     }
+        //     post {
+        //         always {
+        //             junit "junit.xml"
+        //         }
+        //     }
+        // }
 
         stage("build") {
             steps {
