@@ -6,7 +6,7 @@ export const graphColors = [
   amber[700], orange[700], yellow[700]
 ]
 
-// Note! If the theme colors change, the color placeholder in ../pkg/emailprovider/ must be manually updated
+// Note! If the theme colors change, the color placeholder in ../pkg/emailprovider/ must be manually updated.
 
 const theme = createMuiTheme({
   palette: {
@@ -112,7 +112,7 @@ const headerBarStyling = makeStyles((theme) => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
+    // Vertical padding + font size from searchIcon.
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
     width: "100%",

@@ -106,6 +106,8 @@ const FunctionInfo = ({ match }) => {
     },
   } = match;
 
+  console.log(match)
+
   if (propsOk) {
     var function_info;
     var empty_function_info = {
@@ -115,37 +117,41 @@ const FunctionInfo = ({ match }) => {
       function_toitdoc: null,
     };
     var page_title = "Unknown";
+
+    var module_info = data.libraries
+    .find(({ lib_name }) => lib_name === libName)
+    .lib_modules.find(({ module }) => module === moduleName);
+
+    var class_info;
+    if (module_info.module_classes !== undefined) {
+      class_info = module_info.module_classes.find(
+        ({ class_name }) => class_name === className
+      );
+    } else if (module_info.export_classes !== undefined) {
+      class_info = module_info.export_classes.find(
+        ({ class_name }) => class_name === className
+      );
+    }
+
     if (functionType === "Constructors") {
       try {
-        function_info = data.libraries
-        .find(({ lib_name }) => lib_name === libName)
-        .lib_modules.find(({ module }) => module === moduleName)
-        .module_classes.find(({ class_name }) => class_name === className)
-        .class_structure.constructors[index];
+
+        function_info = class_info.class_structure.constructors[index];
       } catch {
         return null;
       }
       page_title = "Constructor of class: " + className;
     } else if (functionType === "Factories") {
       try {
-        function_info = data.libraries
-          .find(({ lib_name }) => lib_name === libName)
-          .lib_modules.find(({ module }) => module === moduleName)
-          .module_classes.find(({ class_name }) => class_name === className)
-          .class_structure.factories[index];
+
+        function_info = class_info.class_structure.factories[index];
       } catch {
         return null;
       }
       page_title = "Factory of class: " + className;
     } else if (functionType === "Members" || functionType === "Methods") {
       try {
-        function_info = data.libraries
-          .find(({ lib_name }) => lib_name === libName)
-          .lib_modules.find(({ module }) => module === moduleName)
-          .module_classes.find(({ class_name }) => class_name === className)
-          .class_structure.members.methods.find(
-            ({ function_name }) => function_name === functionName
-          )[index];
+        function_info = class_info.class_structure.members.methods.filter(({ function_name }) => function_name === functionName)[index];
       } catch {
         return null;
       }
@@ -153,13 +159,8 @@ const FunctionInfo = ({ match }) => {
       page_title = "Function name: " + functionName;
     } else if (functionType === "Statics") {
       try {
-        function_info = data.libraries
-          .filter((lib) => lib.lib_name === libName)
-          .map((module) =>
-            module.lib_modules
-              .filter((elem) => elem.module === moduleName)
-              .map((elem2) => elem2.module_classes)
-          );
+        console.log(class_info)
+        function_info = class_info.class_structure.statics.filter((elem) => elem.function_name === functionName)[index];
       } catch {
         return null;
       }
