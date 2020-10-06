@@ -1,6 +1,7 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
+import React, {Component} from "react";
+import {connect} from "react-redux"
 import "./App.css";
 import LibrariesNav from "./components/libraries_nav";
 import ModuleInfo from "./components/module_info";
@@ -21,7 +22,21 @@ import "./assets/index.css";
 import data from "./libraries.json";
 import {theme} from "./assets/theme.ts";
 
+function mapStateToProps(state) {
+  const { sdk } = state
+  return { version: sdk.version, object: sdk.object }
+}
+
 class App extends Component {
+
+  componentDidMount() {
+    console.log("state", this.props);
+  }
+
+  componentDidUpdate() {
+    console.log("state", this.props);
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -73,12 +88,12 @@ class App extends Component {
               </ErrorBoundary>
             </Grid>
             <Grid item xs={12} align="center">
-              SDK version: {data.sdk_version}
+              SDK version: {this.props.version}
             </Grid>
           </Grid>
         </HashRouter>
-      </ThemeProvider>
-    );
+      </ThemeProvider>);
   }
 }
-export default App;
+
+export default connect(mapStateToProps)(App);
