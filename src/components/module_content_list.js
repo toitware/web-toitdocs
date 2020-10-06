@@ -15,13 +15,13 @@ const styles = (theme) => ({
 });
 
 function PrintClasses(object) {
-  var output;
+  var output = [];
   try {
     let already_listed = [];
-    output = object.value.module_classes.map((element,i) => {
+    object.value.module_classes.forEach((element,i) => {
       if (!already_listed.includes(element.class_name)) {
         already_listed.push(element.class_name);
-        return <li key={"class_name_"+i} > {element.class_name} </li>;
+        output.push(<li key={"class_name_"+i} > {element.class_name} </li>);
       }
     });
   } catch (err) {
@@ -31,13 +31,13 @@ function PrintClasses(object) {
 }
 
 function PrintExpClasses(object) {
-  var output;
+  var output = [];
   try {
     let already_listed = [];
-    output = object.value.export_classes.map((element,i) => {
+    output = object.value.export_classes.forEach((element,i) => {
       if (!already_listed.includes(element.class_name)) {
         already_listed.push(element.class_name);
-        return <li key={"exp_class_name"+i} > {element.class_name} </li>;
+        output.push(<li key={"exp_class_name"+i} > {element.class_name} </li>);
       }
     });
   } catch (err) {
@@ -47,12 +47,12 @@ function PrintExpClasses(object) {
 }
 
 function PrintGlobFcn(object) {
-  var output;
+  var output = [];
   try {
     let already_listed = [];
-    output = object.value.top_level.module_functions.map((element, i) => {
+    output = object.value.top_level.module_functions.forEach((element, i) => {
       if (!already_listed.includes(element.class_name)) {
-        return <li key={"glb_fcn_name_"+i} > {element.function_name} </li>;
+        output.push(<li key={"glb_fcn_name_"+i} > {element.function_name} </li>);
       }
       already_listed.push(element.class_name);
     });
@@ -63,12 +63,12 @@ function PrintGlobFcn(object) {
 }
 
 function PrintGlobVar(object) {
-  var output;
+  var output = [];
   try {
     let already_listed = [];
-    output = object.value.top_level.module_globals.map((element,i) => {
+    output = object.value.top_level.module_globals.forEach((element,i) => {
       if (!already_listed.includes(element.class_name)) {
-        return <li key={"glb_var_name_"+i} > {element.global_name} </li>;
+        output.push(<li key={"glb_var_name_"+i} > {element.global_name} </li>);
       }
     });
   } catch (err) {
@@ -78,12 +78,12 @@ function PrintGlobVar(object) {
 }
 
 function PrintExpVar(object) {
-  var output;
+  var output = [];
   try {
     let already_listed = [];
-    output = object.value.top_level.export_globals.map((element,i) => {
+    output = object.value.top_level.export_globals.forEach((element,i) => {
       if (!already_listed.includes(element.class_name)) {
-        return <li key={"exp_var_name"+i} > {element.global_name} </li>;
+        output.push(<li key={"exp_var_name"+i} > {element.global_name} </li>);
       }
     });
   } catch (err) {
@@ -93,12 +93,12 @@ function PrintExpVar(object) {
 }
 
 function PrintExpFcn(object) {
-  var output;
+  var output = [];
   try {
     let already_listed = [];
-    output = object.value.top_level.export_functions.map((element) => {
+    output = object.value.top_level.export_functions.forEach((element) => {
       if (!already_listed.includes(element.class_name)) {
-        return <li key="exp_fcn_name" > {element.function_name} </li>;
+        output.push(<li key="exp_fcn_name" > {element.function_name} </li>);
       }
     });
   } catch (err) {

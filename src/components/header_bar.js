@@ -40,8 +40,8 @@ function HeaderBar() {
 
         //Build one combined list of results
         if (found_aliases.length !== 0) {
-          found_aliases.map((elem) => {
-            elem.matches.map((match) => {
+          found_aliases.forEach((elem) => {
+            elem.matches.forEach((match) => {
               let temp_match = match;
               temp_match.path = elem.item.path;
               combined_results.matches.push(temp_match);
@@ -93,7 +93,7 @@ function HeaderBar() {
           <Toolbar>
             <Grid item sm={9}>
               <Link to={`/`}>
-                <img src={toitware} width="32px" height="32px"></img>
+                <img alt="Toitware" src={toitware} width="32px" height="32px"></img>
               </Link>
             </Grid>
             <Grid item sm={3}>

@@ -7,7 +7,7 @@ function printResult(result, indexJSON) {
   let output = [];
   try {
     if (JSON.stringify(result) !== "[]") {
-      result.matches.map((elem) => {
+      result.matches.forEach((elem) => {
         if (elem.key === "text") {
           //For Aliases
           output.push({
@@ -24,8 +24,8 @@ function printResult(result, indexJSON) {
           });
         }
       });
-    } 
-    
+    }
+
   } catch (err) {
     output = ["Error."];
     console.log("ERROR: Nothing found.");
@@ -40,7 +40,7 @@ function searchInFuseResults(item, indexJSON) {
     let which_key = indexJSON.keys.findIndex((element) => element.id === item.key);
     let index_array = indexJSON.records[0].$[which_key];
     let found_matches = [];
-    index_array.map((elem) => {
+    index_array.forEach((elem) => {
       if (elem.v === item.value) {
         found_matches.push(elem.i);
       }

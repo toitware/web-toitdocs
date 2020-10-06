@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import {Grid} from "@material-ui/core"
 
