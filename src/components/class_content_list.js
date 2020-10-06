@@ -16,7 +16,13 @@ const styles = (theme) => ({
 
 function PrintListStat(object, elem1, elem2) {
   let output = [];
-  if (![undefined, null].includes(object.value.class_structure[elem1])) {
+  let props_test;
+  try {
+    props_test = object.value.class_structure.members[elem1];
+  } catch (error) {
+    return null;
+  }
+  if (![undefined, null].includes(props_test)) {
     try {
       output = object.value.class_structure[elem1].map((element, i) => {
         return <li key={"print_list_stat_" + i}> {element[elem2]} </li>;
@@ -30,9 +36,13 @@ function PrintListStat(object, elem1, elem2) {
 
 function PrintListMembers(object, elem1, elem2) {
   let output = [];
-  if (
-    ![undefined, null].includes(object.value.class_structure.members[elem1])
-  ) {
+  let props_test;
+  try {
+    props_test = object.value.class_structure.members[elem1];
+  } catch (error) {
+    return null;
+  }
+  if (![undefined, null].includes(props_test)) {
     try {
       output = object.value.class_structure.members[elem1].map((element, i) => {
         return <li key={"print_list_mem_" + i}> {element[elem2]} </li>;

@@ -25,6 +25,8 @@ function ListFunctions(props) {
     .find(({ lib_name }) => lib_name === props.libName)
     .lib_modules.find(({ module }) => module === props.moduleName);
 
+  
+  
   if (modules.module_classes !== undefined) {
     module_classes = modules.module_classes.find(
       (elem) => elem.class_name === props.className

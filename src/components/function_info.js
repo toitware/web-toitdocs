@@ -29,21 +29,71 @@ const useStyles = makeStyles({
   },
 });
 
+// function ListFunctions(props) {
+//   var functions_found = [];
+//   var category = "";
+//   const categories = [
+//     "statics",
+//     "factories",
+//     "members",
+//     "methods",
+//     "constructors",
+//   ];
+//   var class_info;
+//   var module_classes = {};
+//   var export_classes = {};
+//   const modules = data.libraries
+//   .find(({ lib_name }) => lib_name === props.libName)
+//   .lib_modules.find(({ module }) => module === props.moduleName);
+ 
+//   if (modules.module_classes !== undefined) {
+//     module_classes = modules.module_classes.find(
+//       (elem) => elem.class_name === props.className
+//     ).class_structure;
+//   }
+//   if (modules.export_classes !== undefined) {
+//     export_classes = modules.export_classes.find(
+//       (elem) => elem.class_name === props.className
+//     ).class_structure;
+//   }
+//   class_info = Object.assign(module_classes, export_classes);
+
+//   function iterateFunctions(obj) {
+//     for (var prop in obj) {
+//       if (categories.includes(prop)) {
+//         category = prop;
+//       }
+//       if (obj[prop].function_name !== undefined) {
+//         obj[prop].category = category;
+//         functions_found.push(obj[prop]);
+//       } else if (typeof obj[prop] === "object") {
+//         iterateFunctions(obj[prop]);
+//       }
+//     }
+//   }
+
+//   iterateFunctions(class_info);
+// }
+
 const FunctionInfo = ({ match }) => {
   const classes = useStyles();
   let propsOk = true;
-  [
-    match.params.libName,
-    match.params.moduleName,
-    match.params.className,
-    match.params.functionType,
-    match.params.functionName,
-    match.params.index,
-  ].forEach((elem) => {
-    if (elem === undefined || elem === null) {
-      propsOk = false;
-    }
-  });
+  try {
+    [
+      match.params.libName,
+      match.params.moduleName,
+      match.params.className,
+      match.params.functionType,
+      match.params.functionName,
+      match.params.index,
+    ].forEach((elem) => {
+      if (elem === undefined || elem === null) {
+        propsOk = false;
+      }
+    });
+  } catch {
+    propsOk = false;
+  }
 
   const {
     params: {
@@ -58,43 +108,66 @@ const FunctionInfo = ({ match }) => {
 
   if (propsOk) {
     var function_info;
+    var empty_function_info = {
+      parameters: null,
+      return_path: null,
+      return_type: null,
+      function_toitdoc: null,
+    };
     var page_title = "Unknown";
-
     if (functionType === "Constructors") {
-      function_info = data.libraries
+      try {
+        function_info = data.libraries
         .find(({ lib_name }) => lib_name === libName)
         .lib_modules.find(({ module }) => module === moduleName)
         .module_classes.find(({ class_name }) => class_name === className)
         .class_structure.constructors[index];
-
+      } catch {
+        return null;
+      }
       page_title = "Constructor of class: " + className;
     } else if (functionType === "Factories") {
-      function_info = data.libraries
-        .find(({ lib_name }) => lib_name === libName)
-        .lib_modules.find(({ module }) => module === moduleName)
-        .module_classes.find(({ class_name }) => class_name === className)
-        .class_structure.factories[index];
-
+      try {
+        function_info = data.libraries
+          .find(({ lib_name }) => lib_name === libName)
+          .lib_modules.find(({ module }) => module === moduleName)
+          .module_classes.find(({ class_name }) => class_name === className)
+          .class_structure.factories[index];
+      } catch {
+        return null;
+      }
       page_title = "Factory of class: " + className;
     } else if (functionType === "Members" || functionType === "Methods") {
-      function_info = data.libraries
-        .find(({ lib_name }) => lib_name === libName)
-        .lib_modules.find(({ module }) => module === moduleName)
-        .module_classes.find(({ class_name }) => class_name === className)
-        .class_structure.members.methods[index];
+      try {
+        function_info = data.libraries
+          .find(({ lib_name }) => lib_name === libName)
+          .lib_modules.find(({ module }) => module === moduleName)
+          .module_classes.find(({ class_name }) => class_name === className)
+          .class_structure.members.methods.find(
+            ({ function_name }) => function_name === functionName
+          )[index];
+      } catch {
+        return null;
+      }
 
       page_title = "Function name: " + functionName;
     } else if (functionType === "Statics") {
-      function_info = data.libraries
-        .find(({ lib_name }) => lib_name === libName)
-        .lib_modules.find(({ module }) => module === moduleName)
-        .module_classes.find(({ class_name }) => class_name === className)
-        .class_structure.statics[index];
-
+      try {
+        function_info = data.libraries
+          .filter((lib) => lib.lib_name === libName)
+          .map((module) =>
+            module.lib_modules
+              .filter((elem) => elem.module === moduleName)
+              .map((elem2) => elem2.module_classes)
+          );
+      } catch {
+        return null;
+      }
       page_title = "Function name: " + functionName;
     } else {
       function_info = "Unknown type";
     }
+
     if (![undefined, null].includes(function_info)) {
       return (
         <div className={classes.root}>
@@ -114,12 +187,12 @@ const FunctionInfo = ({ match }) => {
                     verticalAlign: "middle",
                     display: "inline-flex",
                   }}
-                />
+                  />
                 <span>
                   <ReturnType
                     returnType={function_info.return_type}
                     returnPath={function_info.return_path}
-                  />
+                    />
                 </span>
               </Box>
               <Box>
@@ -137,6 +210,13 @@ const FunctionInfo = ({ match }) => {
               <Typography variant="h1" component="h1">
                 ERROR: {functionName} function info not found
               </Typography>
+              {/* <ListFunctions
+                libName={libName}
+                moduleName={moduleName}
+                className={className}
+                functionType={functionType}
+                functionName={functionName}
+                /> */}
             </Grid>
           </Grid>
         </div>

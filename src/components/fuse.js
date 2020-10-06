@@ -71,7 +71,7 @@ function findAliases(object) {
         }
       }
     } catch {
-      console.log("ERROR: iterateObject() function failed");
+      return null;
     }
   }
   iterateObject(object);

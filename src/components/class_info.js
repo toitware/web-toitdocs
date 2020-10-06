@@ -30,102 +30,128 @@ function Extends({ extendText, extendURL }) {
 
 function Constructors(props) {
   let propsOk = true;
-  [props.value, props.libName, props.moduleName, props.className].forEach(
-    (elem) => {
-      if (elem === undefined || elem === null) {
-        propsOk = false;
+  try {
+    [props.value, props.libName, props.moduleName, props.className].forEach(
+      (elem) => {
+        if (elem === undefined || elem === null) {
+          propsOk = false;
+        }
       }
-    }
-  );
-  if (propsOk) {
-    return (
-      <div>
-        <Typography variant="h2" component="h2">
-          Constructors:
-        </Typography>
-        <Methods
-          value={props.value}
-          libName={props.libName}
-          moduleName={props.moduleName}
-          className={props.className}
-          functionType="Constructors"
-        />
-      </div>
     );
-  } else {
-    console.log("function Constructors(): no Constructors found");
+    if (propsOk) {
+      return (
+        <div>
+          <Typography variant="h2" component="h2">
+            Constructors:
+          </Typography>
+          <Methods
+            value={props.value}
+            libName={props.libName}
+            moduleName={props.moduleName}
+            className={props.className}
+            functionType="Constructors"
+          />
+        </div>
+      );
+    } else {
+      console.log("function Constructors(): no Constructors found");
+      return null;
+    }
+  } catch (error) {
+    console.log("function Constructors(): Function failed");
     return null;
   }
 }
 
 function Statics(props) {
   let propsOk = true;
-  [props.value, props.libName, props.moduleName, props.className].forEach(
-    (elem) => {
-      if (elem === undefined || elem === null) {
-        propsOk = false;
+  try {
+    [props.value, props.libName, props.moduleName, props.className].forEach(
+      (elem) => {
+        if (elem === undefined || elem === null) {
+          propsOk = false;
+        }
       }
-    }
-  );
-  if (propsOk) {
-    return (
-      <div>
-        <Typography variant="h2" component="h2">
-          Statics:
-        </Typography>
-        <Methods
-          value={props.value}
-          libName={props.libName}
-          moduleName={props.moduleName}
-          className={props.className}
-          functionType="Statics"
-        />
-      </div>
     );
-  } else {
-    console.log("function Statics(): no Statics found");
+    if (propsOk) {
+      return (
+        <div>
+          <Typography variant="h2" component="h2">
+            Statics:
+          </Typography>
+          <Methods
+            value={props.value}
+            libName={props.libName}
+            moduleName={props.moduleName}
+            className={props.className}
+            functionType="Statics"
+          />
+        </div>
+      );
+    } else {
+      console.log("function Statics(): no Statics found");
+      return null;
+    }
+  } catch (err) {
+    console.log("function Statics(): Failure appeared");
     return null;
   }
 }
 
 function Factories(props) {
   let propsOk = true;
-  [props.value, props.libName, props.moduleName, props.className].forEach(
-    (elem) => {
-      if (elem === undefined || elem === null) {
-        propsOk = false;
+  try {
+    [props.value, props.libName, props.moduleName, props.className].forEach(
+      (elem) => {
+        if (elem === undefined || elem === null) {
+          propsOk = false;
+        }
       }
-    }
-  );
-  if (propsOk) {
-    return (
-      <div>
-        <Typography variant="h2" component="h2">
-          Factories:
-        </Typography>
-        <Methods
-          value={props.value}
-          libName={props.libName}
-          moduleName={props.moduleName}
-          className={props.className}
-          functionType="Factories"
-        />
-      </div>
     );
-  } else {
-    return <div></div>;
+    if (propsOk) {
+      return (
+        <div>
+          <Typography variant="h2" component="h2">
+            Factories:
+          </Typography>
+          <Methods
+            value={props.value}
+            libName={props.libName}
+            moduleName={props.moduleName}
+            className={props.className}
+            functionType="Factories"
+          />
+        </div>
+      );
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log("function Factories(): Failure appeared");
+    return null;
   }
 }
 
 function Fields(props) {
-  if (![undefined, null].includes(props.value.fields)) {
+  let propsOk = false;
+  let fields;
+  try {
+    fields = props.value.fields;
+    if (fields !== undefined && fields !== null) {
+      propsOk = true;
+    }
+  } catch {
+    return null;
+  }
+  if (propsOk) {
+    propsOk = false;
     return (
       <div>
         <Typography variant="h3" component="h3">
           Fields:
         </Typography>
-        {props.value.fields.map((elem, index) => {
-          let propsOk = true;
+        {fields.map((elem, index) => {
+          propsOk = true;
           [elem.field_name, elem.field_type].forEach((elem) => {
             if (elem === undefined || elem === null) {
               propsOk = false;
@@ -149,19 +175,24 @@ function Fields(props) {
       </div>
     );
   } else {
-    return <div></div>;
+    return null;
   }
 }
 
 function Members(props) {
   let propsOk = true;
-  [props.value, props.libName, props.moduleName, props.className].forEach(
-    (elem) => {
-      if (elem === undefined || elem === null) {
-        propsOk = false;
+  try {
+    [props.value, props.libName, props.moduleName, props.className].forEach(
+      (elem) => {
+        if (elem === undefined || elem === null) {
+          propsOk = false;
+        }
       }
-    }
-  );
+    );
+  } catch {
+    propsOk = false;
+  }
+
   if (propsOk) {
     return (
       <div>
@@ -198,10 +229,21 @@ const ClassInfo = ({ match }) => {
     params: { libName, moduleName, className },
   } = match;
 
-  const class_info = data.libraries
+  var module_info = data.libraries
     .find(({ lib_name }) => lib_name === libName)
-    .lib_modules.find(({ module }) => module === moduleName)
-    .module_classes.find(({ class_name }) => class_name === className);
+    .lib_modules.find(({ module }) => module === moduleName);
+
+  var class_info;
+
+  if (module_info.module_classes !== undefined) {
+    class_info = module_info.module_classes.find(
+      ({ class_name }) => class_name === className
+    );
+  } else if (module_info.export_classes !== undefined) {
+    class_info = module_info.export_classes.find(
+      ({ class_name }) => class_name === className
+    );
+  }
 
   if (class_info !== undefined) {
     return (

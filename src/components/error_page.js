@@ -19,7 +19,6 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       console.log("ERROR: In the object ");
-      console.log(this.props);
       return (
         <Grid item style={{padding:"10px", margin:"10px"}}>
           <h1>Something went wrong.</h1>
