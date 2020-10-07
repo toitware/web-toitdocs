@@ -1,9 +1,7 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import data from "../libraries.json";
-
 //Returns a list of found results
-function printResult(result, indexJSON) {
+function printResult(dataObject, result, indexJSON) {
   let output = [];
   try {
     if (JSON.stringify(result) !== "[]") {
@@ -20,7 +18,7 @@ function printResult(result, indexJSON) {
           output.push({
             Name: elem.value,
             Type: elem.key,
-            Path: searchInFuseResults(elem, indexJSON),
+            Path: searchInFuseResults(dataObject, elem, indexJSON),
           });
         }
       });
@@ -34,7 +32,7 @@ function printResult(result, indexJSON) {
 }
 
 //Returns the path to the element which allows the routing
-function searchInFuseResults(item, indexJSON) {
+function searchInFuseResults(dataObject, item, indexJSON) {
   var out = "";
   try {
     let which_key = indexJSON.keys.findIndex((element) => element.id === item.key);
@@ -49,7 +47,7 @@ function searchInFuseResults(item, indexJSON) {
       (elem) => elem === item.refIndex
     );
 
-    let path = searchInLib(which_key, item.value, data);
+    let path = searchInLib(dataObject, which_key, item.value);
     out = path[which_instance];
   } catch (err) {
     console.log("ERROR: Path is wrong");
@@ -58,66 +56,66 @@ function searchInFuseResults(item, indexJSON) {
 }
 
 //Returns a path to found library, class, module that's used for routing
-function searchInLib(which_key, name_to_find, data) {
+function searchInLib(dataObject, which_key, name_to_find) {
   let results = [];
   switch (which_key) {
     case 0: //libraries.lib_name
-      for (let lib_i = 0; lib_i < data.libraries.length; lib_i++) {
-        if (name_to_find === data.libraries[lib_i].lib_name) {
-          results.push(data.libraries[lib_i].lib_name);
+      for (let lib_i = 0; lib_i < dataObject.libraries.length; lib_i++) {
+        if (name_to_find === dataObject.libraries[lib_i].lib_name) {
+          results.push(dataObject.libraries[lib_i].lib_name);
         }
       }
       break;
     case 1: //libraries.lib_modules.module
-      for (let lib_i = 0; lib_i < data.libraries.length; lib_i++) {
+      for (let lib_i = 0; lib_i < dataObject.libraries.length; lib_i++) {
         for (
           let lib_module_i = 0;
-          lib_module_i < data.libraries[lib_i].lib_modules.length;
+          lib_module_i < dataObject.libraries[lib_i].lib_modules.length;
           lib_module_i++
         ) {
           if (
             name_to_find ===
-            data.libraries[lib_i].lib_modules[lib_module_i].module
+            dataObject.libraries[lib_i].lib_modules[lib_module_i].module
           ) {
             results.push(
-              data.libraries[lib_i].lib_name +
+              dataObject.libraries[lib_i].lib_name +
                 "/" +
-                data.libraries[lib_i].lib_modules[lib_module_i].module
+                dataObject.libraries[lib_i].lib_modules[lib_module_i].module
             );
           }
         }
       }
       break;
     case 2: //libraries.lib_modules.module_classes.class_name
-      for (let lib_i = 0; lib_i < data.libraries.length; lib_i++) {
+      for (let lib_i = 0; lib_i < dataObject.libraries.length; lib_i++) {
         try {
           for (
             let lib_module_i = 0;
-            lib_module_i < data.libraries[lib_i].lib_modules.length;
+            lib_module_i < dataObject.libraries[lib_i].lib_modules.length;
             lib_module_i++
           ) {
             if (
               "module_classes" in
-              data.libraries[lib_i].lib_modules[lib_module_i]
+              dataObject.libraries[lib_i].lib_modules[lib_module_i]
             ) {
               for (
                 let module_class_i = 0;
                 module_class_i <
-                data.libraries[lib_i].lib_modules[lib_module_i].module_classes
+                dataObject.libraries[lib_i].lib_modules[lib_module_i].module_classes
                   .length;
                 module_class_i++
               ) {
                 if (
                   name_to_find ===
-                  data.libraries[lib_i].lib_modules[lib_module_i]
+                  dataObject.libraries[lib_i].lib_modules[lib_module_i]
                     .module_classes[module_class_i].class_name
                 ) {
                   results.push(
-                    data.libraries[lib_i].lib_name +
+                    dataObject.libraries[lib_i].lib_name +
                       "/" +
-                      data.libraries[lib_i].lib_modules[lib_module_i].module +
+                      dataObject.libraries[lib_i].lib_modules[lib_module_i].module +
                       "/" +
-                      data.libraries[lib_i].lib_modules[lib_module_i]
+                      dataObject.libraries[lib_i].lib_modules[lib_module_i]
                         .module_classes[module_class_i].class_name
                   );
                 }

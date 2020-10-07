@@ -1,13 +1,18 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 /*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
 
-import React from "react";
+import React, {Component}  from "react";
+import {connect} from "react-redux"
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { Link } from "react-router-dom";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import data from "../libraries.json";
 import ErrorBoundary from "./error_page";
+
+function mapStateToProps(state, props) {
+  const { sdk } = state
+  return { version: sdk.version, libraries: sdk.object.libraries, match: props.match }
+}
 
 function ListFunctions(props) {
   var functions_found = [];
@@ -20,10 +25,9 @@ function ListFunctions(props) {
     "constructors",
   ];
   var class_info;
-  const modules = data.libraries
+  const modules = props.libraries
     .find(({ lib_name }) => lib_name === props.libName)
     .lib_modules.find(({ module }) => module === props.moduleName);
-
   if (modules.module_classes !== undefined) {
     class_info = modules.module_classes.find(
       (elem) => elem.class_name === props.className
@@ -68,41 +72,45 @@ function ListFunctions(props) {
   );
 }
 
-const FunctionNav = ({ match }) => {
-  const {
-    params: { libName, moduleName, className, functionType, functionName, _ },
-  } = match;
-  return (
-    <div className="sideMenu">
-      <ErrorBoundary>
-      <List
-        component="nav"
-        disablePadding
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            <Link to={`/`}>modules</Link>
-            {" / "}
-            <Link to={`/${libName}`}>{libName}</Link>
-            {" / "}
-            <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
-            {" / "}
-            <Link to={`/${libName}/${moduleName}/${className}`}>
-              {className}
-            </Link>
-          </ListSubheader>
-        }
-      >
-        <ListFunctions
-          libName={libName}
-          moduleName={moduleName}
-          className={className}
-          functionType={functionType}
-          functionName={functionName}
-        />
-      </List>
-      </ErrorBoundary>
-    </div>
-  );
+class FunctionNav extends Component {
+
+  render() {
+    const {
+      params: { libName, moduleName, className, functionType, functionName, _ },
+    } = this.props.match;
+    return (
+      <div className="sideMenu">
+        <ErrorBoundary>
+        <List
+          component="nav"
+          disablePadding
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              <Link to={`/`}>modules</Link>
+              {" / "}
+              <Link to={`/${libName}`}>{libName}</Link>
+              {" / "}
+              <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
+              {" / "}
+              <Link to={`/${libName}/${moduleName}/${className}`}>
+                {className}
+              </Link>
+            </ListSubheader>
+          }
+        >
+          <ListFunctions
+            libraries={this.props.libraries}
+            libName={libName}
+            moduleName={moduleName}
+            className={className}
+            functionType={functionType}
+            functionName={functionName}
+          />
+        </List>
+        </ErrorBoundary>
+      </div>
+    );
+  }
 };
 
-export { FunctionNav, data };
+export default connect(mapStateToProps)(FunctionNav);

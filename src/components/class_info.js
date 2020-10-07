@@ -1,13 +1,13 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React from "react";
-import data from "../libraries.json";
+import React, {Component} from "react";
+import { connect } from "react-redux";
+import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ClassContentList from "./class_content_list";
 import Toitdocs from "./toitdoc_info";
 import { Methods } from "./methods";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import { Hidden } from "@material-ui/core";
@@ -144,73 +144,80 @@ function Members(props) {
     return null;
   }
 }
-const useStyles = makeStyles({
+const style = (theme) => ({
   root: {
     width: "100%",
   },
 });
 
-// Returns description of the class
-const ClassInfo = ({ match }) => {
-  const classes = useStyles();
-  const {
-    params: { libName, moduleName, className },
-  } = match;
+function mapStateToProps(state, props) {
+  const { sdk } = state
+  return { version: sdk.version, libraries: sdk.object.libraries, match: props.match }
+}
 
-  const class_info = data.libraries
-    .find(({ lib_name }) => lib_name === libName)
-    .lib_modules.find(({ module }) => module === moduleName)
-    .module_classes.find(({ class_name }) => class_name === className);
-  return (
-    <div className={classes.root}>
-      <Grid container>
-        <Grid item xs={12} sm={9}>
-          <Box pt={2} pb={2}>
-            <Typography variant="h1" component="h1">
-              Class: {class_info.class_name}
-            </Typography>
-            <Extends
-              extendText={class_info.extends}
-              extendURL={class_info.extend_path}
+// Returns description of the class
+class ClassInfo extends Component {
+  render() {
+    const classes = this.props.classes;
+    const {
+      params: { libName, moduleName, className },
+    } = this.props.match;
+
+    const classObject = this.props.libraries
+        .find(({ lib_name }) => lib_name === libName)
+        .lib_modules.find(({ module }) => module === moduleName)
+        .module_classes.find(({ class_name }) => class_name === className);
+    return (
+      <div className={classes.root}>
+        <Grid container>
+          <Grid item xs={12} sm={9}>
+            <Box pt={2} pb={2}>
+              <Typography variant="h1" component="h1">
+                Class: {classObject.class_name}
+              </Typography>
+              <Extends
+                extendText={classObject.extends}
+                extendURL={classObject.extend_path}
+              />
+            </Box>
+            <Constructors
+              value={classObject.class_structure.constructors}
+              libName={libName}
+              moduleName={moduleName}
+              className={className}
+              functionType="Constructors"
             />
-          </Box>
-          <Constructors
-            value={class_info.class_structure.constructors}
-            libName={libName}
-            moduleName={moduleName}
-            className={className}
-            functionType="Constructors"
-          />
-          <Factories
-            value={class_info.class_structure.factories}
-            libName={libName}
-            moduleName={moduleName}
-            className={className}
-            functionType="Factories"
-          />
-          <Members
-            value={class_info.class_structure.members}
-            libName={libName}
-            moduleName={moduleName}
-            className={className}
-            functionType="Members"
-          />
-          <Statics
-            value={class_info.class_structure.statics}
-            libName={libName}
-            moduleName={moduleName}
-            className={className}
-            functionType="Statics"
-          />
-        </Grid>
-        <Hidden xsDown>
-          <Grid item sm={3}>
-            <ClassContentList value={class_info} />
+            <Factories
+              value={classObject.class_structure.factories}
+              libName={libName}
+              moduleName={moduleName}
+              className={className}
+              functionType="Factories"
+            />
+            <Members
+              value={classObject.class_structure.members}
+              libName={libName}
+              moduleName={moduleName}
+              className={className}
+              functionType="Members"
+            />
+            <Statics
+              value={classObject.class_structure.statics}
+              libName={libName}
+              moduleName={moduleName}
+              className={className}
+              functionType="Statics"
+            />
           </Grid>
-        </Hidden>
-      </Grid>
-    </div>
-  );
+          <Hidden xsDown>
+            <Grid item sm={3}>
+              <ClassContentList value={classObject} />
+            </Grid>
+          </Hidden>
+        </Grid>
+      </div>
+    );
+  }
 };
 
-export default ClassInfo;
+export default withStyles(style, {withTheme: true})(connect(mapStateToProps)(ClassInfo));

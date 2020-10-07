@@ -19,7 +19,7 @@ const store = createStore(
   )
 );
 
-store.dispatch(fetchSDK("v0.22.0"));
+store.dispatch(fetchSDK("libraries"));
 
 render((
   <Provider store={store}>
