@@ -1,9 +1,9 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, {Component} from "react";
+import { connect } from "react-redux";
+import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
-import data from "../libraries.json";
 import Grid from "@material-ui/core/Grid";
 import ModuleContentList from "./module_content_list";
 import Toitdocs from "./toitdoc_info";
@@ -100,7 +100,7 @@ function importPath(libName, modules) {
   return path;
 }
 
-const useStyles = makeStyles((theme) => ({
+const style = (theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -110,151 +110,158 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#9d9d9c11",
     color: "black",
   },
-}));
+});
 
-const ModuleInfo = ({ match }) => {
-  const {
-    params: { libName, moduleName },
-  } = match;
+function mapStateToProps(state, props) {
+  const { sdk } = state
+  return { version: sdk.version, libraries: sdk.object.libraries, match: props.match }
+}
 
-  const modules = data.libraries
-    .find(({ lib_name }) => lib_name === libName)
-    .lib_modules.find(({ module }) => module === moduleName);
+class ModuleInfo extends Component {
+  render() {
+    const {
+      params: { libName, moduleName },
+    } = this.props.match;
 
-  const classes = useStyles();
-  if ("module_classes" in modules && modules.module_classes !== undefined) {
-    return (
-      <div>
-        <Grid container  className={classes.root}>
-          <Grid item xs={9}>
-            <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
-                module: {modules.module}
-              </Typography>
-            </Box>
-            <Grid item>
-              <Paper elevation={0} variant="outlined" className={classes.paper}>
-                <strong>import</strong> {importPath(libName, modules)}
-              </Paper>
-            </Grid>
-            <Box pt={2} pb={2}>
-              <Box pt={1} pb={1}>
-                <Typography component="h2" variant="h2">
-                  Classes
+    const library = this.props.libraries
+      .find(({ lib_name }) => lib_name === libName)
+    const module = library.lib_modules.find(({ module }) => module === moduleName);
+    const classes = this.props.classes;
+
+    if ("module_classes" in module && module.module_classes !== undefined) {
+      return (
+        <div>
+          <Grid container  className={classes.root}>
+            <Grid item xs={9}>
+              <Box pt={2} pb={2}>
+                <Typography component="h1" variant="h1">
+                  module: {module.module}
                 </Typography>
               </Box>
-              {[]
-                .concat(modules.module_classes)
-                .sort((a, b) => a.class_name.localeCompare(b.class_name))
-                .map((index) => {
-                  return (
-                    <Box pt={1} pb={1} key={index.class_name}>
-                      <Link
-                        to={`/${libName}/${moduleName}/${index.class_name}`}
-                      >
-                        <Typography component="h3" variant="h4">
-                          {index.class_name}{" "}
-                        </Typography>
-                      </Link>
-                      <Toitdocs value={index.class_toitdoc} />
-                    </Box>
-                  );
-                })}
-            </Box>
-            <TopLevel value={modules.top_level} />
-            <TopLevelExport value={modules.top_level} />
+              <Grid item>
+                <Paper elevation={0} variant="outlined" className={classes.paper}>
+                  <strong>import</strong> {importPath(libName, module)}
+                </Paper>
+              </Grid>
+              <Box pt={2} pb={2}>
+                <Box pt={1} pb={1}>
+                  <Typography component="h2" variant="h2">
+                    Classes
+                  </Typography>
+                </Box>
+                {[]
+                  .concat(module.module_classes)
+                  .sort((a, b) => a.class_name.localeCompare(b.class_name))
+                  .map((index) => {
+                    return (
+                      <Box pt={1} pb={1} key={index.class_name}>
+                        <Link
+                          to={`/${libName}/${moduleName}/${index.class_name}`}
+                        >
+                          <Typography component="h3" variant="h4">
+                            {index.class_name}{" "}
+                          </Typography>
+                        </Link>
+                        <Toitdocs value={index.class_toitdoc} />
+                      </Box>
+                    );
+                  })}
+              </Box>
+              <TopLevel value={module.top_level} />
+              <TopLevelExport value={module.top_level} />
+            </Grid>
+            <Hidden xsDown>
+              <Grid item xs={3}>
+                <ModuleContentList value={module} />
+              </Grid>
+            </Hidden>
           </Grid>
-          <Hidden xsDown>
-            <Grid item xs={3}>
-              <ModuleContentList value={modules} />
-            </Grid>
-          </Hidden>
-        </Grid>
-      </div>
-    );
-  }
-  if ("export_classes" in modules && modules.export_classes !== undefined) {
-    return (
-      <div>
-        <Grid container>
-          <Grid item xs={9}>
-            <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
-                module: {modules.module}
-              </Typography>
-            </Box>
-            <Grid item>
-              <Paper elevation={0} variant="outlined" className={classes.paper}>
-                <strong>import</strong> {importPath(libName, modules)}
-              </Paper>
-            </Grid>
-            <Box pt={2} pb={2}>
-              <Box pt={1} pb={1}>
-                <Typography component="h2" variant="h2">
-                  Exported classes
+        </div>
+      );
+    }
+    if ("export_classes" in module && module.export_classes !== undefined) {
+      return (
+        <div>
+          <Grid container>
+            <Grid item xs={9}>
+              <Box pt={2} pb={2}>
+                <Typography component="h1" variant="h1">
+                  module: {module.module}
                 </Typography>
               </Box>
-              {[]
-                .concat(modules.export_classes)
-                .sort((a, b) => a.class_name.localeCompare(b.class_name))
-                .map((index) => {
-                  return (
-                    <Box pt={1} pb={1} key={index.class_name}>
-                      <Link to={`/${index.exported_from}/${index.class_name}`}>
-                        <Typography component="h3" variant="h3">
-                          {index.class_name}{" "}
-                        </Typography>
-                      </Link>
-                      <Toitdocs value={index.class_toitdoc} />
-                    </Box>
-                  );
-                })}
-            </Box>
-            <TopLevel value={modules.top_level} />
-            <TopLevelExport value={modules.top_level} />
+              <Grid item>
+                <Paper elevation={0} variant="outlined" className={classes.paper}>
+                  <strong>import</strong> {importPath(libName, module)}
+                </Paper>
+              </Grid>
+              <Box pt={2} pb={2}>
+                <Box pt={1} pb={1}>
+                  <Typography component="h2" variant="h2">
+                    Exported classes
+                  </Typography>
+                </Box>
+                {[]
+                  .concat(module.export_classes)
+                  .sort((a, b) => a.class_name.localeCompare(b.class_name))
+                  .map((index) => {
+                    return (
+                      <Box pt={1} pb={1} key={index.class_name}>
+                        <Link to={`/${index.exported_from}/${index.class_name}`}>
+                          <Typography component="h3" variant="h3">
+                            {index.class_name}{" "}
+                          </Typography>
+                        </Link>
+                        <Toitdocs value={index.class_toitdoc} />
+                      </Box>
+                    );
+                  })}
+              </Box>
+              <TopLevel value={module.top_level} />
+              <TopLevelExport value={module.top_level} />
+            </Grid>
+            <Hidden xsDown>
+              <Grid item xs={3}>
+                <ModuleContentList value={module} />
+              </Grid>
+            </Hidden>
           </Grid>
-          <Hidden xsDown>
-            <Grid item xs={3}>
-              <ModuleContentList value={modules} />
+        </div>
+      );
+    }
+    if ("top_level" in module && module.top_level !== undefined) {
+      return (
+        <div>
+          <Grid container >
+            <Grid item xs={9}>
+              <Box pt={2} pb={2}>
+                <Typography component="h1" variant="h1">
+                  module: {module.module}
+                </Typography>
+              </Box>
+              <Grid item>
+                <Paper elevation={0} variant="outlined" className={classes.paper}>
+                  <strong>import</strong> {importPath(libName, module)}
+                </Paper>
+              </Grid>
+              <TopLevel value={module.top_level} />
+              <TopLevelExport value={module.top_level} />
             </Grid>
-          </Hidden>
-        </Grid>
-      </div>
-    );
-  }
-  if ("top_level" in modules && modules.top_level !== undefined) {
-    return (
-      <div>
-        <Grid container >
-          <Grid item xs={9}>
-            <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
-                module: {modules.module}
-              </Typography>
-            </Box>
-            <Grid item>
-              <Paper elevation={0} variant="outlined" className={classes.paper}>
-                <strong>import</strong> {importPath(libName, modules)}
-              </Paper>
-            </Grid>
-            <TopLevel value={modules.top_level} />
-            <TopLevelExport value={modules.top_level} />
+            <Hidden xsDown>
+              <Grid item xs={3}>
+                <ModuleContentList value={module} />
+              </Grid>
+            </Hidden>
           </Grid>
-          <Hidden xsDown>
-            <Grid item xs={3}>
-              <ModuleContentList value={modules} />
-            </Grid>
-          </Hidden>
-        </Grid>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        Module: <strong>{modules.module}</strong>
-      </div>
-    );
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          Module: <strong>{module.module}</strong>
+        </div>
+      );
+    }
   }
 };
 
-export default ModuleInfo;
+export default withStyles(style, {withTheme: true})(connect(mapStateToProps)(ModuleInfo));

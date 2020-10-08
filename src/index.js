@@ -1,11 +1,30 @@
 import React from 'react';
+import thunkMiddleware from 'redux-thunk';
 import {render} from 'react-dom';
+import {Provider} from 'react-redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import {sdk, fetchSDK } from "./sdk.js";
 import './assets/index.css';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 
+const rootReducer = combineReducers({
+  sdk: sdk.reducer,
+})
+
+const store = createStore(
+  rootReducer,
+  applyMiddleware(
+    thunkMiddleware,
+  )
+);
+
+store.dispatch(fetchSDK("libraries"));
+
 render((
-  <App/>
+  <Provider store={store}>
+    <App/>
+  </Provider>
 ),document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

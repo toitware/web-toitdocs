@@ -40,7 +40,6 @@ function findAliases(object) {
   iterateObject(object, "", "");
 
   function iterateObject(obj, current_return_path, current_class_name) {
-    console.log(obj);
     try {
       for (var prop in obj) {
         if (prop === "return_path") {
