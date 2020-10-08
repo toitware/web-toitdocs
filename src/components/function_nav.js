@@ -1,5 +1,4 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
-/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
 
 import React from "react";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -70,7 +69,7 @@ function ListFunctions(props) {
 
 const FunctionNav = ({ match }) => {
   const {
-    params: { libName, moduleName, className, functionType, functionName, _ },
+    params: { libName, moduleName, className, functionType, functionName },
   } = match;
   return (
     <div className="sideMenu">
