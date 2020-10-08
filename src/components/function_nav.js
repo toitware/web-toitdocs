@@ -1,5 +1,4 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
-/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
 
 import React, {Component}  from "react";
 import {connect} from "react-redux"
@@ -76,7 +75,7 @@ class FunctionNav extends Component {
 
   render() {
     const {
-      params: { libName, moduleName, className, functionType, functionName, _ },
+      params: { libName, moduleName, className, functionType, functionName },
     } = this.props.match;
     return (
       <div className="sideMenu">

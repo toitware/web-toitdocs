@@ -1,5 +1,4 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
-/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
 
 import React, {Component}  from "react";
 import {connect} from "react-redux"
@@ -17,7 +16,7 @@ function mapStateToProps(state, props) {
 class ClassNav extends Component {
   render() {
     const {
-      params: { libName, moduleName, _ },
+      params: { libName, moduleName },
     } = this.props.match;
     const modules = this.props.libraries
       .find(({ lib_name }) => lib_name === libName)
