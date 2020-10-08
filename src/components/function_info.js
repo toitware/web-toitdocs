@@ -106,8 +106,6 @@ const FunctionInfo = ({ match }) => {
     },
   } = match;
 
-  console.log(match)
-
   if (propsOk) {
     var function_info;
     var empty_function_info = {
