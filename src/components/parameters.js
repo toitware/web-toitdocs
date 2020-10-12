@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React from "react";
 
 function Parameters(props) {
-  if (props.value !== undefined) {
+  if (![undefined, null].includes(props.value)) {
     let styling = [];
     styling[0] = "<b>";
     styling[1] = "</b>";

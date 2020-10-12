@@ -3,7 +3,7 @@
 import Fuse from "fuse.js";
 import data from "../libraries.json";
 
-//Parameters for searching through libraries, modules and classes
+// Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
   shouldSort: false,
   includeMatches: true,
@@ -20,7 +20,7 @@ const optionsBasic = {
   ],
 };
 
-//Parameters for searching through Aliases
+// Parameters for searching through Aliases.
 const foundAliases = findAliases(data.libraries);
 
 const optionsAliases = {
@@ -37,9 +37,10 @@ const optionsAliases = {
 
 function findAliases(object) {
   var found = [];
-  iterateObject(object, "", "");
+  var current_return_path;
+  var current_class_name;
 
-  function iterateObject(obj, current_return_path, current_class_name) {
+  function iterateObject(obj) {
     try {
       for (var prop in obj) {
         if (prop === "return_path") {
@@ -49,35 +50,35 @@ function findAliases(object) {
         }
 
         if (typeof obj[prop] === "object") {
-          iterateObject(obj[prop], current_return_path, current_class_name);
+          iterateObject(obj[prop]);
         } else {
           if ((prop === "title") & (obj[prop] === "Aliases")) {
-            for (var i = 0; i < obj.statements.length; i++) {
-              for (var j = 0; j < obj.statements[i].length; j++) {
-                for (var k = 0; k < obj.statements[i][j].itemized.length; k++) {
-                  for (var l = 0; l < obj.statements[i][j].itemized[k].length; l++) {
-                    var element = obj.statements[i][j].itemized[k][l];
+            obj.statements.map((elem) => {
+              elem.map((eleme) => {
+                eleme.itemized.map((elemen) => {
+                  elemen.map((element) => {
                     if (element.is_code === true) {
                       var tempObj = element;
                       tempObj.path =
                         current_return_path + "/" + current_class_name;
                       found.push(tempObj);
                     }
-                  }
-                }
-              }
-            }
+                  });
+                });
+              });
+            });
           }
         }
       }
     } catch {
-      console.log("ERROR: iterateObject() function failed");
+      return null;
     }
   }
+  iterateObject(object);
   return found;
 }
 
-//Create search modules
+// Create search modules.
 const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
 const fuseBasic = new Fuse([data], optionsBasic, myIndex);
 const fuseAliases = new Fuse(foundAliases, optionsAliases);

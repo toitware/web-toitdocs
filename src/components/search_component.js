@@ -1,13 +1,13 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-//Returns a list of found results
+// Returns a list of found results.
 function printResult(dataObject, result, indexJSON) {
   let output = [];
   try {
-    if (JSON.stringify(result) !== "[]") {
-      result.matches.forEach((elem) => {
+    if (![undefined, null].includes(result.matches)) {
+      result.matches.map((elem) => {
         if (elem.key === "text") {
-          //For Aliases
+          // For Aliases.
           output.push({
             Name: elem.value,
             Type: "alias",
