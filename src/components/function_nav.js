@@ -32,6 +32,23 @@ function AddFunIndexes(props) {
   return output;
 }
 
+function ConditionalLink(props){
+  let restricted_signs = ["/", "%"];
+  if(!restricted_signs.includes(props.elem.function_name)){
+    return (<Link
+      to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${
+       props.categories_found[props.index].charAt(0).toUpperCase() + props.categories_found[props.index].slice(1)
+      }/${props.elem.function_name}/${props.fun_index[props.index]}`}
+    >
+      {props.elem.function_name}
+    </Link>)
+  } else {
+    return (
+      <p>{props.elem.function_name}</p>
+    )
+  }
+}
+
 function ListFunctions(props) {
   var functions_found = [];
   var categories_found = [];
@@ -84,13 +101,14 @@ function ListFunctions(props) {
         <div key={"list_functions"}>
       {functions_found.map((elem, index) => (
         <ListItem key={elem.functionName + "_"+ elem.fun_index}>
-          <Link
+          <ConditionalLink props={props} categories_found={categories_found} fun_index={fun_index} elem={elem} index={index}/>
+          {/* <Link
             to={`/${props.libName}/${props.moduleName}/${props.className}/${
              categories_found[index].charAt(0).toUpperCase() + categories_found[index].slice(1)
             }/${elem.function_name}/${fun_index[index]}`}
           >
             {elem.function_name}
-          </Link>
+          </Link> */}
         </ListItem>
       ))}
     </div>

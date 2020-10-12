@@ -22,7 +22,6 @@ function ReturnType({ returnType, returnPath }) {
 
 function ConditionalLink(props){
   let restricted_signs = ["/", "%"];
-  console.log(props)
   if(!restricted_signs.includes(props.functions.function_name)){
     return (<Link
       to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${props.props.functionType}/${props.functions.function_name}/${props.function_index}`}

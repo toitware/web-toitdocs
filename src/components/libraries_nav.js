@@ -18,6 +18,7 @@ function LibList(props) {
     return( [].concat(props.libraries)
       .sort((a, b) => a.lib_name.localeCompare(b.lib_name))
       .map((libraries, index) => {
+        console.log(libraries.lib_name)
         return (
           <Link
             to={`/${libraries.lib_name}`}
