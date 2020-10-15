@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Created by https://www.toptal.com/developers/gitignore/api/yarn,node,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=yarn,node,react
 
@@ -143,12 +142,3 @@ sketch
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/yarn,node,react
-=======
-node_modules/
-.DS_Store
-src/.DS_Store
-src/libraries_v16.json
-src/libraries_v11.json
-serviceWorker.js
-comments_from_first_pull_request.pdf
->>>>>>> toitdocs-improve
