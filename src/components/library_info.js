@@ -11,7 +11,6 @@ import Paper from "@material-ui/core/Paper";
 import { List } from "@material-ui/core";
 
 const style = (theme) => ({
-  // const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     maxWidth: 300,

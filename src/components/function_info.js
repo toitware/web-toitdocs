@@ -45,7 +45,6 @@ function mapStateToProps(state, props) {
 
 class FunctionInfo extends Component {
   render() {
-    // const classes = useStyles();
     let propsOk = true;
     try {
       [

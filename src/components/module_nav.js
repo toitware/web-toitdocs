@@ -20,7 +20,6 @@ class ModuleNav extends Component {
     const {
       params: { libName },
     } = this.props.match;
-    console.log()
     let library = this.props.libraries.find(({ lib_name }) => lib_name === libName);
     return (
       <div className="sideMenu">
