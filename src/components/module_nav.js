@@ -16,6 +16,7 @@ function mapStateToProps(state, props) {
 //Listing modules for navigation purposes
 class ModuleNav extends Component {
   render() {
+    let already_listed = [];
     const {
       params: { libName },
     } = this.props.match;
@@ -34,10 +35,13 @@ class ModuleNav extends Component {
             </ListSubheader>
           }
         >
-          {[]
+          {
+          []
             .concat(library.lib_modules)
             .sort((a, b) => a.module.localeCompare(b.module))
             .map((lib_modules, index) => {
+              if (!already_listed.includes(lib_modules.module)){
+                already_listed.push(lib_modules.module);
               return (
                 <Link
                   to={`/${libName}/${lib_modules.module}`}
@@ -46,6 +50,8 @@ class ModuleNav extends Component {
                   <ListItem button>{lib_modules.module}</ListItem>
                 </Link>
               );
+            }
+            return null;
             })}
         </List>
       </ErrorBoundary>

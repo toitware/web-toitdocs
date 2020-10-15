@@ -45,15 +45,14 @@ pipeline {
                 }
             }
             environment {
-                WEB_CONSOLE_VERSION = sh(returnStdout: true, script: './tools/version.sh').trim()
+                VERSION = sh(returnStdout: true, script: './tools/version.sh').trim()
             }
             steps {
-                sh 'DEBUG=true ./tools/version.sh'
                 withCredentials([[$class: 'FileBinding', credentialsId: 'gcloud-service-auth', variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
                     sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
                     sh "gcloud config set project infrastructure-220307"
-                    sh "tar -cf ${WEB_CONSOLE_VERSION}.tar -C $CONSOLE_DIR build/"
-                    sh "gsutil cp ${WEB_CONSOLE_VERSION}.tar gs://toit-web/toitdocs/web/build.tar.gz"
+                    sh "tar -cf ${VERSION}.tar -C $CONSOLE_DIR build/"
+                    sh "gsutil cp ${VERSION}.tar gs://toit-web/toitdocs/web/build.tar.gz"
                 }
             }
 

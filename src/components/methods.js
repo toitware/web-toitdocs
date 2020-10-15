@@ -19,13 +19,42 @@ function ReturnType({ returnType, returnPath }) {
   }
 }
 
+
+function ConditionalLink(props){
+  let restricted_signs = ["/", "%"];
+  if(!restricted_signs.includes(props.functions.function_name)){
+    return (<Link
+      to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${props.props.functionType}/${props.functions.function_name}/${props.function_index}`}
+    > 
+      <strong>{`${props.functions.function_name} `}</strong>
+    </Link>)
+  } else {
+    return (
+      <strong>{`${props.functions.function_name} `}</strong>
+    )
+  }
+}
+
 function Methods(props) {
-  if (props.value !== undefined) {
+  console.log(props)
+
+
+  if (props.value !== undefined && props.value !== null) {
+    let found_names = {};
     let iterator = 0;
+    let function_index = 0;
     return []
       .concat(props.value)
       .sort((a, b) => a.function_name.localeCompare(b.function_name))
-      .map((functions, index) => {
+      .map((functions) => {
+        // Give increasing indexes to the functions of the same name.
+        if (found_names["method_" + functions.function_name] !== undefined) {
+          found_names["method_" + functions.function_name]++;
+        } else {
+          found_names["method_" + functions.function_name] = 0;
+        }
+        function_index = found_names["method_" + functions.function_name];
+        // Alternating background.
         iterator++;
         var background;
         if (iterator % 2) {
@@ -34,14 +63,10 @@ function Methods(props) {
           background = "#fafafa";
         }
         return (
-          <div key={`${functions.function_name}_${index}`}>
+          <div key={`${functions.function_name}_${function_index}`}>
             <Box p={1} bgcolor={background} borderRadius={8}>
               <span className="functionName">
-                <Link
-                  to={`/${props.libName}/${props.moduleName}/${props.className}/${props.functionType}/${functions.function_name}/${index}`}
-                >
-                  <strong>{`${functions.function_name} `}</strong>
-                </Link>
+                <ConditionalLink props={props} functions={functions} function_index={function_index}/>
               </span>
               <Parameters value={functions.parameters} />
               <ArrowRightAlt
@@ -67,12 +92,25 @@ function Methods(props) {
 }
 
 function MethodsInModules(props) {
-  if (props.value.module_functions !== undefined) {
+  if (
+    props.value.module_functions !== undefined &&
+    props.value.module_functions !== null
+  ) {
     let iterator = 0;
+    let found_names = {};
+    let function_index = 0;
     return []
       .concat(props.value.module_functions)
       .sort((a, b) => a.function_name.localeCompare(b.function_name))
-      .map((functions, index) => {
+      .map((functions) => {
+        // Give increasing indexes to the functions of the same name.
+        if (found_names["method_" + functions.function_name] !== undefined) {
+          found_names["method_" + functions.function_name]++;
+        } else {
+          found_names["method_" + functions.function_name] = 0;
+        }
+        function_index = found_names["method_" + functions.function_name];
+        // Alternating background.
         iterator++;
         var background;
         if (iterator % 2) {
@@ -80,8 +118,11 @@ function MethodsInModules(props) {
         } else {
           background = "#fafafa";
         }
+
         return (
-          <div key={`${functions.function_name}_${index}`}>
+          <div
+            key={`${functions.function_name}_${function_index}`}
+          >
             <Box p={1} bgcolor={background} borderRadius={8}>
               <span className="functionName">
                 <code>{`${functions.function_name} `}</code>

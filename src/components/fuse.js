@@ -1,9 +1,8 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import Fuse from "fuse.js";
-import data from "../libraries.json";
 
-//Parameters for searching through libraries, modules and classes
+// Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
   shouldSort: false,
   includeMatches: true,
@@ -19,9 +18,6 @@ const optionsBasic = {
     "libraries.lib_modules.module_classes.class_name",
   ],
 };
-
-//Parameters for searching through Aliases
-const foundAliases = findAliases(data.libraries);
 
 const optionsAliases = {
   shouldSort: false,
@@ -77,9 +73,17 @@ function findAliases(object) {
   return found;
 }
 
-//Create search modules
-const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
-const fuseBasic = new Fuse([data], optionsBasic, myIndex);
-const fuseAliases = new Fuse(foundAliases, optionsAliases);
+export default function Component(data) {
+  this.Index = Fuse.createIndex(optionsBasic.keys, [data]);
+  this.Basic = new Fuse([data], optionsBasic, this.Index);
+  this.Aliases = new Fuse(findAliases(data.libraries), optionsAliases);
+}
 
-export { fuseBasic as fuse, fuseAliases, myIndex };
+// export default FuseSetup
+
+// // Create search modules.
+// const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
+// const fuseBasic =
+// const fuseAliases =
+
+// export { fuseBasic as fuse, fuseAliases, myIndex };
