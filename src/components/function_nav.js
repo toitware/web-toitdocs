@@ -13,24 +13,6 @@ function mapStateToProps(state, props) {
   return { version: sdk.version, libraries: sdk.object.libraries, match: props.match }
 };
 
-function AddFunIndexes(props) {
-  let output = [];
-  let found_names = {};
-  if (props !== undefined) {
-    try {
-      props.forEach((fun, index) => {
-        if (found_names["method_" + fun.name] !== undefined) {
-          found_names["method_" + fun.name]++;
-        } else {
-          found_names["method_" + fun.name] = 0;
-        }
-        output[index] = found_names["method_" + fun.name];
-      });
-    } catch {}
-  }
-  return output;
-}
-
 function ConditionalLink(props){
   let restricted_signs = ["/", "%"];
   if(!restricted_signs.includes(props.elem.name)){
