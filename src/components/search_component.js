@@ -5,7 +5,7 @@ function printResult(dataObject, result, indexJSON) {
   let output = [];
   try {
     if (![undefined, null].includes(result.matches)) {
-      result.matches.map((elem) => {
+      result.matches.forEach((elem) => {
         if (elem.key === "text") {
           // For Aliases.
           output.push({

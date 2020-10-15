@@ -52,6 +52,7 @@ class ModuleNav extends Component {
                 </Link>
               );
             }
+            return null;
             })}
         </List>
       </ErrorBoundary>

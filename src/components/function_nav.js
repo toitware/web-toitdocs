@@ -16,16 +16,15 @@ function mapStateToProps(state, props) {
 function AddFunIndexes(props) {
   let output = [];
   let found_names = {};
-  console.log(output);
   if (props !== undefined) {
     try {
-      props.map((fun, index) => {
+      props.forEach((fun, index) => {
         if (found_names["method_" + fun.function_name] !== undefined) {
           found_names["method_" + fun.function_name]++;
         } else {
           found_names["method_" + fun.function_name] = 0;
         }
-        output[index] = found_names["method_" + fun.function_name];      
+        output[index] = found_names["method_" + fun.function_name];
       });
     } catch {}
   }
@@ -66,7 +65,7 @@ function ListFunctions(props) {
   const modules = props.libraries
   .find(({ lib_name }) => lib_name === props.libName)
   .lib_modules.find(({ module }) => module === props.moduleName);
-  
+
   if (modules.module_classes !== undefined) {
     module_classes = modules.module_classes.find(
       (elem) => elem.class_name === props.className
@@ -78,11 +77,11 @@ function ListFunctions(props) {
         ).class_structure;
       }
       class_info = Object.assign(module_classes, export_classes);
-      
-      
+
+
       iterateFunctions(class_info);
       let fun_index = AddFunIndexes(functions_found);
-      
+
       function iterateFunctions(obj) {
         for (var prop in obj) {
           if (categories.includes(prop)) {
@@ -102,13 +101,6 @@ function ListFunctions(props) {
       {functions_found.map((elem, index) => (
         <ListItem key={elem.functionName + "_"+ elem.fun_index}>
           <ConditionalLink props={props} categories_found={categories_found} fun_index={fun_index} elem={elem} index={index}/>
-          {/* <Link
-            to={`/${props.libName}/${props.moduleName}/${props.className}/${
-             categories_found[index].charAt(0).toUpperCase() + categories_found[index].slice(1)
-            }/${elem.function_name}/${fun_index[index]}`}
-          >
-            {elem.function_name}
-          </Link> */}
         </ListItem>
       ))}
     </div>

@@ -11,7 +11,6 @@ import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import { Hidden } from "@material-ui/core";
-import { CompassCalibrationOutlined } from "@material-ui/icons";
 
 function Extends({ extendText, extendURL }) {
   if (

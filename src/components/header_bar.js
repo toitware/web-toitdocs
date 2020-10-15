@@ -8,7 +8,7 @@ import { Grid } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
-import { fuse, fuseAliases, myIndex } from "./fuse.js";
+import Fuse from "./fuse.js";
 import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
@@ -85,6 +85,7 @@ class HeaderBar extends Component {
 
   constructor(props) {
     super();
+    this.fuse = new Fuse(props.object);
     this.state = {
       searchTerm: "",
       results: [],
@@ -104,9 +105,9 @@ class HeaderBar extends Component {
     if (typeof event.target.value === "string") {
       if (event.target.value.length >= 2) {
         //Results of searching through libraries, modules and classes
-        var found = await fuse.search(this.state.searchTerm);
+        var found = await this.fuse.Basic.search(this.state.searchTerm);
         //Results of searching through aliases
-        var found_aliases = await fuseAliases.search(this.state.searchTerm);
+        var found_aliases = await this.fuse.Aliases.search(this.state.searchTerm);
         var combined_results = {
           matches: [],
           refIndex: -1, //refIndex is used for finding the results in output object
@@ -212,7 +213,7 @@ class HeaderBar extends Component {
             }}
           >
             <List style={{ backgroundColor: "grey" }}>
-              {printResult(this.props.object, this.state.results, myIndex).map((item, index) => {
+              {printResult(this.props.object, this.state.results, this.fuse.Index).map((item, index) => {
                 return (
                   <ListItem className="ListItem" button key={"list_item" + index}>
                     <div id="ElementOfList">

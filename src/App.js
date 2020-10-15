@@ -31,10 +31,11 @@ class App extends Component {
     return (
       <ThemeProvider theme={theme}>
         <HashRouter>
-          <ErrorBoundary>
-            <HeaderBar />
-          </ErrorBoundary>
           {this.props.object != null ?
+          <>
+            <ErrorBoundary>
+              <HeaderBar />
+            </ErrorBoundary>
             <Grid
               container
               item
@@ -82,6 +83,7 @@ class App extends Component {
                 SDK version: {this.props.object.sdk_version}
               </Grid>
             </Grid>
+          </>
           :
           <CircularProgress disableShrink />
           }

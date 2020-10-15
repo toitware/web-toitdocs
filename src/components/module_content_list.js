@@ -15,91 +15,99 @@ const styles = (theme) => ({
 });
 
 function PrintClasses(object) {
+  var output = [];
   try {
     let already_listed = [];
-    return [].concat(object.value.module_classes).map((element) => {
+    object.value.module_classes.forEach((element,i) => {
       if (!already_listed.includes(element.class_name)) {
         already_listed.push(element.class_name);
-        return <li key={"class_name_"}> {element.class_name} </li>;
+        output.push(<li key={"class_name_" + i}> {element.class_name} </li>);
       }
     });
   } catch (err) {
     return null;
   }
+  return output
 }
 
 function PrintExpClasses(object) {
+  var output = [];
   try {
     let already_listed = [];
-    return [].concat(object.value.export_classes).map((element, i) => {
+    object.value.export_classes.forEach((element, i) => {
       if (!already_listed.includes(element.class_name)) {
         already_listed.push(element.class_name);
-        return <li key={"exp_class_name" + i}> {element.class_name} </li>;
+        output.push(<li key={"exp_class_name" + i}> {element.class_name} </li>);
       }
     });
   } catch (err) {
     return null;
   }
+  return output;
 }
 
 function PrintGlobFcn(object) {
   var output = [];
   try {
     let already_listed = [];
-    return []
-      .concat(object.value.top_level.module_functions)
-      .map((element, i) => {
-        if (!already_listed.includes(element.class_name)) {
-          return <li key={"glb_fcn_name_" + i}> {element.function_name} </li>;
-        }
-        already_listed.push(element.class_name);
-      });
+    object.value.top_level.module_functions.forEach((element, i) => {
+      if (!already_listed.includes(element.function_name)) {
+        already_listed.push(element.function_name);
+        output.push(<li key={"glb_fcn_name_" + i}> {element.function_name} </li>);
+      }
+    });
   } catch (err) {
     return null;
   }
+  return output;
 }
 
 function PrintGlobVar(object) {
+  var output = [];
   try {
     let already_listed = [];
-    return []
-      .concat(object.value.top_level.module_globals)
-      .map((element, i) => {
-        if (!already_listed.includes(element.class_name)) {
-          return <li key={"glb_var_name_" + i}> {element.global_name} </li>;
-        }
-      });
+    object.value.top_level.module_globals.forEach((element, i) => {
+      if (!already_listed.includes(element.global_name)) {
+        already_listed.push(element.global_name);
+        output.push(<li key={"glb_var_name_" + i}> {element.global_name} </li>);
+      }
+    });
   } catch (err) {
     return null;
   }
+  return output;
 }
 
 function PrintExpVar(object) {
   var output = [];
   try {
     let already_listed = [];
-    output = object.value.top_level.export_globals.forEach((element, i) => {
-      if (!already_listed.includes(element.class_name)) {
-        return <li key={"exp_var_name" + i}> {element.global_name} </li>;
-      }
-    });
-  } catch (err) {
-    output = "";
-  }
-  return output;
-}
-
-function PrintExpFcn(object) {
-  try {
-    let already_listed = [];
-    return [].concat(object.value.top_level.export_functions).map((element) => {
-      if (!already_listed.includes(element.class_name)) {
-        return <li key="exp_fcn_name"> {element.function_name} </li>;
+    object.value.top_level.export_globals.forEach((element, i) => {
+      if (!already_listed.includes(element.global_name)) {
+        already_listed.push(element.global_name);
+        output.push(<li key={"exp_var_name_" + i}> {element.global_name} </li>);
       }
     });
   } catch (err) {
     return null;
   }
+  return output;
+}
+
+function PrintExpFcn(object) {
+  var output = [];
+  try {
+    let already_listed = [];
+    object.value.top_level.export_functions.forEach((element, i) => {
+      if (!already_listed.includes(element.function_name)) {
+        already_listed.push(element.function_name);
+        output.push(<li key={"exp_fcn_name_" + i}> {element.function_name} </li>);
+      }
+    });
+  } catch (err) {
+    return null;
+  }
+  return output
 }
 
 // Right sidebar that lists the content of module.

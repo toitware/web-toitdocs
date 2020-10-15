@@ -1,7 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import Fuse from "fuse.js";
-import data from "../libraries.json";
 
 // Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
@@ -20,9 +19,6 @@ const optionsBasic = {
   ],
 };
 
-// Parameters for searching through Aliases.
-const foundAliases = findAliases(data.libraries);
-
 const optionsAliases = {
   shouldSort: false,
   includeMatches: true,
@@ -37,10 +33,9 @@ const optionsAliases = {
 
 function findAliases(object) {
   var found = [];
-  var current_return_path;
-  var current_class_name;
+  iterateObject(object, "", "");
 
-  function iterateObject(obj) {
+  function iterateObject(obj, current_return_path, current_class_name) {
     try {
       for (var prop in obj) {
         if (prop === "return_path") {
@@ -50,37 +45,45 @@ function findAliases(object) {
         }
 
         if (typeof obj[prop] === "object") {
-          iterateObject(obj[prop]);
+          iterateObject(obj[prop], current_return_path, current_class_name);
         } else {
           if ((prop === "title") & (obj[prop] === "Aliases")) {
-            obj.statements.map((elem) => {
-              elem.map((eleme) => {
-                eleme.itemized.map((elemen) => {
-                  elemen.map((element) => {
+            for (var i = 0; i < obj.statements.length; i++) {
+              for (var j = 0; j < obj.statements[i].length; j++) {
+                for (var k = 0; k < obj.statements[i][j].itemized.length; k++) {
+                  for (var l = 0; l < obj.statements[i][j].itemized[k].length; l++) {
+                    var element = obj.statements[i][j].itemized[k][l];
                     if (element.is_code === true) {
                       var tempObj = element;
                       tempObj.path =
                         current_return_path + "/" + current_class_name;
                       found.push(tempObj);
                     }
-                  });
-                });
-              });
-            });
+                  }
+                }
+              }
+            }
           }
         }
       }
     } catch {
-      return null;
+      console.log("ERROR: iterateObject() function failed");
     }
   }
-  iterateObject(object);
   return found;
 }
 
-// Create search modules.
-const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
-const fuseBasic = new Fuse([data], optionsBasic, myIndex);
-const fuseAliases = new Fuse(foundAliases, optionsAliases);
+export default function Component(data) {
+  this.Index = Fuse.createIndex(optionsBasic.keys, [data]);
+  this.Basic = new Fuse([data], optionsBasic, this.Index);
+  this.Aliases = new Fuse(findAliases(data.libraries), optionsAliases);
+}
 
-export { fuseBasic as fuse, fuseAliases, myIndex };
+// export default FuseSetup
+
+// // Create search modules.
+// const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
+// const fuseBasic =
+// const fuseAliases =
+
+// export { fuseBasic as fuse, fuseAliases, myIndex };

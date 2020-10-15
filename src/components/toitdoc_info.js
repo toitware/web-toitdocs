@@ -24,13 +24,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function StatementsPrint(i, classes) {
-  if ((i.statements !== undefined) & (i.statements !== null)) {
+  if ((i.statements !== undefined) && (i.statements !== null)) {
     i.statements.map((statements, j) => {
-      if ((statements !== undefined) & (statements !== null)) {
-        if (
-          statements.text !== undefined ||
-          statements.itemized !== undefined
-        ) {
+      if ((statements !== undefined) && (statements !== null)) {
+        if (statements.text !== undefined || statements.itemized !== undefined) {
           if (statements.itemized) {
             return (
               <ul key={"statements_list_" + j}>
@@ -192,6 +189,7 @@ function StatementsPrint(i, classes) {
           );
         }
       }
+      return null;
     });
   }
 }
