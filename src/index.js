@@ -19,7 +19,7 @@ const store = createStore(
   )
 );
 
-store.dispatch(fetchSDK("libraries"));
+store.dispatch(fetchSDK("toitdoc"));
 
 render((
   <Provider store={store}>

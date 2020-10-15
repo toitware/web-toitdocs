@@ -19,12 +19,12 @@ function AddFunIndexes(props) {
   if (props !== undefined) {
     try {
       props.forEach((fun, index) => {
-        if (found_names["method_" + fun.function_name] !== undefined) {
-          found_names["method_" + fun.function_name]++;
+        if (found_names["method_" + fun.name] !== undefined) {
+          found_names["method_" + fun.name]++;
         } else {
-          found_names["method_" + fun.function_name] = 0;
+          found_names["method_" + fun.name] = 0;
         }
-        output[index] = found_names["method_" + fun.function_name];
+        output[index] = found_names["method_" + fun.name];
       });
     } catch {}
   }
@@ -33,77 +33,67 @@ function AddFunIndexes(props) {
 
 function ConditionalLink(props){
   let restricted_signs = ["/", "%"];
-  if(!restricted_signs.includes(props.elem.function_name)){
+  if(!restricted_signs.includes(props.elem.name)){
     return (<Link
       to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${
        props.categories_found[props.index].charAt(0).toUpperCase() + props.categories_found[props.index].slice(1)
-      }/${props.elem.function_name}/${props.fun_index[props.index]}`}
+      }/${props.elem.name}/${props.index}`}
     >
-      {props.elem.function_name}
+      {props.elem.name}
     </Link>)
   } else {
     return (
-      <p>{props.elem.function_name}</p>
+      <p>{props.elem.name}</p>
     )
   }
 }
 
 function ListFunctions(props) {
+  const { libName, moduleName, className } = props;
+
   var functions_found = [];
   var categories_found = [];
   var category = "";
   const categories = [
     "statics",
     "factories",
-    "members",
     "methods",
     "constructors",
   ];
-  var class_info;
-  var module_classes = {};
-  var export_classes = {};
-  const modules = props.libraries
-  .find(({ lib_name }) => lib_name === props.libName)
-  .lib_modules.find(({ module }) => module === props.moduleName);
 
-  if (modules.module_classes !== undefined) {
-    module_classes = modules.module_classes.find(
-      (elem) => elem.class_name === props.className
-      ).class_structure;
+  const library = props.libraries.find(({ name }) => name === libName)
+  const module = library ? library.modules.find(({ name }) => name === moduleName) : null
+
+  let class_info = module.module_classes.find(({ name }) => name === className);
+  if (!class_info) {
+    class_info = module.export_classes.find(({ name }) => name === className);
+  }
+
+  iterateFunctions(class_info.structure);
+  // let fun_index = AddFunIndexes(functions_found);
+
+  function iterateFunctions(obj) {
+    for (var prop in obj) {
+      if (categories.includes(prop)) {
+        category = prop;
+      }
+      if (obj[prop].name !== undefined) {
+        functions_found.push(obj[prop]);
+        categories_found.push(category);
+      } else if (typeof obj[prop] === "object") {
+        iterateFunctions(obj[prop]);
+      }
     }
-    if (modules.export_classes !== undefined) {
-      export_classes = modules.export_classes.find(
-        (elem) => elem.class_name === props.className
-        ).class_structure;
-      }
-      class_info = Object.assign(module_classes, export_classes);
+  }
 
-
-      iterateFunctions(class_info);
-      let fun_index = AddFunIndexes(functions_found);
-
-      function iterateFunctions(obj) {
-        for (var prop in obj) {
-          if (categories.includes(prop)) {
-            category = prop;
-          }
-          if (obj[prop].function_name !== undefined) {
-            // obj[prop].category = category;
-            functions_found.push(obj[prop]);
-            categories_found.push(category);
-          } else if (typeof obj[prop] === "object") {
-            iterateFunctions(obj[prop]);
-          }
-        }
-      }
-      return (
-        <div key={"list_functions"}>
-      {functions_found.map((elem, index) => (
-        <ListItem key={elem.functionName + "_"+ elem.fun_index}>
-          <ConditionalLink props={props} categories_found={categories_found} fun_index={fun_index} elem={elem} index={index}/>
-        </ListItem>
-      ))}
-    </div>
+  return (
+      <div key={"list_functions"}>
+    {functions_found.map((fn, index) => (
+      <ListItem key={fn.name + "_" + index}>
+        <ConditionalLink props={props} categories_found={categories_found} elem={fn} index={index}/>
+      </ListItem>
+    ))}
+  </div>
   );
 }
 

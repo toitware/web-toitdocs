@@ -78,11 +78,6 @@ function mapStateToProps(state, props) {
 }
 
 class HeaderBar extends Component {
-  // const [searchTerm, setSearchTerm] = useState("");
-  // const [results, setResults] = useState([]);
-  // const store = useStore();
-  // const classes = headerBarStyling();
-
   constructor(props) {
     super();
     this.fuse = new Fuse(props.object);

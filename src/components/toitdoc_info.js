@@ -197,26 +197,27 @@ function StatementsPrint(i, classes) {
 // Function that prints the content of currently presented element.
 function Toitdocs(props) {
   const classes = useStyles();
-  if (props.value !== undefined) {
-    return props.value.map((i, s) => {
-      return (
-        <div className={classes.root} key={s}>
-          <Grid container>
-            <Grid item>
-              <strong>{i.title}</strong>
-            </Grid>
-          </Grid>
-          <Grid container>
-            <Grid item key={s}>
-              {StatementsPrint(i, classes)}
-            </Grid>
-          </Grid>
-        </div>
-      );
-    });
-  } else {
+  // TODO: rewrite this to work with all the styles.
+  // if (props.value !== undefined) {
+  //   return props.value.map((i, s) => {
+  //     return (
+  //       <div className={classes.root} key={s}>
+  //         <Grid container>
+  //           <Grid item>
+  //             <strong>{i.title}</strong>
+  //           </Grid>
+  //         </Grid>
+  //         <Grid container>
+  //           <Grid item key={s}>
+  //             {StatementsPrint(i, classes)}
+  //           </Grid>
+  //         </Grid>
+  //       </div>
+  //     );
+  //   });
+  // } else {
     return null;
-  }
+  // }
 }
 
 export default Toitdocs;

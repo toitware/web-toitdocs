@@ -18,39 +18,22 @@ function mapStateToProps(state, props) {
 }
 
 function ContentsOfNavbar(props) {
-  let propsOk = true;
-  [
-    props.modules.module_classes,
-    props.libName,
-    props.moduleName,
-    props.modules.module,
-    props.modules.top_level,
-  ].forEach((elem) => {
-    if (elem === undefined || elem === null) {
-      propsOk = false;
-    }
-  });
-
-  if (propsOk) {
-    return (
-      <div>
-        {[].concat(props.modules.module_classes)
-          .sort((a, b) => a.class_name.localeCompare(b.class_name))
-          .map((classinfo, index) => {
-            return (
-              <Link
-                to={`/${props.libName}/${props.moduleName}/${classinfo.class_name}`}
-                key={classinfo.class_name}
-              >
-                <ListItem button>{classinfo.class_name}</ListItem>
-              </Link>
-            );
-          })}
-      </div>
-    )
-  } else {
-    return <div></div>;
-  }
+  return (
+    <div>
+      {[].concat(props.module.module_classes)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((klass, index) => {
+          return (
+            <Link
+              to={`/${props.libName}/${props.moduleName}/${klass.name}`}
+              key={klass.name}
+            >
+              <ListItem button>{klass.name}</ListItem>
+            </Link>
+          );
+        })}
+    </div>
+  )
 }
 
 class ClassNav extends Component {
@@ -58,11 +41,10 @@ class ClassNav extends Component {
     const {
       params: { libName, moduleName },
     } = this.props.match;
-    const modules = this.props.libraries
-      .find(({ lib_name }) => lib_name === libName)
-      .lib_modules.find(({ module }) => module === moduleName);
+    const library = this.props.libraries.find(({ name }) => name === libName)
+    const module = library ? library.modules.find(({ name }) => name === moduleName) : null
 
-    if (modules !== undefined) {
+    if (module) {
       return (
         <div className="sideMenu">
           <ErrorBoundary>
@@ -81,7 +63,7 @@ class ClassNav extends Component {
             >
               {" "}
               <ContentsOfNavbar
-                modules={modules}
+                module={module}
                 libName={libName}
                 moduleName={moduleName}
               />

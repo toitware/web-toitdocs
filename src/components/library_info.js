@@ -34,8 +34,8 @@ class ListLibraryModules extends Component {
   render() {
     return (
       <List>
-        {this.props.library.lib_modules.map((element, i) => (
-          <li key={"lib_module_name" + i}> {element.module} </li>
+        {this.props.library.modules.map((element, i) => (
+          <li key={"librarY-module" + i}> {element.name} </li>
         ))}
       </List>
     );
@@ -44,70 +44,43 @@ class ListLibraryModules extends Component {
 
 class LibraryInfo extends Component {
   render() {
-    let propsOk = true;
-    [
-      this.props.libraries,
-      this.props.match.params.libName,
-      this.props.classes,
-    ].forEach((elem) => {
-      if (elem === undefined || elem === null) {
-        propsOk = false;
-      }
-    });
-
-    if (propsOk) {
-      const {
-        params: { libName },
-      } = this.props.match;
-      const classes = this.props.classes;
-      const library = this.props.libraries.find(
-        ({ lib_name }) => lib_name === libName
+    const {
+      params: { libName },
+    } = this.props.match;
+    const classes = this.props.classes;
+    const library = this.props.libraries.find(
+      ({ name }) => name === libName
+    );
+    if (library && library.modules !== undefined) {
+      return (
+        <Grid container>
+          <Grid item xs={9}>
+            <Box pt={2} pb={2}>
+              <Typography component="h1" variant="h1">
+                Library: {library.name}
+              </Typography>
+            </Box>
+            <Box pt={2} pb={2}>
+              <Box pt={1} pb={1}>
+                <Typography component="h2" variant="h2">
+                  Modules
+                </Typography>
+              </Box>
+              <Paper variant="outlined" className={classes.paper}>
+                <ListLibraryModules library={library} />
+              </Paper>
+            </Box>
+          </Grid>
+        </Grid>
       );
-
-      if ("lib_modules" in library && library.lib_modules !== undefined) {
-        return (
-          <Grid container>
-            <Grid item xs={9}>
-              <Box pt={2} pb={2}>
-                <Typography component="h1" variant="h1">
-                  Library: {library.lib_name}
-                </Typography>
-              </Box>
-              <Box pt={2} pb={2}>
-                <Box pt={1} pb={1}>
-                  <Typography component="h2" variant="h2">
-                    Modules
-                  </Typography>
-                </Box>
-                <Paper variant="outlined" className={classes.paper}>
-                  <ListLibraryModules library={library} />
-                </Paper>
-              </Box>
-            </Grid>
-          </Grid>
-        );
-      } else {
-        return (
-          <Grid containerclassName={classes.root}>
-            <Grid item xs={9}>
-              <Box pt={2} pb={2}>
-                <Typography component="h1" variant="h1">
-                  ERROR:
-                  <p>Library: {libName} not found</p>
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        );
-      }
     } else {
       return (
-        <Grid containerclassName={this.props.classes.root}>
+        <Grid containerclassName={classes.root}>
           <Grid item xs={9}>
             <Box pt={2} pb={2}>
               <Typography component="h1" variant="h1">
                 ERROR:
-                <p>Library not found</p>
+                <p>Library: {libName} not found</p>
               </Typography>
             </Box>
           </Grid>

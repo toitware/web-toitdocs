@@ -59,69 +59,59 @@ function searchInFuseResults(dataObject, item, indexJSON) {
 function searchInLib(dataObject, which_key, name_to_find) {
   let results = [];
   switch (which_key) {
-    case 0: //libraries.lib_name
+    case 0: //libraries.name
       for (let lib_i = 0; lib_i < dataObject.libraries.length; lib_i++) {
-        if (name_to_find === dataObject.libraries[lib_i].lib_name) {
-          results.push(dataObject.libraries[lib_i].lib_name);
+        if (name_to_find === dataObject.libraries[lib_i].name) {
+          results.push(dataObject.libraries[lib_i].name);
         }
       }
       break;
-    case 1: //libraries.lib_modules.module
+    case 1: //libraries.modules.name
       for (let lib_i = 0; lib_i < dataObject.libraries.length; lib_i++) {
         for (
           let lib_module_i = 0;
-          lib_module_i < dataObject.libraries[lib_i].lib_modules.length;
+          lib_module_i < dataObject.libraries[lib_i].modules.length;
           lib_module_i++
         ) {
-          if (
-            name_to_find ===
-            dataObject.libraries[lib_i].lib_modules[lib_module_i].module
-          ) {
+          if (name_to_find === dataObject.libraries[lib_i].modules[lib_module_i].name) {
             results.push(
-              dataObject.libraries[lib_i].lib_name +
+              dataObject.libraries[lib_i].name +
                 "/" +
-                dataObject.libraries[lib_i].lib_modules[lib_module_i].module
+                dataObject.libraries[lib_i].modules[lib_module_i].name
             );
           }
         }
       }
       break;
-    case 2: //libraries.lib_modules.module_classes.class_name
+    case 2: //libraries.modules.module_classes.name
       for (let lib_i = 0; lib_i < dataObject.libraries.length; lib_i++) {
         try {
           for (
             let lib_module_i = 0;
-            lib_module_i < dataObject.libraries[lib_i].lib_modules.length;
+            lib_module_i < dataObject.libraries[lib_i].modules.length;
             lib_module_i++
           ) {
-            if (
-              "module_classes" in
-              dataObject.libraries[lib_i].lib_modules[lib_module_i]
+            for (
+              let module_class_i = 0;
+              module_class_i <
+              dataObject.libraries[lib_i].modules[lib_module_i].module_classes
+                .length;
+              module_class_i++
             ) {
-              for (
-                let module_class_i = 0;
-                module_class_i <
-                dataObject.libraries[lib_i].lib_modules[lib_module_i].module_classes
-                  .length;
-                module_class_i++
+              if (
+                name_to_find ===
+                dataObject.libraries[lib_i].modules[lib_module_i]
+                  .module_classes[module_class_i].name
               ) {
-                if (
-                  name_to_find ===
-                  dataObject.libraries[lib_i].lib_modules[lib_module_i]
-                    .module_classes[module_class_i].class_name
-                ) {
-                  results.push(
-                    dataObject.libraries[lib_i].lib_name +
-                      "/" +
-                      dataObject.libraries[lib_i].lib_modules[lib_module_i].module +
-                      "/" +
-                      dataObject.libraries[lib_i].lib_modules[lib_module_i]
-                        .module_classes[module_class_i].class_name
-                  );
-                }
+                results.push(
+                  dataObject.libraries[lib_i].name +
+                    "/" +
+                    dataObject.libraries[lib_i].modules[lib_module_i].name +
+                    "/" +
+                    dataObject.libraries[lib_i].modules[lib_module_i]
+                      .module_classes[module_class_i].name
+                );
               }
-            } else {
-              //nothing
             }
           }
         } catch (err) {

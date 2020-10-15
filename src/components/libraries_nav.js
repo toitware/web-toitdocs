@@ -14,24 +14,18 @@ function mapStateToProps(state, props) {
 }
 
 function LibList(props) {
-  if (props.libraries !== undefined && props.libraries !== null) {
-    return( [].concat(props.libraries)
-      .sort((a, b) => a.lib_name.localeCompare(b.lib_name))
-      .map((libraries, index) => {
-        console.log(libraries.lib_name)
-        return (
-          <Link
-            to={`/${libraries.lib_name}`}
-            key={`${index}_${libraries.lib_name}`}
-          >
-            <ListItem button>{libraries.lib_name}</ListItem>
-          </Link>
-        );
-      })
-    )} else {
-    console.log("function LibrariesNav(): No libraries found");
-    return <div id="libraries_found"></div>;
-  }
+  return ([].concat(props.libraries)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((library, index) => {
+      return (
+        <Link
+          to={`/${library.name}`}
+          key={`${index}_${library.name}`}
+        >
+          <ListItem button>{library.name}</ListItem>
+        </Link>
+      );
+    }))
 }
 //Listing the libraries for navigation purposes
 class LibrariesNav extends Component {

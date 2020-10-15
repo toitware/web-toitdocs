@@ -1,6 +1,14 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import Fuse from "fuse.js";
+import {
+  TYPE_FUNCTION,
+  TYPE_CLASS,
+  TYPE_SECTION,
+  TYPE_STATEMENT_ITEMIZED,
+  TYPE_TOITDOCREF,
+  TYPE_STATEMENT_CODE,
+} from "./../sdk.js";
 
 // Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
@@ -13,9 +21,9 @@ const optionsBasic = {
   maxPatternLength: 32,
   minMatchCharLength: 2,
   keys: [
-    "libraries.lib_name",
-    "libraries.lib_modules.module",
-    "libraries.lib_modules.module_classes.class_name",
+    "libraries.name",
+    "libraries.modules.name",
+    "libraries.modules.module_classes.name",
   ],
 };
 
@@ -31,43 +39,59 @@ const optionsAliases = {
   keys: ["text"],
 };
 
+const object_properties = [
+  "toitdoc",
+  "modules",
+  "module_classes",
+  "export_classes",
+  "module_functions",
+  "export_functions",
+  "module_globals",
+  "export_globals",
+  "structure",
+  "statics",
+  "constructors",
+  "factories",
+  "fields",
+  "methods",
+  "parameters",
+  "expressions",
+];
+
 function findAliases(object) {
   var found = [];
   iterateObject(object, "", "");
 
   function iterateObject(obj, current_return_path, current_class_name) {
     try {
-      for (var prop in obj) {
-        if (prop === "return_path") {
-          current_return_path = obj[prop];
-        } else if (prop === "class_name") {
-          current_class_name = obj[prop];
+      // TODO run though through this in a more structured way
+      if (obj instanceof Array) {
+        obj.forEach((obj) => { iterateObject(obj, current_return_path, current_class_name)});
+      } else if (obj instanceof Object && obj["object_type"]) {
+        if (obj["object_type"] === TYPE_FUNCTION && obj["return_type_path"]) {
+          current_return_path = obj["return_type_path"];
+        } else if (obj["object_Type"] === TYPE_CLASS) {
+          current_class_name = obj["name"];
         }
-
-        if (typeof obj[prop] === "object") {
+        object_properties.forEach((prop) => {
           iterateObject(obj[prop], current_return_path, current_class_name);
-        } else {
-          if ((prop === "title") & (obj[prop] === "Aliases")) {
-            for (var i = 0; i < obj.statements.length; i++) {
-              for (var j = 0; j < obj.statements[i].length; j++) {
-                for (var k = 0; k < obj.statements[i][j].itemized.length; k++) {
-                  for (var l = 0; l < obj.statements[i][j].itemized[k].length; l++) {
-                    var element = obj.statements[i][j].itemized[k][l];
-                    if (element.is_code === true) {
-                      var tempObj = element;
-                      tempObj.path =
-                        current_return_path + "/" + current_class_name;
-                      found.push(tempObj);
-                    }
-                  }
+        });
+        if (obj["object_type"] === TYPE_SECTION && obj["title"] === "Aliases") {
+          obj.statements.forEach((obj) => {
+            if (obj["object_type"] === TYPE_STATEMENT_ITEMIZED) {
+              obj.items.forEach((obj) => {
+                if (obj["object_type"] === TYPE_TOITDOCREF || obj["object_type"] === TYPE_STATEMENT_CODE) {
+                  // TODO: need to copy the object before it must be manipulated.
+                  obj.path = current_return_path + "/" + current_class_name;
+                  found.push(obj);
                 }
-              }
+              })
             }
-          }
+          })
         }
       }
-    } catch {
-      console.log("ERROR: iterateObject() function failed");
+    } catch (e) {
+      console.log("ERROR: iterateObject() function failed", e);
     }
   }
   return found;
@@ -78,12 +102,3 @@ export default function Component(data) {
   this.Basic = new Fuse([data], optionsBasic, this.Index);
   this.Aliases = new Fuse(findAliases(data.libraries), optionsAliases);
 }
-
-// export default FuseSetup
-
-// // Create search modules.
-// const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
-// const fuseBasic =
-// const fuseAliases =
-
-// export { fuseBasic as fuse, fuseAliases, myIndex };

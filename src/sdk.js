@@ -35,3 +35,19 @@ export const sdk = createSlice({
 });
 
 export const selector = state => state.sdk
+
+export const TYPE_SECTION = "section";
+export const TYPE_STATEMENT_CODE_SECTION = "statement_code_section";
+export const TYPE_STATEMENT_ITEMIZED = "statement_itemized";
+export const TYPE_STATEMENT_ITEM = "statement_item";
+export const TYPE_STATEMENT_PARAGRAPH = "statement_paragraph";
+export const TYPE_STATEMENT_CODE = "statement_code";
+export const TYPE_STATEMENT_TEXT = "statement_text";
+export const TYPE_TOITDOCREF = "toitdocref";
+export const TYPE_FUNCTION = "function";
+export const TYPE_PARAMETER = "parameter";
+export const TYPE_FIELD = "field";
+export const TYPE_CLASS = "class";
+export const TYPE_MODULE = "module";
+export const TYPE_GLOBAL = "global";
+export const TYPE_LIBRARY = "library";

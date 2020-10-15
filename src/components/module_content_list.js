@@ -14,100 +14,14 @@ const styles = (theme) => ({
   },
 });
 
-function PrintClasses(object) {
-  var output = [];
-  try {
-    let already_listed = [];
-    object.value.module_classes.forEach((element,i) => {
-      if (!already_listed.includes(element.class_name)) {
-        already_listed.push(element.class_name);
-        output.push(<li key={"class_name_" + i}> {element.class_name} </li>);
-      }
-    });
-  } catch (err) {
-    return null;
-  }
-  return output
-}
-
-function PrintExpClasses(object) {
-  var output = [];
-  try {
-    let already_listed = [];
-    object.value.export_classes.forEach((element, i) => {
-      if (!already_listed.includes(element.class_name)) {
-        already_listed.push(element.class_name);
-        output.push(<li key={"exp_class_name" + i}> {element.class_name} </li>);
-      }
-    });
-  } catch (err) {
-    return null;
-  }
-  return output;
-}
-
-function PrintGlobFcn(object) {
-  var output = [];
-  try {
-    let already_listed = [];
-    object.value.top_level.module_functions.forEach((element, i) => {
-      if (!already_listed.includes(element.function_name)) {
-        already_listed.push(element.function_name);
-        output.push(<li key={"glb_fcn_name_" + i}> {element.function_name} </li>);
-      }
-    });
-  } catch (err) {
-    return null;
-  }
-  return output;
-}
-
-function PrintGlobVar(object) {
-  var output = [];
-  try {
-    let already_listed = [];
-    object.value.top_level.module_globals.forEach((element, i) => {
-      if (!already_listed.includes(element.global_name)) {
-        already_listed.push(element.global_name);
-        output.push(<li key={"glb_var_name_" + i}> {element.global_name} </li>);
-      }
-    });
-  } catch (err) {
-    return null;
-  }
-  return output;
-}
-
-function PrintExpVar(object) {
-  var output = [];
-  try {
-    let already_listed = [];
-    object.value.top_level.export_globals.forEach((element, i) => {
-      if (!already_listed.includes(element.global_name)) {
-        already_listed.push(element.global_name);
-        output.push(<li key={"exp_var_name_" + i}> {element.global_name} </li>);
-      }
-    });
-  } catch (err) {
-    return null;
-  }
-  return output;
-}
-
-function PrintExpFcn(object) {
-  var output = [];
-  try {
-    let already_listed = [];
-    object.value.top_level.export_functions.forEach((element, i) => {
-      if (!already_listed.includes(element.function_name)) {
-        already_listed.push(element.function_name);
-        output.push(<li key={"exp_fcn_name_" + i}> {element.function_name} </li>);
-      }
-    });
-  } catch (err) {
-    return null;
-  }
-  return output
+function List(objects, key_group) {
+  return (
+    <ul>
+      {objects.map((element,i) => {
+        return (<li key={"list_" + key_group + i}> {element.name} </li>);
+      })}
+    </ul>
+  );
 }
 
 // Right sidebar that lists the content of module.
@@ -123,22 +37,22 @@ class ModuleContentList extends React.Component {
     return (
       <div>
         <h4>Classes</h4>
-        <ul>{PrintClasses(this.props)}</ul>
+        {List(this.props.value.module_classes, "module_classes")}
 
         <h4>Exported Classes</h4>
-        <ul>{PrintExpClasses(this.props)}</ul>
+        {List(this.props.value.export_classes, "export_classes")}
 
         <h4>Variables</h4>
-        <ul>{PrintGlobVar(this.props)}</ul>
+        {List(this.props.value.module_globals, "module_globals")}
 
-        <h4>Functions</h4>
-        <ul>{PrintGlobFcn(this.props)}</ul>
+        <h4>Function</h4>
+        {List(this.props.value.module_functions, "module_functions")}
 
         <h4>Export variables</h4>
-        <ul>{PrintExpVar(this.props)}</ul>
+        {List(this.props.value.export_globals, "export_globals")}
 
-        <h4>Export functions</h4>
-        <ul>{PrintExpFcn(this.props)}</ul>
+        <h4>Export function</h4>
+        {List(this.props.value.export_functions, "export_functions")}
       </div>
     );
   }
