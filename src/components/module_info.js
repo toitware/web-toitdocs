@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { Hidden } from "@material-ui/core";
+import { librarySegmentsToName, getLibrary } from "../sdk";
 
 const style = (theme) => ({
   root: {
@@ -50,21 +51,14 @@ function GlobalFunctions(props) {
     );
 }
 
-function importPath(libName, module) {
-  var path = "";
-  try {
-    if (libName === module.name.substring(0, module.name.indexOf("."))) {
-      path = module.name.substring(0, module.name.indexOf("."));
-    } else {
-      path =
-        libName +
-        "." +
-        module.name.substring(0, module.module.indexOf("."));
-    }
-  } catch (err) {
-    console.log("function importPath(): path not found", err);
+function importPath(library, module) {
+  const filename = module.name.substring(0, module.name.indexOf("."));
+  console.log("importPath", library, module);
+  const libraryName = librarySegmentsToName(library.path);
+  if (library.name === filename) {
+    return libraryName;
   }
-  return path;
+  return libraryName + "." + filename;
 }
 
 function mapStateToProps(state, props) {
@@ -101,11 +95,9 @@ function PrintClasses(props) {
 
 class ModuleInfo extends Component {
   render() {
-    const {
-      params: { libName, moduleName },
-    } = this.props.match;
-    const library = this.props.libraries.find(({ name }) => name === libName)
-    const module = library ? library.modules.find(({ name }) => name === moduleName) : null
+    const { params: { libName, moduleName } } = this.props.match;
+    const library = getLibrary(this.props.libraries, libName);
+    const module = library && library.modules[moduleName];
     const classes = this.props.classes;
     if (module) {
       return (
@@ -123,10 +115,10 @@ class ModuleInfo extends Component {
                   variant="outlined"
                   className={classes.paper}
                 >
-                  <strong>import</strong> {importPath(libName, module)}
+                  <strong>import</strong> {importPath(library, module)}
                 </Paper>
               </Grid>
-              {module.module_classes.length > 0 &&
+              {module.classes.length > 0 &&
                 <Box pt={2} pb={2}>
                   <Box pt={1} pb={1}>
                     <Typography component="h2" variant="h2">
@@ -134,7 +126,7 @@ class ModuleInfo extends Component {
                     </Typography>
                   </Box>
                   <PrintClasses
-                    module={module.module_classes}
+                    module={module.classes}
                     libName={libName}
                     moduleName={moduleName}
                   />
@@ -154,17 +146,8 @@ class ModuleInfo extends Component {
                   />
                 </Box>
               }
-              {module.top_level &&
-                <Paper
-                elevation={0}
-                variant="outlined"
-                className={classes.paper}
-              >
-                <strong>import</strong> {importPath(libName, module)}
-              </Paper>
-              }
-              <Globals globals={module.module_globals} />
-              <GlobalFunctions functions={module.module_functions} />
+              <Globals globals={module.globals} />
+              <GlobalFunctions functions={module.functions} />
               <Typography component="h2" variant="h2">
                 Exports
               </Typography>

@@ -23,7 +23,7 @@ const optionsBasic = {
   keys: [
     "libraries.name",
     "libraries.modules.name",
-    "libraries.modules.module_classes.name",
+    "libraries.modules.classes.name",
   ],
 };
 
@@ -42,11 +42,11 @@ const optionsAliases = {
 const object_properties = [
   "toitdoc",
   "modules",
-  "module_classes",
+  "classes",
   "export_classes",
-  "module_functions",
+  "functions",
   "export_functions",
-  "module_globals",
+  "globals",
   "export_globals",
   "structure",
   "statics",

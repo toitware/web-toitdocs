@@ -10,23 +10,11 @@ import Typography from "@material-ui/core/Typography";
 // import Grid from "@material-ui/core/Grid";
 // import Typography from "@material-ui/core/Typography";
 // import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import { ArrowRightAlt } from "@material-ui/icons";
 import Toitdocs from "./toitdoc_info";
 import { Parameters } from "./parameters";
-
-function ReturnType({ returnType, returnPath }) {
-  if (returnType !== "none" && returnType !== "any") {
-    return (
-      <span>
-        <Link to={`/${returnPath}/${returnType}`}>{returnType}</Link>
-      </span>
-    );
-  } else {
-    return <span>{returnType}</span>;
-  }
-}
+import Type from "./type.js"
 
 const style = (theme) => ({
   root: {
@@ -62,7 +50,7 @@ class FunctionInfo extends Component {
     const library = this.props.libraries.find(({ name }) => name === libName)
     const module = library ? library.modules.find(({ name }) => name === moduleName) : null
 
-    let class_info = module.module_classes.find(({ name }) => name === className);
+    let class_info = module.classes.find(({ name }) => name === className);
     if (!class_info) {
       class_info = module.export_classes.find(({ name }) => name === className);
     }
@@ -95,7 +83,7 @@ class FunctionInfo extends Component {
       } catch {
         return null;
       }
-      page_title = "Function name: " + functionName;
+      page_title = "Static name: " + functionName;
     }
 
     if (function_info) {
@@ -118,12 +106,7 @@ class FunctionInfo extends Component {
                     display: "inline-flex",
                   }}
                 />
-                <span>
-                  <ReturnType
-                    returnType={function_info.return_type}
-                    returnPath={function_info.return_type_path}
-                  />
-                </span>
+                <Type type={function_info.return_type}></Type>
               </Box>
               <Box>
                 <Toitdocs value={function_info.toitdoc} />
@@ -140,13 +123,6 @@ class FunctionInfo extends Component {
               <Typography variant="h1" component="h1">
                 ERROR: {functionName} function info not found
               </Typography>
-              {/* <ListFunctions
-              libName={libName}
-              moduleName={moduleName}
-              className={className}
-              functionType={functionType}
-              functionName={functionName}
-              /> */}
             </Grid>
           </Grid>
         </div>

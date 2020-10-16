@@ -46,7 +46,7 @@ function ListFunctions(props) {
   const library = props.libraries.find(({ name }) => name === libName)
   const module = library ? library.modules.find(({ name }) => name === moduleName) : null
 
-  let class_info = module.module_classes.find(({ name }) => name === className);
+  let class_info = module.classes.find(({ name }) => name === className);
   if (!class_info) {
     class_info = module.export_classes.find(({ name }) => name === className);
   }

@@ -5,8 +5,9 @@ import { connect } from "react-redux";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { Link } from "react-router-dom";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ErrorBoundary from "./error_page";
+import { getLibrary, librarySegmentsToName } from "../sdk";
+import ListItemLink from "./list_item_link";
 
 function mapStateToProps(state, props) {
   const { sdk } = state;
@@ -17,34 +18,19 @@ function mapStateToProps(state, props) {
   };
 }
 
-function ContentsOfNavbar(props) {
-  return (
-    <div>
-      {[].concat(props.module.module_classes)
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((klass, index) => {
-          return (
-            <Link
-              to={`/${props.libName}/${props.moduleName}/${klass.name}`}
-              key={klass.name}
-            >
-              <ListItem button>{klass.name}</ListItem>
-            </Link>
-          );
-        })}
-    </div>
-  )
-}
-
 class ClassNav extends Component {
   render() {
     const {
       params: { libName, moduleName },
     } = this.props.match;
-    const library = this.props.libraries.find(({ name }) => name === libName)
-    const module = library ? library.modules.find(({ name }) => name === moduleName) : null
+
+    const library = getLibrary(this.props.libraries, libName);
+    const module = library && library.modules[moduleName];
 
     if (module) {
+      const libraryName = librarySegmentsToName(library.path);
+      const classes = [].concat(module.classes).sort((a, b) => a.name.localeCompare(b.name));
+
       return (
         <div className="sideMenu">
           <ErrorBoundary>
@@ -55,18 +41,16 @@ class ClassNav extends Component {
                 <ListSubheader component="div" id="nested-list-subheader">
                   <Link to={`/`}>modules</Link>
                   {" / "}
-                  <Link to={`/${libName}`}>{libName}</Link>
+                  <Link to={`/${libraryName}`}>{libraryName}</Link>
                   {" / "}
-                  <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
+                  <Link to={`/${libraryName}/${moduleName}`}>{moduleName}</Link>
                 </ListSubheader>
               }
             >
               {" "}
-              <ContentsOfNavbar
-                module={module}
-                libName={libName}
-                moduleName={moduleName}
-              />
+              {classes.map((klass, index) =>
+                <ListItemLink to={`/${libraryName}/${module.name}/${klass.name}`} key={"class-index-"+index} primary={klass.name} />
+              )}
             </List>
           </ErrorBoundary>
         </div>

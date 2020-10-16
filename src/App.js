@@ -44,7 +44,7 @@ class App extends Component {
             >
               <Grid item xs={12} sm={2}>
                 <Route exact path="/" component={LibrariesNav} />
-                <Route exact path="/:libName" component={ModuleNav} />
+                <Route exact path="/:libName" component={LibrariesNav} />
                 <Route exact path="/:libName/:moduleName" component={ModuleNav} />
                 <Route
                   exact

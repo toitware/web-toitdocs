@@ -37,16 +37,16 @@ class ModuleContentList extends React.Component {
     return (
       <div>
         <h4>Classes</h4>
-        {List(this.props.value.module_classes, "module_classes")}
+        {List(this.props.value.classes, "classes")}
 
         <h4>Exported Classes</h4>
         {List(this.props.value.export_classes, "export_classes")}
 
         <h4>Variables</h4>
-        {List(this.props.value.module_globals, "module_globals")}
+        {List(this.props.value.globals, "globals")}
 
         <h4>Function</h4>
-        {List(this.props.value.module_functions, "module_functions")}
+        {List(this.props.value.functions, "functions")}
 
         <h4>Export variables</h4>
         {List(this.props.value.export_globals, "export_globals")}

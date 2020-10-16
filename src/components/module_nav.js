@@ -2,11 +2,12 @@
 
 import React, {Component}  from "react";
 import {connect} from "react-redux"
+import { Link } from 'react-router-dom';
 import ListSubheader from "@material-ui/core/ListSubheader";
-import { Link } from "react-router-dom";
+import ListItemLink from "./list_item_link.js";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ErrorBoundary from "./error_page";
+import { getLibrary, librarySegmentsToName } from "../sdk.js";
 
 function mapStateToProps(state, props) {
   const { sdk } = state
@@ -15,17 +16,21 @@ function mapStateToProps(state, props) {
 
 //Listing modules for navigation purposes
 class ModuleNav extends Component {
+
+  renderModule(libraryName, module) {
+    return <ListItemLink to={`/${libraryName}/${module.name}`} key={`/${libraryName}/${module.name}`} primary={module.name} />
+  }
+
   render() {
-    let already_listed = [];
-    const {
-      params: { libName },
-    } = this.props.match;
-    let library = this.props.libraries.find(({ name }) => name === libName);
+    const { params: { libName } } = this.props.match;
+
+    const library = getLibrary(this.props.libraries, libName);
+    const moduleNames = Object.keys(library.modules).sort();
+    const libraryName = librarySegmentsToName(library.path);
 
     return (
       <div className="sideMenu">
         <ErrorBoundary>
-        {library && library.modules &&
           <List
             component="nav"
             disablePadding
@@ -33,32 +38,12 @@ class ModuleNav extends Component {
               <ListSubheader component="div" id="nested-list-subheader">
                 <Link to={`/`}>modules</Link>
                 {" / "}
-                {libName}
+                {libraryName}
               </ListSubheader>
             }
           >
-            {
-              [].concat(library.modules)
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((module, index) => {
-                  // TODO: already_listed should not be nessesary
-                  if (!already_listed.includes(module.name)){
-                    already_listed.push(module.module);
-                    return (
-                      <Link
-                        to={`/${libName}/${module.name}`}
-                        key={module.name+"-"+index}
-                      >
-                        <ListItem button>{module.name}</ListItem>
-                      </Link>
-                    );
-                  } else {
-                    return null;
-                  }
-              })
-            }
+            {moduleNames.map((moduleName) => this.renderModule(libraryName, library.modules[moduleName]))}
           </List>
-        }
       </ErrorBoundary>
       </div>
     );

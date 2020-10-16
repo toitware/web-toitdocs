@@ -51,3 +51,31 @@ export const TYPE_CLASS = "class";
 export const TYPE_MODULE = "module";
 export const TYPE_GLOBAL = "global";
 export const TYPE_LIBRARY = "library";
+
+export const rootLibrary = "lib";
+
+export function getLibrary(libraries, libraryName) {
+    try {
+        let library = libraries[rootLibrary];
+        if (libraryName) {
+            const segments = libraryNameToSegments(libraryName);
+            segments.forEach((name) => library = library.libraries[name]);
+        }
+        return library;
+    } catch (e) {
+        console.log("failed to find library: ", libraryName, e);
+        return null;
+    }
+}
+
+export function librarySegmentsToName(segments) {
+    return segments.join(".")
+}
+
+export function libraryNameToSegments(name) {
+    let segments = name.split(".");
+    if (segments.length > 0 && rootLibrary === segments[0]) {
+        segments.shift();
+    }
+    return segments;
+}

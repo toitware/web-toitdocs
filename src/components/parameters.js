@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import React from "react";
+import Type from "./type";
 
 function Parameters(props) {
   let styling = [];
@@ -22,7 +22,8 @@ function Parameters(props) {
       return param;
     }
 
-    if (parameter.type !== "none" && parameter.type !== "any") {
+    if (!parameter.type.is_none && parameter.type.is_any) {
+      // TODO: Handle type reference better
       return (
         <span key={i}>
           <span style={parameter.is_named === true ? { color: "blue" } : {}}>
@@ -35,9 +36,8 @@ function Parameters(props) {
             >
               {param}
               {"/"}
-              <Link to={`/${parameter.type_path}/${parameter.type}`}>
-                {parameter.type}
-              </Link>{" "}
+              <Type type={parameter.type} />
+              {" "}
             </span>
           </span>
         </span>
@@ -47,7 +47,7 @@ function Parameters(props) {
         <span key={i} style={{ color: "#303030" }}>
           {param}
           {"/"}
-          {parameter.type}{" "}
+          <Type type={parameter.type} />
         </span>
       );
     }

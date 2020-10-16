@@ -11,15 +11,15 @@ import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import { Hidden } from "@material-ui/core";
+import { getLibrary } from "../sdk";
 
-function Extends({ text, url }) {
-  if (text && url) {
-    return (
-      <div>
-        <Link to={`/${url}/${text}`}> extends {text}</Link>
-      </div>
-    );
-  }
+function Extends({ reference }) {
+  // TODO: Create a reference resolver that can resolve with the idname
+  return (
+    <div>
+      <Link to={`/#todo`}> extends {reference.name}</Link>
+    </div>
+  );
 }
 
 function Constructors(props) {
@@ -29,7 +29,7 @@ function Constructors(props) {
         Constructors:
       </Typography>
       <Methods
-        value={props.value}
+        value={props.constructors}
         libName={props.libName}
         moduleName={props.moduleName}
         className={props.className}
@@ -141,18 +141,16 @@ class ClassInfo extends Component {
 
   render() {
     const classes = this.props.classes;
-    const {
-      params: { libName, moduleName, className },
-    } = this.props.match;
+    const { params: { libName, moduleName, className } } = this.props.match;
 
-    const library = this.props.libraries.find(({ name }) => name === libName)
-    const module = library ? library.modules.find(({ name }) => name === moduleName) : null
+    const library = getLibrary(this.props.libraries, libName);
+    const module = library && library.modules[moduleName];
 
     if (!module) {
       return this.notFound(className);
     }
 
-    let class_info = module.module_classes.find(({ name }) => name === className);
+    let class_info = module.classes.find(({ name }) => name === className);
     if (!class_info) {
       class_info = module.export_classes.find(({ name }) => name === className);
     }
@@ -169,13 +167,10 @@ class ClassInfo extends Component {
               <Typography variant="h1" component="h1">
                 Class: {class_info.name}
               </Typography>
-              <Extends
-                text={class_info.extends}
-                url={class_info.extends_path}
-              />
+              {class_info.extends && <Extends reference={class_info.extends} />}
             </Box>
             <Constructors
-              value={class_info.structure.constructors}
+              constructors={class_info.structure.constructors}
               libName={libName}
               moduleName={moduleName}
               className={className}

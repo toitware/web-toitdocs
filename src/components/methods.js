@@ -6,19 +6,7 @@ import { ArrowRightAlt } from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import { Link } from "react-router-dom";
 import { Parameters } from "./parameters";
-
-function ReturnType({ type, path }) {
-  if (type !== "none" && type !== "any") {
-    return (
-      <span>
-        <Link to={`/${path}/${type}`}>{type}</Link>
-      </span>
-    );
-  } else {
-    return <span>{type}</span>;
-  }
-}
-
+import Type from "./type";
 
 function ConditionalLink(props){
   let restricted_signs = ["/", "%"];
@@ -36,6 +24,7 @@ function ConditionalLink(props){
 }
 
 function Methods(props) {
+  console.log("props", props);
   return []
     .concat(props.value)
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -43,7 +32,7 @@ function Methods(props) {
       // Alternating background.
       const background = (i % 2 ? "#eeeeee" :  "#fafafa");
       return (
-        <div key={`${fn.name}_${indexedDB}`}>
+        <div key={`${fn.name}_${i}`}>
           <Box p={1} bgcolor={background} borderRadius={8}>
             <span className="functionName">
               <ConditionalLink props={props} function={fn} function_index={i}/>
@@ -56,10 +45,7 @@ function Methods(props) {
               }}
             />
             <span>
-              <ReturnType
-                returnType={fn.return_type}
-                returnPath={fn.return_type_path}
-              />
+              <Type type={fn.return_type}></Type>
             </span>
             <Toitdocs value={fn.toitdoc} />
           </Box>
@@ -89,10 +75,7 @@ function FunctionsInModules(props) {
               }}
             />
             <span>
-              <ReturnType
-                returnType={fn.return_type}
-                returnPath={fn.return_type_path}
-              />
+              <Type type={fn.return_type}></Type>
             </span>
             <Toitdocs value={fn.toitdoc} />
           </Box>

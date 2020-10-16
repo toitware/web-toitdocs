@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { List } from "@material-ui/core";
+import { getLibrary } from "../sdk.js";
 
 const style = (theme) => ({
   root: {
@@ -30,28 +31,15 @@ function mapStateToProps(state, props) {
   };
 }
 
-class ListLibraryModules extends Component {
-  render() {
-    return (
-      <List>
-        {this.props.library.modules.map((element, i) => (
-          <li key={"librarY-module" + i}> {element.name} </li>
-        ))}
-      </List>
-    );
-  }
-}
-
 class LibraryInfo extends Component {
   render() {
-    const {
-      params: { libName },
-    } = this.props.match;
+    const { params: { libName } } = this.props.match;
+    const library = getLibrary(this.props.libraries, libName);
     const classes = this.props.classes;
-    const library = this.props.libraries.find(
-      ({ name }) => name === libName
-    );
-    if (library && library.modules !== undefined) {
+
+    const moduleNames = Object.keys(library.modules).sort();
+
+    if (library) {
       return (
         <Grid container>
           <Grid item xs={9}>
@@ -67,7 +55,11 @@ class LibraryInfo extends Component {
                 </Typography>
               </Box>
               <Paper variant="outlined" className={classes.paper}>
-                <ListLibraryModules library={library} />
+                <List>
+                {moduleNames.map((moduleName) => (
+                  <li key={"library-module-" + moduleName}> {library.modules[moduleName].name} </li>
+                ))}
+                </List>
               </Paper>
             </Box>
           </Grid>

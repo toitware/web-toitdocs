@@ -83,7 +83,7 @@ function searchInLib(dataObject, which_key, name_to_find) {
         }
       }
       break;
-    case 2: //libraries.modules.module_classes.name
+    case 2: //libraries.modules.classes.name
       for (let lib_i = 0; lib_i < dataObject.libraries.length; lib_i++) {
         try {
           for (
@@ -94,14 +94,14 @@ function searchInLib(dataObject, which_key, name_to_find) {
             for (
               let module_class_i = 0;
               module_class_i <
-              dataObject.libraries[lib_i].modules[lib_module_i].module_classes
+              dataObject.libraries[lib_i].modules[lib_module_i].classes
                 .length;
               module_class_i++
             ) {
               if (
                 name_to_find ===
                 dataObject.libraries[lib_i].modules[lib_module_i]
-                  .module_classes[module_class_i].name
+                  .classes[module_class_i].name
               ) {
                 results.push(
                   dataObject.libraries[lib_i].name +
@@ -109,7 +109,7 @@ function searchInLib(dataObject, which_key, name_to_find) {
                     dataObject.libraries[lib_i].modules[lib_module_i].name +
                     "/" +
                     dataObject.libraries[lib_i].modules[lib_module_i]
-                      .module_classes[module_class_i].name
+                      .classes[module_class_i].name
                 );
               }
             }
