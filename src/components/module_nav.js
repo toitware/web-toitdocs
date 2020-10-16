@@ -7,7 +7,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemLink from "./list_item_link.js";
 import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
-import { getLibrary, librarySegmentsToName } from "../sdk.js";
+import { getLibrary, librarySegmentsToName, librarySegmentsToURI } from "../sdk.js";
 
 function mapStateToProps(state, props) {
   const { sdk } = state
@@ -17,8 +17,10 @@ function mapStateToProps(state, props) {
 //Listing modules for navigation purposes
 class ModuleNav extends Component {
 
-  renderModule(libraryName, module) {
-    return <ListItemLink to={`/${libraryName}/${module.name}`} key={`/${libraryName}/${module.name}`} primary={module.name} />
+  renderModule(library, module) {
+    const libraryName = librarySegmentsToName(library.path);
+    const libraryURI = librarySegmentsToURI(library.path);
+    return <ListItemLink to={`/${libraryURI}/${module.name}`} key={`/${libraryName}/${module.name}`} primary={module.name} />
   }
 
   render() {
@@ -42,7 +44,7 @@ class ModuleNav extends Component {
               </ListSubheader>
             }
           >
-            {moduleNames.map((moduleName) => this.renderModule(libraryName, library.modules[moduleName]))}
+            {moduleNames.map((moduleName) => this.renderModule(library, library.modules[moduleName]))}
           </List>
       </ErrorBoundary>
       </div>

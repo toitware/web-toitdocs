@@ -1,224 +1,121 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-// TODO: rewrite this to work with all the styles.
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import {
+  OBJECT_TYPE_STATEMENT_PARAGRAPH,
+  OBJECT_TYPE_STATEMENT_CODE,
+  OBJECT_TYPE_STATEMENT_CODE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_TOITDOCREF,
+} from "./../sdk.js";
 
-// import React from "react";
-// import { makeStyles } from "@material-ui/core/styles";
-// import { Link } from "react-router-dom";
-// import Paper from "@material-ui/core/Paper";
-// import Grid from "@material-ui/core/Grid";
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    backgroundColor: "#9d9d9c11",
+    border: "1px solid rgba(0, 0, 0, 0.12)",
+    borderRadius: "4px",
+    padding: "2px",
+  },
+  paperSection: {
+    padding: theme.spacing(1),
+    width: "auto",
+    backgroundColor: "#9d9d9c11",
+  },
+}));
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//   },
-//   paper: {
-//     backgroundColor: "#9d9d9c11",
-//     border: "1px solid rgba(0, 0, 0, 0.12)",
-//     borderRadius: "4px",
-//     padding: "2px",
-//   },
-//   paperSection: {
-//     padding: theme.spacing(1),
-//     width: "auto",
-//     backgroundColor: "#9d9d9c11",
-//   },
-// }));
+// TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
 
-// function StatementsPrint(i, classes) {
-//   if ((i.statements !== undefined) && (i.statements !== null)) {
-//     i.statements.map((statements, j) => {
-//       if ((statements !== undefined) && (statements !== null)) {
-//         if (statements.text !== undefined || statements.itemized !== undefined) {
-//           if (statements.itemized) {
-//             return (
-//               <ul key={"statements_list_" + j}>
-//                 {statements.itemized.map((item, k) => {
-//                   return (
-//                     <li key={k}>
-//                       {item.map((item_content, a) => {
-//                         if (item_content.is_code !== undefined) {
-//                           return (
-//                             <code className={classes.paper} key={a}>
-//                               {item_content.text}
-//                             </code>
-//                           );
-//                         } else if (item_content.is_code_section !== undefined) {
-//                           return (
-//                             <Paper
-//                               elevation={0}
-//                               variant="outlined"
-//                               className={classes.paperSection}
-//                               key={a}
-//                             >
-//                               <pre>
-//                                 <code className={classes.paper} key={a}>
-//                                   {item_content.text}
-//                                 </code>
-//                               </pre>
-//                             </Paper>
-//                           );
-//                         } else {
-//                           return item_content.text;
-//                         }
-//                       })}
-//                     </li>
-//                   );
-//                 })}
-//               </ul>
-//             );
-//           } else {
-//             if (statements.is_code !== undefined) {
-//               return (
-//                 <code className={classes.paper} key={j}>
-//                   {statements.text}
-//                 </code>
-//               );
-//             } else if (
-//               statements.is_code_section !== undefined &&
-//               i.title !== "Examples"
-//             ) {
-//               return (
-//                 <Paper
-//                   elevation={0}
-//                   variant="outlined"
-//                   className={classes.paperSection}
-//                   key={j}
-//                 >
-//                   <pre>
-//                     <code>{statements.text}</code>
-//                   </pre>
-//                 </Paper>
-//               );
-//             } else if (
-//               statements.is_code_section !== undefined &&
-//               i.title === "Examples"
-//             ) {
-//               return (
-//                 <Paper>
-//                   <pre>
-//                     <code>{statements.text}</code>
-//                   </pre>
-//                 </Paper>
-//               );
-//             } else {
-//               if (statements.path) {
-//                 return (
-//                   <Link to={`/${statements.path}`} key={j}>
-//                     {statements.text}
-//                   </Link>
-//                 );
-//               } else {
-//                 return statements.text;
-//               }
-//             }
-//           }
-//         } else {
-//           return (
-//             <Grid item key={j}>
-//               {statements.map((content, n) => {
-//                 if (content.itemized) {
-//                   return (
-//                     <ul key={n}>
-//                       {content.itemized.map((item, k) => {
-//                         return (
-//                           <li key={k}>
-//                             {item.map((item_content, b) => {
-//                               if (item_content.is_code !== undefined) {
-//                                 return (
-//                                   <code className={classes.paper} key={b}>
-//                                     {item_content.text}
-//                                   </code>
-//                                 );
-//                               } else if (
-//                                 item_content.is_code_section !== undefined
-//                               ) {
-//                                 return (
-//                                   <Paper
-//                                     elevation={0}
-//                                     variant="outlined"
-//                                     className={classes.paperSection}
-//                                     key={b}
-//                                   >
-//                                     <pre>
-//                                       <code>{item_content.text}</code>
-//                                     </pre>
-//                                   </Paper>
-//                                 );
-//                               } else {
-//                                 return item_content.text;
-//                               }
-//                             })}
-//                           </li>
-//                         );
-//                       })}
-//                     </ul>
-//                   );
-//                 } else {
-//                   if (content.is_code !== undefined) {
-//                     return (
-//                       <code className={classes.paper} key={n}>
-//                         {content.text}
-//                       </code>
-//                     );
-//                   } else if (content.is_code_section !== undefined) {
-//                     return (
-//                       <Paper
-//                         elevation={0}
-//                         variant="outlined"
-//                         className={classes.paperSection}
-//                         key={n}
-//                       >
-//                         <pre>
-//                           <code>{content.text}</code>
-//                         </pre>
-//                       </Paper>
-//                     );
-//                   } else {
-//                     if (content.path) {
-//                       return (
-//                         <Link to={`/${content.path}`} key={n}>
-//                           {content.text}
-//                         </Link>
-//                       );
-//                     } else {
-//                       return content.text;
-//                     }
-//                   }
-//                 }
-//               })}
-//             </Grid>
-//           );
-//         }
-//       }
-//       return null;
-//     });
-//   }
-// }
+function StatementCodeSection({code, classes}) {
+  return (<Paper
+    elevation={0}
+    variant="outlined"
+    className={classes.paperSection}
+  >
+    <pre>
+      <code>{code.text}</code>
+    </pre>
+  </Paper>)
+}
+
+function StatementCode({code, classes}) {
+  return <span className={classes.paper}>{code.text}</span>
+}
+
+function StatementItemized({items, classes}) {
+  return <ul>
+    {items.items.forEach((item) => item.statements.forEach((statement) =>
+      <li><Statement statement={statement} classes={classes} /></li>
+    ))}
+  </ul>
+}
+
+function StatementParagraph({statement, classes}) {
+  return statement.expressions.map((expr) => <Expression expr={expr} classes={classes} />);
+}
+
+function ToitdocRef({reference, classes}) {
+  // TODO: Handle references to other objects.
+  return <span>{reference.text}</span>
+}
+
+function Expression({expr, classes}) {
+  switch (expr.object_type) {
+    case OBJECT_TYPE_STATEMENT_CODE:
+      return <StatementCode code={expr} classes={classes} />
+    case OBJECT_TYPE_STATEMENT_CODE_SECTION:
+      return <StatementCodeSection code={expr} classes={classes} />
+    case OBJECT_TYPE_TOITDOCREF:
+      return <ToitdocRef reference={expr} classes={classes} />
+    default:
+      console.log("unhandled expression", expr);
+      return null;
+  }
+}
+
+function Statement({statement, classes}) {
+  switch (statement.object_type) {
+    case OBJECT_TYPE_STATEMENT_PARAGRAPH:
+      return <StatementParagraph statement={statement} classes={classes} />
+    case OBJECT_TYPE_STATEMENT_CODE_SECTION:
+      return <StatementCodeSection code={statement} classes={classes} />
+    case OBJECT_TYPE_STATEMENT_ITEMIZED:
+      return <StatementItemized items={statement} classes={classes} />
+    default:
+      console.log("unhandled statement", statement);
+      return null;
+  }
+}
+
+function Section({section, classes}) {
+  return (
+    <div className={classes.root}>
+      <Grid container>
+        <Grid item>
+          <strong>{section.title}</strong>
+        </Grid>
+      </Grid>
+      <Grid container>
+        <Grid item>
+          {section.statements.map((statement) => <Statement statement={statement} classes={classes} />)}
+        </Grid>
+      </Grid>
+    </div>
+  );
+}
 
 // Function that prints the content of currently presented element.
 function Toitdocs(props) {
-  // const classes = useStyles();
-  // if (props.value !== undefined) {
-  //   return props.value.map((i, s) => {
-  //     return (
-  //       <div className={classes.root} key={s}>
-  //         <Grid container>
-  //           <Grid item>
-  //             <strong>{i.title}</strong>
-  //           </Grid>
-  //         </Grid>
-  //         <Grid container>
-  //           <Grid item key={s}>
-  //             {StatementsPrint(i, classes)}
-  //           </Grid>
-  //         </Grid>
-  //       </div>
-  //     );
-  //   });
-  // } else {
+  const classes = useStyles();
+  if (!props.value) {
     return null;
-  // }
+  }
+  return props.value.map((section) => <Section section={section} classes={classes} />);
 }
 
 export default Toitdocs;

@@ -8,16 +8,15 @@ import ClassContentList from "./class_content_list";
 import Toitdocs from "./toitdoc_info";
 import { Methods } from "./methods";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import { Hidden } from "@material-ui/core";
 import { getLibrary } from "../sdk";
+import { Reference, Type } from "./util";
 
 function Extends({ reference }) {
-  // TODO: Create a reference resolver that can resolve with the idname
   return (
     <div>
-      <Link to={`/#todo`}> extends {reference.name}</Link>
+      extends <Reference reference={reference} />
     </div>
   );
 }
@@ -79,14 +78,15 @@ function Fields(props) {
       <Typography variant="h3" component="h3">
         Fields:
       </Typography>
-      {props.value.map((elem, index) => {
+      {props.fields.map((field, index) => {
           return (
             <div key={"class_field_"+ index}>
               {/* TODO: link to field type */}
               <div className="functionName">
-                <strong>{elem.name}</strong>/{elem.type}
+                <strong>{field.name}</strong>
+                {field.type && <>/ <Type type={field.type} /> </>}
               </div>
-              <Toitdocs value={elem.toitdoc} />
+              {field.toitdoc && <Toitdocs value={field.toitdoc} />}
             </div>
           );
       })}
@@ -190,7 +190,7 @@ class ClassInfo extends Component {
               className={className}
               functionType="Statics"
             />
-            <Fields value={class_info.structure.fields} />
+            <Fields fields={class_info.structure.fields} />
             <ClassMethods
               value={class_info.structure.methods}
               libName={libName}

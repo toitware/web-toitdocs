@@ -2,12 +2,10 @@
 
 import Fuse from "fuse.js";
 import {
-  TYPE_FUNCTION,
-  TYPE_CLASS,
-  TYPE_SECTION,
-  TYPE_STATEMENT_ITEMIZED,
-  TYPE_TOITDOCREF,
-  TYPE_STATEMENT_CODE,
+  OBJECT_TYPE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_TOITDOCREF,
+  OBJECT_TYPE_STATEMENT_CODE, rootLibrary
 } from "./../sdk.js";
 
 // Parameters for searching through libraries, modules and classes.
@@ -22,8 +20,8 @@ const optionsBasic = {
   minMatchCharLength: 2,
   keys: [
     "libraries.name",
-    "libraries.modules.name",
-    "libraries.modules.classes.name",
+    "modules.name",
+    "classes.name",
   ],
 };
 
@@ -39,50 +37,51 @@ const optionsAliases = {
   keys: ["text"],
 };
 
-const object_properties = [
-  "toitdoc",
-  "modules",
-  "classes",
-  "export_classes",
-  "functions",
-  "export_functions",
-  "globals",
-  "export_globals",
-  "structure",
-  "statics",
-  "constructors",
-  "factories",
-  "fields",
-  "methods",
-  "parameters",
-  "expressions",
-];
-
-function findAliases(object) {
+function findAliases(library) {
   var found = [];
-  iterateObject(object, "", "");
 
-  function iterateObject(obj, current_return_path, current_class_name) {
+  function iterateLibrary(library) {
+    Object.values(library.libraries).forEach((library) => iterateLibrary(library));
+    Object.values(library.modules).forEach((module) => iterateModule(module));
+  }
+
+  function iterateModule(module) {
+    module.classes.forEach((klass) => iterateClass(klass));
+    module.export_classes.forEach((klass) => iterateClass(klass));
+    module.functions.forEach((fn) => iterateFunction(fn, null));
+    module.export_functions.forEach((fn) => iterateFunction(fn, null));
+    module.globals.forEach((glob) => iterateGlobal(glob));
+    module.export_globals.forEach((glob) => iterateGlobal(glob));
+  }
+
+  function iterateClass(klass) {
+    iterateToitdoc(klass.toitdoc, klass.name, null);
+    klass.structure.constructors.forEach((constructor) => iterateFunction(constructor, klass.name));
+    klass.structure.factories.forEach((fac) => iterateFunction(fac, klass.name));
+    klass.structure.methods.forEach((method) => iterateFunction(method, klass.name));
+  }
+
+  function iterateFunction(fn, className) {
+    iterateToitdoc(fn.toitdoc, className, fn.return_type);
+  }
+
+  function iterateGlobal(glob) {
+    iterateToitdoc(glob.toitdoc, null, null);
+  }
+
+  function iterateToitdoc(obj, className, fnReturnType) {
     try {
       // TODO run though through this in a more structured way
       if (obj instanceof Array) {
-        obj.forEach((obj) => { iterateObject(obj, current_return_path, current_class_name)});
+        obj.forEach((obj) => { iterateToitdoc(obj, className, fnReturnType)});
       } else if (obj instanceof Object && obj["object_type"]) {
-        if (obj["object_type"] === TYPE_FUNCTION && obj["return_type_path"]) {
-          current_return_path = obj["return_type_path"];
-        } else if (obj["object_Type"] === TYPE_CLASS) {
-          current_class_name = obj["name"];
-        }
-        object_properties.forEach((prop) => {
-          iterateObject(obj[prop], current_return_path, current_class_name);
-        });
-        if (obj["object_type"] === TYPE_SECTION && obj["title"] === "Aliases") {
+        if (obj["object_type"] === OBJECT_TYPE_SECTION && obj["title"] === "Aliases") {
           obj.statements.forEach((obj) => {
-            if (obj["object_type"] === TYPE_STATEMENT_ITEMIZED) {
+            if (obj["object_type"] === OBJECT_TYPE_STATEMENT_ITEMIZED) {
               obj.items.forEach((obj) => {
-                if (obj["object_type"] === TYPE_TOITDOCREF || obj["object_type"] === TYPE_STATEMENT_CODE) {
+                if (obj["object_type"] === OBJECT_TYPE_TOITDOCREF || obj["object_type"] === OBJECT_TYPE_STATEMENT_CODE) {
                   // TODO: need to copy the object before it must be manipulated.
-                  obj.path = current_return_path + "/" + current_class_name;
+                  obj.path = fnReturnType.name + "/" + className;
                   found.push(obj);
                 }
               })
@@ -94,11 +93,41 @@ function findAliases(object) {
       console.log("ERROR: iterateObject() function failed", e);
     }
   }
+
+  iterateLibrary(library);
+
   return found;
 }
 
-export default function Component(data) {
-  this.Index = Fuse.createIndex(optionsBasic.keys, [data]);
-  this.Basic = new Fuse([data], optionsBasic, this.Index);
-  this.Aliases = new Fuse(findAliases(data.libraries), optionsAliases);
+export function flattenDataStructure(data) {
+  const result = {
+    "libraries": [],
+    "modules": [],
+    "classes": [],
+  }
+
+  const library = data.libraries[rootLibrary];
+  flattenDataStructureLibrary(library, result);
+  return result;
+}
+
+function flattenDataStructureLibrary(library, result) {
+  result.libraries.push({"name": library.name, "path": library.path});
+  Object.values(library.libraries).forEach((library) => flattenDataStructureLibrary(library, result));
+  Object.values(library.modules).forEach((module) => flattenDataStructureModule(library, module, result));
+}
+
+function flattenDataStructureModule(library, module, result) {
+  result.modules.push({"name": module.name, "library": library.path});
+  module.classes.forEach((klass) => flattenDataStructureKlass(library, module, klass, result));
+}
+
+function flattenDataStructureKlass(library, module, klass, result) {
+  result.classes.push({"name": klass.name, "module": module.name, "library": library.path});
+}
+
+export default function Component(searchObject, libraries) {
+  this.Index = Fuse.createIndex(optionsBasic.keys, [searchObject]);
+  this.Basic = new Fuse([searchObject], optionsBasic, this.Index);
+  this.Aliases = new Fuse(findAliases(libraries[rootLibrary]), optionsAliases);
 }

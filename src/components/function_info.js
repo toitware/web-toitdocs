@@ -5,16 +5,12 @@ import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-// import React from "react";
-// import data from "../libraries.json";
-// import Grid from "@material-ui/core/Grid";
-// import Typography from "@material-ui/core/Typography";
-// import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import { ArrowRightAlt } from "@material-ui/icons";
 import Toitdocs from "./toitdoc_info";
 import { Parameters } from "./parameters";
-import Type from "./type.js"
+import { Type } from "./util.js"
+import { getLibrary } from "../sdk";
 
 const style = (theme) => ({
   root: {
@@ -33,56 +29,41 @@ function mapStateToProps(state, props) {
 
 class FunctionInfo extends Component {
   render() {
-    const {
-      params: {
-        libName,
-        moduleName,
-        className,
-        functionType,
-        functionName,
-        index,
-      },
-    } = this.props.match;
+    let { params: { libName, moduleName, className, functionType, functionName, index } } = this.props.match;
+    functionType = functionType.toLowerCase();
+
     var function_info = null;
 
     var page_title = "Unknown";
+    const library = getLibrary(this.props.libraries, libName);
+    const module = library && library.modules[moduleName];
 
-    const library = this.props.libraries.find(({ name }) => name === libName)
-    const module = library ? library.modules.find(({ name }) => name === moduleName) : null
+    if (!module) {
+      return "Module not found";
+    }
 
     let class_info = module.classes.find(({ name }) => name === className);
     if (!class_info) {
       class_info = module.export_classes.find(({ name }) => name === className);
     }
 
-    if (functionType === "Constructors") {
-      try {
-        function_info = class_info.structure.constructors[index];
-      } catch {
-        return null;
-      }
-      page_title = "Constructor of class: " + className;
-    } else if (functionType === "Factories") {
-      try {
-        function_info = class_info.structure.factories[index];
-      } catch {
-        return null;
-      }
-      page_title = "Factory of class: " + className;
-    } else if (functionType === "Methods") {
-      try {
-        function_info = class_info.structure.methods.find(({ name }) => name === functionName);
-      } catch {
-        return null;
-      }
+    console.log("class", class_info.structure.methods, index);
+    if (!class_info) {
+      return "Class not found";
+    }
 
+    if (functionType === "constructors") {
+      function_info = class_info.structure.constructors[index];
+      page_title = "Constructor of class: " + className;
+    } else if (functionType === "factories") {
+      function_info = class_info.structure.factories[index];
+      page_title = "Factory of class: " + className;
+    } else if (functionType === "methods") {
+      console.log("class", class_info.structure.methods, index);
+      function_info = class_info.structure.methods[index];
       page_title = "Function name: " + functionName;
-    } else if (functionType === "Statics") {
-      try {
-        function_info = class_info.structure.statics.find(({ name }) => name === functionName);
-      } catch {
-        return null;
-      }
+    } else if (functionType === "statics") {
+      function_info = class_info.structure.statics[index];
       page_title = "Static name: " + functionName;
     }
 

@@ -5,85 +5,38 @@ import {connect} from "react-redux"
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { Link } from "react-router-dom";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ErrorBoundary from "./error_page";
+import ListItemLink from "./list_item_link";
+import { getLibrary, librarySegmentsToName } from "../sdk";
 
 function mapStateToProps(state, props) {
   const { sdk } = state
   return { version: sdk.version, libraries: sdk.object.libraries, match: props.match }
 };
 
-function ConditionalLink(props){
-  let restricted_signs = ["/", "%"];
-  if(!restricted_signs.includes(props.elem.name)){
-    return (<Link
-      to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${
-       props.categories_found[props.index].charAt(0).toUpperCase() + props.categories_found[props.index].slice(1)
-      }/${props.elem.name}/${props.index}`}
-    >
-      {props.elem.name}
-    </Link>)
-  } else {
-    return (
-      <p>{props.elem.name}</p>
-    )
-  }
-}
-
-function ListFunctions(props) {
-  const { libName, moduleName, className } = props;
-
-  var functions_found = [];
-  var categories_found = [];
-  var category = "";
-  const categories = [
-    "statics",
-    "factories",
-    "methods",
-    "constructors",
-  ];
-
-  const library = props.libraries.find(({ name }) => name === libName)
-  const module = library ? library.modules.find(({ name }) => name === moduleName) : null
-
-  let class_info = module.classes.find(({ name }) => name === className);
-  if (!class_info) {
-    class_info = module.export_classes.find(({ name }) => name === className);
-  }
-
-  iterateFunctions(class_info.structure);
-  // let fun_index = AddFunIndexes(functions_found);
-
-  function iterateFunctions(obj) {
-    for (var prop in obj) {
-      if (categories.includes(prop)) {
-        category = prop;
-      }
-      if (obj[prop].name !== undefined) {
-        functions_found.push(obj[prop]);
-        categories_found.push(category);
-      } else if (typeof obj[prop] === "object") {
-        iterateFunctions(obj[prop]);
-      }
-    }
-  }
-
-  return (
-      <div key={"list_functions"}>
-    {functions_found.map((fn, index) => (
-      <ListItem key={fn.name + "_" + index}>
-        <ConditionalLink props={props} categories_found={categories_found} elem={fn} index={index}/>
-      </ListItem>
-    ))}
-  </div>
-  );
-}
-
 class FunctionNav extends Component {
   render() {
     const {
-      params: { libName, moduleName, className, functionType, functionName },
+      params: { libName, moduleName, className },
     } = this.props.match;
+
+    const library = getLibrary(this.props.libraries, libName);
+    const libraryName = librarySegmentsToName(library.path);
+    const module = library && library.modules[moduleName];
+
+    if (!module) {
+      return "Module not found";
+    }
+
+    let class_info = module.classes.find(({ name }) => name === className);
+    if (!class_info) {
+      class_info = module.export_classes.find(({ name }) => name === className);
+    }
+
+    if (!class_info) {
+      return "Class not found";
+    }
+
     return (
       <div className="sideMenu">
         <ErrorBoundary>
@@ -94,25 +47,29 @@ class FunctionNav extends Component {
             <ListSubheader component="div" id="nested-list-subheader">
               <Link to={`/`}>modules</Link>
               {" / "}
-              <Link to={`/${libName}`}>{libName}</Link>
+              <Link to={`/${libName}`}>{libraryName}</Link>
               {" / "}
-              <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
+              <Link to={`/${libName}/${moduleName}`}>{module.name}</Link>
               {" / "}
               <Link to={`/${libName}/${moduleName}/${className}`}>
-                {className}
+                {class_info.name}
               </Link>
             </ListSubheader>
           }
         >
-          <ListFunctions
-            libraries={this.props.libraries}
-            libName={libName}
-            moduleName={moduleName}
-            className={className}
-            functionType={functionType}
-            functionName={functionName}
-          />
-        </List>
+          {class_info.structure.statics.map((stat, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/statics/${stat.name}/${index}`} key={"stat-index-"+index} primary={stat.name} />
+          )}
+          {class_info.structure.constructors.map((constructor, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/constructors/${constructor.name}/${index}`} key={"constructor-index-"+index} primary={constructor.name} />
+          )}
+          {class_info.structure.factories.map((factory, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/factories/${factory.name}/${index}`} key={"factory-index-"+index} primary={factory.name} />
+          )}
+          {class_info.structure.methods.map((method, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/methods/${method.name}/${index}`} key={"method-index-"+index} primary={method.name} />
+          )}
+          </List>
         </ErrorBoundary>
       </div>
     );

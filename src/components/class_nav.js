@@ -41,15 +41,15 @@ class ClassNav extends Component {
                 <ListSubheader component="div" id="nested-list-subheader">
                   <Link to={`/`}>modules</Link>
                   {" / "}
-                  <Link to={`/${libraryName}`}>{libraryName}</Link>
+                  <Link to={`/${libName}`}>{libraryName}</Link>
                   {" / "}
-                  <Link to={`/${libraryName}/${moduleName}`}>{moduleName}</Link>
+                  <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
                 </ListSubheader>
               }
             >
               {" "}
               {classes.map((klass, index) =>
-                <ListItemLink to={`/${libraryName}/${module.name}/${klass.name}`} key={"class-index-"+index} primary={klass.name} />
+                <ListItemLink to={`/${libName}/${module.name}/${klass.name}`} key={"class-index-"+index} primary={klass.name} />
               )}
             </List>
           </ErrorBoundary>

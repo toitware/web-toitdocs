@@ -1,5 +1,5 @@
 import React from "react";
-import Type from "./type";
+import { Type } from "./util";
 
 function Parameters(props) {
   let styling = [];
@@ -23,7 +23,6 @@ function Parameters(props) {
     }
 
     if (!parameter.type.is_none && parameter.type.is_any) {
-      // TODO: Handle type reference better
       return (
         <span key={i}>
           <span style={parameter.is_named === true ? { color: "blue" } : {}}>

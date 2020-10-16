@@ -52,13 +52,15 @@ function GlobalFunctions(props) {
 }
 
 function importPath(library, module) {
-  const filename = module.name.substring(0, module.name.indexOf("."));
-  console.log("importPath", library, module);
+  const filename = module.name.substring(0, module.name.lastIndexOf("."));
   const libraryName = librarySegmentsToName(library.path);
-  if (library.name === filename) {
-    return libraryName;
+  if (libraryName) {
+    if (library.name === filename) {
+      return libraryName;
+    }
+    return libraryName + "." + filename;
   }
-  return libraryName + "." + filename;
+  return filename;
 }
 
 function mapStateToProps(state, props) {

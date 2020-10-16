@@ -6,7 +6,7 @@ import { ArrowRightAlt } from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import { Link } from "react-router-dom";
 import { Parameters } from "./parameters";
-import Type from "./type";
+import { Type } from "./util";
 
 function ConditionalLink(props){
   let restricted_signs = ["/", "%"];
@@ -24,7 +24,6 @@ function ConditionalLink(props){
 }
 
 function Methods(props) {
-  console.log("props", props);
   return []
     .concat(props.value)
     .sort((a, b) => a.name.localeCompare(b.name))
