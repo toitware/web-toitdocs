@@ -5,113 +5,38 @@ import {connect} from "react-redux"
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { Link } from "react-router-dom";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ErrorBoundary from "./error_page";
+import ListItemLink from "./list_item_link";
+import { getLibrary, librarySegmentsToName } from "../sdk";
 
 function mapStateToProps(state, props) {
   const { sdk } = state
   return { version: sdk.version, libraries: sdk.object.libraries, match: props.match }
 };
 
-function AddFunIndexes(props) {
-  let output = [];
-  let found_names = {};
-  if (props !== undefined) {
-    try {
-      props.forEach((fun, index) => {
-        if (found_names["method_" + fun.function_name] !== undefined) {
-          found_names["method_" + fun.function_name]++;
-        } else {
-          found_names["method_" + fun.function_name] = 0;
-        }
-        output[index] = found_names["method_" + fun.function_name];
-      });
-    } catch {}
-  }
-  return output;
-}
-
-function ConditionalLink(props){
-  let restricted_signs = ["/", "%"];
-  if(!restricted_signs.includes(props.elem.function_name)){
-    return (<Link
-      to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${
-       props.categories_found[props.index].charAt(0).toUpperCase() + props.categories_found[props.index].slice(1)
-      }/${props.elem.function_name}/${props.fun_index[props.index]}`}
-    >
-      {props.elem.function_name}
-    </Link>)
-  } else {
-    return (
-      <p>{props.elem.function_name}</p>
-    )
-  }
-}
-
-function ListFunctions(props) {
-  var functions_found = [];
-  var categories_found = [];
-  var category = "";
-  const categories = [
-    "statics",
-    "factories",
-    "members",
-    "methods",
-    "constructors",
-  ];
-  var class_info;
-  var module_classes = {};
-  var export_classes = {};
-  const modules = props.libraries
-  .find(({ lib_name }) => lib_name === props.libName)
-  .lib_modules.find(({ module }) => module === props.moduleName);
-
-  if (modules.module_classes !== undefined) {
-    module_classes = modules.module_classes.find(
-      (elem) => elem.class_name === props.className
-      ).class_structure;
-    }
-    if (modules.export_classes !== undefined) {
-      export_classes = modules.export_classes.find(
-        (elem) => elem.class_name === props.className
-        ).class_structure;
-      }
-      class_info = Object.assign(module_classes, export_classes);
-
-
-      iterateFunctions(class_info);
-      let fun_index = AddFunIndexes(functions_found);
-
-      function iterateFunctions(obj) {
-        for (var prop in obj) {
-          if (categories.includes(prop)) {
-            category = prop;
-          }
-          if (obj[prop].function_name !== undefined) {
-            // obj[prop].category = category;
-            functions_found.push(obj[prop]);
-            categories_found.push(category);
-          } else if (typeof obj[prop] === "object") {
-            iterateFunctions(obj[prop]);
-          }
-        }
-      }
-      return (
-        <div key={"list_functions"}>
-      {functions_found.map((elem, index) => (
-        <ListItem key={elem.functionName + "_"+ elem.fun_index}>
-          <ConditionalLink props={props} categories_found={categories_found} fun_index={fun_index} elem={elem} index={index}/>
-        </ListItem>
-      ))}
-    </div>
-  );
-}
-
 class FunctionNav extends Component {
   render() {
     const {
-      params: { libName, moduleName, className, functionType, functionName },
+      params: { libName, moduleName, className },
     } = this.props.match;
+
+    const library = getLibrary(this.props.libraries, libName);
+    const libraryName = librarySegmentsToName(library.path);
+    const module = library && library.modules[moduleName];
+
+    if (!module) {
+      return "Module not found";
+    }
+
+    let class_info = module.classes.find(({ name }) => name === className);
+    if (!class_info) {
+      class_info = module.export_classes.find(({ name }) => name === className);
+    }
+
+    if (!class_info) {
+      return "Class not found";
+    }
+
     return (
       <div className="sideMenu">
         <ErrorBoundary>
@@ -122,25 +47,29 @@ class FunctionNav extends Component {
             <ListSubheader component="div" id="nested-list-subheader">
               <Link to={`/`}>modules</Link>
               {" / "}
-              <Link to={`/${libName}`}>{libName}</Link>
+              <Link to={`/${libName}`}>{libraryName}</Link>
               {" / "}
-              <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
+              <Link to={`/${libName}/${moduleName}`}>{module.name}</Link>
               {" / "}
               <Link to={`/${libName}/${moduleName}/${className}`}>
-                {className}
+                {class_info.name}
               </Link>
             </ListSubheader>
           }
         >
-          <ListFunctions
-            libraries={this.props.libraries}
-            libName={libName}
-            moduleName={moduleName}
-            className={className}
-            functionType={functionType}
-            functionName={functionName}
-          />
-        </List>
+          {class_info.structure.statics.map((stat, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/statics/${stat.name}/${index}`} key={"stat-index-"+index} primary={stat.name} />
+          )}
+          {class_info.structure.constructors.map((constructor, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/constructors/${constructor.name}/${index}`} key={"constructor-index-"+index} primary={constructor.name} />
+          )}
+          {class_info.structure.factories.map((factory, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/factories/${factory.name}/${index}`} key={"factory-index-"+index} primary={factory.name} />
+          )}
+          {class_info.structure.methods.map((method, index) =>
+            <ListItemLink to={`/${libName}/${moduleName}/${className}/methods/${method.name}/${index}`} key={"method-index-"+index} primary={method.name} />
+          )}
+          </List>
         </ErrorBoundary>
       </div>
     );

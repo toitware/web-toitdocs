@@ -6,147 +6,80 @@ import { ArrowRightAlt } from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import { Link } from "react-router-dom";
 import { Parameters } from "./parameters";
-
-function ReturnType({ returnType, returnPath }) {
-  if (returnType !== "none" && returnType !== "any") {
-    return (
-      <span>
-        <Link to={`/${returnPath}/${returnType}`}>{returnType}</Link>
-      </span>
-    );
-  } else {
-    return <span>{returnType}</span>;
-  }
-}
-
+import { Type } from "./util";
 
 function ConditionalLink(props){
   let restricted_signs = ["/", "%"];
-  if(!restricted_signs.includes(props.functions.function_name)){
+  if(!restricted_signs.includes(props.function.name)){
     return (<Link
-      to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${props.props.functionType}/${props.functions.function_name}/${props.function_index}`}
-    > 
-      <strong>{`${props.functions.function_name} `}</strong>
+      to={`/${props.props.libName}/${props.props.moduleName}/${props.props.className}/${props.props.functionType}/${props.function.name}/${props.function_index}`}
+    >
+      <strong>{`${props.function.name} `}</strong>
     </Link>)
   } else {
     return (
-      <strong>{`${props.functions.function_name} `}</strong>
+      <strong>{`${props.function.name} `}</strong>
     )
   }
 }
 
 function Methods(props) {
-  console.log(props)
-
-
-  if (props.value !== undefined && props.value !== null) {
-    let found_names = {};
-    let iterator = 0;
-    let function_index = 0;
-    return []
-      .concat(props.value)
-      .sort((a, b) => a.function_name.localeCompare(b.function_name))
-      .map((functions) => {
-        // Give increasing indexes to the functions of the same name.
-        if (found_names["method_" + functions.function_name] !== undefined) {
-          found_names["method_" + functions.function_name]++;
-        } else {
-          found_names["method_" + functions.function_name] = 0;
-        }
-        function_index = found_names["method_" + functions.function_name];
-        // Alternating background.
-        iterator++;
-        var background;
-        if (iterator % 2) {
-          background = "#eeeeee";
-        } else {
-          background = "#fafafa";
-        }
-        return (
-          <div key={`${functions.function_name}_${function_index}`}>
-            <Box p={1} bgcolor={background} borderRadius={8}>
-              <span className="functionName">
-                <ConditionalLink props={props} functions={functions} function_index={function_index}/>
-              </span>
-              <Parameters value={functions.parameters} />
-              <ArrowRightAlt
-                style={{
-                  verticalAlign: "middle",
-                  display: "inline-flex",
-                }}
-              />
-              <span>
-                <ReturnType
-                  returnType={functions.return_type}
-                  returnPath={functions.return_path}
-                />
-              </span>
-              <Toitdocs value={functions.function_toitdoc} />
-            </Box>
-          </div>
-        );
-      });
-  } else {
-    return null;
-  }
+  return []
+    .concat(props.value)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((fn, i) => {
+      // Alternating background.
+      const background = (i % 2 ? "#eeeeee" :  "#fafafa");
+      return (
+        <div key={`${fn.name}_${i}`}>
+          <Box p={1} bgcolor={background} borderRadius={8}>
+            <span className="functionName">
+              <ConditionalLink props={props} function={fn} function_index={i}/>
+            </span>
+            <Parameters value={fn.parameters} />
+            <ArrowRightAlt
+              style={{
+                verticalAlign: "middle",
+                display: "inline-flex",
+              }}
+            />
+            <span>
+              <Type type={fn.return_type}></Type>
+            </span>
+            <Toitdocs value={fn.toitdoc} />
+          </Box>
+        </div>
+      );
+    });
 }
 
-function MethodsInModules(props) {
-  if (
-    props.value.module_functions !== undefined &&
-    props.value.module_functions !== null
-  ) {
-    let iterator = 0;
-    let found_names = {};
-    let function_index = 0;
-    return []
-      .concat(props.value.module_functions)
-      .sort((a, b) => a.function_name.localeCompare(b.function_name))
-      .map((functions) => {
-        // Give increasing indexes to the functions of the same name.
-        if (found_names["method_" + functions.function_name] !== undefined) {
-          found_names["method_" + functions.function_name]++;
-        } else {
-          found_names["method_" + functions.function_name] = 0;
-        }
-        function_index = found_names["method_" + functions.function_name];
-        // Alternating background.
-        iterator++;
-        var background;
-        if (iterator % 2) {
-          background = "#eeeeee";
-        } else {
-          background = "#fafafa";
-        }
-
-        return (
-          <div
-            key={`${functions.function_name}_${function_index}`}
-          >
-            <Box p={1} bgcolor={background} borderRadius={8}>
-              <span className="functionName">
-                <code>{`${functions.function_name} `}</code>
-              </span>
-              <Parameters value={functions.parameters} />
-              <ArrowRightAlt
-                style={{
-                  verticalAlign: "middle",
-                  display: "inline-flex",
-                }}
-              />
-              <span>
-                <ReturnType
-                  returnType={functions.return_type}
-                  returnPath={functions.return_path}
-                />
-              </span>
-              <Toitdocs value={functions.function_toitdoc} />
-            </Box>
-          </div>
-        );
-      });
-  } else {
-    return null;
-  }
+function FunctionsInModules(props) {
+  return []
+    .concat(props.functions)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((fn, i) => {
+      // Alternating background.
+      const background = (i % 2 ? "#eeeeee" :  "#fafafa");
+      return (
+        <div key={`${fn.name}_${i}`}>
+          <Box p={1} bgcolor={background} borderRadius={8}>
+            <span className="functionName">
+              <code>{`${fn.name} `}</code>
+            </span>
+            <Parameters value={fn.parameters} />
+            <ArrowRightAlt
+              style={{
+                verticalAlign: "middle",
+                display: "inline-flex",
+              }}
+            />
+            <span>
+              <Type type={fn.return_type}></Type>
+            </span>
+            <Toitdocs value={fn.toitdoc} />
+          </Box>
+        </div>
+      );
+    });
 }
-export { Methods, MethodsInModules };
+export { Methods, FunctionsInModules };

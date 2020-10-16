@@ -2,53 +2,46 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import ListItemLink from "./list_item_link.js";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ErrorBoundary from "./error_page";
+import { librarySegmentsToName, getLibrary, librarySegmentsToURI } from "../sdk.js";
 
 function mapStateToProps(state, props) {
   const { sdk } = state;
-  return { version: sdk.version, libraries: sdk.object.libraries };
+  return { version: sdk.version, libraries: sdk.object.libraries, match: props.match };
 }
 
-function LibList(props) {
-  if (props.libraries !== undefined && props.libraries !== null) {
-    return( [].concat(props.libraries)
-      .sort((a, b) => a.lib_name.localeCompare(b.lib_name))
-      .map((libraries, index) => {
-        console.log(libraries.lib_name)
-        return (
-          <Link
-            to={`/${libraries.lib_name}`}
-            key={`${index}_${libraries.lib_name}`}
-          >
-            <ListItem button>{libraries.lib_name}</ListItem>
-          </Link>
-        );
-      })
-    )} else {
-    console.log("function LibrariesNav(): No libraries found");
-    return <div id="libraries_found"></div>;
-  }
-}
 //Listing the libraries for navigation purposes
 class LibrariesNav extends Component {
+  renderModule(library, module) {
+    const libraryName = librarySegmentsToName(library.path);
+    const libraryURI = librarySegmentsToURI(library.path);
+    return <ListItemLink to={`/${libraryURI}/${module.name}`} key={`/${libraryName}/${module.name}`} primary={module.name} />
+  }
+
+  renderLibrary(library) {
+    const libraryName = librarySegmentsToName(library.path);
+    const libraryURI = librarySegmentsToName(library.path);
+    return <ListItemLink to={`/${libraryURI}`} key={`/${libraryName}`} primary={library.name} />
+  }
+
   render() {
+    const { params: { libName } } = this.props.match;
+
+    const library = getLibrary(this.props.libraries, libName);
+    const moduleNames = Object.keys(library.modules).sort();
+    const libraryNames = Object.keys(library.libraries).sort();
+
     return (
       <div className="sideMenu">
         <ErrorBoundary>
-          <List
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-            subheader={
-              <ListSubheader component="div" id="nested-list-subheader">
-                modules
-              </ListSubheader>
-            }
-          >
-            <LibList libraries={this.props.libraries}/>
+          <List>
+            <ListSubheader>Modules</ListSubheader>
+            {moduleNames.map((moduleName) => this.renderModule(library, library.modules[moduleName]))}
+            <ListSubheader>Libraries</ListSubheader>
+            {libraryNames.map((libraryName) => this.renderLibrary(library.libraries[libraryName]))}
           </List>
         </ErrorBoundary>
       </div>

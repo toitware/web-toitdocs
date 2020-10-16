@@ -7,11 +7,12 @@ import { Link } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import ModuleContentList from "./module_content_list";
 import Toitdocs from "./toitdoc_info";
-import { MethodsInModules } from "./methods";
+import { FunctionsInModules } from "./methods";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { Hidden } from "@material-ui/core";
+import { librarySegmentsToName, getLibrary } from "../sdk";
 
 const style = (theme) => ({
   root: {
@@ -20,96 +21,46 @@ const style = (theme) => ({
 });
 
 function Globals(props) {
-  if (props.value !== undefined) {
-    return (
-      <div>
-        <Typography component="h3" variant="h3">
-          Variables:
-        </Typography>
-        {[]
-          .concat(props.value)
-          .sort((a, b) => a.global_name.localeCompare(b.global_name))
-          .map((globals, index) => {
-            return (
-              <div key={`${globals.global_name}_${index}`}>
-                <code className="functionName">{globals.global_name}</code>
-              </div>
-            );
-          })}
-      </div>
-    );
-  } else {
-    return null;
-  }
+  return (
+    <div>
+      <Typography component="h3" variant="h3">
+        Variables:
+      </Typography>
+      {[]
+        .concat(props.globals)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((global, index) => {
+          return (
+            <div key={`${global.name}_${index}`}>
+              <code className="functionName">{global.name}</code>
+            </div>
+          );
+        })}
+    </div>
+  );
 }
 
 function GlobalFunctions(props) {
-  if (props.value !== undefined) {
     return (
       <div>
         <Typography component="h3" variant="h3">
           Functions:
         </Typography>
-        <MethodsInModules value={props.value} />
+        <FunctionsInModules functions={props.functions} />
       </div>
     );
-  } else {
-    return null;
-  }
 }
 
-function TopLevel(props) {
-  if (props.value !== undefined) {
-    return (
-      <div>
-        <Typography component="h2" variant="h2"></Typography>
-        <Globals value={props.value.module_globals} />
-        <GlobalFunctions value={props.value} />
-      </div>
-    );
-  } else {
-    return null;
-  }
-}
-
-function TopLevelExport(props) {
-  try {
-    if (
-      props.value.export_globals !== undefined ||
-      props.value.export_functions !== undefined
-    ) {
-      return (
-        <div>
-          <Typography component="h2" variant="h2">
-            Exports
-          </Typography>
-          <Globals value={props.value.export_globals} />
-          <GlobalFunctions value={props.value.export_functions} />
-        </div>
-      );
-    } else {
-      return null;
+function importPath(library, module) {
+  const filename = module.name.substring(0, module.name.lastIndexOf("."));
+  const libraryName = librarySegmentsToName(library.path);
+  if (libraryName) {
+    if (library.name === filename) {
+      return libraryName;
     }
-  } catch {
-    return null;
+    return libraryName + "." + filename;
   }
-}
-
-function importPath(libName, modules) {
-  var path = "";
-  try {
-    if (libName === modules.module.substring(0, modules.module.indexOf("."))) {
-      path = modules.module.substring(0, modules.module.indexOf("."));
-    } else {
-      path =
-        libName +
-        "." +
-        modules.module.substring(0, modules.module.indexOf("."));
-    }
-  } catch (err) {
-    console.log("function importPath(): path not found");
-  }
-  return path;
+  return filename;
 }
 
 function mapStateToProps(state, props) {
@@ -124,18 +75,18 @@ function PrintClasses(props) {
   try {
     return []
       .concat(props.module)
-      .sort((a, b) => a.class_name.localeCompare(b.class_name))
+      .sort((a, b) => a.name.localeCompare(b.name))
       .map((elem, index) => {
         return (
-          <Box pt={1} pb={1} key={elem.class_name + "_" + index}>
+          <Box pt={1} pb={1} key={elem.name + "_" + index}>
             <Link
-              to={`/${props.libName}/${props.moduleName}/${elem.class_name}`}
+              to={`/${props.libName}/${props.moduleName}/${elem.name}`}
             >
               <Typography component="h3" variant="h4">
-                {elem.class_name}{" "}
+                {elem.name}{" "}
               </Typography>
             </Link>
-            <Toitdocs value={elem.class_toitdoc} />
+            <Toitdocs value={elem.toitdoc} />
           </Box>
         );
       });
@@ -146,46 +97,30 @@ function PrintClasses(props) {
 
 class ModuleInfo extends Component {
   render() {
-    let propsOk = true;
-    [
-      this.props.libraries,
-      this.props.match.params.libName,
-      this.props.match.params.moduleName,
-    ].forEach((elem) => {
-      if (elem === undefined || elem === null) {
-        propsOk = false;
-      }
-    });
-    if (propsOk) {
-      const {
-        params: { libName, moduleName },
-      } = this.props.match;
-      const library = this.props.libraries.find(
-        ({ lib_name }) => lib_name === libName
-      );
-      const module = library.lib_modules.find(
-        ({ module }) => module === moduleName
-      );
-      const classes = this.props.classes;
-      if ("module_classes" in module && module.module_classes !== undefined) {
-        return (
-          <div>
-            <Grid container className={classes.root}>
-              <Grid item xs={9}>
-                <Box pt={2} pb={2}>
-                  <Typography component="h1" variant="h1">
-                    module: {module.module}
-                  </Typography>
-                </Box>
-                <Grid item>
-                  <Paper
-                    elevation={0}
-                    variant="outlined"
-                    className={classes.paper}
-                  >
-                    <strong>import</strong> {importPath(libName, module)}
-                  </Paper>
-                </Grid>
+    const { params: { libName, moduleName } } = this.props.match;
+    const library = getLibrary(this.props.libraries, libName);
+    const module = library && library.modules[moduleName];
+    const classes = this.props.classes;
+    if (module) {
+      return (
+        <div>
+          <Grid container className={classes.root}>
+            <Grid item xs={9}>
+              <Box pt={2} pb={2}>
+                <Typography component="h1" variant="h1">
+                  module: {module.name}
+                </Typography>
+              </Box>
+              <Grid item>
+                <Paper
+                  elevation={0}
+                  variant="outlined"
+                  className={classes.paper}
+                >
+                  <strong>import</strong> {importPath(library, module)}
+                </Paper>
+              </Grid>
+              {module.classes.length > 0 &&
                 <Box pt={2} pb={2}>
                   <Box pt={1} pb={1}>
                     <Typography component="h2" variant="h2">
@@ -193,42 +128,13 @@ class ModuleInfo extends Component {
                     </Typography>
                   </Box>
                   <PrintClasses
-                    module={module.module_classes}
+                    module={module.classes}
                     libName={libName}
                     moduleName={moduleName}
                   />
                 </Box>
-                <TopLevel value={module.top_level} />
-                <TopLevelExport value={module.top_level} />
-              </Grid>
-              <Hidden xsDown>
-                <Grid item xs={3}>
-                  <ModuleContentList value={module} />
-                </Grid>
-              </Hidden>
-            </Grid>
-          </div>
-        );
-      }
-      if ("export_classes" in module && module.export_classes !== undefined) {
-        return (
-          <div>
-            <Grid container>
-              <Grid item xs={9}>
-                <Box pt={2} pb={2}>
-                  <Typography component="h1" variant="h1">
-                    module: {module.module}
-                  </Typography>
-                </Box>
-                <Grid item>
-                  <Paper
-                    elevation={0}
-                    variant="outlined"
-                    className={classes.paper}
-                  >
-                    <strong>import</strong> {importPath(libName, module)}
-                  </Paper>
-                </Grid>
+              }
+              {module.export_classes.length > 0 &&
                 <Box pt={2} pb={2}>
                   <Box pt={1} pb={1}>
                     <Typography component="h2" variant="h2">
@@ -241,55 +147,23 @@ class ModuleInfo extends Component {
                     moduleName={moduleName}
                   />
                 </Box>
-                <TopLevel value={module.top_level} />
-                <TopLevelExport value={module.top_level} />
-              </Grid>
-              <Hidden xsDown>
-                <Grid item xs={3}>
-                  <ModuleContentList value={module} />
-                </Grid>
-              </Hidden>
+              }
+              <Globals globals={module.globals} />
+              <GlobalFunctions functions={module.functions} />
+              <Typography component="h2" variant="h2">
+                Exports
+              </Typography>
+              <Globals globals={module.export_globals} />
+              <GlobalFunctions functions={module.export_functions} />
             </Grid>
-          </div>
-        );
-      }
-      if ("top_level" in module && module.top_level !== undefined) {
-        return (
-          <div>
-            <Grid container>
-              <Grid item xs={9}>
-                <Box pt={2} pb={2}>
-                  <Typography component="h1" variant="h1">
-                    module: {module.module}
-                  </Typography>
-                </Box>
-                <Grid item>
-                  <Paper
-                    elevation={0}
-                    variant="outlined"
-                    className={classes.paper}
-                  >
-                    <strong>import</strong> {importPath(libName, module)}
-                  </Paper>
-                </Grid>
-                <TopLevel value={module.top_level} />
-                <TopLevelExport value={module.top_level} />
+            <Hidden xsDown>
+              <Grid item xs={3}>
+                <ModuleContentList value={module} />
               </Grid>
-              <Hidden xsDown>
-                <Grid item xs={3}>
-                  <ModuleContentList value={module} />
-                </Grid>
-              </Hidden>
-            </Grid>
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            Module: <strong>{module.module}</strong>
-          </div>
-        );
-      }
+            </Hidden>
+          </Grid>
+        </div>
+      );
     } else {
       return (
         <Grid containerclassName={this.props.classes.root}>

@@ -5,28 +5,12 @@ import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-// import React from "react";
-// import data from "../libraries.json";
-// import Grid from "@material-ui/core/Grid";
-// import Typography from "@material-ui/core/Typography";
-// import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import { ArrowRightAlt } from "@material-ui/icons";
 import Toitdocs from "./toitdoc_info";
 import { Parameters } from "./parameters";
-
-function ReturnType({ returnType, returnPath }) {
-  if (returnType !== "none" && returnType !== "any") {
-    return (
-      <span>
-        <Link to={`/${returnPath}/${returnType}`}>{returnType}</Link>
-      </span>
-    );
-  } else {
-    return <span>{returnType}</span>;
-  }
-}
+import { Type } from "./util.js"
+import { getLibrary } from "../sdk";
 
 const style = (theme) => ({
   root: {
@@ -45,153 +29,80 @@ function mapStateToProps(state, props) {
 
 class FunctionInfo extends Component {
   render() {
-    let propsOk = true;
-    try {
-      [
-        this.props.match.params.libName,
-        this.props.match.params.moduleName,
-        this.props.match.params.className,
-        this.props.match.params.functionType,
-        this.props.match.params.functionName,
-        this.props.match.params.index,
-      ].forEach((elem) => {
-        if (elem === undefined || elem === null) {
-          propsOk = false;
-        }
-      });
-    } catch {
-      propsOk = false;
+    let { params: { libName, moduleName, className, functionType, functionName, index } } = this.props.match;
+    functionType = functionType.toLowerCase();
+
+    var function_info = null;
+
+    var page_title = "Unknown";
+    const library = getLibrary(this.props.libraries, libName);
+    const module = library && library.modules[moduleName];
+
+    if (!module) {
+      return "Module not found";
     }
 
-    if (propsOk) {
-      const {
-        params: {
-          libName,
-          moduleName,
-          className,
-          functionType,
-          functionName,
-          index,
-        },
-      } = this.props.match;
-      var function_info;
+    let class_info = module.classes.find(({ name }) => name === className);
+    if (!class_info) {
+      class_info = module.export_classes.find(({ name }) => name === className);
+    }
 
-      var page_title = "Unknown";
+    console.log("class", class_info.structure.methods, index);
+    if (!class_info) {
+      return "Class not found";
+    }
 
-      var module_info = this.props.libraries
-        .find(({ lib_name }) => lib_name === libName)
-        .lib_modules.find(({ module }) => module === moduleName);
+    if (functionType === "constructors") {
+      function_info = class_info.structure.constructors[index];
+      page_title = "Constructor of class: " + className;
+    } else if (functionType === "factories") {
+      function_info = class_info.structure.factories[index];
+      page_title = "Factory of class: " + className;
+    } else if (functionType === "methods") {
+      console.log("class", class_info.structure.methods, index);
+      function_info = class_info.structure.methods[index];
+      page_title = "Function name: " + functionName;
+    } else if (functionType === "statics") {
+      function_info = class_info.structure.statics[index];
+      page_title = "Static name: " + functionName;
+    }
 
-      var class_info;
-      if (module_info.module_classes !== undefined) {
-        class_info = module_info.module_classes.find(
-          ({ class_name }) => class_name === className
-        );
-      } else if (module_info.export_classes !== undefined) {
-        class_info = module_info.export_classes.find(
-          ({ class_name }) => class_name === className
-        );
-      }
-
-      if (functionType === "Constructors") {
-        try {
-          function_info = class_info.class_structure.constructors[index];
-        } catch {
-          return null;
-        }
-        page_title = "Constructor of class: " + className;
-      } else if (functionType === "Factories") {
-        try {
-          function_info = class_info.class_structure.factories[index];
-        } catch {
-          return null;
-        }
-        page_title = "Factory of class: " + className;
-      } else if (functionType === "Members" || functionType === "Methods") {
-        try {
-          function_info = class_info.class_structure.members.methods.filter(
-            ({ function_name }) => function_name === functionName
-          )[index];
-        } catch {
-          return null;
-        }
-
-        page_title = "Function name: " + functionName;
-      } else if (functionType === "Statics") {
-        try {
-          console.log(class_info);
-          function_info = class_info.class_structure.statics.filter(
-            (elem) => elem.function_name === functionName
-          )[index];
-        } catch {
-          return null;
-        }
-        page_title = "Function name: " + functionName;
-      } else {
-        function_info = "Unknown type";
-      }
-
-      if (![undefined, null].includes(function_info)) {
-        return (
-          <div className={this.props.classes.root}>
-            <Grid container>
-              <Grid item xs={12} sm={9}>
-                <Box pt={2} pb={2}>
-                  <Typography variant="h1" component="h1">
-                    {page_title}
-                  </Typography>
-                </Box>
-                <Box>
-                  <code>
-                    <Parameters value={function_info.parameters} />
-                  </code>
-                  <ArrowRightAlt
-                    style={{
-                      verticalAlign: "middle",
-                      display: "inline-flex",
-                    }}
-                  />
-                  <span>
-                    <ReturnType
-                      returnType={function_info.return_type}
-                      returnPath={function_info.return_path}
-                    />
-                  </span>
-                </Box>
-                <Box>
-                  <Toitdocs value={function_info.function_toitdoc} />
-                </Box>
-              </Grid>
-            </Grid>
-          </div>
-        );
-      } else {
-        return (
-          <div className={this.props.classes.root}>
-            <Grid container>
-              <Grid item xs={12} sm={9}>
+    if (function_info) {
+      return (
+        <div className={this.props.classes.root}>
+          <Grid container>
+            <Grid item xs={12} sm={9}>
+              <Box pt={2} pb={2}>
                 <Typography variant="h1" component="h1">
-                  ERROR: {functionName} function info not found
+                  {page_title}
                 </Typography>
-                {/* <ListFunctions
-                libName={libName}
-                moduleName={moduleName}
-                className={className}
-                functionType={functionType}
-                functionName={functionName}
-                /> */}
-              </Grid>
+              </Box>
+              <Box>
+                <code>
+                  <Parameters value={function_info.parameters} />
+                </code>
+                <ArrowRightAlt
+                  style={{
+                    verticalAlign: "middle",
+                    display: "inline-flex",
+                  }}
+                />
+                <Type type={function_info.return_type}></Type>
+              </Box>
+              <Box>
+                <Toitdocs value={function_info.toitdoc} />
+              </Box>
             </Grid>
-          </div>
-        );
-      }
+          </Grid>
+        </div>
+      );
     } else {
       return (
         <div className={this.props.classes.root}>
           <Grid container>
             <Grid item xs={12} sm={9}>
               <Typography variant="h1" component="h1">
-                ERROR: FunctionInfo received wrong parameters
+                ERROR: {functionName} function info not found
               </Typography>
             </Grid>
           </Grid>

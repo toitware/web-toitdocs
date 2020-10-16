@@ -1,6 +1,12 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import Fuse from "fuse.js";
+import {
+  OBJECT_TYPE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_TOITDOCREF,
+  OBJECT_TYPE_STATEMENT_CODE, rootLibrary
+} from "./../sdk.js";
 
 // Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
@@ -13,9 +19,9 @@ const optionsBasic = {
   maxPatternLength: 32,
   minMatchCharLength: 2,
   keys: [
-    "libraries.lib_name",
-    "libraries.lib_modules.module",
-    "libraries.lib_modules.module_classes.class_name",
+    "libraries.name",
+    "modules.name",
+    "classes.name",
   ],
 };
 
@@ -31,59 +37,97 @@ const optionsAliases = {
   keys: ["text"],
 };
 
-function findAliases(object) {
+function findAliases(library) {
   var found = [];
-  iterateObject(object, "", "");
 
-  function iterateObject(obj, current_return_path, current_class_name) {
+  function iterateLibrary(library) {
+    Object.values(library.libraries).forEach((library) => iterateLibrary(library));
+    Object.values(library.modules).forEach((module) => iterateModule(module));
+  }
+
+  function iterateModule(module) {
+    module.classes.forEach((klass) => iterateClass(klass));
+    module.export_classes.forEach((klass) => iterateClass(klass));
+    module.functions.forEach((fn) => iterateFunction(fn, null));
+    module.export_functions.forEach((fn) => iterateFunction(fn, null));
+    module.globals.forEach((glob) => iterateGlobal(glob));
+    module.export_globals.forEach((glob) => iterateGlobal(glob));
+  }
+
+  function iterateClass(klass) {
+    iterateToitdoc(klass.toitdoc, klass.name, null);
+    klass.structure.constructors.forEach((constructor) => iterateFunction(constructor, klass.name));
+    klass.structure.factories.forEach((fac) => iterateFunction(fac, klass.name));
+    klass.structure.methods.forEach((method) => iterateFunction(method, klass.name));
+  }
+
+  function iterateFunction(fn, className) {
+    iterateToitdoc(fn.toitdoc, className, fn.return_type);
+  }
+
+  function iterateGlobal(glob) {
+    iterateToitdoc(glob.toitdoc, null, null);
+  }
+
+  function iterateToitdoc(obj, className, fnReturnType) {
     try {
-      for (var prop in obj) {
-        if (prop === "return_path") {
-          current_return_path = obj[prop];
-        } else if (prop === "class_name") {
-          current_class_name = obj[prop];
-        }
-
-        if (typeof obj[prop] === "object") {
-          iterateObject(obj[prop], current_return_path, current_class_name);
-        } else {
-          if ((prop === "title") & (obj[prop] === "Aliases")) {
-            for (var i = 0; i < obj.statements.length; i++) {
-              for (var j = 0; j < obj.statements[i].length; j++) {
-                for (var k = 0; k < obj.statements[i][j].itemized.length; k++) {
-                  for (var l = 0; l < obj.statements[i][j].itemized[k].length; l++) {
-                    var element = obj.statements[i][j].itemized[k][l];
-                    if (element.is_code === true) {
-                      var tempObj = element;
-                      tempObj.path =
-                        current_return_path + "/" + current_class_name;
-                      found.push(tempObj);
-                    }
-                  }
+      // TODO run though through this in a more structured way
+      if (obj instanceof Array) {
+        obj.forEach((obj) => { iterateToitdoc(obj, className, fnReturnType)});
+      } else if (obj instanceof Object && obj["object_type"]) {
+        if (obj["object_type"] === OBJECT_TYPE_SECTION && obj["title"] === "Aliases") {
+          obj.statements.forEach((obj) => {
+            if (obj["object_type"] === OBJECT_TYPE_STATEMENT_ITEMIZED) {
+              obj.items.forEach((obj) => {
+                if (obj["object_type"] === OBJECT_TYPE_TOITDOCREF || obj["object_type"] === OBJECT_TYPE_STATEMENT_CODE) {
+                  // TODO: need to copy the object before it must be manipulated.
+                  obj.path = fnReturnType.name + "/" + className;
+                  found.push(obj);
                 }
-              }
+              })
             }
-          }
+          })
         }
       }
-    } catch {
-      console.log("ERROR: iterateObject() function failed");
+    } catch (e) {
+      console.log("ERROR: iterateObject() function failed", e);
     }
   }
+
+  iterateLibrary(library);
+
   return found;
 }
 
-export default function Component(data) {
-  this.Index = Fuse.createIndex(optionsBasic.keys, [data]);
-  this.Basic = new Fuse([data], optionsBasic, this.Index);
-  this.Aliases = new Fuse(findAliases(data.libraries), optionsAliases);
+export function flattenDataStructure(data) {
+  const result = {
+    "libraries": [],
+    "modules": [],
+    "classes": [],
+  }
+
+  const library = data.libraries[rootLibrary];
+  flattenDataStructureLibrary(library, result);
+  return result;
 }
 
-// export default FuseSetup
+function flattenDataStructureLibrary(library, result) {
+  result.libraries.push({"name": library.name, "path": library.path});
+  Object.values(library.libraries).forEach((library) => flattenDataStructureLibrary(library, result));
+  Object.values(library.modules).forEach((module) => flattenDataStructureModule(library, module, result));
+}
 
-// // Create search modules.
-// const myIndex = Fuse.createIndex(optionsBasic.keys, [data]);
-// const fuseBasic =
-// const fuseAliases =
+function flattenDataStructureModule(library, module, result) {
+  result.modules.push({"name": module.name, "library": library.path});
+  module.classes.forEach((klass) => flattenDataStructureKlass(library, module, klass, result));
+}
 
-// export { fuseBasic as fuse, fuseAliases, myIndex };
+function flattenDataStructureKlass(library, module, klass, result) {
+  result.classes.push({"name": klass.name, "module": module.name, "library": library.path});
+}
+
+export default function Component(searchObject, libraries) {
+  this.Index = Fuse.createIndex(optionsBasic.keys, [searchObject]);
+  this.Basic = new Fuse([searchObject], optionsBasic, this.Index);
+  this.Aliases = new Fuse(findAliases(libraries[rootLibrary]), optionsAliases);
+}

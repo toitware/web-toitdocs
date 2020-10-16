@@ -12,7 +12,7 @@ import Fuse from "./fuse.js";
 import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import { printResult } from "./search_component";
+import { librarySegmentsToURI } from "../sdk";
 
 
 // Search bar styling.
@@ -74,18 +74,13 @@ const style = (theme) => ({
 
 function mapStateToProps(state, props) {
   const { sdk } = state
-  return { version: sdk.version, object: sdk.object, match: props.match }
+  return { version: sdk.version, searchObject: sdk.searchObject, libraries: sdk.object.libraries, match: props.match }
 }
 
 class HeaderBar extends Component {
-  // const [searchTerm, setSearchTerm] = useState("");
-  // const [results, setResults] = useState([]);
-  // const store = useStore();
-  // const classes = headerBarStyling();
-
   constructor(props) {
     super();
-    this.fuse = new Fuse(props.object);
+    this.fuse = new Fuse(props.searchObject, props.libraries);
     this.state = {
       searchTerm: "",
       results: [],
@@ -146,22 +141,54 @@ class HeaderBar extends Component {
     }
   };
 
-  noResultsMessage(result){
-    var output = [];
-    if (JSON.stringify(result.matches) ==="[]" && result.is_filled ===true){
-      output.push("Nothing found")
+  renderSearchResult() {
+    let results = this.state.results;
+    if (!results.is_filled) {
+      return null;
     }
-    return output;
-  }
 
-  returnType(item) {
-    var output = "";
-    try {
-      output = item.Type.split(".").pop();
-    } catch (err) {
-      output = JSON.stringify(err);
+    if (results.matches.length === 0) {
+      return "no results";
     }
-    return output;
+
+    // TODO: Enable search on aliases
+    return results.matches.map((match, index) => {
+      switch (match.key) {
+        case "classes.name":
+          let klass = this.props.searchObject.classes[match.refIndex];
+          return <ListItem className="ListItem" button key={"list_item" + index}>
+            <div id="ElementOfList">
+              <Link to={`/${librarySegmentsToURI(klass.library)}/${klass.module}/${klass.name}`}>
+                {" "}
+                Name: <b> {klass.name} </b> Type: <b>Class</b>
+              </Link>
+            </div>
+          </ListItem>
+        case "libraries.name":
+          let library = this.props.searchObject.libraries[match.refIndex];
+          return <ListItem className="ListItem" button key={"list_item" + index}>
+            <div id="ElementOfList">
+              <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                {" "}
+                Name: <b> {library.name} </b> Type: <b>Library</b>
+              </Link>
+            </div>
+          </ListItem>
+        case "modules.name":
+          let module = this.props.searchObject.modules[match.refIndex];
+          return <ListItem className="ListItem" button key={"list_item" + index}>
+            <div id="ElementOfList">
+              <Link to={`/${librarySegmentsToURI(module.library)}/${module.name}`}>
+                {" "}
+                Name: <b> {module.name} </b> Type: <b>Module</b>
+              </Link>
+            </div>
+          </ListItem>
+        default:
+          console.error("unhandled search result", match);
+          return null;
+      }
+    })
   }
 
   render() {
@@ -213,25 +240,7 @@ class HeaderBar extends Component {
             }}
           >
             <List style={{ backgroundColor: "grey" }}>
-              {printResult(this.props.object, this.state.results, this.fuse.Index).map((item, index) => {
-                return (
-                  <ListItem className="ListItem" button key={"list_item" + index}>
-                    <div id="ElementOfList">
-                      <Link to={`/${item.Path}`}>
-                        {" "}
-                        Name: <b> {item.Name} </b> Type: <b>{this.returnType(item)}</b>
-                      </Link>
-                    </div>
-                  </ListItem>
-                );
-              })}
-              {this.noResultsMessage(this.state.results).map((item) => {
-                return (
-                <ListItem className="ListItem" button key={"empty_message"}>
-                  {item}
-                </ListItem>
-                );
-              })}
+              {this.renderSearchResult()}
             </List>
           </Grid>
         </div>
