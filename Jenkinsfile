@@ -58,7 +58,7 @@ pipeline {
 
             post {
                 always {
-                    sh "make clean"
+                    sh "rm -rf ./build/"
                 }
             }
         }
