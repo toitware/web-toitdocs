@@ -19,7 +19,14 @@ const store = createStore(
   )
 );
 
-store.dispatch(fetchSDK("toitdoc"));
+
+const searchParams = new URLSearchParams(window.location.search);
+let sdkVersion = "latest";
+if (searchParams.has("version")) {
+  sdkVersion = searchParams.get("version");
+}
+
+store.dispatch(fetchSDK(sdkVersion));
 
 render((
   <Provider store={store}>
