@@ -10,14 +10,14 @@ class WelcomePage extends Component {
       <Grid container>
         <Grid item xs={12} sm={9}>
           <Grid item container justify="center">
-            <h1>Toit API Reference</h1>
+            <h1>ᴛᴏɪᴛ SDK Reference</h1>
           </Grid>
           <div style={{ padding: 20 }}>
             <Grid container>
-              Welcome to the TOIT API reference. TOIT SDK contains a vast amount
+              Welcome to the ᴛᴏɪᴛ SDK reference. ᴛᴏɪᴛ SDK contains a vast amount
               of libraries and ready-to use classes and functionalities that allow
               a fast and easy use of Toitboxes. This documentation contains the
-              structure of TOIT libraries. These include:
+              structure of ᴛᴏɪᴛ libraries. These include:
             </Grid>
           </div>
           <Grid container justify="center">
