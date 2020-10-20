@@ -124,6 +124,14 @@ function mapStateToProps(state, props) {
     match: props.match,
   };
 }
+function hasContent(props){
+  //console.log(Object.keys(props).length)
+  if (Object.keys(props).length === 0){
+    return false;
+  } else {
+    return true;
+  }
+}
 
 // Returns description of the class
 class ClassInfo extends Component {
@@ -138,7 +146,7 @@ class ClassInfo extends Component {
       </Grid>
     );
   }
-
+  
   render() {
     const classes = this.props.classes;
     const { params: { libName, moduleName, className } } = this.props.match;
@@ -169,35 +177,35 @@ class ClassInfo extends Component {
               </Typography>
               {class_info.extends && <Extends reference={class_info.extends} />}
             </Box>
-            <Constructors
+            {hasContent(class_info.structure.constructors) && <Constructors
               constructors={class_info.structure.constructors}
               libName={libName}
               moduleName={moduleName}
               className={className}
               functionType="Constructors"
-            />
-            <Factories
+            />}
+            {hasContent(class_info.structure.factories) && <Factories
               value={class_info.structure.factories}
               libName={libName}
               moduleName={moduleName}
               className={className}
               functionType="Factories"
-            />
-            <Statics
+            />}
+            {hasContent(class_info.structure.statics) && <Statics
               value={class_info.structure.statics}
               libName={libName}
               moduleName={moduleName}
               className={className}
               functionType="Statics"
-            />
+            />}
             <Fields fields={class_info.structure.fields} />
-            <ClassMethods
+            {hasContent(class_info.structure.methods) && <ClassMethods
               value={class_info.structure.methods}
               libName={libName}
               moduleName={moduleName}
               className={className}
               functionType="Methods"
-            />
+            />}
           </Grid>
           <Hidden xsDown>
             <Grid item sm={3}>

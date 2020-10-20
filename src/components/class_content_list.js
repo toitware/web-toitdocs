@@ -22,22 +22,42 @@ function PrintList(objects, key_group) {
     });
 }
 
+function hasContent(props){
+  if (Object.keys(props).length === 0){
+    return false;
+  } else {
+    return true;
+  }
+}
 
 class ClassContentList extends React.Component {
   render() {
     return (
       <div>
+        { hasContent(this.props.value.structure.constructors) &&
+        <div>
         <h4>Constructors</h4>
         <ul>{PrintList(this.props.value.structure.constructors, "constructors")}</ul>
-
+        </div>
+        }
+        { hasContent(this.props.value.structure.statics) &&
+        <div>
         <h4>Statics</h4>
         <ul>{PrintList(this.props.value.structure.statics, "statics")}</ul>
-
+        </div>
+        }
+        { hasContent(this.props.value.structure.fields) &&
+        <div>
         <h4>Fields</h4>
         <ul>{PrintList(this.props.value.structure.fields, "fields")}</ul>
-
+        </div>
+        }
+        { hasContent(this.props.value.structure.methods) &&
+        <div>
         <h4>Methods</h4>
         <ul>{PrintList(this.props.value.structure.methods, "methods")}</ul>
+        </div>
+        }
       </div>
     );
   }
