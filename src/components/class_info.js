@@ -175,8 +175,7 @@ class ClassInfo extends Component {
               </Typography>
               {class_info.extends && <Extends reference={class_info.extends} />}
             </Box>
-            {class_info.structure.constructors.length > 0 && (
-              <Constructors
+            {class_info.structure.constructors.length > 0 && (<Constructors
                 constructors={class_info.structure.constructors}
                 libName={libName}
                 moduleName={moduleName}
@@ -184,8 +183,7 @@ class ClassInfo extends Component {
                 functionType="Constructors"
               />
             )}
-            {class_info.structure.factories.length > 0 && (
-              <Factories
+            {class_info.structure.factories.length > 0 && (<Factories
                 value={class_info.structure.factories}
                 libName={libName}
                 moduleName={moduleName}
@@ -193,8 +191,7 @@ class ClassInfo extends Component {
                 functionType="Factories"
               />
             )}
-            {class_info.structure.statics.length > 0 && (
-              <Statics
+            {class_info.structure.statics.length > 0 && (<Statics
                 value={class_info.structure.statics}
                 libName={libName}
                 moduleName={moduleName}
@@ -203,8 +200,7 @@ class ClassInfo extends Component {
               />
             )}
             <Fields fields={class_info.structure.fields} />
-            {class_info.structure.methods.length > 0 && (
-              <ClassMethods
+            {class_info.structure.methods.length > 0 && (<ClassMethods
                 value={class_info.structure.methods}
                 libName={libName}
                 moduleName={moduleName}
