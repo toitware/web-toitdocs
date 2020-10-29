@@ -79,16 +79,20 @@ function Fields(props) {
         Fields:
       </Typography>
       {props.fields.map((field, index) => {
-          return (
-            <div key={"class_field_"+ index}>
-              {/* TODO: link to field type */}
-              <div className="functionName">
-                <strong>{field.name}</strong>
-                {field.type && <>/ <Type type={field.type} /> </>}
-              </div>
-              {field.toitdoc && <Toitdocs value={field.toitdoc} />}
+        return (
+          <div key={"class_field_" + index}>
+            {/* TODO: link to field type */}
+            <div className="functionName">
+              <strong>{field.name}</strong>
+              {field.type && (
+                <>
+                  / <Type type={field.type} />{" "}
+                </>
+              )}
             </div>
-          );
+            {field.toitdoc && <Toitdocs value={field.toitdoc} />}
+          </div>
+        );
       })}
     </div>
   );
@@ -124,14 +128,6 @@ function mapStateToProps(state, props) {
     match: props.match,
   };
 }
-function hasContent(props){
-  //console.log(Object.keys(props).length)
-  if (Object.keys(props).length === 0){
-    return false;
-  } else {
-    return true;
-  }
-}
 
 // Returns description of the class
 class ClassInfo extends Component {
@@ -146,10 +142,12 @@ class ClassInfo extends Component {
       </Grid>
     );
   }
-  
+
   render() {
     const classes = this.props.classes;
-    const { params: { libName, moduleName, className } } = this.props.match;
+    const {
+      params: { libName, moduleName, className },
+    } = this.props.match;
 
     const library = getLibrary(this.props.libraries, libName);
     const module = library && library.modules[moduleName];
@@ -177,35 +175,43 @@ class ClassInfo extends Component {
               </Typography>
               {class_info.extends && <Extends reference={class_info.extends} />}
             </Box>
-            {hasContent(class_info.structure.constructors) && <Constructors
-              constructors={class_info.structure.constructors}
-              libName={libName}
-              moduleName={moduleName}
-              className={className}
-              functionType="Constructors"
-            />}
-            {hasContent(class_info.structure.factories) && <Factories
-              value={class_info.structure.factories}
-              libName={libName}
-              moduleName={moduleName}
-              className={className}
-              functionType="Factories"
-            />}
-            {hasContent(class_info.structure.statics) && <Statics
-              value={class_info.structure.statics}
-              libName={libName}
-              moduleName={moduleName}
-              className={className}
-              functionType="Statics"
-            />}
+            {class_info.structure.constructors.length > 0 && (
+              <Constructors
+                constructors={class_info.structure.constructors}
+                libName={libName}
+                moduleName={moduleName}
+                className={className}
+                functionType="Constructors"
+              />
+            )}
+            {class_info.structure.factories.length > 0 && (
+              <Factories
+                value={class_info.structure.factories}
+                libName={libName}
+                moduleName={moduleName}
+                className={className}
+                functionType="Factories"
+              />
+            )}
+            {class_info.structure.statics.length > 0 && (
+              <Statics
+                value={class_info.structure.statics}
+                libName={libName}
+                moduleName={moduleName}
+                className={className}
+                functionType="Statics"
+              />
+            )}
             <Fields fields={class_info.structure.fields} />
-            {hasContent(class_info.structure.methods) && <ClassMethods
-              value={class_info.structure.methods}
-              libName={libName}
-              moduleName={moduleName}
-              className={className}
-              functionType="Methods"
-            />}
+            {class_info.structure.methods.length > 0 && (
+              <ClassMethods
+                value={class_info.structure.methods}
+                libName={libName}
+                moduleName={moduleName}
+                className={className}
+                functionType="Methods"
+              />
+            )}
           </Grid>
           <Hidden xsDown>
             <Grid item sm={3}>
