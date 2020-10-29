@@ -56,10 +56,10 @@ function StatementItemized({items, classes}) {
 }
 
 function StatementParagraph({statement, classes}) {
-  return statement.expressions.map((expr) => <Expression expr={expr} classes={classes} />);
+  return statement.expressions.map((expr, index) => <Expression key={"expression_"+index} expr={expr} classes={classes} />);
 }
 
-function ToitdocRef({reference, classes}) {
+function ToitdocRef({reference}) {
   // TODO: Handle references to other objects.
   return <span>{reference.text}</span>
 }
@@ -102,7 +102,7 @@ function Section({section, classes}) {
       </Grid>
       <Grid container>
         <Grid item>
-          {section.statements.map((statement) => <Statement statement={statement} classes={classes} />)}
+          {section.statements.map((statement,index) => <Statement key={"statement_"+index} statement={statement} classes={classes} />)}
         </Grid>
       </Grid>
     </div>
@@ -115,7 +115,7 @@ function Toitdocs(props) {
   if (!props.value) {
     return null;
   }
-  return props.value.map((section) => <Section section={section} classes={classes} />);
+  return props.value.map((section,index) => <Section key={"section_"+index} section={section} classes={classes} />);
 }
 
 export default Toitdocs;

@@ -47,7 +47,6 @@ class FunctionInfo extends Component {
       class_info = module.export_classes.find(({ name }) => name === className);
     }
 
-    console.log("class", class_info.structure.methods, index);
     if (!class_info) {
       return "Class not found";
     }
@@ -59,7 +58,6 @@ class FunctionInfo extends Component {
       function_info = class_info.structure.factories[index];
       page_title = "Factory of class: " + className;
     } else if (functionType === "methods") {
-      console.log("class", class_info.structure.methods, index);
       function_info = class_info.structure.methods[index];
       page_title = "Function name: " + functionName;
     } else if (functionType === "statics") {
