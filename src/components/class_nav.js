@@ -8,6 +8,7 @@ import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
 import { getLibrary, librarySegmentsToName } from "../sdk";
 import ListItemLink from "./list_item_link";
+import Typography from "@material-ui/core/Typography";
 
 function mapStateToProps(state, props) {
   const { sdk } = state;
@@ -21,36 +22,43 @@ function mapStateToProps(state, props) {
 class ClassNav extends Component {
   render() {
     const {
-      params: { libName, moduleName },
+      params: { libName, moduleName, className },
     } = this.props.match;
 
     const library = getLibrary(this.props.libraries, libName);
     const module = library && library.modules[moduleName];
 
     if (module) {
-      const libraryName = librarySegmentsToName(library.path);
-      const classes = [].concat(module.classes).sort((a, b) => a.name.localeCompare(b.name));
+      const classes = []
+        .concat(module.classes)
+        .sort((a, b) => a.name.localeCompare(b.name));
 
       return (
-        <div className="sideMenu">
+        <div className="sideMenu" style={{ paddingTop: "10px" }}>
           <ErrorBoundary>
             <List
               component="nav"
               disablePadding
               subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
-                  <Link to={`/`}>modules</Link>
-                  {" / "}
-                  <Link to={`/${libName}`}>{libraryName}</Link>
-                  {" / "}
-                  <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
+                  <Typography color="primary">
+                    <Link to={`/`}>Modules</Link>
+                    {" / "}
+                    <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
+                    {" / "}
+                    {className}
+                  </Typography>
                 </ListSubheader>
               }
             >
               {" "}
-              {classes.map((klass, index) =>
-                <ListItemLink to={`/${libName}/${module.name}/${klass.name}`} key={"class-index-"+index} primary={klass.name} />
-              )}
+              {classes.map((klass, index) => (
+                <ListItemLink
+                  to={`/${libName}/${module.name}/${klass.name}`}
+                  key={"class-index-" + index}
+                  primary={klass.name}
+                />
+              ))}
             </List>
           </ErrorBoundary>
         </div>
