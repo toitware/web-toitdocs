@@ -40,11 +40,8 @@ class ModuleNav extends Component {
     const {
       params: { libName, moduleName },
     } = this.props.match;
-
-    console.log(moduleName);
     const library = getLibrary(this.props.libraries, libName);
     const moduleNames = Object.keys(library.modules).sort();
-    console.log(library.path);
     return (
       <div className="sideMenu" style={{ paddingTop: "10px" }}>
         <ErrorBoundary>

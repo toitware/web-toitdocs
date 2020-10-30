@@ -41,7 +41,7 @@ class ClassNav extends Component {
               disablePadding
               subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
-                  <Typography color="primary">
+                  <Typography color="secondary">
                     <Link to={`/`}>Modules</Link>
                     {" / "}
                     <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
