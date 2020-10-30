@@ -6,7 +6,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import { Link } from "react-router-dom";
 import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
-import { getLibrary, librarySegmentsToName } from "../sdk";
+import { getLibrary } from "../sdk";
 import ListItemLink from "./list_item_link";
 import Typography from "@material-ui/core/Typography";
 
