@@ -15,29 +15,44 @@ const styles = (theme) => ({
 });
 
 function PrintList(objects, key_group) {
-  return []
-    .concat(objects)
-    .map((obj, i) => {
-      return <li key={"print_list_stat_" + key_group + + i}> {obj.name} </li>;
-    });
+  return [].concat(objects).map((obj, i) => {
+    return <li key={"print_list_stat_" + key_group + +i}> {obj.name} </li>;
+  });
 }
-
 
 class ClassContentList extends React.Component {
   render() {
     return (
       <div>
-        <h4>Constructors</h4>
-        <ul>{PrintList(this.props.value.structure.constructors, "constructors")}</ul>
-
-        <h4>Statics</h4>
-        <ul>{PrintList(this.props.value.structure.statics, "statics")}</ul>
-
-        <h4>Fields</h4>
-        <ul>{PrintList(this.props.value.structure.fields, "fields")}</ul>
-
-        <h4>Methods</h4>
-        <ul>{PrintList(this.props.value.structure.methods, "methods")}</ul>
+        {this.props.value.structure.constructors.length > 0 && (
+          <div>
+            <h4>Constructors</h4>
+            <ul>
+              {PrintList(
+                this.props.value.structure.constructors,
+                "constructors"
+              )}
+            </ul>
+          </div>
+        )}
+        {this.props.value.structure.statics.length > 0 && (
+          <div>
+            <h4>Statics</h4>
+            <ul>{PrintList(this.props.value.structure.statics, "statics")}</ul>
+          </div>
+        )}
+        {this.props.value.structure.fields.length > 0 && (
+          <div>
+            <h4>Fields</h4>
+            <ul>{PrintList(this.props.value.structure.fields, "fields")}</ul>
+          </div>
+        )}
+        {this.props.value.structure.methods.length > 0 && (
+          <div>
+            <h4>Methods</h4>
+            <ul>{PrintList(this.props.value.structure.methods, "methods")}</ul>
+          </div>
+        )}
       </div>
     );
   }
