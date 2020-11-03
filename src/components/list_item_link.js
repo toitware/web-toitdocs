@@ -12,7 +12,6 @@ export default function ListItemLink(props) {
       )),
     [to],
   );
-
   return (
     <li>
       <ListItem button component={CustomLink}>
