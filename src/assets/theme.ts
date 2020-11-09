@@ -20,7 +20,7 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: [
-      "Segoe Pro Display"
+      "Helvetica Neue"
     ].join(","),
     body1: {
       fontSize: "0.85rem",
@@ -29,38 +29,40 @@ const theme = createMuiTheme({
       fontSize: "0.80rem",
     },
     h1: {
+      fontWeight: 500,
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       fontSize: "4.0rem"
     },
     h2: {
+      fontWeight: 500,
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       fontSize: "3.0rem"
     },
     h3: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
-      fontSize: "2.5rem"
+      fontSize: "2.0rem"
     },
     h4: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
-      fontSize: "2.5rem"
+      fontSize: "1.5rem"
     },
     h5: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       fontSize: "1.25rem",
     },
     h6: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       padding: 0.5,
       fontSize: "1rem",
