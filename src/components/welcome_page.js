@@ -24,14 +24,11 @@ class WelcomePage extends Component {
             <List>
               <ListItemText>
                 <b>Library names</b>
-              </ListItemText>
-              <ListItemText>
+                <p></p>
                 <b>Module names</b>
-              </ListItemText>
-              <ListItemText>
+                <p></p>
                 <b>Class names</b>
-              </ListItemText>
-              <ListItemText>
+                <p></p>
                 <b>Class methods</b>
               </ListItemText>
             </List>
@@ -39,7 +36,7 @@ class WelcomePage extends Component {
           <div style={{ padding: 20 }}>
             <Grid item container>
               <p>
-                Except for &nbsp; <b> core </b>, you must import a library
+                Except for&nbsp;<b>core</b>, you must import a library
                 before you can use it. Here's an example of how to do it:
               </p>
             </Grid>

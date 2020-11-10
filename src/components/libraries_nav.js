@@ -58,21 +58,27 @@ class LibrariesNav extends Component {
     const libraryNames = Object.keys(library.libraries).sort();
 
     return (
-      <div className="sideMenu" style={{paddingTop: "10px"}}>
+      <div className="sideMenu" style={{paddingTop: "20px"}}>
         <ErrorBoundary>
           <List>
             <ListSubheader>
-              <Typography color="secondary">Modules</Typography>
+              <Typography color="secondary"><b>Modules</b></Typography>
             </ListSubheader>
+            <div className="sideMenu" style={{paddingTop: "20px"}}>
             {moduleNames.map((moduleName) =>
               this.renderModule(library, library.modules[moduleName])
             )}
+            </div>
+            <div className="sideMenu" style={{paddingTop: "20px"}}>
             <ListSubheader>
-              <Typography color="secondary">Libraries</Typography>
+              <Typography color="secondary"><b>Libraries</b></Typography>
             </ListSubheader>
+            </div>
+            <div className="sideMenu" style={{paddingTop: "20px"}}>
             {libraryNames.map((libraryName) =>
               this.renderLibrary(library.libraries[libraryName])
             )}
+            </div>
           </List>
         </ErrorBoundary>
       </div>
