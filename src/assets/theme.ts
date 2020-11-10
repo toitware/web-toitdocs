@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
-import { orange, amber, grey, yellow } from "@material-ui/core/colors";
+import { orange, amber, grey, yellow, blue } from "@material-ui/core/colors";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
 export const graphColors = [
@@ -15,7 +15,7 @@ const theme = createMuiTheme({
       main: amber[500]
     },
     secondary: {
-      main: grey[700]
+      main: "#212121"
     },
   },
   typography: {
@@ -24,6 +24,7 @@ const theme = createMuiTheme({
     ].join(","),
     body1: {
       fontSize: "0.85rem",
+      lineHeight: "0.1rem",
     },
     body2: {
       fontSize: "0.80rem",
