@@ -1,8 +1,8 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, {Component} from "react";
+import React, { Component } from "react";
 import ListItemText from "@material-ui/core/ListItemText";
-import {Grid, List, Paper } from "@material-ui/core";
+import { Grid, List, Paper } from "@material-ui/core";
 
 class WelcomePage extends Component {
   render() {
@@ -15,9 +15,9 @@ class WelcomePage extends Component {
           <div style={{ padding: 20 }}>
             <Grid container>
               Welcome to the ᴛᴏɪᴛ SDK reference. ᴛᴏɪᴛ SDK contains a vast amount
-              of libraries and ready-to use classes and functionalities that allow
-              a fast and easy use of Toitboxes. This documentation contains the
-              structure of ᴛᴏɪᴛ libraries. These include:
+              of libraries and ready-to use classes and functionalities that
+              allow a fast and easy use of Toitboxes. This documentation
+              contains the structure of ᴛᴏɪᴛ libraries. These include:
             </Grid>
           </div>
           <Grid container justify="center">
@@ -38,8 +38,10 @@ class WelcomePage extends Component {
           </Grid>
           <div style={{ padding: 20 }}>
             <Grid item container>
-    Except for &nbsp; <b> core </b>, you must import a library before you can use
-              it. Here's an example of how to do it:
+              <p>
+                Except for &nbsp; <b> core </b>, you must import a library
+                before you can use it. Here's an example of how to do it:
+              </p>
             </Grid>
           </div>
           <div style={{ padding: 20 }}>
@@ -50,16 +52,16 @@ class WelcomePage extends Component {
                     <strong>import</strong> metrics
                   </p>
                   <p>
-                    <strong>import</strong> encoding.json
-                    &nbsp;<strong>as</strong> json
+                    <strong>import</strong> encoding.json &nbsp;
+                    <strong>as</strong> json
                   </p>
                   <p>
-                    <strong>import</strong> peripherals
-                    &nbsp;<strong>show</strong> *
+                    <strong>import</strong> peripherals &nbsp;
+                    <strong>show</strong> *
                   </p>
                   <p>
-                    <strong>import</strong> pixel_display
-                    &nbsp;<strong>show</strong> TwoColorPixelDisplay
+                    <strong>import</strong> pixel_display &nbsp;
+                    <strong>show</strong> TwoColorPixelDisplay
                   </p>
                 </code>
               </Paper>
@@ -67,16 +69,16 @@ class WelcomePage extends Component {
           </div>
           <div style={{ padding: 20 }}>
             <Grid>
-                As can be seen from the examples above there different ways of
-                importing content to your program. You can import the whole
-                library, its module or even a single class. It is also possible to
-                add an alias to imported library.
+              As can be seen from the examples above there different ways of
+              importing content to your program. You can import the whole
+              library, its module or even a single class. It is also possible to
+              add an alias to imported library.
             </Grid>
           </div>
         </Grid>
       </Grid>
     );
   }
-};
+}
 
 export default WelcomePage;
