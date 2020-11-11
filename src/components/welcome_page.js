@@ -23,14 +23,17 @@ class WelcomePage extends Component {
           <Grid container justify="center">
             <List>
               <ListItemText>
-                <b>Library names</b>
-                <p></p>
-                <b>Module names</b>
-                <p></p>
-                <b>Class names</b>
-                <p></p>
-                <b>Class methods</b>
+                <h3><b>Library names</b></h3>
               </ListItemText>
+              <ListItemText>
+                <h3><b>Module names</b></h3>
+              </ListItemText>
+              <ListItemText>
+                <h3><b>Class names</b></h3>
+              </ListItemText>
+              <ListItemText>
+                <h3><b>Class methods</b></h3>
+              </ListItemText>  
             </List>
           </Grid>
           <div style={{ padding: 20 }}>
