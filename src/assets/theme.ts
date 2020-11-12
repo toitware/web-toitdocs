@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
-import { orange, amber, grey, yellow, blue } from "@material-ui/core/colors";
+import { orange, amber, yellow } from "@material-ui/core/colors";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
 export const graphColors = [
