@@ -34,23 +34,25 @@ class ClassNav extends Component {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       return (
-        <div className="sideMenu" style={{ paddingTop: "10px" }}>
+        <div className="sideMenu" style={{ paddingTop: "30px" }}>
           <ErrorBoundary>
             <List
               component="nav"
               disablePadding
               subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
+                  <Link to={`/`}>Modules /</Link>
                   <Typography color="secondary">
-                    <Link to={`/`}>Modules</Link>
-                    {" / "}
                     <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>
                     {" / "}
+                    <h1><p></p></h1>
                     {className}
                   </Typography>
                 </ListSubheader>
               }
             >
+            <br>
+            </br>
               {" "}
               {classes.map((klass, index) => (
                 <ListItemLink
