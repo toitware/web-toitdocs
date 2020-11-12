@@ -17,15 +17,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   paper: {
-    backgroundColor: "#9d9d9c11",
-    border: "1px solid rgba(0, 0, 0, 0.12)",
-    borderRadius: "4px",
-    padding: "2px",
+
   },
   paperSection: {
-    padding: theme.spacing(1),
-    width: "auto",
-    backgroundColor: "#9d9d9c11",
+   
   },
 }));
 
