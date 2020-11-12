@@ -43,21 +43,22 @@ class ModuleNav extends Component {
     const library = getLibrary(this.props.libraries, libName);
     const moduleNames = Object.keys(library.modules).sort();
     return (
-      <div className="sideMenu" style={{ paddingTop: "10px" }}>
+      <div className="sideMenu" style={{ paddingTop: "20px" }}>
         <ErrorBoundary>
           <List
             component="nav"
             disablePadding
             subheader={
               <ListSubheader component="div" id="nested-list-subheader">
-                <Link to={`/`}>Modules</Link>
+                <Link to={`/`}>Modules /</Link>
                 <Typography color="secondary">
-                  {" / "}
                   {moduleName}
                 </Typography>
               </ListSubheader>
             }
           >
+            <br>
+            </br>
             {moduleNames.map((moduleName) =>
               this.renderModule(library, library.modules[moduleName])
             )}

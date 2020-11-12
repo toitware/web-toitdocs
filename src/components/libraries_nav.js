@@ -61,18 +61,25 @@ class LibrariesNav extends Component {
       <div className="sideMenu" style={{paddingTop: "10px"}}>
         <ErrorBoundary>
           <List>
+            <div className="sideMenu" style={{paddingTop: "20px"}}>
             <ListSubheader>
-              <Typography color="secondary">Modules</Typography>
+              <Typography color="secondary"><b>Libraries</b></Typography>
             </ListSubheader>
-            {moduleNames.map((moduleName) =>
-              this.renderModule(library, library.modules[moduleName])
-            )}
-            <ListSubheader>
-              <Typography color="secondary">Libraries</Typography>
-            </ListSubheader>
+            </div>
+            <div className="sideMenu" style={{paddingTop: "20px"}}>
             {libraryNames.map((libraryName) =>
               this.renderLibrary(library.libraries[libraryName])
             )}
+            <ListSubheader>
+              <Typography color="secondary"><b>Modules</b></Typography>
+            </ListSubheader>
+            </div>
+            <div className="sideMenu" style={{paddingTop: "20px"}}>
+            {moduleNames.map((moduleName) =>
+              this.renderModule(library, library.modules[moduleName])
+            )}
+            </div>
+
           </List>
         </ErrorBoundary>
       </div>
