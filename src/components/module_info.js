@@ -24,7 +24,7 @@ function Globals(props) {
   return (
     <div>
       <Typography component="h3" variant="h3">
-        Variables:
+        Variables
       </Typography>
       {[]
         .concat(props.globals)
@@ -44,7 +44,7 @@ function GlobalFunctions(props) {
     return (
       <div>
         <Typography component="h3" variant="h3">
-          Functions:
+          Functions
         </Typography>
         <FunctionsInModules functions={props.functions} />
       </div>

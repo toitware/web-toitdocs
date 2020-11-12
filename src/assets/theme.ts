@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
-import { orange, amber, grey, yellow } from "@material-ui/core/colors";
+import { orange, amber, yellow } from "@material-ui/core/colors";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
 export const graphColors = [
@@ -15,52 +15,55 @@ const theme = createMuiTheme({
       main: amber[500]
     },
     secondary: {
-      main: grey[700]
+      main: "#212121"
     },
   },
   typography: {
     fontFamily: [
-      "Segoe Pro Display"
+      "Helvetica Neue"
     ].join(","),
     body1: {
       fontSize: "0.85rem",
+      lineHeight: "0.1rem",
     },
     body2: {
       fontSize: "0.80rem",
     },
     h1: {
+      fontWeight: 500,
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       fontSize: "4.0rem"
     },
     h2: {
+      fontWeight: 500,
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       fontSize: "3.0rem"
     },
     h3: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
-      fontSize: "2.5rem"
+      fontSize: "2.0rem"
     },
     h4: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
-      fontSize: "2.5rem"
+      fontSize: "1.5rem"
     },
     h5: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       fontSize: "1.25rem",
     },
     h6: {
       fontFamily: [
-        "Canaro Light"
+        "Helvetica Neue"
       ].join(","),
       padding: 0.5,
       fontSize: "1rem",

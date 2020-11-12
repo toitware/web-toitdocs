@@ -25,7 +25,7 @@ function Constructors(props) {
   return (
     <div>
       <Typography variant="h2" component="h2">
-        Constructors:
+        Constructors
       </Typography>
       <Methods
         value={props.constructors}
@@ -42,7 +42,7 @@ function Statics(props) {
   return (
     <div>
       <Typography variant="h2" component="h2">
-        Statics:
+        Statics
       </Typography>
       <Methods
         value={props.value}
@@ -59,7 +59,7 @@ function Factories(props) {
   return (
     <div>
       <Typography variant="h2" component="h2">
-        Factories:
+        Factories
       </Typography>
       <Methods
         value={props.value}
@@ -76,7 +76,7 @@ function Fields(props) {
   return (
     <div>
       <Typography variant="h3" component="h3">
-        Fields:
+        Fields
       </Typography>
       {props.fields.map((field, index) => {
         return (
@@ -107,7 +107,7 @@ function ClassMethods(props) {
   return (
     <div>
       <Typography variant="h3" component="h2">
-        Methods:
+        Methods
       </Typography>
       <Methods
         value={props.value}
