@@ -37,23 +37,48 @@ class ModuleContentList extends React.Component {
     return (
       <div>
 
-        <h4>Classes</h4>
-        {List(this.props.value.classes, "classes")}
+       {this.props.value.classes.length > 0 && (
+          <div>
+            <h4>Classes</h4>
+            {List(this.props.value.classes, "classes")}
+          </div>
+        )}
 
-        <h4>Exported classes</h4>
-        {List(this.props.value.export_classes, "export_classes")}
+       {this.props.value.export_classes.length > 0 && (
+          <div>
+            <h4>Exported classes</h4>
+            {List(this.props.value.export_classes, "export_classes")}
+          </div>
+        )}
 
-        <h4>Globals</h4>
+       {this.props.value.globals.length > 0 && (
+          <div>
+            <h4>Globals</h4>
         {List(this.props.value.globals, "globals")}
-
-        <h4>Exported globals</h4>
+          </div>
+        )}
+                
+       {this.props.value.export_globals.length > 0 && (
+          <div>
+            <h4>Exported globals</h4>
         {List(this.props.value.export_globals, "export_globals")}
-
-        <h4>Function</h4>
+          </div>
+        )}
+   
+       {this.props.value.functions.length > 0 && (
+          <div>
+            <h4>Functions</h4>
         {List(this.props.value.functions, "functions")}
-
-        <h4>Exported functions</h4>
+          </div>
+        )}
+                
+       {this.props.value.export_functions.length > 0 && (
+          <div>
+            <h4>Exported functions</h4>
         {List(this.props.value.export_functions, "export_functions")}
+          </div>
+        )}
+
       </div>
     );
   }
