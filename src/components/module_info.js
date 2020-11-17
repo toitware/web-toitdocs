@@ -23,9 +23,13 @@ const style = (theme) => ({
 function Globals(props) {
   return (
     <div>
-      <Typography component="h3" variant="h3">
-        Variables
-      </Typography>
+      <Box pt={2} pb={2}>
+        <Box pt={1} pb={1}>
+          <Typography component="h3" variant="h3">
+            Globals
+          </Typography>
+        </Box> 
+     </Box> 
       {[]
         .concat(props.globals)
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -43,13 +47,46 @@ function Globals(props) {
 function GlobalFunctions(props) {
     return (
       <div>
-        <Typography component="h3" variant="h3">
-          Functions
-        </Typography>
+        <Box pt={2} pb={2}>
+          <Box pt={1} pb={1}>
+            <Typography component="h3" variant="h3">
+              Functions
+            </Typography>
+          </Box> 
+       </Box> 
         <FunctionsInModules functions={props.functions} />
       </div>
     );
 }
+
+function ExportFunctions(props) {
+  return (
+    <div>
+      <Box pt={2} pb={2}>
+        <Box pt={1} pb={1}>
+          <Typography component="h3" variant="h3">
+            Exported Functions
+          </Typography>
+        </Box> 
+     </Box> 
+    </div>
+  );
+}
+
+function ExportGlobals(props) {
+  return (
+    <div>
+      <Box pt={2} pb={2}>
+        <Box pt={1} pb={1}>
+          <Typography component="h3" variant="h3">
+            Exported Globals
+          </Typography>
+        </Box> 
+     </Box> 
+    </div>
+  );
+}
+
 
 function importPath(library, module) {
   const filename = module.name.substring(0, module.name.lastIndexOf("."));
@@ -82,7 +119,7 @@ function PrintClasses(props) {
             <Link
               to={`/${props.libName}/${props.moduleName}/${elem.name}`}
             >
-              <Typography component="h3" variant="h4">
+              <Typography component="h4" variant="h4">
                 {elem.name}{" "}
               </Typography>
             </Link>
@@ -107,7 +144,7 @@ class ModuleInfo extends Component {
           <Grid container className={classes.root}>
             <Grid item xs={9}>
               <Box pt={2} pb={2}>
-                <Typography component="h1" variant="h1">
+                <Typography component="h2" variant="h2">
                   module: {module.name}
                 </Typography>
               </Box>
@@ -123,7 +160,7 @@ class ModuleInfo extends Component {
               {module.classes.length > 0 &&
                 <Box pt={2} pb={2}>
                   <Box pt={1} pb={1}>
-                    <Typography component="h2" variant="h2">
+                    <Typography component="h3" variant="h3">
                       Classes
                     </Typography>
                   </Box>
@@ -137,7 +174,7 @@ class ModuleInfo extends Component {
               {module.export_classes.length > 0 &&
                 <Box pt={2} pb={2}>
                   <Box pt={1} pb={1}>
-                    <Typography component="h2" variant="h2">
+                    <Typography component="h3" variant="h3">
                       Exported classes
                     </Typography>
                   </Box>
@@ -148,13 +185,18 @@ class ModuleInfo extends Component {
                   />
                 </Box>
               }
-              <Globals globals={module.globals} />
-              <GlobalFunctions functions={module.functions} />
-              <Typography component="h2" variant="h2">
-                Exports
-              </Typography>
-              <Globals globals={module.export_globals} />
-              <GlobalFunctions functions={module.export_functions} />
+              {module.globals.length > 0 &&
+                <Globals globals={module.globals}/>
+              }
+              {module.export_globals.length > 0 &&
+                <ExportGlobals ExportGlobals={module.export_globals}/>
+              }
+              {module.functions.length > 0 &&
+                <GlobalFunctions functions={module.functions} />
+              }
+              {module.export_functions.length > 0 &&
+                <ExportFunctions ExportFunctions={module.export_functions}/>
+              }
             </Grid>
             <Hidden xsDown>
               <Grid item xs={3}>
@@ -169,7 +211,7 @@ class ModuleInfo extends Component {
         <Grid containerclassName={this.props.classes.root}>
           <Grid item xs={9}>
             <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
+              <Typography component="h2" variant="h2">
                 ERROR:
                 <p>Module not found</p>
               </Typography>

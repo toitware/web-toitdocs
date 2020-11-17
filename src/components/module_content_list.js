@@ -36,22 +36,23 @@ class ModuleContentList extends React.Component {
   render() {
     return (
       <div>
+
         <h4>Classes</h4>
         {List(this.props.value.classes, "classes")}
 
-        <h4>Exported Classes</h4>
+        <h4>Exported classes</h4>
         {List(this.props.value.export_classes, "export_classes")}
 
-        <h4>Variables</h4>
+        <h4>Globals</h4>
         {List(this.props.value.globals, "globals")}
+
+        <h4>Exported globals</h4>
+        {List(this.props.value.export_globals, "export_globals")}
 
         <h4>Function</h4>
         {List(this.props.value.functions, "functions")}
 
-        <h4>Export variables</h4>
-        {List(this.props.value.export_globals, "export_globals")}
-
-        <h4>Export function</h4>
+        <h4>Exported functions</h4>
         {List(this.props.value.export_functions, "export_functions")}
       </div>
     );

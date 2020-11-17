@@ -24,7 +24,7 @@ function Extends({ reference }) {
 function Constructors(props) {
   return (
     <div>
-      <Typography variant="h2" component="h2">
+      <Typography variant="h3" component="h3">
         Constructors
       </Typography>
       <Methods
@@ -41,7 +41,7 @@ function Constructors(props) {
 function Statics(props) {
   return (
     <div>
-      <Typography variant="h2" component="h2">
+      <Typography variant="h3" component="h3">
         Statics
       </Typography>
       <Methods
@@ -58,7 +58,7 @@ function Statics(props) {
 function Factories(props) {
   return (
     <div>
-      <Typography variant="h2" component="h2">
+      <Typography variant="h3" component="h3">
         Factories
       </Typography>
       <Methods
@@ -67,6 +67,23 @@ function Factories(props) {
         moduleName={props.moduleName}
         className={props.className}
         functionType="Factories"
+      />
+    </div>
+  );
+}
+
+function ClassMethods(props) {
+  return (
+    <div>
+      <Typography variant="h3" component="h3">
+        Methods
+      </Typography>
+      <Methods
+        value={props.value}
+        libName={props.libName}
+        moduleName={props.moduleName}
+        className={props.className}
+        functionType="Methods"
       />
     </div>
   );
@@ -103,23 +120,6 @@ const style = (theme) => ({
   },
 });
 
-function ClassMethods(props) {
-  return (
-    <div>
-      <Typography variant="h3" component="h2">
-        Methods
-      </Typography>
-      <Methods
-        value={props.value}
-        libName={props.libName}
-        moduleName={props.moduleName}
-        className={props.className}
-        functionType="Methods"
-      />
-    </div>
-  );
-}
-
 function mapStateToProps(state, props) {
   const { sdk } = state;
   return {
@@ -135,7 +135,7 @@ class ClassInfo extends Component {
     return (
       <Grid container>
         <Grid item xs={12} sm={9}>
-          <Typography variant="h1" component="h1">
+          <Typography variant="h2" component="h2">
             Class: {name} not found!
           </Typography>
         </Grid>
@@ -170,7 +170,7 @@ class ClassInfo extends Component {
         <Grid container>
           <Grid item xs={12} sm={9}>
             <Box pt={2} pb={2}>
-              <Typography variant="h1" component="h1">
+              <Typography variant="h2" component="h2">
                 Class: {class_info.name}
               </Typography>
               {class_info.extends && <Extends reference={class_info.extends} />}
@@ -199,13 +199,20 @@ class ClassInfo extends Component {
                 functionType="Statics"
               />
             )}
-            <Fields fields={class_info.structure.fields} />
             {class_info.structure.methods.length > 0 && (<ClassMethods
                 value={class_info.structure.methods}
                 libName={libName}
                 moduleName={moduleName}
                 className={className}
                 functionType="Methods"
+              />
+            )}
+            {class_info.structure.fields.length > 0 && (<Fields
+                fields={class_info.structure.fields}
+                libName={libName}
+                moduleName={moduleName}
+                className={className}
+                functionType="Fields"
               />
             )}
           </Grid>
