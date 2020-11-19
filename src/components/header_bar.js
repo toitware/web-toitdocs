@@ -14,7 +14,6 @@ import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import { librarySegmentsToURI } from "../sdk";
 
-
 // Search bar styling.
 const style = (theme) => ({
   root: {
@@ -73,8 +72,13 @@ const style = (theme) => ({
 });
 
 function mapStateToProps(state, props) {
-  const { sdk } = state
-  return { version: sdk.version, searchObject: sdk.searchObject, libraries: sdk.object.libraries, match: props.match }
+  const { sdk } = state;
+  return {
+    version: sdk.version,
+    searchObject: sdk.searchObject,
+    libraries: sdk.object.libraries,
+    match: props.match,
+  };
 }
 
 class HeaderBar extends Component {
@@ -84,7 +88,8 @@ class HeaderBar extends Component {
     this.state = {
       searchTerm: "",
       results: [],
-    }
+      categorisedResults: [],
+    };
   }
 
   setSearchTerm(searchTerm) {
@@ -95,14 +100,16 @@ class HeaderBar extends Component {
     this.setState({ results });
   }
 
-  handleChange = async(event) => {
+  handleChange = async (event) => {
     this.setSearchTerm(event.target.value);
     if (typeof event.target.value === "string") {
       if (event.target.value.length >= 2) {
         //Results of searching through libraries, modules and classes
         var found = await this.fuse.Basic.search(this.state.searchTerm);
         //Results of searching through aliases
-        var found_aliases = await this.fuse.Aliases.search(this.state.searchTerm);
+        var found_aliases = await this.fuse.Aliases.search(
+          this.state.searchTerm
+        );
         var combined_results = {
           matches: [],
           refIndex: -1, //refIndex is used for finding the results in output object
@@ -141,58 +148,102 @@ class HeaderBar extends Component {
     }
   };
 
-  renderSearchResult() {
-    let results = this.state.results;
-    if (!results.is_filled) {
-      return null;
+  categoriseResults() {
+    let matches = this.state.results.matches;
+    let output = {
+      classes: [],
+      modules: [],
+      libraries: [],
+      functions: [],
+      aliases: [],
+    };
+    let prop;
+    if (matches !== undefined) {
+      matches.map((match) => {
+        prop = match.key.split(".")[0];
+        output[prop].push(match);
+      });
     }
 
-    if (results.matches.length === 0) {
-      return "no results";
-    }
+    return output;
+  }
 
-    // TODO: Enable search on aliases
-    return results.matches.map((match, index) => {
-      switch (match.key) {
-        case "classes.name":
-          let klass = this.props.searchObject.classes[match.refIndex];
-          return <ListItem className="ListItem" button key={"list_item" + index}>
-            <div id="ElementOfList">
-              <Link to={`/${librarySegmentsToURI(klass.library)}/${klass.module}/${klass.name}`}>
-                {" "}
-                Name: <b> {klass.name} </b> Type: <b>Class</b>
-              </Link>
-            </div>
-          </ListItem>
-        case "libraries.name":
-          let library = this.props.searchObject.libraries[match.refIndex];
-          return <ListItem className="ListItem" button key={"list_item" + index}>
-            <div id="ElementOfList">
-              <Link to={`/${librarySegmentsToURI(library.path)}`}>
-                {" "}
-                Name: <b> {library.name} </b> Type: <b>Library</b>
-              </Link>
-            </div>
-          </ListItem>
-        case "modules.name":
-          let module = this.props.searchObject.modules[match.refIndex];
-          return <ListItem className="ListItem" button key={"list_item" + index}>
-            <div id="ElementOfList">
-              <Link to={`/${librarySegmentsToURI(module.library)}/${module.name}`}>
-                {" "}
-                Name: <b> {module.name} </b> Type: <b>Module</b>
-              </Link>
-            </div>
-          </ListItem>
-        default:
-          console.error("unhandled search result", match);
-          return null;
+  renderSearchResult(results) {
+    return Object.keys(results).map((prop) => {
+      if (results[prop].length !== 0) {
+        return results[prop].map((match, index) => {
+          switch (match.key) {
+            case "classes.name":
+              let klass = this.props.searchObject.classes[match.refIndex];
+              return (
+                <div key={"list_classes_" + index}>
+                  {index === 0 && (
+                    <ListItem>
+                      <b>CLASSES</b>
+                    </ListItem>
+                  )}
+                  <Link
+                    to={`/${librarySegmentsToURI(klass.library)}/${
+                      klass.module
+                    }/${klass.name}`}
+                  >
+                    <ListItem className="ListItem" button>
+                      {" "}
+                      <b> {klass.name} </b>
+                    </ListItem>
+                  </Link>
+                </div>
+              );
+            case "libraries.name":
+              let library = this.props.searchObject.libraries[match.refIndex];
+              return (
+                <div key={"list_libraries_" + index}>
+                  {index === 0 && (
+                    <ListItem>
+                      <b>LIBRARIES</b>
+                    </ListItem>
+                  )}
+                  <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                    <ListItem className="ListItem" button>
+                      {" "}
+                      <b> {library.name} </b>
+                    </ListItem>
+                  </Link>
+                </div>
+              );
+            case "modules.name":
+              let module = this.props.searchObject.modules[match.refIndex];
+              return (
+                <div key={"list_modules_" + index}>
+                  {index === 0 && (
+                    <ListItem>
+                      <b>MODULES</b>
+                    </ListItem>
+                  )}
+                  <Link
+                    to={`/${librarySegmentsToURI(module.library)}/${
+                      module.name
+                    }`}
+                  >
+                    <ListItem className="ListItem" button>
+                      {" "}
+                      <b> {module.name} </b>
+                    </ListItem>
+                  </Link>
+                </div>
+              );
+            default:
+              console.error("unhandled search result", match);
+              return null;
+          }
+        });
       }
-    })
+    });
   }
 
   render() {
     const classes = this.props.classes;
+    let sorted_results = this.categoriseResults();
 
     return (
       <Grid container item xs={12} className={classes.root}>
@@ -201,7 +252,12 @@ class HeaderBar extends Component {
             <Toolbar>
               <Grid item sm={9}>
                 <Link to={`/`}>
-                  <img alt="Toitware" src={toitware} width="32px" height="32px"></img>
+                  <img
+                    alt="Toitware"
+                    src={toitware}
+                    width="32px"
+                    height="32px"
+                  ></img>
                 </Link>
               </Grid>
               <Grid item sm={3}>
@@ -239,8 +295,8 @@ class HeaderBar extends Component {
               borderRadius: "5px",
             }}
           >
-            <List style={{ backgroundColor: "grey" }}>
-              {this.renderSearchResult()}
+            <List style={{ backgroundColor: "#a5a5a5" }}>
+              {this.renderSearchResult(sorted_results)}
             </List>
           </Grid>
         </div>
@@ -249,4 +305,6 @@ class HeaderBar extends Component {
   }
 }
 
-export default withStyles(style, {withTheme: true})(connect(mapStateToProps)(HeaderBar));
+export default withStyles(style, { withTheme: true })(
+  connect(mapStateToProps)(HeaderBar)
+);
