@@ -162,6 +162,7 @@ class HeaderBar extends Component {
       matches.map((match) => {
         prop = match.key.split(".")[0];
         output[prop].push(match);
+        return null;
       });
     }
 
@@ -238,6 +239,8 @@ class HeaderBar extends Component {
               return null;
           }
         });
+      } else {
+        return null;
       }
     });
   }
