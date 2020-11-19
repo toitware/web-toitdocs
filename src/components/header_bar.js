@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withStyles, fade } from "@material-ui/core/styles";
 import toitware from "./toitware.ico";
-import { Grid } from "@material-ui/core";
+import { Grid, Paper } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -178,7 +178,7 @@ class HeaderBar extends Component {
               return (
                 <div key={"list_classes_" + index}>
                   {index === 0 && (
-                    <ListItem>
+                    <ListItem style={{color: "black"}}>
                       <b>CLASSES</b>
                     </ListItem>
                   )}
@@ -186,10 +186,10 @@ class HeaderBar extends Component {
                     to={`/${librarySegmentsToURI(klass.library)}/${
                       klass.module
                     }/${klass.name}`}
+                    style = {{color: "#5e5261"}}
                   >
                     <ListItem className="ListItem" button>
-                      {" "}
-                      <b> {klass.name} </b>
+                      <b> {klass.name}  </b> &nbsp; in &nbsp; <b>{klass.module}</b>
                     </ListItem>
                   </Link>
                 </div>
@@ -199,11 +199,11 @@ class HeaderBar extends Component {
               return (
                 <div key={"list_libraries_" + index}>
                   {index === 0 && (
-                    <ListItem>
+                    <ListItem style={{color: "black"}}>
                       <b>LIBRARIES</b>
                     </ListItem>
                   )}
-                  <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                  <Link to={`/${librarySegmentsToURI(library.path)}`} style = {{color: "#5e5261"}}>
                     <ListItem className="ListItem" button>
                       {" "}
                       <b> {library.name} </b>
@@ -216,7 +216,7 @@ class HeaderBar extends Component {
               return (
                 <div key={"list_modules_" + index}>
                   {index === 0 && (
-                    <ListItem>
+                    <ListItem style={{color: "black"}}>
                       <b>MODULES</b>
                     </ListItem>
                   )}
@@ -224,6 +224,7 @@ class HeaderBar extends Component {
                     to={`/${librarySegmentsToURI(module.library)}/${
                       module.name
                     }`}
+                    style = {{color: "#5e5261"}}
                   >
                     <ListItem className="ListItem" button>
                       {" "}
@@ -295,9 +296,11 @@ class HeaderBar extends Component {
               borderRadius: "5px",
             }}
           >
-            <List style={{ backgroundColor: "#a5a5a5" }}>
+            <Paper>
+            <List style={{backgroundColor: "#efe8c7"}}>
               {this.renderSearchResult(sorted_results)}
             </List>
+            </Paper>
           </Grid>
         </div>
       </Grid>
