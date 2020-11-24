@@ -6,7 +6,7 @@ import {
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_TOITDOCREF,
   OBJECT_TYPE_STATEMENT_CODE, rootLibrary
-} from "./../sdk.js";
+} from "../sdk.js";
 
 // Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
