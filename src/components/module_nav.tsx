@@ -4,14 +4,14 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItemLink from "./list_item_link.js";
+import ListItemLink from "./list_item_link";
 import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
 import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
-} from "../sdk.js";
+} from "../sdk";
 import Typography from "@material-ui/core/Typography";
 
 function mapStateToProps(state, props) {

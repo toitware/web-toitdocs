@@ -8,7 +8,7 @@ import { Grid } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
-import Fuse from "./fuse.js";
+import Fuse from "./fuse";
 import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";

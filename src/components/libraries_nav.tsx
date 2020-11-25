@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import ListItemLink from "./list_item_link.js";
+import ListItemLink from "./list_item_link";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ErrorBoundary from "./error_page";
@@ -10,7 +10,7 @@ import {
   librarySegmentsToName,
   getLibrary,
   librarySegmentsToURI,
-} from "../sdk.js";
+} from "../sdk";
 import Typography from "@material-ui/core/Typography";
 
 function mapStateToProps(state, props) {

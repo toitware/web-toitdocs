@@ -10,7 +10,7 @@ import {
   OBJECT_TYPE_STATEMENT_CODE_SECTION,
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_TOITDOCREF,
-} from "../sdk.js";
+} from "../sdk";
 
 const useStyles = makeStyles((theme) => ({
   root: {

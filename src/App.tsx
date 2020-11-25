@@ -19,7 +19,7 @@ import FunctionInfo from "./components/function_info";
 import ErrorBoundary from "./components/error_page";
 import HeaderBar from "./components/header_bar";
 import "./assets/index.css";
-import {theme} from "./assets/theme.ts";
+import {theme} from "./assets/theme";
 
 function mapStateToProps(state) {
   const { sdk } = state

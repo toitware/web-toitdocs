@@ -3,7 +3,7 @@ import thunkMiddleware from 'redux-thunk';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
-import {sdk, fetchSDK } from "./sdk.js";
+import {sdk, fetchSDK } from "./sdk";
 import './assets/index.css';
 import * as serviceWorker from './serviceWorker';
 import App from './App';

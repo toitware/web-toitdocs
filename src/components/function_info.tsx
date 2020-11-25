@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box";
 import { ArrowRightAlt } from "@material-ui/icons";
 import Toitdocs from "./toitdoc_info";
 import { Parameters } from "./parameters";
-import { Type } from "./util.js"
+import { Type } from "./util"
 import { getLibrary } from "../sdk";
 
 const style = (theme) => ({
