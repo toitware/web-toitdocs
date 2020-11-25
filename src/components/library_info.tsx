@@ -33,7 +33,9 @@ function mapStateToProps(state, props) {
 
 class LibraryInfo extends Component {
   render() {
-    const { params: { libName } } = this.props.match;
+    const {
+      params: { libName },
+    } = this.props.match;
     const library = getLibrary(this.props.libraries, libName);
     const classes = this.props.classes;
 
@@ -56,9 +58,12 @@ class LibraryInfo extends Component {
               </Box>
               <Paper variant="outlined" className={classes.paper}>
                 <List>
-                {moduleNames.map((moduleName) => (
-                  <li key={"library-module-" + moduleName}> {library.modules[moduleName].name} </li>
-                ))}
+                  {moduleNames.map((moduleName) => (
+                    <li key={"library-module-" + moduleName}>
+                      {" "}
+                      {library.modules[moduleName].name}{" "}
+                    </li>
+                  ))}
                 </List>
               </Paper>
             </Box>

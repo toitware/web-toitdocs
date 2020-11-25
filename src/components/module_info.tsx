@@ -28,8 +28,8 @@ function Globals(props) {
           <Typography component="h3" variant="h3">
             Globals
           </Typography>
-        </Box> 
-     </Box> 
+        </Box>
+      </Box>
       {[]
         .concat(props.globals)
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -45,18 +45,18 @@ function Globals(props) {
 }
 
 function GlobalFunctions(props) {
-    return (
-      <div>
-        <Box pt={2} pb={2}>
-          <Box pt={1} pb={1}>
-            <Typography component="h3" variant="h3">
-              Functions
-            </Typography>
-          </Box> 
-       </Box> 
-        <FunctionsInModules functions={props.functions} />
-      </div>
-    );
+  return (
+    <div>
+      <Box pt={2} pb={2}>
+        <Box pt={1} pb={1}>
+          <Typography component="h3" variant="h3">
+            Functions
+          </Typography>
+        </Box>
+      </Box>
+      <FunctionsInModules functions={props.functions} />
+    </div>
+  );
 }
 
 function ExportFunctions(props) {
@@ -67,8 +67,8 @@ function ExportFunctions(props) {
           <Typography component="h3" variant="h3">
             Exported Functions
           </Typography>
-        </Box> 
-     </Box> 
+        </Box>
+      </Box>
     </div>
   );
 }
@@ -81,12 +81,11 @@ function ExportGlobals(props) {
           <Typography component="h3" variant="h3">
             Exported Globals
           </Typography>
-        </Box> 
-     </Box> 
+        </Box>
+      </Box>
     </div>
   );
 }
-
 
 function importPath(library, module) {
   const filename = module.name.substring(0, module.name.lastIndexOf("."));
@@ -116,9 +115,7 @@ function PrintClasses(props) {
       .map((elem, index) => {
         return (
           <Box pt={1} pb={1} key={elem.name + "_" + index}>
-            <Link
-              to={`/${props.libName}/${props.moduleName}/${elem.name}`}
-            >
+            <Link to={`/${props.libName}/${props.moduleName}/${elem.name}`}>
               <Typography component="h4" variant="h4">
                 {elem.name}{" "}
               </Typography>
@@ -134,7 +131,9 @@ function PrintClasses(props) {
 
 class ModuleInfo extends Component {
   render() {
-    const { params: { libName, moduleName } } = this.props.match;
+    const {
+      params: { libName, moduleName },
+    } = this.props.match;
     const library = getLibrary(this.props.libraries, libName);
     const module = library && library.modules[moduleName];
     const classes = this.props.classes;
@@ -157,7 +156,7 @@ class ModuleInfo extends Component {
                   <strong>import</strong> {importPath(library, module)}
                 </Paper>
               </Grid>
-              {module.classes.length > 0 &&
+              {module.classes.length > 0 && (
                 <Box pt={2} pb={2}>
                   <Box pt={1} pb={1}>
                     <Typography component="h3" variant="h3">
@@ -170,8 +169,8 @@ class ModuleInfo extends Component {
                     moduleName={moduleName}
                   />
                 </Box>
-              }
-              {module.export_classes.length > 0 &&
+              )}
+              {module.export_classes.length > 0 && (
                 <Box pt={2} pb={2}>
                   <Box pt={1} pb={1}>
                     <Typography component="h3" variant="h3">
@@ -184,19 +183,19 @@ class ModuleInfo extends Component {
                     moduleName={moduleName}
                   />
                 </Box>
-              }
-              {module.globals.length > 0 &&
-                <Globals globals={module.globals}/>
-              }
-              {module.export_globals.length > 0 &&
-                <ExportGlobals ExportGlobals={module.export_globals}/>
-              }
-              {module.functions.length > 0 &&
+              )}
+              {module.globals.length > 0 && (
+                <Globals globals={module.globals} />
+              )}
+              {module.export_globals.length > 0 && (
+                <ExportGlobals ExportGlobals={module.export_globals} />
+              )}
+              {module.functions.length > 0 && (
                 <GlobalFunctions functions={module.functions} />
-              }
-              {module.export_functions.length > 0 &&
-                <ExportFunctions ExportFunctions={module.export_functions}/>
-              }
+              )}
+              {module.export_functions.length > 0 && (
+                <ExportFunctions ExportFunctions={module.export_functions} />
+              )}
             </Grid>
             <Hidden xsDown>
               <Grid item xs={3}>

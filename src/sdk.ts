@@ -1,44 +1,44 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { flattenDataStructure } from "./components/fuse";
 
 export const fetchSDK = createAsyncThunk("sdk/fetch", async (version) => {
-    const response = await fetch("./sdk/"+version+".json");
-    return response.json()
-})
-
-const initialState = {
-    object: null,
-    searchObject: null,
-    version: null,
-    status: 'idle',
-    error: null,
-}
-
-export const sdk = createSlice({
-    name: 'sdk',
-    initialState,
-    reducers: {},
-    extraReducers: {
-        [fetchSDK.pending]: (state, action) => {
-            state.version = action.meta.arg;
-            state.status = 'loading';
-            state.object = null;
-            state.searchObject = null;
-            state.error = null;
-        },
-        [fetchSDK.fulfilled]: (state, action) => {
-            state.status = 'succeeded';
-            state.object = action.payload;
-            state.searchObject = flattenDataStructure(state.object);
-        },
-        [fetchSDK.rejected]: (state, action) => {
-            state.status = 'failed';
-            state.error = action.error.message;
-        },
-    },
+  const response = await fetch("./sdk/" + version + ".json");
+  return response.json();
 });
 
-export const selector = state => state.sdk
+const initialState = {
+  object: null,
+  searchObject: null,
+  version: null,
+  status: "idle",
+  error: null,
+};
+
+export const sdk = createSlice({
+  name: "sdk",
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [fetchSDK.pending]: (state, action) => {
+      state.version = action.meta.arg;
+      state.status = "loading";
+      state.object = null;
+      state.searchObject = null;
+      state.error = null;
+    },
+    [fetchSDK.fulfilled]: (state, action) => {
+      state.status = "succeeded";
+      state.object = action.payload;
+      state.searchObject = flattenDataStructure(state.object);
+    },
+    [fetchSDK.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    },
+  },
+});
+
+export const selector = (state) => state.sdk;
 
 export const OBJECT_TYPE_SECTION = "section";
 export const OBJECT_TYPE_STATEMENT_CODE_SECTION = "statement_code_section";
@@ -59,35 +59,35 @@ export const OBJECT_TYPE_LIBRARY = "library";
 export const rootLibrary = "lib";
 
 export function getLibrary(libraries, libraryName) {
-    try {
-        let library = libraries[rootLibrary];
-        if (libraryName) {
-            const segments = libraryNameToSegments(libraryName);
-            segments.forEach((name) => library = library.libraries[name]);
-        }
-        return library;
-    } catch (e) {
-        console.log("failed to find library: ", libraryName, e);
-        return null;
+  try {
+    let library = libraries[rootLibrary];
+    if (libraryName) {
+      const segments = libraryNameToSegments(libraryName);
+      segments.forEach((name) => (library = library.libraries[name]));
     }
+    return library;
+  } catch (e) {
+    console.log("failed to find library: ", libraryName, e);
+    return null;
+  }
 }
 
 export function librarySegmentsToName(segments) {
-    segments = [].concat(segments);
-    if (segments.length > 0 && segments[0] === rootLibrary) {
-        segments.shift();
-    }
-    return segments.join(".")
+  segments = [].concat(segments);
+  if (segments.length > 0 && segments[0] === rootLibrary) {
+    segments.shift();
+  }
+  return segments.join(".");
 }
 
 export function librarySegmentsToURI(segments) {
-    return segments.join(".")
+  return segments.join(".");
 }
 
 export function libraryNameToSegments(name) {
-    let segments = name.split(".");
-    if (segments.length > 0 && rootLibrary === segments[0]) {
-        segments.shift();
-    }
-    return segments;
+  const segments = name.split(".");
+  if (segments.length > 0 && rootLibrary === segments[0]) {
+    segments.shift();
+  }
+  return segments;
 }

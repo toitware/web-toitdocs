@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import {Grid} from "@material-ui/core"
+import { Grid } from "@material-ui/core";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -20,10 +20,10 @@ class ErrorBoundary extends React.Component {
       // You can render any custom fallback UI
       console.log("ERROR: In the object ");
       return (
-        <Grid item style={{padding:"10px", margin:"10px"}}>
+        <Grid item style={{ padding: "10px", margin: "10px" }}>
           <h1>Something went wrong.</h1>
           <Link to={`/#`}>Home Page</Link>
-          </Grid>
+        </Grid>
       );
     } else {
       return this.props.children;

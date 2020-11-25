@@ -1,6 +1,6 @@
 import React from "react";
 import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function ListItemLink(props) {
   const { icon, primary, to } = props;
@@ -10,7 +10,7 @@ export default function ListItemLink(props) {
       React.forwardRef((linkProps, ref) => (
         <Link ref={ref} to={to} {...linkProps} />
       )),
-    [to],
+    [to]
   );
   return (
     <li>

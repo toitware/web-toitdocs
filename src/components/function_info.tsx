@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box";
 import { ArrowRightAlt } from "@material-ui/icons";
 import Toitdocs from "./toitdoc_info";
 import { Parameters } from "./parameters";
-import { Type } from "./util"
+import { Type } from "./util";
 import { getLibrary } from "../sdk";
 
 const style = (theme) => ({
@@ -29,12 +29,21 @@ function mapStateToProps(state, props) {
 
 class FunctionInfo extends Component {
   render() {
-    let { params: { libName, moduleName, className, functionType, functionName, index } } = this.props.match;
+    let {
+      params: {
+        libName,
+        moduleName,
+        className,
+        functionType,
+        functionName,
+        index,
+      },
+    } = this.props.match;
     functionType = functionType.toLowerCase();
 
-    var function_info = null;
+    let function_info = null;
 
-    var page_title = "Unknown";
+    let page_title = "Unknown";
     const library = getLibrary(this.props.libraries, libName);
     const module = library && library.modules[moduleName];
 

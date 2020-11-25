@@ -14,7 +14,6 @@ import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import { librarySegmentsToURI } from "../sdk";
 
-
 // Search bar styling.
 const style = (theme) => ({
   root: {
@@ -73,8 +72,13 @@ const style = (theme) => ({
 });
 
 function mapStateToProps(state, props) {
-  const { sdk } = state
-  return { version: sdk.version, searchObject: sdk.searchObject, libraries: sdk.object.libraries, match: props.match }
+  const { sdk } = state;
+  return {
+    version: sdk.version,
+    searchObject: sdk.searchObject,
+    libraries: sdk.object.libraries,
+    match: props.match,
+  };
 }
 
 class HeaderBar extends Component {
@@ -84,7 +88,7 @@ class HeaderBar extends Component {
     this.state = {
       searchTerm: "",
       results: [],
-    }
+    };
   }
 
   setSearchTerm(searchTerm) {
@@ -95,15 +99,17 @@ class HeaderBar extends Component {
     this.setState({ results });
   }
 
-  handleChange = async(event) => {
+  handleChange = async (event) => {
     this.setSearchTerm(event.target.value);
     if (typeof event.target.value === "string") {
       if (event.target.value.length >= 2) {
         //Results of searching through libraries, modules and classes
-        var found = await this.fuse.Basic.search(this.state.searchTerm);
+        const found = await this.fuse.Basic.search(this.state.searchTerm);
         //Results of searching through aliases
-        var found_aliases = await this.fuse.Aliases.search(this.state.searchTerm);
-        var combined_results = {
+        const found_aliases = await this.fuse.Aliases.search(
+          this.state.searchTerm
+        );
+        const combined_results = {
           matches: [],
           refIndex: -1, //refIndex is used for finding the results in output object
           score: 1, // The lower the better the match is
@@ -114,7 +120,7 @@ class HeaderBar extends Component {
         if (found_aliases.length !== 0) {
           found_aliases.forEach((elem) => {
             elem.matches.forEach((match) => {
-              let temp_match = match;
+              const temp_match = match;
               temp_match.path = elem.item.path;
               combined_results.matches.push(temp_match);
             });
@@ -142,7 +148,7 @@ class HeaderBar extends Component {
   };
 
   renderSearchResult() {
-    let results = this.state.results;
+    const results = this.state.results;
     if (!results.is_filled) {
       return null;
     }
@@ -155,40 +161,52 @@ class HeaderBar extends Component {
     return results.matches.map((match, index) => {
       switch (match.key) {
         case "classes.name":
-          let klass = this.props.searchObject.classes[match.refIndex];
-          return <ListItem className="ListItem" button key={"list_item" + index}>
-            <div id="ElementOfList">
-              <Link to={`/${librarySegmentsToURI(klass.library)}/${klass.module}/${klass.name}`}>
-                {" "}
-                Name: <b> {klass.name} </b> Type: <b>Class</b>
-              </Link>
-            </div>
-          </ListItem>
+          const klass = this.props.searchObject.classes[match.refIndex];
+          return (
+            <ListItem className="ListItem" button key={"list_item" + index}>
+              <div id="ElementOfList">
+                <Link
+                  to={`/${librarySegmentsToURI(klass.library)}/${
+                    klass.module
+                  }/${klass.name}`}
+                >
+                  {" "}
+                  Name: <b> {klass.name} </b> Type: <b>Class</b>
+                </Link>
+              </div>
+            </ListItem>
+          );
         case "libraries.name":
-          let library = this.props.searchObject.libraries[match.refIndex];
-          return <ListItem className="ListItem" button key={"list_item" + index}>
-            <div id="ElementOfList">
-              <Link to={`/${librarySegmentsToURI(library.path)}`}>
-                {" "}
-                Name: <b> {library.name} </b> Type: <b>Library</b>
-              </Link>
-            </div>
-          </ListItem>
+          const library = this.props.searchObject.libraries[match.refIndex];
+          return (
+            <ListItem className="ListItem" button key={"list_item" + index}>
+              <div id="ElementOfList">
+                <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                  {" "}
+                  Name: <b> {library.name} </b> Type: <b>Library</b>
+                </Link>
+              </div>
+            </ListItem>
+          );
         case "modules.name":
-          let module = this.props.searchObject.modules[match.refIndex];
-          return <ListItem className="ListItem" button key={"list_item" + index}>
-            <div id="ElementOfList">
-              <Link to={`/${librarySegmentsToURI(module.library)}/${module.name}`}>
-                {" "}
-                Name: <b> {module.name} </b> Type: <b>Module</b>
-              </Link>
-            </div>
-          </ListItem>
+          const module = this.props.searchObject.modules[match.refIndex];
+          return (
+            <ListItem className="ListItem" button key={"list_item" + index}>
+              <div id="ElementOfList">
+                <Link
+                  to={`/${librarySegmentsToURI(module.library)}/${module.name}`}
+                >
+                  {" "}
+                  Name: <b> {module.name} </b> Type: <b>Module</b>
+                </Link>
+              </div>
+            </ListItem>
+          );
         default:
           console.error("unhandled search result", match);
           return null;
       }
-    })
+    });
   }
 
   render() {
@@ -201,7 +219,12 @@ class HeaderBar extends Component {
             <Toolbar>
               <Grid item sm={9}>
                 <Link to={`/`}>
-                  <img alt="Toitware" src={toitware} width="32px" height="32px"></img>
+                  <img
+                    alt="Toitware"
+                    src={toitware}
+                    width="32px"
+                    height="32px"
+                  ></img>
                 </Link>
               </Grid>
               <Grid item sm={3}>
@@ -249,4 +272,6 @@ class HeaderBar extends Component {
   }
 }
 
-export default withStyles(style, {withTheme: true})(connect(mapStateToProps)(HeaderBar));
+export default withStyles(style, { withTheme: true })(
+  connect(mapStateToProps)(HeaderBar)
+);

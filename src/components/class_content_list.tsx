@@ -28,7 +28,9 @@ class ClassContentList extends React.Component {
           <div>
             <h4>Constructors</h4>
             <ul>
-              {PrintList(this.props.value.structure.constructors, "constructors"
+              {PrintList(
+                this.props.value.structure.constructors,
+                "constructors"
               )}
             </ul>
           </div>
@@ -42,7 +44,9 @@ class ClassContentList extends React.Component {
         {this.props.value.structure.factories.length > 0 && (
           <div>
             <h4>Factories</h4>
-            <ul>{PrintList(this.props.value.structure.factories, "factories")}</ul>
+            <ul>
+              {PrintList(this.props.value.structure.factories, "factories")}
+            </ul>
           </div>
         )}
         {this.props.value.structure.methods.length > 0 && (

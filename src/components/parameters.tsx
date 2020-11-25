@@ -2,7 +2,7 @@ import React from "react";
 import { Type } from "./util";
 
 function Parameters(props) {
-  let styling = [];
+  const styling = [];
   styling[0] = "<b>";
   styling[1] = "</b>";
   return props.value.map((parameter, i) => {
@@ -35,8 +35,7 @@ function Parameters(props) {
             >
               {param}
               {"/"}
-              <Type type={parameter.type} />
-              {" "}
+              <Type type={parameter.type} />{" "}
             </span>
           </span>
         </span>

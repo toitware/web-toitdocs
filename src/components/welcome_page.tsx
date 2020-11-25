@@ -23,24 +23,32 @@ class WelcomePage extends Component {
           <Grid container justify="center">
             <List>
               <ListItemText>
-                <h3><b>Library names</b></h3>
+                <h3>
+                  <b>Library names</b>
+                </h3>
               </ListItemText>
               <ListItemText>
-                <h3><b>Module names</b></h3>
+                <h3>
+                  <b>Module names</b>
+                </h3>
               </ListItemText>
               <ListItemText>
-                <h3><b>Class names</b></h3>
+                <h3>
+                  <b>Class names</b>
+                </h3>
               </ListItemText>
               <ListItemText>
-                <h3><b>Class methods</b></h3>
-              </ListItemText>  
+                <h3>
+                  <b>Class methods</b>
+                </h3>
+              </ListItemText>
             </List>
           </Grid>
           <div style={{ padding: 20 }}>
             <Grid item container>
               <p>
-                Except for&nbsp;<b>core</b>, you must import a library
-                before you can use it. Here's an example of how to do it:
+                Except for&nbsp;<b>core</b>, you must import a library before
+                you can use it. Here's an example of how to do it:
               </p>
             </Grid>
           </div>

@@ -51,14 +51,11 @@ class ModuleNav extends Component {
             subheader={
               <ListSubheader component="div" id="nested-list-subheader">
                 <Link to={`/`}>Modules /</Link>
-                <Typography color="secondary">
-                  {moduleName}
-                </Typography>
+                <Typography color="secondary">{moduleName}</Typography>
               </ListSubheader>
             }
           >
-            <br>
-            </br>
+            <br></br>
             {moduleNames.map((moduleName) =>
               this.renderModule(library, library.modules[moduleName])
             )}

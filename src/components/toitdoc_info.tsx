@@ -16,78 +16,80 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  paper: {
-
-  },
-  paperSection: {
-
-  },
+  paper: {},
+  paperSection: {},
 }));
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
 
-function StatementCodeSection({code, classes}) {
-  return (<Paper
-    elevation={0}
-    variant="outlined"
-    className={classes.paperSection}
-  >
-    <pre>
-      <code>{code.text}</code>
-    </pre>
-  </Paper>)
+function StatementCodeSection({ code, classes }) {
+  return (
+    <Paper elevation={0} variant="outlined" className={classes.paperSection}>
+      <pre>
+        <code>{code.text}</code>
+      </pre>
+    </Paper>
+  );
 }
 
-function StatementCode({code, classes}) {
-  return <span className={classes.paper}>{code.text}</span>
+function StatementCode({ code, classes }) {
+  return <span className={classes.paper}>{code.text}</span>;
 }
 
-function StatementItemized({items, classes}) {
-  return <ul>
-    {items.items.forEach((item) => item.statements.forEach((statement) =>
-      <li><Statement statement={statement} classes={classes} /></li>
-    ))}
-  </ul>
+function StatementItemized({ items, classes }) {
+  return (
+    <ul>
+      {items.items.forEach((item) =>
+        item.statements.forEach((statement) => (
+          <li>
+            <Statement statement={statement} classes={classes} />
+          </li>
+        ))
+      )}
+    </ul>
+  );
 }
 
-function StatementParagraph({statement, classes}) {
-  return statement.expressions.map((expr, index) => <Expression key={"expression_"+index} expr={expr} classes={classes} />);
+function StatementParagraph({ statement, classes }) {
+  return statement.expressions.map((expr, index) => (
+    <Expression key={"expression_" + index} expr={expr} classes={classes} />
+  ));
 }
 
-function ToitdocRef({reference}) {
+function ToitdocRef({ reference }) {
   // TODO: Handle references to other objects.
-  return <span>{reference.text}</span>
+  return <span>{reference.text}</span>;
 }
 
-function Expression({expr, classes}) {
+function Expression({ expr, classes }) {
   switch (expr.object_type) {
     case OBJECT_TYPE_STATEMENT_CODE:
-      return <StatementCode code={expr} classes={classes} />
+      return <StatementCode code={expr} classes={classes} />;
     case OBJECT_TYPE_STATEMENT_CODE_SECTION:
-      return <StatementCodeSection code={expr} classes={classes} />
+      return <StatementCodeSection code={expr} classes={classes} />;
     case OBJECT_TYPE_TOITDOCREF:
-      return <ToitdocRef reference={expr} classes={classes} />
+      return <ToitdocRef reference={expr} classes={classes} />;
     default:
       console.log("unhandled expression", expr);
       return null;
   }
 }
 
-function Statement({statement, classes}) {
+function Statement({ statement, classes }) {
   switch (statement.object_type) {
     case OBJECT_TYPE_STATEMENT_PARAGRAPH:
-      return <StatementParagraph statement={statement} classes={classes} />
+      return <StatementParagraph statement={statement} classes={classes} />;
     case OBJECT_TYPE_STATEMENT_CODE_SECTION:
-      return <StatementCodeSection code={statement} classes={classes} />
+      return <StatementCodeSection code={statement} classes={classes} />;
     case OBJECT_TYPE_STATEMENT_ITEMIZED:
-      return <StatementItemized items={statement} classes={classes} />
+      return <StatementItemized items={statement} classes={classes} />;
     default:
       console.log("unhandled statement", statement);
       return null;
   }
 }
 
-function Section({section, classes}) {
+function Section({ section, classes }) {
   return (
     <div className={classes.root}>
       <Grid container>
@@ -97,7 +99,13 @@ function Section({section, classes}) {
       </Grid>
       <Grid container>
         <Grid item>
-          {section.statements.map((statement,index) => <Statement key={"statement_"+index} statement={statement} classes={classes} />)}
+          {section.statements.map((statement, index) => (
+            <Statement
+              key={"statement_" + index}
+              statement={statement}
+              classes={classes}
+            />
+          ))}
         </Grid>
       </Grid>
     </div>
@@ -110,7 +118,9 @@ function Toitdocs(props) {
   if (!props.value) {
     return null;
   }
-  return props.value.map((section,index) => <Section key={"section_"+index} section={section} classes={classes} />);
+  return props.value.map((section, index) => (
+    <Section key={"section_" + index} section={section} classes={classes} />
+  ));
 }
 
 export default Toitdocs;

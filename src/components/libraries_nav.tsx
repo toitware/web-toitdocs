@@ -58,28 +58,32 @@ class LibrariesNav extends Component {
     const libraryNames = Object.keys(library.libraries).sort();
 
     return (
-      <div className="sideMenu" style={{paddingTop: "20px"}}>
+      <div className="sideMenu" style={{ paddingTop: "20px" }}>
         <ErrorBoundary>
           <List>
-            <div className="sideMenu" style={{paddingTop: "20px"}}>
-            <ListSubheader>
-              <Typography color="secondary"><b>Libraries</b></Typography>
-            </ListSubheader>
+            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+              <ListSubheader>
+                <Typography color="secondary">
+                  <b>Libraries</b>
+                </Typography>
+              </ListSubheader>
             </div>
-            <div className="sideMenu" style={{paddingTop: "20px"}}>
-            {libraryNames.map((libraryName) =>
-              this.renderLibrary(library.libraries[libraryName])
-            )}
+            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+              {libraryNames.map((libraryName) =>
+                this.renderLibrary(library.libraries[libraryName])
+              )}
             </div>
-            <div className="sideMenu" style={{paddingTop: "20px"}}>
-            <ListSubheader>
-              <Typography color="secondary"><b>Modules</b></Typography>
-            </ListSubheader>
+            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+              <ListSubheader>
+                <Typography color="secondary">
+                  <b>Modules</b>
+                </Typography>
+              </ListSubheader>
             </div>
-            <div className="sideMenu" style={{paddingTop: "20px"}}>
-            {moduleNames.map((moduleName) =>
-              this.renderModule(library, library.modules[moduleName])
-            )}
+            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+              {moduleNames.map((moduleName) =>
+                this.renderModule(library, library.modules[moduleName])
+              )}
             </div>
           </List>
         </ErrorBoundary>
