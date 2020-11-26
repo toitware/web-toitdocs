@@ -13,25 +13,24 @@ import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import { librarySegmentsToURI } from "../sdk";
+import { theme } from "../assets/theme";
 
 // Search bar styling.
 const style = (theme) => ({
-  root: {
-    flexGrow: 1,
-  },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: "10px",
   },
   title: {
     flexGrow: 1,
     display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
-    },
+    color: theme.palette.common.white,
+  },
+  result: {
+    color: "#000000",
   },
   search: {
     position: "relative",
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: "2px",
     backgroundColor: fade(theme.palette.common.white, 0.15),
     "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
@@ -39,10 +38,6 @@ const style = (theme) => ({
     marginLeft: 1,
     paddingLeft: 1,
     width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
-      width: "auto",
-    },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -55,6 +50,12 @@ const style = (theme) => ({
   },
   inputRoot: {
     color: "inherit",
+    marginTop: "50px",
+    maxHeight: "50%",
+    overflow: "auto",
+    position: "fixed",
+    float: "right",
+    borderRadius: "0px",
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
@@ -170,6 +171,7 @@ class HeaderBar extends Component {
   }
 
   renderSearchResult(results) {
+    const classes = style(theme);
     return Object.keys(results).map((prop) => {
       if (results[prop].length !== 0) {
         return results[prop].map((match, index) => {
@@ -179,7 +181,7 @@ class HeaderBar extends Component {
               return (
                 <div key={"list_classes_" + index}>
                   {index === 0 && (
-                    <ListItem style={{color: "black"}}>
+                    <ListItem className={classes.title}>
                       <b>CLASSES</b>
                     </ListItem>
                   )}
@@ -187,10 +189,10 @@ class HeaderBar extends Component {
                     to={`/${librarySegmentsToURI(klass.library)}/${
                       klass.module
                     }/${klass.name}`}
-                    style = {{color: "#5e5261"}}
                   >
-                    <ListItem className="ListItem" button>
-                      <b> {klass.name}  </b> &nbsp; in &nbsp; <b>{klass.module}</b>
+                    <ListItem className={classes.result} button>
+                      <b> {klass.name} </b> &nbsp; in &nbsp;{" "}
+                      <b>{klass.module}</b>
                     </ListItem>
                   </Link>
                 </div>
@@ -200,12 +202,12 @@ class HeaderBar extends Component {
               return (
                 <div key={"list_libraries_" + index}>
                   {index === 0 && (
-                    <ListItem style={{color: "black"}}>
+                    <ListItem className={classes.title}>
                       <b>LIBRARIES</b>
                     </ListItem>
                   )}
-                  <Link to={`/${librarySegmentsToURI(library.path)}`} style = {{color: "#5e5261"}}>
-                    <ListItem className="ListItem" button>
+                  <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                    <ListItem className={classes.result} button>
                       {" "}
                       <b> {library.name} </b>
                     </ListItem>
@@ -217,7 +219,7 @@ class HeaderBar extends Component {
               return (
                 <div key={"list_modules_" + index}>
                   {index === 0 && (
-                    <ListItem style={{color: "black"}}>
+                    <ListItem className={classes.title}>
                       <b>MODULES</b>
                     </ListItem>
                   )}
@@ -225,9 +227,8 @@ class HeaderBar extends Component {
                     to={`/${librarySegmentsToURI(module.library)}/${
                       module.name
                     }`}
-                    style = {{color: "#5e5261"}}
                   >
-                    <ListItem className="ListItem" button>
+                    <ListItem className={classes.result} button>
                       {" "}
                       <b> {module.name} </b>
                     </ListItem>
@@ -246,11 +247,12 @@ class HeaderBar extends Component {
   }
 
   render() {
-    const classes = this.props.classes;
+    const classes = style(theme);
+    //const classes = this.props.classes;
     let sorted_results = this.categoriseResults();
 
     return (
-      <Grid container item xs={12} className={classes.root}>
+      <Grid container item xs={12} style={classes.inputRoot}>
         <Grid item xs={12}>
           <AppBar position="fixed">
             <Toolbar>
@@ -265,21 +267,14 @@ class HeaderBar extends Component {
                 </Link>
               </Grid>
               <Grid item sm={3}>
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
-                  </div>
-                  <InputBase
-                    placeholder="Search…"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput,
-                    }}
-                    inputProps={{ "aria-label": "search" }}
-                    value={this.state.searchTerm}
-                    onChange={this.handleChange}
-                  />
-                </div>
+                <SearchIcon className={classes.searchIcon} />
+                <InputBase
+                  className={classes.inputInput}
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                  value={this.state.searchTerm}
+                  onChange={this.handleChange}
+                />
               </Grid>
             </Toolbar>
           </AppBar>
@@ -290,19 +285,18 @@ class HeaderBar extends Component {
             container
             item
             xs={3}
-            style={{
-              marginTop: "65px",
-              maxHeight: "50%",
-              overflow: "auto",
-              position: "fixed",
-              float: "left",
-              borderRadius: "5px",
-            }}
+            className={classes.search}
+            // style={{
+            //   marginTop: "65px",
+            //   maxHeight: "50%",
+            //   overflow: "auto",
+            //   position: "fixed",
+            //   float: "left",
+            //   borderRadius: "5px",
+            // }}
           >
             <Paper>
-            <List style={{backgroundColor: "#efe8c7"}}>
-              {this.renderSearchResult(sorted_results)}
-            </List>
+              <List>{this.renderSearchResult(sorted_results)}</List>
             </Paper>
           </Grid>
         </div>
