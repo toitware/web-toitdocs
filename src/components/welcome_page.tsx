@@ -5,7 +5,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { Grid, List, Paper } from "@material-ui/core";
 
 class WelcomePage extends Component {
-  render() {
+  render(): JSX.Element {
     return (
       <Grid container>
         <Grid item xs={12} sm={9}>
@@ -48,7 +48,7 @@ class WelcomePage extends Component {
             <Grid item container>
               <p>
                 Except for&nbsp;<b>core</b>, you must import a library before
-                you can use it. Here's an example of how to do it:
+                you can use it. Here&apos;s an example of how to do it:
               </p>
             </Grid>
           </div>

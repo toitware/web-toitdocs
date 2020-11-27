@@ -2,159 +2,180 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withStyles, fade } from "@material-ui/core/styles";
+import {
+  withStyles,
+  fade,
+  Theme,
+  createStyles,
+  WithStyles,
+} from "@material-ui/core/styles";
 import toitware from "./toitware.ico";
 import { Grid } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, match } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
 import Fuse from "./fuse";
 import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import { librarySegmentsToURI } from "../sdk";
+import { librarySegmentsToURI, RootState } from "../sdk";
+import { ToitLibraries, ToitLibrary } from "../model/toitsdk";
+import ToitFuse from "./fuse";
 
 // Search bar styling.
-const style = (theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
+const style = (theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
     },
-  },
-  search: {
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+    menuButton: {
+      marginRight: theme.spacing(2),
     },
-    marginLeft: 1,
-    paddingLeft: 1,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
-      width: "auto",
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inputRoot: {
-    color: "inherit",
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("xs")]: {
-      width: "30ch",
-      "&:focus": {
-        width: "30ch",
+    title: {
+      flexGrow: 1,
+      display: "none",
+      [theme.breakpoints.up("sm")]: {
+        display: "block",
       },
     },
-  },
-});
+    search: {
+      position: "relative",
+      borderRadius: theme.shape.borderRadius,
+      backgroundColor: fade(theme.palette.common.white, 0.15),
+      "&:hover": {
+        backgroundColor: fade(theme.palette.common.white, 0.25),
+      },
+      marginLeft: 1,
+      paddingLeft: 1,
+      width: "100%",
+      [theme.breakpoints.up("sm")]: {
+        marginLeft: theme.spacing(1),
+        width: "auto",
+      },
+    },
+    searchIcon: {
+      padding: theme.spacing(0, 2),
+      height: "100%",
+      position: "absolute",
+      pointerEvents: "none",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    inputRoot: {
+      color: "inherit",
+    },
+    inputInput: {
+      padding: theme.spacing(1, 1, 1, 0),
+      // vertical padding + font size from searchIcon
+      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+      transition: theme.transitions.create("width"),
+      width: "100%",
+      [theme.breakpoints.up("xs")]: {
+        width: "30ch",
+        "&:focus": {
+          width: "30ch",
+        },
+      },
+    },
+  });
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
+function mapStateToProps(
+  state: RootState,
+  props: HeaderBarProps
+): HeaderBarProps {
   return {
-    version: sdk.version,
-    searchObject: sdk.searchObject,
-    libraries: sdk.object.libraries,
-    match: props.match,
+    ...props,
+    version: state.version,
+    searchObject: state.searchObject,
+    libraries: state.object?.libraries || {},
   };
 }
 
-class HeaderBar extends Component {
-  constructor(props) {
-    super();
-    this.fuse = new Fuse(props.searchObject, props.libraries);
-    this.state = {
-      searchTerm: "",
-      results: [],
-    };
+interface SearchResults {
+  matches: any[];
+  refIndex: number;
+  score: number;
+  isFilled: boolean;
+}
+
+interface HeaderBarProps extends WithStyles<typeof style> {
+  version?: string;
+  searchObject?: any;
+  libraries: ToitLibraries;
+}
+
+interface HeaderBarState {
+  searchTerm: string;
+  results?: SearchResults;
+}
+
+class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
+  private fuse: ToitFuse;
+
+  constructor(props: HeaderBarProps) {
+    super(props);
+    this.fuse = new ToitFuse(props.searchObject, props.libraries);
   }
 
-  setSearchTerm(searchTerm) {
-    this.setState({ searchTerm });
+  state = {
+    searchTerm: "",
+    results: undefined,
+  };
+
+  setSearchTerm(searchTerm: string): void {
+    this.setState({ ...this.state, searchTerm: searchTerm });
   }
 
-  setResults(results) {
-    this.setState({ results });
+  setResults(results: SearchResults): void {
+    this.setState({ ...this.state, results: results });
   }
 
-  handleChange = async (event) => {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.setSearchTerm(event.target.value);
-    if (typeof event.target.value === "string") {
-      if (event.target.value.length >= 2) {
-        //Results of searching through libraries, modules and classes
-        const found = await this.fuse.Basic.search(this.state.searchTerm);
-        //Results of searching through aliases
-        const found_aliases = await this.fuse.Aliases.search(
-          this.state.searchTerm
-        );
-        const combined_results = {
-          matches: [],
-          refIndex: -1, //refIndex is used for finding the results in output object
-          score: 1, // The lower the better the match is
-          is_filled: true,
-        };
+    if (event.target.value.length >= 2) {
+      //Results of searching through libraries, modules and classes
+      const found = this.fuse.basic().search(this.state.searchTerm);
+      //Results of searching through aliases
+      const foundAliases = this.fuse.aliases().search(this.state.searchTerm);
+      const combinedResults = {
+        matches: [],
+        refIndex: -1, //refIndex is used for finding the results in output object
+        score: 1, // The lower the better the match is
+        isFilled: true,
+      };
 
-        //Build one combined list of results
-        if (found_aliases.length !== 0) {
-          found_aliases.forEach((elem) => {
-            elem.matches.forEach((match) => {
-              const temp_match = match;
-              temp_match.path = elem.item.path;
-              combined_results.matches.push(temp_match);
-            });
+      //Build one combined list of results
+      if (foundAliases.length !== 0) {
+        foundAliases.forEach((elem) => {
+          elem.matches.forEach((match) => {
+            const tempMatch = match;
+            tempMatch.path = elem.item.path;
+            combinedResults.matches.push(tempMatch);
           });
-          combined_results.scoreAlias = found_aliases[0].score;
-        }
-
-        if (found.length !== 0) {
-          combined_results.matches = combined_results.matches.concat(
-            found[0].matches
-          );
-          combined_results.refIndex = found[0].refIndex;
-          combined_results.score = found[0].score;
-        }
-        setTimeout(this.setResults(combined_results), 200);
-      } else {
-        this.setResults({
-          matches: [],
-          refIndex: -1, //refIndex is used for finding the results in output object
-          score: 1, // The lower the better the match is
-          is_filled: false,
         });
+        combinedResults.scoreAlias = foundAliases[0].score;
       }
+
+      if (found.length !== 0) {
+        combinedResults.matches = combinedResults.matches.concat(
+          found[0].matches
+        );
+        combinedResults.refIndex = found[0].refIndex;
+        combinedResults.score = found[0].score;
+      }
+      setTimeout(this.setResults(combinedResults), 200);
     }
   };
 
-  renderSearchResult() {
+  renderSearchResult(): JSX.Element {
     const results = this.state.results;
-    if (!results.is_filled) {
-      return null;
+    if (!results || !results.isFilled) {
+      return <></>;
     }
 
     if (results.matches.length === 0) {
-      return "no results";
+      return <>no results</>;
     }
 
     // TODO: Enable search on aliases
@@ -209,7 +230,7 @@ class HeaderBar extends Component {
     });
   }
 
-  render() {
+  render(): JSX.Element {
     const classes = this.props.classes;
 
     return (
@@ -272,6 +293,4 @@ class HeaderBar extends Component {
   }
 }
 
-export default withStyles(style, { withTheme: true })(
-  connect(mapStateToProps)(HeaderBar)
-);
+export default connect(mapStateToProps)(withStyles(style)(HeaderBar));

@@ -3,23 +3,36 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import { Link } from "react-router-dom";
+import { Link, match } from "react-router-dom";
 import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
 import ListItemLink from "./list_item_link";
-import { getLibrary, librarySegmentsToName } from "../sdk";
+import { getLibrary, librarySegmentsToName, RootState } from "../sdk";
+import { ToitLibraries } from "../model/toitsdk";
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
+function mapStateToProps(
+  state: RootState,
+  props: FunctionNavProps
+): FunctionNavProps {
   return {
-    version: sdk.version,
-    libraries: sdk.object.libraries,
+    libraries: state.object?.libraries || {},
     match: props.match,
   };
 }
 
-class FunctionNav extends Component {
-  render() {
+interface FunctionNavParams {
+  libName: string;
+  moduleName: string;
+  className: string;
+}
+
+interface FunctionNavProps {
+  libraries: ToitLibraries;
+  match: match<FunctionNavParams>;
+}
+
+class FunctionNav extends Component<FunctionNavProps> {
+  render(): JSX.Element {
     const {
       params: { libName, moduleName, className },
     } = this.props.match;
@@ -29,16 +42,16 @@ class FunctionNav extends Component {
     const module = library && library.modules[moduleName];
 
     if (!module) {
-      return "Module not found";
+      return <>Module not found</>;
     }
 
-    let class_info = module.classes.find(({ name }) => name === className);
-    if (!class_info) {
-      class_info = module.export_classes.find(({ name }) => name === className);
+    let classInfo = module.classes.find(({ name }) => name === className);
+    if (!classInfo) {
+      classInfo = module.export_classes.find(({ name }) => name === className);
     }
 
-    if (!class_info) {
-      return "Class not found";
+    if (!classInfo) {
+      return <>Class not found</>;
     }
 
     return (
@@ -56,33 +69,33 @@ class FunctionNav extends Component {
                 <Link to={`/${libName}/${moduleName}`}>{module.name}</Link>
                 {" / "}
                 <Link to={`/${libName}/${moduleName}/${className}`}>
-                  {class_info.name}
+                  {classInfo.name}
                 </Link>
               </ListSubheader>
             }
           >
-            {class_info.structure.statics.map((stat, index) => (
+            {classInfo.structure.statics.map((stat, index) => (
               <ListItemLink
                 to={`/${libName}/${moduleName}/${className}/statics/${stat.name}/${index}`}
                 key={"stat-index-" + index}
                 primary={stat.name}
               />
             ))}
-            {class_info.structure.constructors.map((constructor, index) => (
+            {classInfo.structure.constructors.map((constructor, index) => (
               <ListItemLink
                 to={`/${libName}/${moduleName}/${className}/constructors/${constructor.name}/${index}`}
                 key={"constructor-index-" + index}
                 primary={constructor.name}
               />
             ))}
-            {class_info.structure.factories.map((factory, index) => (
+            {classInfo.structure.factories.map((factory, index) => (
               <ListItemLink
                 to={`/${libName}/${moduleName}/${className}/factories/${factory.name}/${index}`}
                 key={"factory-index-" + index}
                 primary={factory.name}
               />
             ))}
-            {class_info.structure.methods.map((method, index) => (
+            {classInfo.structure.methods.map((method, index) => (
               <ListItemLink
                 to={`/${libName}/${moduleName}/${className}/methods/${method.name}/${index}`}
                 key={"method-index-" + index}

@@ -11,6 +11,17 @@ import {
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_TOITDOCREF,
 } from "../sdk";
+import {
+  ToitDocRef,
+  ToitExpression,
+  ToitSection,
+  ToitStatement,
+  ToitStatementCode,
+  ToitStatementCodeSection,
+  ToitStatementItem,
+  ToitStatementItemized,
+  ToitStatementParagraph,
+} from "../model/toitsdk";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,27 +33,33 @@ const useStyles = makeStyles((theme) => ({
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
 
-function StatementCodeSection({ code, classes }) {
+function StatementCodeSection(props: {
+  code: ToitStatementCodeSection;
+}): JSX.Element {
+  const classes = useStyles();
   return (
     <Paper elevation={0} variant="outlined" className={classes.paperSection}>
       <pre>
-        <code>{code.text}</code>
+        <code>{props.code.text}</code>
       </pre>
     </Paper>
   );
 }
 
-function StatementCode({ code, classes }) {
-  return <span className={classes.paper}>{code.text}</span>;
+function StatementCode(props: { code: ToitStatementCode }): JSX.Element {
+  const classes = useStyles();
+  return <span className={classes.paper}>{props.code.text}</span>;
 }
 
-function StatementItemized({ items, classes }) {
+function StatementItemized(props: {
+  itemized: ToitStatementItemized;
+}): JSX.Element {
   return (
     <ul>
-      {items.items.forEach((item) =>
-        item.statements.forEach((statement) => (
-          <li>
-            <Statement statement={statement} classes={classes} />
+      {props.itemized.items.map((item: ToitStatementItem) =>
+        item.statements.map((statement, index) => (
+          <li key={index}>
+            <Statement statement={statement} />
           </li>
         ))
       )}
@@ -50,61 +67,74 @@ function StatementItemized({ items, classes }) {
   );
 }
 
-function StatementParagraph({ statement, classes }) {
-  return statement.expressions.map((expr, index) => (
-    <Expression key={"expression_" + index} expr={expr} classes={classes} />
-  ));
+function StatementParagraph(props: {
+  statement: ToitStatementParagraph;
+}): JSX.Element {
+  return (
+    <>
+      {props.statement.expressions.map(
+        (expr: ToitExpression, index: number) => (
+          <Expression key={"expression_" + index} expression={expr} />
+        )
+      )}
+    </>
+  );
 }
 
-function ToitdocRef({ reference }) {
+function ToitdocRef(props: { reference: ToitDocRef }): JSX.Element {
   // TODO: Handle references to other objects.
-  return <span>{reference.text}</span>;
+  return <span>{props.reference.text}</span>;
 }
 
-function Expression({ expr, classes }) {
-  switch (expr.object_type) {
+function Expression(props: { expression: ToitExpression }): JSX.Element {
+  const expression = props.expression;
+  switch (expression.object_type) {
     case OBJECT_TYPE_STATEMENT_CODE:
-      return <StatementCode code={expr} classes={classes} />;
+      return <StatementCode code={expression as ToitStatementCode} />;
     case OBJECT_TYPE_STATEMENT_CODE_SECTION:
-      return <StatementCodeSection code={expr} classes={classes} />;
+      return (
+        <StatementCodeSection code={expression as ToitStatementCodeSection} />
+      );
     case OBJECT_TYPE_TOITDOCREF:
-      return <ToitdocRef reference={expr} classes={classes} />;
+      return <ToitdocRef reference={expression as ToitDocRef} />;
     default:
-      console.log("unhandled expression", expr);
-      return null;
+      throw Error("unhandled expression: " + expression);
   }
 }
 
-function Statement({ statement, classes }) {
+function Statement(props: { statement: ToitStatement }): JSX.Element {
+  const statement = props.statement;
   switch (statement.object_type) {
     case OBJECT_TYPE_STATEMENT_PARAGRAPH:
-      return <StatementParagraph statement={statement} classes={classes} />;
+      return (
+        <StatementParagraph statement={statement as ToitStatementParagraph} />
+      );
     case OBJECT_TYPE_STATEMENT_CODE_SECTION:
-      return <StatementCodeSection code={statement} classes={classes} />;
+      return (
+        <StatementCodeSection code={statement as ToitStatementCodeSection} />
+      );
     case OBJECT_TYPE_STATEMENT_ITEMIZED:
-      return <StatementItemized items={statement} classes={classes} />;
+      return (
+        <StatementItemized itemized={statement as ToitStatementItemized} />
+      );
     default:
-      console.log("unhandled statement", statement);
-      return null;
+      throw Error("unhandled statement: " + statement);
   }
 }
 
-function Section({ section, classes }) {
+function Section(props: { section: ToitSection }): JSX.Element {
+  const classes = useStyles();
   return (
     <div className={classes.root}>
       <Grid container>
         <Grid item>
-          <strong>{section.title}</strong>
+          <strong>{props.section.title}</strong>
         </Grid>
       </Grid>
       <Grid container>
         <Grid item>
-          {section.statements.map((statement, index) => (
-            <Statement
-              key={"statement_" + index}
-              statement={statement}
-              classes={classes}
-            />
+          {props.section.statements.map((statement, index) => (
+            <Statement key={"statement_" + index} statement={statement} />
           ))}
         </Grid>
       </Grid>
@@ -113,14 +143,17 @@ function Section({ section, classes }) {
 }
 
 // Function that prints the content of currently presented element.
-function Toitdocs(props) {
-  const classes = useStyles();
+function Toitdocs(props: { value: ToitSection[] }): JSX.Element | null {
   if (!props.value) {
     return null;
   }
-  return props.value.map((section, index) => (
-    <Section key={"section_" + index} section={section} classes={classes} />
-  ));
+  return (
+    <>
+      {props.value.map((section, index) => (
+        <Section key={"section_" + index} section={section} />
+      ))}
+    </>
+  );
 }
 
 export default Toitdocs;

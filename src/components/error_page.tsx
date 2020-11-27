@@ -1,21 +1,24 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React from "react";
+import React, { ErrorInfo } from "react";
 import { Link } from "react-router-dom";
 import { Grid } from "@material-ui/core";
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
 
-  componentDidCatch(error, info) {
+class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
+  state = {
+    hasError: false,
+  };
+
+  componentDidCatch(error: Error, info: ErrorInfo): void {
     // Display fallback UI
     this.setState({ hasError: true });
   }
 
-  render() {
+  render(): JSX.Element {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       console.log("ERROR: In the object ");
@@ -26,7 +29,7 @@ class ErrorBoundary extends React.Component {
         </Grid>
       );
     } else {
-      return this.props.children;
+      return <>{this.props.children}</>;
     }
   }
 }

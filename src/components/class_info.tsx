@@ -2,7 +2,12 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ClassContentList from "./class_content_list";
 import Toitdocs from "./toitdoc_info";
@@ -10,25 +15,37 @@ import { Methods } from "./methods";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { Hidden } from "@material-ui/core";
-import { getLibrary } from "../sdk";
+import { getLibrary, RootState } from "../sdk";
 import { Reference, Type } from "./util";
+import {
+  ToitField,
+  ToitFunction,
+  ToitLibraries,
+  ToitReference,
+} from "../model/toitsdk";
+import { match } from "react-router-dom";
 
-function Extends({ reference }) {
+function Extends(props: { reference: ToitReference }): JSX.Element {
   return (
     <div>
-      extends <Reference reference={reference} />
+      extends <Reference reference={props.reference} />
     </div>
   );
 }
 
-function Constructors(props) {
+function Constructors(props: {
+  constructors: ToitFunction[];
+  libName: string;
+  moduleName: string;
+  className: string;
+}): JSX.Element {
   return (
     <div>
       <Typography variant="h3" component="h3">
         Constructors
       </Typography>
       <Methods
-        value={props.constructors}
+        functions={props.constructors}
         libName={props.libName}
         moduleName={props.moduleName}
         className={props.className}
@@ -38,14 +55,19 @@ function Constructors(props) {
   );
 }
 
-function Statics(props) {
+function Statics(props: {
+  statics: ToitFunction[];
+  libName: string;
+  moduleName: string;
+  className: string;
+}): JSX.Element {
   return (
     <div>
       <Typography variant="h3" component="h3">
         Statics
       </Typography>
       <Methods
-        value={props.value}
+        functions={props.statics}
         libName={props.libName}
         moduleName={props.moduleName}
         className={props.className}
@@ -55,14 +77,19 @@ function Statics(props) {
   );
 }
 
-function Factories(props) {
+function Factories(props: {
+  factories: ToitFunction[];
+  libName: string;
+  moduleName: string;
+  className: string;
+}): JSX.Element {
   return (
     <div>
       <Typography variant="h3" component="h3">
         Factories
       </Typography>
       <Methods
-        value={props.value}
+        functions={props.factories}
         libName={props.libName}
         moduleName={props.moduleName}
         className={props.className}
@@ -72,14 +99,19 @@ function Factories(props) {
   );
 }
 
-function ClassMethods(props) {
+function ClassMethods(props: {
+  classMethods: ToitFunction[];
+  libName: string;
+  moduleName: string;
+  className: string;
+}): JSX.Element {
   return (
     <div>
       <Typography variant="h3" component="h3">
         Methods
       </Typography>
       <Methods
-        value={props.value}
+        functions={props.classMethods}
         libName={props.libName}
         moduleName={props.moduleName}
         className={props.className}
@@ -89,7 +121,7 @@ function ClassMethods(props) {
   );
 }
 
-function Fields(props) {
+function Fields(props: { fields: ToitField[] }): JSX.Element {
   return (
     <div>
       <Typography variant="h3" component="h3">
@@ -114,37 +146,49 @@ function Fields(props) {
     </div>
   );
 }
-const style = (theme) => ({
+
+const style = createStyles({
   root: {
     width: "100%",
   },
 });
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
+function mapStateToProps(
+  state: RootState,
+  props: ClassInfoProps
+): ClassInfoProps {
   return {
-    version: sdk.version,
-    libraries: sdk.object.libraries,
-    match: props.match,
+    ...props,
+    libraries: state.object?.libraries || {},
   };
 }
 
+interface ClassInfoParams {
+  libName: string;
+  moduleName: string;
+  className: string;
+}
+
+interface ClassInfoProps extends WithStyles<typeof style> {
+  libraries: ToitLibraries;
+  match: match<ClassInfoParams>;
+}
+
 // Returns description of the class
-class ClassInfo extends Component {
-  notFound(name) {
+class ClassInfo extends Component<ClassInfoProps> {
+  notFound(name: string): React.ReactNode {
     return (
       <Grid container>
         <Grid item xs={12} sm={9}>
           <Typography variant="h2" component="h2">
-            Class: {name} not found!
+            {"Class: " + name + " not found!"}
           </Typography>
         </Grid>
       </Grid>
     );
   }
 
-  render() {
-    const classes = this.props.classes;
+  render(): React.ReactNode {
     const {
       params: { libName, moduleName, className },
     } = this.props.match;
@@ -156,74 +200,64 @@ class ClassInfo extends Component {
       return this.notFound(className);
     }
 
-    let class_info = module.classes.find(({ name }) => name === className);
-    if (!class_info) {
-      class_info = module.export_classes.find(({ name }) => name === className);
+    let classInfo = module.classes.find(({ name }) => name === className);
+    if (!classInfo) {
+      classInfo = module.export_classes.find(({ name }) => name === className);
     }
 
-    if (!class_info) {
+    if (!classInfo) {
       return this.notFound(className);
     }
 
     return (
-      <div className={classes.root}>
+      <div className={this.props.classes.root}>
         <Grid container>
           <Grid item xs={12} sm={9}>
             <Box pt={2} pb={2}>
               <Typography variant="h2" component="h2">
-                Class: {class_info.name}
+                Class: {classInfo.name}
               </Typography>
-              {class_info.extends && <Extends reference={class_info.extends} />}
+              {classInfo.extends && <Extends reference={classInfo.extends} />}
             </Box>
-            {class_info.structure.constructors.length > 0 && (
+            {classInfo.structure.constructors.length > 0 && (
               <Constructors
-                constructors={class_info.structure.constructors}
+                constructors={classInfo.structure.constructors}
                 libName={libName}
                 moduleName={moduleName}
                 className={className}
-                functionType="Constructors"
               />
             )}
-            {class_info.structure.factories.length > 0 && (
+            {classInfo.structure.factories.length > 0 && (
               <Factories
-                value={class_info.structure.factories}
+                factories={classInfo.structure.factories}
                 libName={libName}
                 moduleName={moduleName}
                 className={className}
-                functionType="Factories"
               />
             )}
-            {class_info.structure.statics.length > 0 && (
+            {classInfo.structure.statics.length > 0 && (
               <Statics
-                value={class_info.structure.statics}
+                statics={classInfo.structure.statics}
                 libName={libName}
                 moduleName={moduleName}
                 className={className}
-                functionType="Statics"
               />
             )}
-            {class_info.structure.methods.length > 0 && (
+            {classInfo.structure.methods.length > 0 && (
               <ClassMethods
-                value={class_info.structure.methods}
+                classMethods={classInfo.structure.methods}
                 libName={libName}
                 moduleName={moduleName}
                 className={className}
-                functionType="Methods"
               />
             )}
-            {class_info.structure.fields.length > 0 && (
-              <Fields
-                fields={class_info.structure.fields}
-                libName={libName}
-                moduleName={moduleName}
-                className={className}
-                functionType="Fields"
-              />
+            {classInfo.structure.fields.length > 0 && (
+              <Fields fields={classInfo.structure.fields} />
             )}
           </Grid>
           <Hidden xsDown>
             <Grid item sm={3}>
-              <ClassContentList value={class_info} />
+              <ClassContentList class={classInfo} />
             </Grid>
           </Hidden>
         </Grid>

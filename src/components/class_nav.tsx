@@ -3,24 +3,37 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import { Link } from "react-router-dom";
+import { Link, match } from "react-router-dom";
 import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
-import { getLibrary } from "../sdk";
+import { getLibrary, RootState } from "../sdk";
 import ListItemLink from "./list_item_link";
 import Typography from "@material-ui/core/Typography";
+import { ToitLibraries } from "../model/toitsdk";
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
+function mapStateToProps(
+  state: RootState,
+  props: ClassNavProps
+): ClassNavProps {
   return {
-    version: sdk.version,
-    libraries: sdk.object.libraries,
+    libraries: state.object?.libraries || {},
     match: props.match,
   };
 }
 
-class ClassNav extends Component {
-  render() {
+interface ClassNavParams {
+  libName: string;
+  moduleName: string;
+  className: string;
+}
+
+interface ClassNavProps {
+  libraries: ToitLibraries;
+  match: match<ClassNavParams>;
+}
+
+class ClassNav extends Component<ClassNavProps> {
+  render(): JSX.Element {
     const {
       params: { libName, moduleName, className },
     } = this.props.match;
@@ -29,8 +42,8 @@ class ClassNav extends Component {
     const module = library && library.modules[moduleName];
 
     if (module) {
-      const classes = []
-        .concat(module.classes)
+      const classes = module.classes
+        .concat([])
         .sort((a, b) => a.name.localeCompare(b.name));
 
       return (

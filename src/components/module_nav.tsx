@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, match } from "react-router-dom";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItemLink from "./list_item_link";
 import List from "@material-ui/core/List";
@@ -11,21 +11,35 @@ import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
+  RootState,
 } from "../sdk";
 import Typography from "@material-ui/core/Typography";
+import { ToitLibrary, ToitModule } from "../model/toitsdk";
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
+function mapStateToProps(
+  state: RootState,
+  props: ModuleNavProps
+): ModuleNavProps {
   return {
-    version: sdk.version,
-    libraries: sdk.object.libraries,
+    version: state.version,
+    libraries: state.object?.libraries || {},
     match: props.match,
   };
 }
 
-//Listing modules for navigation purposes
-class ModuleNav extends Component {
-  renderModule(library, module) {
+interface ModuleNavParams {
+  libName: string;
+  moduleName: string;
+}
+
+interface ModuleNavProps {
+  version?: string;
+  libraries: { [libraryName: string]: ToitLibrary };
+  match: match<ModuleNavParams>;
+}
+
+class ModuleNav extends Component<ModuleNavProps> {
+  renderModule(library: ToitLibrary, module: ToitModule): JSX.Element {
     const libraryName = librarySegmentsToName(library.path);
     const libraryURI = librarySegmentsToURI(library.path);
     return (
@@ -36,12 +50,13 @@ class ModuleNav extends Component {
       />
     );
   }
-  render() {
+
+  render(): JSX.Element {
     const {
       params: { libName, moduleName },
     } = this.props.match;
     const library = getLibrary(this.props.libraries, libName);
-    const moduleNames = Object.keys(library.modules).sort();
+    const moduleNames = library ? Object.keys(library.modules).sort() : [];
     return (
       <div className="sideMenu" style={{ paddingTop: "20px" }}>
         <ErrorBoundary>

@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { ToitReference, ToitType } from "../model/toitsdk";
 
-export class Type extends Component {
-  render() {
+interface TypeProps {
+  type: ToitType;
+}
+
+export class Type extends Component<TypeProps> {
+  render(): JSX.Element {
     const type = this.props.type;
     if (type.is_none) {
       return <span>none</span>;
@@ -21,8 +26,12 @@ export class Type extends Component {
   }
 }
 
-export class Reference extends Component {
-  render() {
+interface ReferenceProps {
+  reference: ToitReference;
+}
+
+export class Reference extends Component<ReferenceProps> {
+  render(): JSX.Element {
     // TODO handle the reference for the type
     const reference = this.props.reference;
     return <Link to={`/#todo`}>{reference.name}</Link>;

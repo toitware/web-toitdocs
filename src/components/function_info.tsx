@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
+import { createStyles, WithStyles, withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -10,83 +10,95 @@ import { ArrowRightAlt } from "@material-ui/icons";
 import Toitdocs from "./toitdoc_info";
 import { Parameters } from "./parameters";
 import { Type } from "./util";
-import { getLibrary } from "../sdk";
+import { getLibrary, RootState } from "../sdk";
+import { ToitLibraries } from "../model/toitsdk";
+import { match } from "react-router-dom";
 
-const style = (theme) => ({
+const style = createStyles({
   root: {
     width: "100%",
   },
 });
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
+function mapStateToProps(
+  state: RootState,
+  props: FunctionInfoProps
+): FunctionInfoProps {
   return {
-    version: sdk.version,
-    libraries: sdk.object.libraries,
-    match: props.match,
+    ...props,
+    libraries: state.object?.libraries || {},
   };
 }
 
-class FunctionInfo extends Component {
-  render() {
-    let {
-      params: {
-        libName,
-        moduleName,
-        className,
-        functionType,
-        functionName,
-        index,
-      },
-    } = this.props.match;
-    functionType = functionType.toLowerCase();
+interface FunctionInfoParams {
+  libName: string;
+  moduleName: string;
+  className: string;
+  functionType: string;
+  functionName: string;
+  index: string;
+}
 
-    let function_info = null;
+interface FunctionInfoProps extends WithStyles<typeof style> {
+  libraries: ToitLibraries;
+  match: match<FunctionInfoParams>;
+}
 
-    let page_title = "Unknown";
+class FunctionInfo extends Component<FunctionInfoProps> {
+  render(): JSX.Element {
+    const libName = this.props.match.params.libName;
+    const moduleName = this.props.match.params.moduleName;
+    const className = this.props.match.params.className;
+    const functionType = this.props.match.params.functionType.toLowerCase();
+    const functionName = this.props.match.params.functionName;
+    const index = parseInt(this.props.match.params.index);
+
+    let functionInfo = null;
+
+    let pageTitle = "Unknown";
     const library = getLibrary(this.props.libraries, libName);
     const module = library && library.modules[moduleName];
 
     if (!module) {
-      return "Module not found";
+      return <>Module not found</>;
     }
 
-    let class_info = module.classes.find(({ name }) => name === className);
-    if (!class_info) {
-      class_info = module.export_classes.find(({ name }) => name === className);
+    let classInfo = module.classes.find(({ name }) => name === className);
+    if (!classInfo) {
+      classInfo = module.export_classes.find(({ name }) => name === className);
     }
 
-    if (!class_info) {
-      return "Class not found";
+    if (!classInfo) {
+      return <>Class not found</>;
     }
 
     if (functionType === "constructors") {
-      function_info = class_info.structure.constructors[index];
-      page_title = "Constructor of class: " + className;
+      functionInfo = classInfo.structure.constructors[index];
+      pageTitle = "Constructor of class: " + className;
     } else if (functionType === "factories") {
-      function_info = class_info.structure.factories[index];
-      page_title = "Factory of class: " + className;
+      functionInfo = classInfo.structure.factories[index];
+      pageTitle = "Factory of class: " + className;
     } else if (functionType === "methods") {
-      function_info = class_info.structure.methods[index];
-      page_title = "Function name: " + functionName;
+      functionInfo = classInfo.structure.methods[index];
+      pageTitle = "Function name: " + functionName;
     } else if (functionType === "statics") {
-      function_info = class_info.structure.statics[index];
-      page_title = "Static name: " + functionName;
+      functionInfo = classInfo.structure.statics[index];
+      pageTitle = "Static name: " + functionName;
     }
 
-    if (function_info) {
+    if (functionInfo) {
       return (
         <div className={this.props.classes.root}>
           <Grid container>
             <Grid item xs={12} sm={9}>
               <Box pt={2} pb={2}>
                 <Typography variant="h1" component="h1">
-                  {page_title}
+                  {pageTitle}
                 </Typography>
               </Box>
               <Box>
                 <code>
-                  <Parameters value={function_info.parameters} />
+                  <Parameters parameters={functionInfo.parameters} />
                 </code>
                 <ArrowRightAlt
                   style={{
@@ -94,10 +106,10 @@ class FunctionInfo extends Component {
                     display: "inline-flex",
                   }}
                 />
-                <Type type={function_info.return_type}></Type>
+                <Type type={functionInfo.return_type}></Type>
               </Box>
               <Box>
-                <Toitdocs value={function_info.toitdoc} />
+                <Toitdocs value={functionInfo.toitdoc} />
               </Box>
             </Grid>
           </Grid>

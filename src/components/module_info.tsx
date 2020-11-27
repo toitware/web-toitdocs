@@ -2,8 +2,13 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core/styles";
+import { Link, match } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import ModuleContentList from "./module_content_list";
 import Toitdocs from "./toitdoc_info";
@@ -12,15 +17,23 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { Hidden } from "@material-ui/core";
-import { librarySegmentsToName, getLibrary } from "../sdk";
+import { librarySegmentsToName, getLibrary, RootState } from "../sdk";
+import {
+  ToitClass,
+  ToitFunction,
+  ToitGlobal,
+  ToitLibraries,
+  ToitLibrary,
+  ToitModule,
+} from "../model/toitsdk";
 
-const style = (theme) => ({
+const style = createStyles({
   root: {
     width: "100%",
   },
 });
 
-function Globals(props) {
+function Globals(props: { globals: ToitGlobal[] }): JSX.Element {
   return (
     <div>
       <Box pt={2} pb={2}>
@@ -30,8 +43,8 @@ function Globals(props) {
           </Typography>
         </Box>
       </Box>
-      {[]
-        .concat(props.globals)
+      {props.globals
+        .concat([])
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((global, index) => {
           return (
@@ -44,7 +57,7 @@ function Globals(props) {
   );
 }
 
-function GlobalFunctions(props) {
+function GlobalFunctions(props: { functions: ToitFunction[] }): JSX.Element {
   return (
     <div>
       <Box pt={2} pb={2}>
@@ -59,7 +72,7 @@ function GlobalFunctions(props) {
   );
 }
 
-function ExportFunctions(props) {
+function ExportFunctions(): JSX.Element {
   return (
     <div>
       <Box pt={2} pb={2}>
@@ -73,7 +86,7 @@ function ExportFunctions(props) {
   );
 }
 
-function ExportGlobals(props) {
+function ExportGlobals(): JSX.Element {
   return (
     <div>
       <Box pt={2} pb={2}>
@@ -87,7 +100,7 @@ function ExportGlobals(props) {
   );
 }
 
-function importPath(library, module) {
+function importPath(library: ToitLibrary, module: ToitModule): string {
   const filename = module.name.substring(0, module.name.lastIndexOf("."));
   const libraryName = librarySegmentsToName(library.path);
   if (libraryName) {
@@ -99,48 +112,66 @@ function importPath(library, module) {
   return filename;
 }
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
-  return {
-    version: sdk.version,
-    libraries: sdk.object.libraries,
-    match: props.match,
-  };
-}
-function PrintClasses(props) {
+function PrintClasses(props: {
+  classes: ToitClass[];
+  libName: string;
+  moduleName: string;
+}): JSX.Element | null {
   try {
-    return []
-      .concat(props.module)
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((elem, index) => {
-        return (
-          <Box pt={1} pb={1} key={elem.name + "_" + index}>
-            <Link to={`/${props.libName}/${props.moduleName}/${elem.name}`}>
-              <Typography component="h4" variant="h4">
-                {elem.name}{" "}
-              </Typography>
-            </Link>
-            <Toitdocs value={elem.toitdoc} />
-          </Box>
-        );
-      });
+    return (
+      <>
+        {props.classes
+          .concat([])
+          .sort((a: ToitClass, b: ToitClass) => a.name.localeCompare(b.name))
+          .map((elem, index) => {
+            return (
+              <Box pt={1} pb={1} key={elem.name + "_" + index}>
+                <Link to={`/${props.libName}/${props.moduleName}/${elem.name}`}>
+                  <Typography component="h4" variant="h4">
+                    {elem.name}{" "}
+                  </Typography>
+                </Link>
+                <Toitdocs value={elem.toitdoc} />
+              </Box>
+            );
+          })}
+      </>
+    );
   } catch (err) {
-    return <div></div>;
+    return null;
   }
 }
 
-class ModuleInfo extends Component {
-  render() {
-    const {
-      params: { libName, moduleName },
-    } = this.props.match;
+function mapStateToProps(
+  state: RootState,
+  props: ModuleInfoProps
+): ModuleInfoProps {
+  return {
+    ...props,
+    libraries: state.object?.libraries || {},
+  };
+}
+
+interface ModuleInfoParams {
+  libName: string;
+  moduleName: string;
+}
+
+interface ModuleInfoProps extends WithStyles<typeof style> {
+  libraries: ToitLibraries;
+  match: match<ModuleInfoParams>;
+}
+
+class ModuleInfo extends Component<ModuleInfoProps> {
+  render(): JSX.Element {
+    const libName = this.props.match.params.libName;
+    const moduleName = this.props.match.params.moduleName;
     const library = getLibrary(this.props.libraries, libName);
     const module = library && library.modules[moduleName];
-    const classes = this.props.classes;
     if (module) {
       return (
         <div>
-          <Grid container className={classes.root}>
+          <Grid container className={this.props.classes.root}>
             <Grid item xs={9}>
               <Box pt={2} pb={2}>
                 <Typography component="h2" variant="h2">
@@ -148,11 +179,7 @@ class ModuleInfo extends Component {
                 </Typography>
               </Box>
               <Grid item>
-                <Paper
-                  elevation={0}
-                  variant="outlined"
-                  className={classes.paper}
-                >
+                <Paper elevation={0} variant="outlined">
                   <strong>import</strong> {importPath(library, module)}
                 </Paper>
               </Grid>
@@ -164,9 +191,9 @@ class ModuleInfo extends Component {
                     </Typography>
                   </Box>
                   <PrintClasses
-                    module={module.classes}
                     libName={libName}
                     moduleName={moduleName}
+                    classes={module.classes}
                   />
                 </Box>
               )}
@@ -178,7 +205,7 @@ class ModuleInfo extends Component {
                     </Typography>
                   </Box>
                   <PrintClasses
-                    module={module.export_classes}
+                    classes={module.export_classes}
                     libName={libName}
                     moduleName={moduleName}
                   />
@@ -187,19 +214,15 @@ class ModuleInfo extends Component {
               {module.globals.length > 0 && (
                 <Globals globals={module.globals} />
               )}
-              {module.export_globals.length > 0 && (
-                <ExportGlobals ExportGlobals={module.export_globals} />
-              )}
+              {module.export_globals.length > 0 && <ExportGlobals />}
               {module.functions.length > 0 && (
                 <GlobalFunctions functions={module.functions} />
               )}
-              {module.export_functions.length > 0 && (
-                <ExportFunctions ExportFunctions={module.export_functions} />
-              )}
+              {module.export_functions.length > 0 && <ExportFunctions />}
             </Grid>
             <Hidden xsDown>
               <Grid item xs={3}>
-                <ModuleContentList value={module} />
+                <ModuleContentList module={module} />
               </Grid>
             </Hidden>
           </Grid>
@@ -207,7 +230,7 @@ class ModuleInfo extends Component {
       );
     } else {
       return (
-        <Grid containerclassName={this.props.classes.root}>
+        <Grid container className={this.props.classes.root}>
           <Grid item xs={9}>
             <Box pt={2} pb={2}>
               <Typography component="h2" variant="h2">
@@ -222,6 +245,4 @@ class ModuleInfo extends Component {
   }
 }
 
-export default withStyles(style, { withTheme: true })(
-  connect(mapStateToProps)(ModuleInfo)
-);
+export default connect(mapStateToProps)(withStyles(style)(ModuleInfo));

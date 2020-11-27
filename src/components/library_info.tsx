@@ -2,37 +2,56 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
-// import { makeStyles } from "@material-ui/core/styles";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
 import { List } from "@material-ui/core";
-import { getLibrary } from "../sdk";
+import { getLibrary, RootState } from "../sdk";
+import { match } from "react-router-dom";
+import { ToitLibraries } from "../model/toitsdk";
 
-const style = (theme) => ({
-  root: {
-    width: "100%",
-    maxWidth: 300,
-    backgroundColor: theme.palette.background.paper,
-  },
-  paper: {
-    paddingLeft: theme.spacing(4),
-  },
-});
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const style = (theme: Theme) =>
+  createStyles({
+    root: {
+      width: "100%",
+      maxWidth: 300,
+      backgroundColor: theme.palette.background.paper,
+    },
+    paper: {
+      paddingLeft: theme.spacing(4),
+    },
+  });
 
-function mapStateToProps(state, props) {
-  const { sdk } = state;
+function mapStateToProps(
+  state: RootState,
+  props: LibraryInfoProps
+): LibraryInfoProps {
   return {
-    version: sdk.version,
-    libraries: sdk.object.libraries,
-    match: props.match,
+    ...props,
+    libraries: state.object?.libraries || {},
   };
 }
 
-class LibraryInfo extends Component {
-  render() {
+interface LibraryInfoParams {
+  libName: string;
+}
+
+interface LibraryInfoProps extends WithStyles<typeof style> {
+  libraries: ToitLibraries;
+  match: match<LibraryInfoParams>;
+}
+
+class LibraryInfo extends Component<LibraryInfoProps> {
+  render(): JSX.Element {
     const {
       params: { libName },
     } = this.props.match;
@@ -72,7 +91,7 @@ class LibraryInfo extends Component {
       );
     } else {
       return (
-        <Grid containerclassName={classes.root}>
+        <Grid container className={classes.root}>
           <Grid item xs={9}>
             <Box pt={2} pb={2}>
               <Typography component="h1" variant="h1">
@@ -87,6 +106,4 @@ class LibraryInfo extends Component {
   }
 }
 
-export default withStyles(style, { withTheme: true })(
-  connect(mapStateToProps)(LibraryInfo)
-);
+export default connect(mapStateToProps)(withStyles(style)(LibraryInfo));

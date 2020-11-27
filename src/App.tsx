@@ -20,28 +20,32 @@ import ErrorBoundary from "./components/error_page";
 import HeaderBar from "./components/header_bar";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
+import { ToitObject } from "./model/toitsdk";
+import { RootState } from "./sdk";
 
-function mapStateToProps(state) {
-  const { sdk } = state;
-  return { version: sdk.version, object: sdk.object };
+function mapStateToProps(state: RootState): AppProps {
+  return {
+    version: state.version || "",
+    object: state.object,
+  };
 }
 
-class App extends Component {
-  render() {
+interface AppProps {
+  version: string;
+  object?: ToitObject;
+}
+
+class App extends Component<AppProps> {
+  render(): JSX.Element {
     return (
       <ThemeProvider theme={theme}>
         <HashRouter>
-          {this.props.object != null ? (
+          {this.props.object != undefined ? (
             <>
               <ErrorBoundary>
                 <HeaderBar />
               </ErrorBoundary>
-              <Grid
-                container
-                item
-                spacing={3}
-                style={{ padding: 0, marginTop: 45 }}
-              >
+              <Grid container spacing={3} style={{ padding: 0, marginTop: 45 }}>
                 <Grid item xs={12} sm={2}>
                   <Route exact path="/" component={LibrariesNav} />
                   <Route exact path="/:libName" component={LibrariesNav} />
@@ -83,7 +87,7 @@ class App extends Component {
                     />
                   </ErrorBoundary>
                 </Grid>
-                <Grid item xs={12} align="center">
+                <Grid item xs={12} alignItems="center">
                   SDK version: {this.props.object.sdk_version}
                 </Grid>
               </Grid>
