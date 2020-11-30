@@ -154,7 +154,7 @@ function mapStateToProps(
 ): ClassInfoProps {
   return {
     ...props,
-    libraries: state.object?.libraries || {},
+    libraries: state.sdk.object?.libraries || {},
   };
 }
 

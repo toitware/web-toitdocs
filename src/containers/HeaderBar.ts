@@ -8,7 +8,7 @@ const mapStateToProps = (
   state: RootState
 ): Pick<HeaderBarProps, "searchObject"> => {
   return {
-    searchObject: state.searchObject || {
+    searchObject: state.sdk.searchObject || {
       libraries: [],
       modules: [],
       classes: [],

@@ -2,15 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { flattenDataStructure, SearchableToitObject } from "./components/fuse";
 import { ToitLibrary, ToitObject } from "./model/toitsdk";
 
+export interface RootState {
+  sdk: SdkState;
+}
+
 export const fetchSDK = createAsyncThunk(
   "sdk/fetch",
   async (version: string) => {
+    console.log("Hertil");
     const response = await fetch("./sdk/" + version + ".json");
+    console.log("Og her");
     return (await response.json()) as ToitObject;
   }
 );
 
-export interface RootState {
+export interface SdkState {
   object: ToitObject | undefined;
   searchObject: SearchableToitObject | undefined;
   version: string | undefined;
@@ -18,7 +24,7 @@ export interface RootState {
   error: string | undefined;
 }
 
-const initialState: RootState = {
+const initialState: SdkState = {
   object: undefined,
   searchObject: undefined,
   version: undefined,
@@ -40,6 +46,7 @@ export const sdk = createSlice({
         state.error = undefined;
       })
       .addCase(fetchSDK.fulfilled, (state, action) => {
+        console.log("fulfilled");
         state.status = "succeeded";
         state.object = action.payload;
         state.searchObject = flattenDataStructure(state.object);

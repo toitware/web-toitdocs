@@ -21,7 +21,7 @@ function mapStateToProps(
   props: LibrariesNavProps
 ): LibrariesNavProps {
   return {
-    libraries: state.object?.libraries || {},
+    libraries: state.sdk.object?.libraries || {},
     match: props.match,
   };
 }

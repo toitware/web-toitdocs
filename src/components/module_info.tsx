@@ -143,7 +143,7 @@ function mapStateToProps(
 ): ModuleInfoProps {
   return {
     ...props,
-    libraries: state.object?.libraries || {},
+    libraries: state.sdk.object?.libraries || {},
   };
 }
 

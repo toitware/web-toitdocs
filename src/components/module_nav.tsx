@@ -21,8 +21,8 @@ function mapStateToProps(
   props: ModuleNavProps
 ): ModuleNavProps {
   return {
-    version: state.version,
-    libraries: state.object?.libraries || {},
+    version: state.sdk.version,
+    libraries: state.sdk.object?.libraries || {},
     match: props.match,
   };
 }

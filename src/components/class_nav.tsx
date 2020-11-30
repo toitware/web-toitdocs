@@ -16,7 +16,7 @@ function mapStateToProps(
   props: ClassNavProps
 ): ClassNavProps {
   return {
-    libraries: state.object?.libraries || {},
+    libraries: state.sdk.object?.libraries || {},
     match: props.match,
   };
 }

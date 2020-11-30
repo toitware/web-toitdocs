@@ -15,7 +15,7 @@ function mapStateToProps(
   props: FunctionNavProps
 ): FunctionNavProps {
   return {
-    libraries: state.object?.libraries || {},
+    libraries: state.sdk.object?.libraries || {},
     match: props.match,
   };
 }

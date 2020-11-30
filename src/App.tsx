@@ -24,12 +24,10 @@ import { fetchSDK, RootState } from "./sdk";
 import HeaderBar from "./containers/HeaderBar";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
-const mapStateToProps = (
-  state: RootState
-): Pick<AppProps, "version" | "object"> => {
+const mapStateToProps = (state: RootState): Pick<AppProps, "object"> => {
+  console.log("State", state);
   return {
-    version: state.version || "",
-    object: state.object,
+    object: state.sdk.object,
   };
 };
 
@@ -45,13 +43,17 @@ const mapDispatchToProps = (
 
 interface AppProps {
   sdkVersionFromParams: string;
-  version: string;
   object?: ToitObject;
   fetchSdk: (version: string) => void;
 }
 
 class App extends Component<AppProps> {
+  componentDidMount(): void {
+    this.props.fetchSdk(this.props.sdkVersionFromParams);
+  }
+
   render(): JSX.Element {
+    console.log(this.props);
     return (
       <ThemeProvider theme={theme}>
         <HashRouter>
