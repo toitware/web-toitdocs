@@ -78,7 +78,7 @@ export interface ToitSection {
 }
 
 export interface ToitStatement {
-  object_type: ObjectTypeStatement;
+  object_type: ObjectTypeStatement | ObjectTypeExpression;
 }
 
 export interface ToitStatementParagraph {
@@ -119,6 +119,7 @@ export interface ToitDocRef {
 export interface ToitGlobal {
   object_type: typeof OBJECT_TYPE_GLOBAL;
   name: string;
+  toitdoc: ToitDoc;
 }
 
 export interface ToitFunction {
@@ -152,4 +153,8 @@ export interface ToitField {
   toitdoc: ToitDoc;
 }
 
-export type ToitDoc = ToitSection[];
+export type ToitDoc =
+  | ToitSection[]
+  | ToitSection
+  | ToitStatementItemized
+  | ToitStatementItem;

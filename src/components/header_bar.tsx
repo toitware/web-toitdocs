@@ -14,7 +14,7 @@ import { Grid } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
 import { Link, match } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
-import Fuse from "./fuse";
+import Fuse, { SearchableToitObject } from "./fuse";
 import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
@@ -23,6 +23,7 @@ import { ToitLibraries, ToitLibrary } from "../model/toitsdk";
 import ToitFuse from "./fuse";
 
 // Search bar styling.
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const style = (theme: Theme) =>
   createStyles({
     root: {
@@ -86,22 +87,18 @@ function mapStateToProps(
 ): HeaderBarProps {
   return {
     ...props,
-    version: state.version,
-    searchObject: state.searchObject,
+    searchObject: state.searchObject || {},
     libraries: state.object?.libraries || {},
   };
 }
 
 interface SearchResults {
-  matches: any[];
-  refIndex: number;
-  score: number;
+  matches: SearchableToitObject[];
   isFilled: boolean;
 }
 
 interface HeaderBarProps extends WithStyles<typeof style> {
-  version?: string;
-  searchObject?: any;
+  searchObject: SearchableToitObject;
   libraries: ToitLibraries;
 }
 
@@ -137,32 +134,31 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
       //Results of searching through libraries, modules and classes
       const found = this.fuse.basic().search(this.state.searchTerm);
       //Results of searching through aliases
-      const foundAliases = this.fuse.aliases().search(this.state.searchTerm);
+      // const foundAliases = this.fuse.aliases().search(this.state.searchTerm);
       const combinedResults = {
         matches: [],
         refIndex: -1, //refIndex is used for finding the results in output object
-        score: 1, // The lower the better the match is
         isFilled: true,
       };
 
       //Build one combined list of results
-      if (foundAliases.length !== 0) {
-        foundAliases.forEach((elem) => {
-          elem.matches.forEach((match) => {
-            const tempMatch = match;
-            tempMatch.path = elem.item.path;
-            combinedResults.matches.push(tempMatch);
-          });
-        });
-        combinedResults.scoreAlias = foundAliases[0].score;
-      }
+      // if (foundAliases.length !== 0) {
+      //   foundAliases.forEach((elem) => {
+      //     elem.matches.forEach((match) => {
+      //       const tempMatch = match;
+      //       tempMatch.path = elem.item.path;
+      //       combinedResults.matches.push(tempMatch);
+      //     });
+      //   });
+      //   combinedResults.scoreAlias = foundAliases[0].score;
+      // }
 
       if (found.length !== 0) {
         combinedResults.matches = combinedResults.matches.concat(
           found[0].matches
         );
         combinedResults.refIndex = found[0].refIndex;
-        combinedResults.score = found[0].score;
+        // combinedResults.score = found[0].score;
       }
       setTimeout(this.setResults(combinedResults), 200);
     }
