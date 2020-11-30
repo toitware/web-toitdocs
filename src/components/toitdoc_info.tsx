@@ -12,6 +12,7 @@ import {
   OBJECT_TYPE_TOITDOCREF,
 } from "../sdk";
 import {
+  ToitDoc,
   ToitDocRef,
   ToitExpression,
   ToitSection,
@@ -143,7 +144,7 @@ function Section(props: { section: ToitSection }): JSX.Element {
 }
 
 // Function that prints the content of currently presented element.
-function Toitdocs(props: { value: ToitSection[] }): JSX.Element | null {
+function Toitdocs(props: { value: ToitDoc }): JSX.Element | null {
   if (!props.value) {
     return null;
   }

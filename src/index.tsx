@@ -3,7 +3,7 @@ import thunkMiddleware from "redux-thunk";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import { sdk, fetchSDK } from "./sdk";
+import { sdk } from "./sdk";
 import "./assets/index.css";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
@@ -17,14 +17,12 @@ const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 const searchParams = new URLSearchParams(window.location.search);
 let sdkVersion = "latest";
 if (searchParams.has("version")) {
-  sdkVersion = searchParams.get("version");
+  sdkVersion = searchParams.get("version") || "Unknown version";
 }
-
-store.dispatch(fetchSDK(sdkVersion));
 
 render(
   <Provider store={store}>
-    <App />
+    <App sdkVersionFromParams={sdkVersion} />
   </Provider>,
   document.getElementById("root")
 );

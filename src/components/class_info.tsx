@@ -2,12 +2,7 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  createStyles,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core/styles";
+import { createStyles, WithStyles, withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ClassContentList from "./class_content_list";
 import Toitdocs from "./toitdoc_info";

@@ -17,22 +17,37 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import "./assets/global_theme.css";
 import FunctionInfo from "./components/function_info";
 import ErrorBoundary from "./components/error_page";
-import HeaderBar from "./components/header_bar";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
 import { ToitObject } from "./model/toitsdk";
-import { RootState } from "./sdk";
+import { fetchSDK, RootState } from "./sdk";
+import HeaderBar from "./containers/HeaderBar";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
-function mapStateToProps(state: RootState): AppProps {
+const mapStateToProps = (
+  state: RootState
+): Pick<AppProps, "version" | "object"> => {
   return {
     version: state.version || "",
     object: state.object,
   };
-}
+};
+
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<RootState, void, AnyAction>
+): Pick<AppProps, "fetchSdk"> => {
+  return {
+    fetchSdk: (version: string): void => {
+      void dispatch(fetchSDK(version));
+    },
+  };
+};
 
 interface AppProps {
+  sdkVersionFromParams: string;
   version: string;
   object?: ToitObject;
+  fetchSdk: (version: string) => void;
 }
 
 class App extends Component<AppProps> {
@@ -40,7 +55,7 @@ class App extends Component<AppProps> {
     return (
       <ThemeProvider theme={theme}>
         <HashRouter>
-          {this.props.object != undefined ? (
+          {this.props.object !== undefined ? (
             <>
               <ErrorBoundary>
                 <HeaderBar />
@@ -101,4 +116,4 @@ class App extends Component<AppProps> {
   }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

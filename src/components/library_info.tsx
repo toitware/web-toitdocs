@@ -2,13 +2,7 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
+import { createStyles, Theme, WithStyles, withStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";

@@ -1,7 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import {
   withStyles,
   fade,
@@ -9,18 +8,17 @@ import {
   createStyles,
   WithStyles,
 } from "@material-ui/core/styles";
-import toitware from "./toitware.ico";
+import logo from "../assets/images/logo-simple.png";
 import { Grid } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
-import { Link, match } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
-import Fuse, { SearchableToitObject } from "./fuse";
 import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import { librarySegmentsToURI, RootState } from "../sdk";
-import { ToitLibraries, ToitLibrary } from "../model/toitsdk";
-import ToitFuse from "./fuse";
+import { librarySegmentsToURI } from "../sdk";
+import ToitFuse, { SearchableToitObject } from "./fuse";
+import Fuse from "fuse.js";
 
 // Search bar styling.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -81,25 +79,13 @@ const style = (theme: Theme) =>
     },
   });
 
-function mapStateToProps(
-  state: RootState,
-  props: HeaderBarProps
-): HeaderBarProps {
-  return {
-    ...props,
-    searchObject: state.searchObject || {},
-    libraries: state.object?.libraries || {},
-  };
-}
-
 interface SearchResults {
-  matches: SearchableToitObject[];
+  matches: readonly Fuse.FuseResultMatch[];
   isFilled: boolean;
 }
 
-interface HeaderBarProps extends WithStyles<typeof style> {
+export interface HeaderBarProps extends WithStyles<typeof style> {
   searchObject: SearchableToitObject;
-  libraries: ToitLibraries;
 }
 
 interface HeaderBarState {
@@ -112,7 +98,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
 
   constructor(props: HeaderBarProps) {
     super(props);
-    this.fuse = new ToitFuse(props.searchObject, props.libraries);
+    this.fuse = new ToitFuse(props.searchObject);
   }
 
   state = {
@@ -133,39 +119,21 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     if (event.target.value.length >= 2) {
       //Results of searching through libraries, modules and classes
       const found = this.fuse.basic().search(this.state.searchTerm);
-      //Results of searching through aliases
-      // const foundAliases = this.fuse.aliases().search(this.state.searchTerm);
-      const combinedResults = {
-        matches: [],
-        refIndex: -1, //refIndex is used for finding the results in output object
-        isFilled: true,
-      };
 
-      //Build one combined list of results
-      // if (foundAliases.length !== 0) {
-      //   foundAliases.forEach((elem) => {
-      //     elem.matches.forEach((match) => {
-      //       const tempMatch = match;
-      //       tempMatch.path = elem.item.path;
-      //       combinedResults.matches.push(tempMatch);
-      //     });
-      //   });
-      //   combinedResults.scoreAlias = foundAliases[0].score;
-      // }
+      let matches = [] as readonly Fuse.FuseResultMatch[];
 
-      if (found.length !== 0) {
-        combinedResults.matches = combinedResults.matches.concat(
-          found[0].matches
-        );
-        combinedResults.refIndex = found[0].refIndex;
-        // combinedResults.score = found[0].score;
+      if (found.length !== 0 && found[0].matches) {
+        matches = found[0].matches;
       }
-      setTimeout(this.setResults(combinedResults), 200);
+
+      setTimeout(
+        () => this.setResults({ matches: matches, isFilled: true }),
+        200
+      );
     }
   };
 
-  renderSearchResult(): JSX.Element {
-    const results = this.state.results;
+  renderSearchResult(results?: SearchResults): JSX.Element {
     if (!results || !results.isFilled) {
       return <></>;
     }
@@ -175,55 +143,65 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     }
 
     // TODO: Enable search on aliases
-    return results.matches.map((match, index) => {
-      switch (match.key) {
-        case "classes.name":
-          const klass = this.props.searchObject.classes[match.refIndex];
-          return (
-            <ListItem className="ListItem" button key={"list_item" + index}>
-              <div id="ElementOfList">
-                <Link
-                  to={`/${librarySegmentsToURI(klass.library)}/${
-                    klass.module
-                  }/${klass.name}`}
-                >
-                  {" "}
-                  Name: <b> {klass.name} </b> Type: <b>Class</b>
-                </Link>
-              </div>
-            </ListItem>
-          );
-        case "libraries.name":
-          const library = this.props.searchObject.libraries[match.refIndex];
-          return (
-            <ListItem className="ListItem" button key={"list_item" + index}>
-              <div id="ElementOfList">
-                <Link to={`/${librarySegmentsToURI(library.path)}`}>
-                  {" "}
-                  Name: <b> {library.name} </b> Type: <b>Library</b>
-                </Link>
-              </div>
-            </ListItem>
-          );
-        case "modules.name":
-          const module = this.props.searchObject.modules[match.refIndex];
-          return (
-            <ListItem className="ListItem" button key={"list_item" + index}>
-              <div id="ElementOfList">
-                <Link
-                  to={`/${librarySegmentsToURI(module.library)}/${module.name}`}
-                >
-                  {" "}
-                  Name: <b> {module.name} </b> Type: <b>Module</b>
-                </Link>
-              </div>
-            </ListItem>
-          );
-        default:
-          console.error("unhandled search result", match);
-          return null;
-      }
-    });
+    return (
+      <>
+        {results.matches.map((match, index) => {
+          if (match.refIndex === undefined) {
+            console.error("missing refindex for match", match);
+            return null;
+          }
+          switch (match.key) {
+            case "classes.name":
+              const klass = this.props.searchObject.classes[match.refIndex];
+              return (
+                <ListItem className="ListItem" button key={"list_item" + index}>
+                  <div id="ElementOfList">
+                    <Link
+                      to={`/${librarySegmentsToURI(klass.library)}/${
+                        klass.module
+                      }/${klass.name}`}
+                    >
+                      {" "}
+                      Name: <b> {klass.name} </b> Type: <b>Class</b>
+                    </Link>
+                  </div>
+                </ListItem>
+              );
+            case "libraries.name":
+              const library = this.props.searchObject.libraries[match.refIndex];
+              return (
+                <ListItem className="ListItem" button key={"list_item" + index}>
+                  <div id="ElementOfList">
+                    <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                      {" "}
+                      Name: <b> {library.name} </b> Type: <b>Library</b>
+                    </Link>
+                  </div>
+                </ListItem>
+              );
+            case "modules.name":
+              const module = this.props.searchObject.modules[match.refIndex];
+              return (
+                <ListItem className="ListItem" button key={"list_item" + index}>
+                  <div id="ElementOfList">
+                    <Link
+                      to={`/${librarySegmentsToURI(module.library)}/${
+                        module.name
+                      }`}
+                    >
+                      {" "}
+                      Name: <b> {module.name} </b> Type: <b>Module</b>
+                    </Link>
+                  </div>
+                </ListItem>
+              );
+            default:
+              console.error("unhandled search result", match);
+              return null;
+          }
+        })}
+      </>
+    );
   }
 
   render(): JSX.Element {
@@ -238,7 +216,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 <Link to={`/`}>
                   <img
                     alt="Toitware"
-                    src={toitware}
+                    src={logo}
                     width="32px"
                     height="32px"
                   ></img>
@@ -280,7 +258,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             }}
           >
             <List style={{ backgroundColor: "grey" }}>
-              {this.renderSearchResult()}
+              {this.renderSearchResult(this.state.results)}
             </List>
           </Grid>
         </div>
@@ -289,4 +267,4 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(style)(HeaderBar));
+export default withStyles(style)(HeaderBar);

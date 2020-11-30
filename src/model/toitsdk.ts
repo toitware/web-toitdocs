@@ -153,8 +153,4 @@ export interface ToitField {
   toitdoc: ToitDoc;
 }
 
-export type ToitDoc =
-  | ToitSection[]
-  | ToitSection
-  | ToitStatementItemized
-  | ToitStatementItem;
+export type ToitDoc = ToitSection[];

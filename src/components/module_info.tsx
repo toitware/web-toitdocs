@@ -2,12 +2,7 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  createStyles,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core/styles";
+import { createStyles, WithStyles, withStyles } from "@material-ui/core/styles";
 import { Link, match } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import ModuleContentList from "./module_content_list";

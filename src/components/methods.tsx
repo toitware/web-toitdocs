@@ -57,7 +57,7 @@ function Methods(props: MethodsProps): JSX.Element {
                     functionIndex={i}
                   />
                 </span>
-                <Parameters value={fn.parameters} />
+                <Parameters parameters={fn.parameters} />
                 <ArrowRightAlt
                   style={{
                     verticalAlign: "middle",
@@ -91,7 +91,7 @@ function FunctionsInModules(props: { functions: ToitFunction[] }): JSX.Element {
                 <span className="functionName">
                   <code>{`${fn.name} `}</code>
                 </span>
-                <Parameters value={fn.parameters} />
+                <Parameters parameters={fn.parameters} />
                 <ArrowRightAlt
                   style={{
                     verticalAlign: "middle",
