@@ -137,6 +137,87 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     }
   };
 
+  renderLibraries(results?: SearchResults): JSX.Element {
+    if (!results || !results.isFilled) {
+      return <></>;
+    }
+
+    if (results.matches.length === 0) {
+      return <>no results</>;
+    }
+
+    // TODO: Enable search on aliases
+    return (
+      <>
+        <b>Libraries</b>
+        {results.matches.map((match, index) => {
+          if (match.refIndex === undefined) {
+            console.error("missing refindex for match", match);
+            return null;
+          }
+          if (match.key == "libraries.name") {
+            const library = this.props.searchObject.libraries[match.refIndex];
+            return (
+              <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                <ListItem className="ListItem" button key={"list_item" + index}>
+                  {" "}
+                  <b> {library.name} </b>
+                </ListItem>
+              </Link>
+            );
+          }
+        })}
+      </>
+    );
+  }
+
+  renderClasses(results?: SearchResults): JSX.Element {
+    let initIter = true;
+    if (!results || !results.isFilled) {
+      return <></>;
+    }
+
+    if (results.matches.length === 0) {
+      return <>no results</>;
+    }
+
+    // TODO: Enable search on aliases
+    return (
+      <>
+        {results.matches.map((match, index) => {
+          console.log(results.matches);
+          if (match.refIndex === undefined) {
+            console.error("missing refindex for match", match);
+            return null;
+          }
+          if (match.key == "classes.name") {
+            const klass = this.props.searchObject.classes[match.refIndex];
+            return (
+              <div>
+                {initIter && <b>Classes</b>}
+                <Link
+                  to={`/${librarySegmentsToURI(klass.library)}/${
+                    klass.module
+                  }/${klass.name}`}
+                >
+                  <ListItem
+                    className="ListItem"
+                    button
+                    key={"list_item" + index}
+                  >
+                    {" "}
+                    <b> {klass.name} </b>
+                  </ListItem>
+                </Link>
+                {(initIter = false)}
+              </div>
+            );
+          }
+        })}
+      </>
+    );
+  }
+
   renderSearchResult(results?: SearchResults): JSX.Element {
     if (!results || !results.isFilled) {
       return <></>;
@@ -257,6 +338,8 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             }}
           >
             <List style={{ backgroundColor: "grey" }}>
+              {this.renderClasses(this.state.results)}
+              {this.renderLibraries(this.state.results)}
               {this.renderSearchResult(this.state.results)}
             </List>
           </Grid>
