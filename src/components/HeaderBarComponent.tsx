@@ -138,6 +138,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   };
 
   renderLibraries(results?: SearchResults): JSX.Element {
+    let initIter = true;
     if (!results || !results.isFilled) {
       return <></>;
     }
@@ -149,7 +150,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     // TODO: Enable search on aliases
     return (
       <>
-        <b>Libraries</b>
         {results.matches.map((match, index) => {
           if (match.refIndex === undefined) {
             console.error("missing refindex for match", match);
@@ -158,12 +158,20 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
           if (match.key == "libraries.name") {
             const library = this.props.searchObject.libraries[match.refIndex];
             return (
-              <Link to={`/${librarySegmentsToURI(library.path)}`}>
-                <ListItem className="ListItem" button key={"list_item" + index}>
-                  {" "}
-                  <b> {library.name} </b>
-                </ListItem>
-              </Link>
+              <div>
+                {initIter && <b>Libraries</b>}
+                <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                  <ListItem
+                    className="ListItem"
+                    button
+                    key={"list_item" + index}
+                  >
+                    {" "}
+                    <b> {library.name} </b>
+                  </ListItem>
+                </Link>
+                {(initIter = false)}
+              </div>
             );
           }
         })}
@@ -185,7 +193,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     return (
       <>
         {results.matches.map((match, index) => {
-          console.log(results.matches);
           if (match.refIndex === undefined) {
             console.error("missing refindex for match", match);
             return null;
@@ -218,7 +225,8 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     );
   }
 
-  renderSearchResult(results?: SearchResults): JSX.Element {
+  renderModules(results?: SearchResults): JSX.Element {
+    let initIter = true;
     if (!results || !results.isFilled) {
       return <></>;
     }
@@ -235,54 +243,26 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             console.error("missing refindex for match", match);
             return null;
           }
-          switch (match.key) {
-            case "classes.name":
-              const klass = this.props.searchObject.classes[match.refIndex];
-              return (
-                <ListItem className="ListItem" button key={"list_item" + index}>
-                  <div id="ElementOfList">
-                    <Link
-                      to={`/${librarySegmentsToURI(klass.library)}/${
-                        klass.module
-                      }/${klass.name}`}
-                    >
-                      {" "}
-                      Name: <b> {klass.name} </b> Type: <b>Class</b>
-                    </Link>
-                  </div>
-                </ListItem>
-              );
-            case "libraries.name":
-              const library = this.props.searchObject.libraries[match.refIndex];
-              return (
-                <ListItem className="ListItem" button key={"list_item" + index}>
-                  <div id="ElementOfList">
-                    <Link to={`/${librarySegmentsToURI(library.path)}`}>
-                      {" "}
-                      Name: <b> {library.name} </b> Type: <b>Library</b>
-                    </Link>
-                  </div>
-                </ListItem>
-              );
-            case "modules.name":
-              const module = this.props.searchObject.modules[match.refIndex];
-              return (
-                <ListItem className="ListItem" button key={"list_item" + index}>
-                  <div id="ElementOfList">
-                    <Link
-                      to={`/${librarySegmentsToURI(module.library)}/${
-                        module.name
-                      }`}
-                    >
-                      {" "}
-                      Name: <b> {module.name} </b> Type: <b>Module</b>
-                    </Link>
-                  </div>
-                </ListItem>
-              );
-            default:
-              console.error("unhandled search result", match);
-              return null;
+          if (match.key == "modules.name") {
+            const module = this.props.searchObject.modules[match.refIndex];
+            return (
+              <div>
+                {initIter && <b>Modules</b>}
+                <Link
+                  to={`/${librarySegmentsToURI(module.library)}/${module.name}`}
+                >
+                  <ListItem
+                    className="ListItem"
+                    button
+                    key={"list_item" + index}
+                  >
+                    {" "}
+                    <b> {module.name} </b>
+                  </ListItem>
+                </Link>
+                {(initIter = false)}
+              </div>
+            );
           }
         })}
       </>
@@ -340,7 +320,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             <List style={{ backgroundColor: "grey" }}>
               {this.renderClasses(this.state.results)}
               {this.renderLibraries(this.state.results)}
-              {this.renderSearchResult(this.state.results)}
+              {this.renderModules(this.state.results)}
             </List>
           </Grid>
         </div>
