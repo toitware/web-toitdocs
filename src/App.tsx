@@ -25,7 +25,6 @@ import HeaderBar from "./containers/HeaderBar";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const mapStateToProps = (state: RootState): Pick<AppProps, "object"> => {
-  console.log("State", state);
   return {
     object: state.sdk.object,
   };
@@ -53,7 +52,6 @@ class App extends Component<AppProps> {
   }
 
   render(): JSX.Element {
-    console.log(this.props);
     return (
       <ThemeProvider theme={theme}>
         <HashRouter>
