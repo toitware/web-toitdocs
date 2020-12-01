@@ -214,12 +214,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             <Toolbar>
               <Grid item sm={9}>
                 <Link to={`/`}>
-                  <img
-                    alt="Toitware"
-                    src={logo}
-                    width="32px"
-                    height="32px"
-                  ></img>
+                  <img alt="Toitware" src={logo} height="32px"></img>
                 </Link>
               </Grid>
               <Grid item sm={3}>
