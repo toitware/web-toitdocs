@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import "./App.css";
 import LibrariesNav from "./components/libraries_nav";
 import ModuleInfo from "./components/module_info";
-import { Grid, CircularProgress } from "@material-ui/core";
+import { Grid, CircularProgress, Box } from "@material-ui/core";
 import { HashRouter, Route } from "react-router-dom";
 import ModuleNav from "./components/module_nav";
 import ClassInfo from "./components/class_info";
@@ -104,8 +104,10 @@ class App extends Component<AppProps> {
                     />
                   </ErrorBoundary>
                 </Grid>
-                <Grid item xs={12} alignItems="center">
-                  SDK version: {this.props.object.sdk_version}
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="center">
+                    SDK version: {this.props.object.sdk_version}
+                  </Box>
                 </Grid>
               </Grid>
             </>

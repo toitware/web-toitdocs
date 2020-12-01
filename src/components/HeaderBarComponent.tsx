@@ -107,7 +107,11 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   };
 
   setSearchTerm(searchTerm: string): void {
-    this.setState({ ...this.state, searchTerm: searchTerm });
+    this.setState({
+      ...this.state,
+      searchTerm: searchTerm,
+      results: undefined,
+    });
   }
 
   setResults(results: SearchResults): void {
