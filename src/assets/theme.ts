@@ -2,9 +2,7 @@ import { createMuiTheme } from "@material-ui/core";
 import { orange, amber, yellow } from "@material-ui/core/colors";
 import { fade, makeStyles } from "@material-ui/core/styles";
 
-export const graphColors = [
-  amber[700], orange[700], yellow[700]
-]
+export const graphColors = [amber[700], orange[700], yellow[700]];
 
 // Note! If the theme colors change, the color placeholder in ../pkg/emailprovider/ must be manually updated
 
@@ -12,16 +10,14 @@ const theme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main: amber[500]
+      main: amber[500],
     },
     secondary: {
-      main: "#212121"
+      main: "#212121",
     },
   },
   typography: {
-    fontFamily: [
-      "Helvetica Neue"
-    ].join(","),
+    fontFamily: ["Helvetica Neue"].join(","),
     body1: {
       fontSize: "0.85rem",
       lineHeight: "0.1rem",
@@ -31,40 +27,28 @@ const theme = createMuiTheme({
     },
     h1: {
       fontWeight: 500,
-      fontFamily: [
-        "Helvetica Neue"
-      ].join(","),
-      fontSize: "4.0rem"
+      fontFamily: ["Helvetica Neue"].join(","),
+      fontSize: "4.0rem",
     },
     h2: {
       fontWeight: 500,
-      fontFamily: [
-        "Helvetica Neue"
-      ].join(","),
-      fontSize: "3.0rem"
+      fontFamily: ["Helvetica Neue"].join(","),
+      fontSize: "3.0rem",
     },
     h3: {
-      fontFamily: [
-        "Helvetica Neue"
-      ].join(","),
-      fontSize: "2.0rem"
+      fontFamily: ["Helvetica Neue"].join(","),
+      fontSize: "2.0rem",
     },
     h4: {
-      fontFamily: [
-        "Helvetica Neue"
-      ].join(","),
-      fontSize: "1.5rem"
+      fontFamily: ["Helvetica Neue"].join(","),
+      fontSize: "1.5rem",
     },
     h5: {
-      fontFamily: [
-        "Helvetica Neue"
-      ].join(","),
+      fontFamily: ["Helvetica Neue"].join(","),
       fontSize: "1.25rem",
     },
     h6: {
-      fontFamily: [
-        "Helvetica Neue"
-      ].join(","),
+      fontFamily: ["Helvetica Neue"].join(","),
       padding: 0.5,
       fontSize: "1rem",
     },
@@ -128,4 +112,4 @@ const headerBarStyling = makeStyles((theme) => ({
   },
 }));
 
-export {theme, headerBarStyling};
+export { theme, headerBarStyling };
