@@ -57,11 +57,7 @@ class ClassNav extends Component<ClassNavProps> {
                   <Link to={`/`}>Modules /</Link>
                   <Typography color="secondary">
                     <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>{" "}
-                    {" / "}
-                    <h1>
-                      <p></p>
-                    </h1>
-                    {className}
+                    {" / " + className}
                   </Typography>
                 </ListSubheader>
               }

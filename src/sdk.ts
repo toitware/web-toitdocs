@@ -9,9 +9,7 @@ export interface RootState {
 export const fetchSDK = createAsyncThunk(
   "sdk/fetch",
   async (version: string) => {
-    console.log("Hertil");
     const response = await fetch("./sdk/" + version + ".json");
-    console.log("Og her");
     return (await response.json()) as ToitObject;
   }
 );
@@ -46,7 +44,6 @@ export const sdk = createSlice({
         state.error = undefined;
       })
       .addCase(fetchSDK.fulfilled, (state, action) => {
-        console.log("fulfilled");
         state.status = "succeeded";
         state.object = action.payload;
         state.searchObject = flattenDataStructure(state.object);
