@@ -138,34 +138,33 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   };
 
   renderLibraries(results?: SearchResults): JSX.Element {
-    let initIter = true;
-    if (!results || !results.isFilled) {
+    if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
     }
+    const libraries: Fuse.FuseResultMatch[] = [];
+    results.matches.forEach((match, index) => {
+      if (match.refIndex === undefined) {
+        console.error("missing refindex for match", match);
+      } else if (match.key === "libraries.name") {
+        libraries.push(match);
+        return match;
+      }
+    });
 
-    if (results.matches.length === 0) {
-      return <>no results</>;
-    }
-
-    // TODO: Enable search on aliases
     return (
       <>
-        {results.matches.map((match, index) => {
-          if (match.refIndex === undefined) {
-            console.error("missing refindex for match", match);
-            return null;
-          } else if (match.key === "libraries.name") {
+        {libraries.map((match, index) => {
+          if (typeof match.refIndex === "number") {
             const library = this.props.searchObject.libraries[match.refIndex];
             return (
               <div key={"list_item" + index}>
-                {initIter && <b>Libraries</b>}
+                {index === 0 && <b>Libraries</b>}
                 <Link to={`/${librarySegmentsToURI(library.path)}`}>
                   <ListItem className="ListItem" button>
                     {" "}
                     <b> {library.name} </b>
                   </ListItem>
                 </Link>
-                {(initIter = false)}
               </div>
             );
           } else {
@@ -177,27 +176,28 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   }
 
   renderClasses(results?: SearchResults): JSX.Element {
-    let initIter = true;
-    if (!results || !results.isFilled) {
+    if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
     }
 
-    if (results.matches.length === 0) {
-      return <>no results</>;
-    }
+    const klasses: Fuse.FuseResultMatch[] = [];
+    results.matches.forEach((match, index) => {
+      if (match.refIndex === undefined) {
+        console.error("missing refindex for match", match);
+      } else if (match.key === "classes.name") {
+        klasses.push(match);
+        return match;
+      }
+    });
 
-    // TODO: Enable search on aliases
     return (
       <>
         {results.matches.map((match, index) => {
-          if (match.refIndex === undefined) {
-            console.error("missing refindex for match", match);
-            return null;
-          } else if (match.key === "classes.name") {
+          if (typeof match.refIndex === "number") {
             const klass = this.props.searchObject.classes[match.refIndex];
             return (
               <div key={"list_item" + index}>
-                {initIter && <b>Classes</b>}
+                {index === 0 && <b>Classes</b>}
                 <Link
                   to={`/${librarySegmentsToURI(klass.library)}/${
                     klass.module
@@ -208,7 +208,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                     <b> {klass.name} </b>
                   </ListItem>
                 </Link>
-                {(initIter = false)}
               </div>
             );
           } else {
@@ -220,27 +219,26 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   }
 
   renderModules(results?: SearchResults): JSX.Element {
-    let initIter = true;
-    if (!results || !results.isFilled) {
+    if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
     }
-
-    if (results.matches.length === 0) {
-      return <>no results</>;
-    }
-
-    // TODO: Enable search on aliases
+    const modules: Fuse.FuseResultMatch[] = [];
+    results.matches.forEach((match, index) => {
+      if (match.refIndex === undefined) {
+        console.error("missing refindex for match", match);
+      } else if (match.key === "libraries.name") {
+        modules.push(match);
+        return match;
+      }
+    });
     return (
       <>
-        {results.matches.map((match, index) => {
-          if (match.refIndex === undefined) {
-            console.error("missing refindex for match", match);
-            return null;
-          } else if (match.key === "modules.name") {
+        {modules.map((match, index) => {
+          if (typeof match.refIndex === "number") {
             const module = this.props.searchObject.modules[match.refIndex];
             return (
               <div key={"list_item" + index}>
-                {initIter && <b>Modules</b>}
+                {index === 0 && <b>Modules</b>}
                 <Link
                   to={`/${librarySegmentsToURI(module.library)}/${module.name}`}
                 >
@@ -249,7 +247,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                     <b> {module.name} </b>
                   </ListItem>
                 </Link>
-                {(initIter = false)}
               </div>
             );
           } else {
