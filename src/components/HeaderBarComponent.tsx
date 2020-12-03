@@ -17,8 +17,14 @@ import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import { librarySegmentsToURI } from "../sdk";
-import ToitFuse, { SearchableToitObject } from "./fuse";
+import ToitFuse, {
+  SearchableToitObject,
+  SearchableToitClass,
+  SearchableToitLibrary,
+  SearchableToitModule,
+} from "./fuse";
 import Fuse from "fuse.js";
+import { ToitLibraries } from "../model/toitsdk";
 
 // Search bar styling.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -137,114 +143,92 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     }
   };
 
-  renderLibraries(results?: SearchResults): JSX.Element {
-    if (!results || !results.isFilled || results.matches.length === 0) {
+  renderSearch(
+    type?: "libraries" | "classes" | "modules",
+    results?: SearchResults
+  ): JSX.Element {
+    if (
+      !results ||
+      !results.isFilled ||
+      results.matches.length === 0 ||
+      type === undefined
+    ) {
       return <></>;
     }
     const libraries: Fuse.FuseResultMatch[] = [];
     results.matches.forEach((match, index) => {
       if (match.refIndex === undefined) {
         console.error("missing refindex for match", match);
-      } else if (match.key === "libraries.name") {
+      } else if (match.key === `${type}.name`) {
         libraries.push(match);
         return match;
       }
     });
+    const afterSearch = this.props.searchObject[type];
+    let libString = "";
+    let moduleString = "";
+    let classString = "";
+    let resultName = "";
+    let categoryTitle = "";
 
     return (
       <>
         {libraries.map((match, index) => {
           if (typeof match.refIndex === "number") {
-            const library = this.props.searchObject.libraries[match.refIndex];
+            if (type === "libraries") {
+              try {
+                const unknownAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
+                libString = `/${libAfterSearch.name}`;
+                resultName = libAfterSearch.name;
+                categoryTitle = "Libraries";
+              } catch {
+                console.log("Cast failed");
+              }
+            } else if (type === "modules") {
+              try {
+                const unknownAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const libAfterSearch = unknownAfterSearch as SearchableToitModule;
+                if (libAfterSearch.library.includes("font")) {
+                  return null;
+                }
+                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
+                moduleString = `/${libAfterSearch.name}`;
+                resultName = libAfterSearch.name;
+                categoryTitle = "Modules";
+              } catch {
+                console.log("Cast failed");
+              }
+            } else if (type === "classes") {
+              try {
+                const unknownAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const libAfterSearch = unknownAfterSearch as SearchableToitClass;
+                if (libAfterSearch.library.includes("font")) {
+                  return null;
+                }
+                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
+                moduleString = `/${libAfterSearch.module}`;
+                classString = `/${libAfterSearch.name}`;
+                resultName = libAfterSearch.name;
+                categoryTitle = "Classes";
+              } catch {
+                console.log("Cast failed");
+              }
+            }
+
             return (
               <div key={"list_item" + index}>
-                {index === 0 && <b>Libraries</b>}
-                <Link to={`/${librarySegmentsToURI(library.path)}`}>
+                {index === 0 && <b>{categoryTitle}</b>}
+                <Link to={`${libString}${moduleString}${classString}`}>
                   <ListItem className="ListItem" button>
                     {" "}
-                    <b> {library.name} </b>
-                  </ListItem>
-                </Link>
-              </div>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </>
-    );
-  }
-
-  renderClasses(results?: SearchResults): JSX.Element {
-    if (!results || !results.isFilled || results.matches.length === 0) {
-      return <></>;
-    }
-
-    const klasses: Fuse.FuseResultMatch[] = [];
-    results.matches.forEach((match, index) => {
-      if (match.refIndex === undefined) {
-        console.error("missing refindex for match", match);
-      } else if (match.key === "classes.name") {
-        klasses.push(match);
-        return match;
-      }
-    });
-
-    return (
-      <>
-        {results.matches.map((match, index) => {
-          if (typeof match.refIndex === "number") {
-            const klass = this.props.searchObject.classes[match.refIndex];
-            return (
-              <div key={"list_item" + index}>
-                {index === 0 && <b>Classes</b>}
-                <Link
-                  to={`/${librarySegmentsToURI(klass.library)}/${
-                    klass.module
-                  }/${klass.name}`}
-                >
-                  <ListItem className="ListItem" button>
-                    {" "}
-                    <b> {klass.name} </b>
-                  </ListItem>
-                </Link>
-              </div>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </>
-    );
-  }
-
-  renderModules(results?: SearchResults): JSX.Element {
-    if (!results || !results.isFilled || results.matches.length === 0) {
-      return <></>;
-    }
-    const modules: Fuse.FuseResultMatch[] = [];
-    results.matches.forEach((match, index) => {
-      if (match.refIndex === undefined) {
-        console.error("missing refindex for match", match);
-      } else if (match.key === "libraries.name") {
-        modules.push(match);
-        return match;
-      }
-    });
-    return (
-      <>
-        {modules.map((match, index) => {
-          if (typeof match.refIndex === "number") {
-            const module = this.props.searchObject.modules[match.refIndex];
-            return (
-              <div key={"list_item" + index}>
-                {index === 0 && <b>Modules</b>}
-                <Link
-                  to={`/${librarySegmentsToURI(module.library)}/${module.name}`}
-                >
-                  <ListItem className="ListItem" button>
-                    {" "}
-                    <b> {module.name} </b>
+                    <b> {resultName} </b>
                   </ListItem>
                 </Link>
               </div>
@@ -306,9 +290,9 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             }}
           >
             <List style={{ backgroundColor: "grey" }}>
-              {this.renderClasses(this.state.results)}
-              {this.renderLibraries(this.state.results)}
-              {this.renderModules(this.state.results)}
+              {this.renderSearch("libraries", this.state.results)}
+              {this.renderSearch("modules", this.state.results)}
+              {this.renderSearch("classes", this.state.results)}
             </List>
           </Grid>
         </div>
