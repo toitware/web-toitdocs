@@ -60,13 +60,7 @@ class App extends Component<AppProps> {
               <ErrorBoundary>
                 <HeaderBar />
               </ErrorBoundary>
-              <Grid
-                container
-                spacing={3}
-                style={{ padding: 0, marginTop: 45 }}
-                id="MainContent"
-                onClick={HeaderBar.handleChange}
-              >
+              <Grid container spacing={3} style={{ padding: 0, marginTop: 45 }}>
                 <Grid item xs={12} sm={2}>
                   <Route exact path="/" component={LibrariesNav} />
                   <Route exact path="/:libName" component={LibrariesNav} />
