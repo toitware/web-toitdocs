@@ -91,6 +91,7 @@ export interface HeaderBarProps extends WithStyles<typeof style> {
 interface HeaderBarState {
   searchTerm: string;
   results?: SearchResults;
+  searchBarVisible: boolean;
 }
 
 class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
@@ -104,6 +105,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   state = {
     searchTerm: "",
     results: undefined,
+    searchBarVisible: false,
   };
 
   setSearchTerm(searchTerm: string): void {
