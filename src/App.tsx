@@ -8,7 +8,7 @@ import ModuleInfo from "./components/module_info";
 import { Grid, CircularProgress, Box } from "@material-ui/core";
 import { HashRouter, Route } from "react-router-dom";
 import ModuleNav from "./components/module_nav";
-import ClassInfo from "./components/class_info";
+import ClassInfo from "./components/ClassInfoView";
 import ClassNav from "./components/class_nav";
 import LibraryInfo from "./components/library_info";
 import WelcomePage from "./components/welcome_page";

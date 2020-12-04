@@ -8,18 +8,13 @@ import { Parameters } from "./parameters";
 import { Type } from "./util";
 import { ToitFunction } from "../model/toitsdk";
 import { Typography } from "@material-ui/core";
-
-export type FunctionType = "Constructors" | "Statics" | "Factories" | "Methods";
+import { Link } from "react-router-dom";
 
 interface MethodsProps {
   functions: ToitFunction[];
-  libName: string;
-  moduleName: string;
-  className: string;
-  functionType: FunctionType;
 }
 
-function Methods(props: MethodsProps): JSX.Element {
+export default function Methods(props: MethodsProps): JSX.Element {
   return (
     <>
       {props.functions
@@ -30,6 +25,7 @@ function Methods(props: MethodsProps): JSX.Element {
           const background = i % 2 ? "#eeeeee" : "#fafafa";
           return (
             <Box p={1} bgcolor={background} borderRadius={8} key={"method" + i}>
+              <Link to={{ hash: "#MyHash" }}>LINK</Link>
               <Typography variant="h6" component="span">
                 {fn.name}
               </Typography>
@@ -50,38 +46,3 @@ function Methods(props: MethodsProps): JSX.Element {
     </>
   );
 }
-
-function FunctionsInModules(props: { functions: ToitFunction[] }): JSX.Element {
-  return (
-    <>
-      {props.functions
-        .concat([])
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((fn, i) => {
-          // Alternating background.
-          const background = i % 2 ? "#eeeeee" : "#fafafa";
-          return (
-            <div key={`${fn.name}_${i}`}>
-              <Box p={1} bgcolor={background} borderRadius={8}>
-                <span className="functionName">
-                  <code>{`${fn.name} `}</code>
-                </span>
-                <Parameters parameters={fn.parameters} />
-                <ArrowRightAlt
-                  style={{
-                    verticalAlign: "middle",
-                    display: "inline-flex",
-                  }}
-                />
-                <span>
-                  <Type type={fn.return_type}></Type>
-                </span>
-                <Toitdocs value={fn.toitdoc} />
-              </Box>
-            </div>
-          );
-        })}
-    </>
-  );
-}
-export { Methods, FunctionsInModules };
