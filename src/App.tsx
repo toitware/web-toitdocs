@@ -10,12 +10,10 @@ import { HashRouter, Route } from "react-router-dom";
 import ModuleNav from "./components/module_nav";
 import ClassInfo from "./components/class_info";
 import ClassNav from "./components/class_nav";
-import FunctionNav from "./components/function_nav";
 import LibraryInfo from "./components/library_info";
 import WelcomePage from "./components/welcome_page";
 import { ThemeProvider } from "@material-ui/core/styles";
 import "./assets/global_theme.css";
-import FunctionInfo from "./components/function_info";
 import ErrorBoundary from "./components/error_page";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
@@ -74,11 +72,6 @@ class App extends Component<AppProps> {
                     path="/:libName/:moduleName/:className"
                     component={ClassNav}
                   />
-                  <Route
-                    exact
-                    path="/:libName/:moduleName/:className/:functionType/:functionName/:index"
-                    component={FunctionNav}
-                  />
                 </Grid>
 
                 <Grid item xs={12} sm={10}>
@@ -94,11 +87,6 @@ class App extends Component<AppProps> {
                       exact
                       path="/:libName/:moduleName/:className"
                       component={ClassInfo}
-                    />
-                    <Route
-                      exact
-                      path="/:libName/:moduleName/:className/:functionType/:functionName/:index"
-                      component={FunctionInfo}
                     />
                   </ErrorBoundary>
                 </Grid>
