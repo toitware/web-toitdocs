@@ -35,9 +35,8 @@ export interface ClassInfoProps {
 
 export default class ClassInfoView extends Component<ClassInfoProps> {
   componentDidMount(): void {
-    const toId = this.props.location.hash.substring(1);
-    console.log(toId);
-    const element = document.getElementById(toId);
+    const hashId = this.props.location.hash.substring(1);
+    const element = document.getElementById(hashId);
     element?.scrollIntoView(true);
   }
 

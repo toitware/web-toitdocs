@@ -155,9 +155,16 @@ interface ModuleInfoParams {
 interface ModuleInfoProps extends WithStyles<typeof style> {
   libraries: ToitLibraries;
   match: match<ModuleInfoParams>;
+  location: Location;
 }
 
 class ModuleInfo extends Component<ModuleInfoProps> {
+  componentDidMount(): void {
+    const hashId = this.props.location.hash.substring(1);
+    const element = document.getElementById(hashId);
+    element?.scrollIntoView(true);
+  }
+
   render(): JSX.Element {
     const libName = this.props.match.params.libName;
     const moduleName = this.props.match.params.moduleName;

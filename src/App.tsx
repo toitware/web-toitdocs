@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./App.css";
 import LibrariesNav from "./components/libraries_nav";
-import ModuleInfo from "./components/module_info";
+import ModuleInfo from "./components/ModuleInfoView";
 import { Grid, CircularProgress, Box } from "@material-ui/core";
 import { BrowserRouter, Route } from "react-router-dom";
 import ModuleNav from "./components/module_nav";
