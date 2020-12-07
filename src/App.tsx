@@ -6,9 +6,9 @@ import "./App.css";
 import LibrariesNav from "./components/libraries_nav";
 import ModuleInfo from "./components/module_info";
 import { Grid, CircularProgress, Box } from "@material-ui/core";
-import { HashRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import ModuleNav from "./components/module_nav";
-import ClassInfo from "./components/ClassInfoView";
+import ClassInfo from "./containers/ClassInfo";
 import ClassNav from "./components/class_nav";
 import LibraryInfo from "./components/library_info";
 import WelcomePage from "./components/welcome_page";
@@ -52,7 +52,7 @@ class App extends Component<AppProps> {
   render(): JSX.Element {
     return (
       <ThemeProvider theme={theme}>
-        <HashRouter>
+        <BrowserRouter>
           {this.props.object !== undefined ? (
             <>
               <ErrorBoundary>
@@ -100,7 +100,7 @@ class App extends Component<AppProps> {
           ) : (
             <CircularProgress disableShrink />
           )}
-        </HashRouter>
+        </BrowserRouter>
       </ThemeProvider>
     );
   }

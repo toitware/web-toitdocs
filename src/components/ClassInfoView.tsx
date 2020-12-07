@@ -30,9 +30,17 @@ interface ClassInfoParams {
 export interface ClassInfoProps {
   libraries: ToitLibraries;
   match: match<ClassInfoParams>;
+  location: Location;
 }
 
 export default class ClassInfoView extends Component<ClassInfoProps> {
+  componentDidMount(): void {
+    const toId = this.props.location.hash.substring(1);
+    console.log(toId);
+    const element = document.getElementById(toId);
+    element?.scrollIntoView(true);
+  }
+
   render(): React.ReactNode {
     const {
       params: { libName, moduleName, className },
