@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles, Grid, Paper, Typography } from "@material-ui/core";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   page: {
     width: "100%",
   },
@@ -15,21 +15,20 @@ const useStyles = makeStyles({
     fontFamily: "monospace",
   },
   containerMargin: {
-    paddingRight: "10%",
-    paddingLeft: "10%",
-    paddingTop: "24px",
-    paddingBottom: "24px",
+    padding: theme.spacing(3),
   },
   paperCode: {
     width: "100%",
   },
-});
+}));
 
-interface Props {
+interface CodeBlockProps {
   code: string[];
 }
 
-export const CodeBlock: React.FC<Props> = ({ code }: Props) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({
+  code,
+}: CodeBlockProps) => {
   const classes = useStyles();
   const formatCode = (arr: string[]): JSX.Element => {
     //Iterates over the different lines of code and formats it.
@@ -66,7 +65,6 @@ export const CodeBlock: React.FC<Props> = ({ code }: Props) => {
         container
         item
         xs={12}
-        sm={12}
         direction="row"
         className={classes.containerMargin}
       >
