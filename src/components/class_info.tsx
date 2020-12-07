@@ -146,6 +146,9 @@ const style = createStyles({
   root: {
     width: "100%",
   },
+  heading: {
+    marginTop: "16px",
+  },
 });
 
 function mapStateToProps(
