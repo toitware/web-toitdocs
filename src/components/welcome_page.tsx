@@ -1,8 +1,9 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
+import { Grid, List, Paper, Box } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
-import { Grid, List, Paper } from "@material-ui/core";
+import React, { Component } from "react";
+import "../assets/code-block.css";
 
 class WelcomePage extends Component {
   render(): JSX.Element {
@@ -52,26 +53,56 @@ class WelcomePage extends Component {
               </p>
             </Grid>
           </div>
-          <div style={{ padding: 20 }}>
+          <div style={{ padding: 20, width: "100%" }}>
             <Grid item container justify="center">
-              <Paper elevation={0} variant="outlined">
-                <code>
-                  <p>
-                    <strong>import</strong> metrics
-                  </p>
-                  <p>
-                    <strong>import</strong> encoding.json &nbsp;
-                    <strong>as</strong> json
-                  </p>
-                  <p>
-                    <strong>import</strong> peripherals &nbsp;
-                    <strong>show</strong> *
-                  </p>
-                  <p>
-                    <strong>import</strong> pixel_display &nbsp;
-                    <strong>show</strong> TwoColorPixelDisplay
-                  </p>
-                </code>
+              <Paper className="paperCode" elevation={0} variant="outlined">
+                <Grid
+                  container
+                  xs={12}
+                  sm={12}
+                  direction="row"
+                  className="preMargin"
+                >
+                  <Grid item xs={12} sm={12}>
+                    <Box fontWeight={600} display="inline">
+                      import
+                    </Box>
+                    <Box display="inline"> metrics</Box>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <Box fontWeight={600} display="inline">
+                      import
+                    </Box>
+                    <Box display="inline"> encoding.json</Box>
+                    <Box fontWeight={600} display="inline">
+                      {" "}
+                      as
+                    </Box>
+                    <Box display="inline"> json</Box>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <Box fontWeight={600} display="inline">
+                      import
+                    </Box>
+                    <Box display="inline"> peripherals</Box>
+                    <Box fontWeight={600} display="inline">
+                      {" "}
+                      show
+                    </Box>
+                    <Box display="inline"> *</Box>
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <Box fontWeight={600} display="inline">
+                      import
+                    </Box>
+                    <Box display="inline"> pixel_display</Box>
+                    <Box fontWeight={600} display="inline">
+                      {" "}
+                      show
+                    </Box>
+                    <Box display="inline"> TwoColorPixelDisplay</Box>
+                  </Grid>
+                </Grid>
               </Paper>
             </Grid>
           </div>
