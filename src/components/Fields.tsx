@@ -1,4 +1,6 @@
+import { Typography } from "@material-ui/core";
 import React from "react";
+import { HashLink } from "react-router-hash-link";
 import { ToitField } from "../model/toitsdk";
 import Toitdocs from "./toitdoc_info";
 import { Type } from "./util";
@@ -12,12 +14,16 @@ export default function Fields(props: FieldsProps): JSX.Element {
     <>
       {props.fields.map((field, index) => {
         return (
-          <div key={"class_field_" + index}>
+          <div key={"class_field_" + index} id={field.name}>
             <div className="functionName">
-              <strong>{field.name}</strong>
+              <HashLink to={{ hash: field.name }}>
+                <Typography variant="h6" component="span">
+                  {field.name}
+                </Typography>
+              </HashLink>
               {field.type && (
                 <>
-                  / <Type type={field.type} />{" "}
+                  /<Type type={field.type} />{" "}
                 </>
               )}
             </div>
