@@ -168,7 +168,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let moduleString = "";
     let classString = "";
     let resultName = "";
-    let categoryTitle = "";
 
     return (
       <>
@@ -182,7 +181,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
                 libString = `/${libAfterSearch.name}`;
                 resultName = libAfterSearch.name;
-                categoryTitle = "Libraries";
               } catch {
                 console.log("Cast failed");
               }
@@ -198,7 +196,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
                 moduleString = `/${libAfterSearch.name}`;
                 resultName = libAfterSearch.name;
-                categoryTitle = "Modules";
               } catch {
                 console.log("Cast failed");
               }
@@ -215,28 +212,23 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 moduleString = `/${libAfterSearch.module}`;
                 classString = `/${libAfterSearch.name}`;
                 resultName = libAfterSearch.name;
-                categoryTitle = "Classes";
               } catch {
                 console.log("Cast failed");
               }
             }
 
             return (
-              <div key={"list_item" + index}>
-                {index === 0 && (
-                  <Typography variant="h5" color="primary">
-                    {categoryTitle}
+              <Link
+                to={`${libString}${moduleString}${classString}`}
+                key={"list_item" + index}
+              >
+                <ListItem className="ListItem" button>
+                  <Typography variant="h6" color="secondary">
+                    {" "}
+                    {resultName}{" "}
                   </Typography>
-                )}
-                <Link to={`${libString}${moduleString}${classString}`}>
-                  <ListItem className="ListItem" button>
-                    <Typography variant="h6" color="secondary">
-                      {" "}
-                      {resultName}{" "}
-                    </Typography>
-                  </ListItem>
-                </Link>
-              </div>
+                </ListItem>
+              </Link>
             );
           } else {
             return null;
@@ -295,8 +287,29 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             }}
           >
             <List style={{ backgroundColor: "grey" }}>
+              {this.state.results !== undefined && (
+                <ListItem>
+                  <Typography variant="h5" color="primary">
+                    Libraries
+                  </Typography>
+                </ListItem>
+              )}
               {this.renderSearch("libraries", this.state.results)}
+              {this.state.results !== undefined && (
+                <ListItem>
+                  <Typography variant="h5" color="primary">
+                    Modules
+                  </Typography>
+                </ListItem>
+              )}
               {this.renderSearch("modules", this.state.results)}
+              {this.state.results !== undefined && (
+                <ListItem>
+                  <Typography variant="h5" color="primary">
+                    Classes
+                  </Typography>
+                </ListItem>
+              )}
               {this.renderSearch("classes", this.state.results)}
             </List>
           </Grid>
