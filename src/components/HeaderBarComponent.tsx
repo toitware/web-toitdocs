@@ -167,12 +167,12 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     ) {
       return <></>;
     }
-    const libraries: Fuse.FuseResultMatch[] = [];
+    const fuseResults: Fuse.FuseResultMatch[] = [];
     results.matches.forEach((match, index) => {
       if (match.refIndex === undefined) {
         console.error("missing refindex for match", match);
       } else if (match.key === `${type}.name`) {
-        libraries.push(match);
+        fuseResults.push(match);
         return match;
       }
     });
@@ -181,75 +181,89 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let moduleString = "";
     let classString = "";
     let resultName = "";
+    if (fuseResults.length === 0) {
+      return (
+        <ListItem className="ListItem">
+          <Typography variant="body2" color="secondary">
+            {" "}
+            No result found{" "}
+          </Typography>
+        </ListItem>
+      );
+    } else {
+      return (
+        <>
+          {fuseResults.map((match, index) => {
+            if (typeof match.refIndex === "number") {
+              if (type === "libraries") {
+                try {
+                  const unknownAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as unknown;
+                  const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
+                  libString = "/" + libAfterSearch.name;
+                  resultName = libAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
+                }
+              } else if (type === "modules") {
+                try {
+                  const unknownAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as unknown;
+                  const libAfterSearch = unknownAfterSearch as SearchableToitModule;
+                  if (libAfterSearch.library.includes("font")) {
+                    return null;
+                  }
+                  libString = `/${librarySegmentsToURI(
+                    libAfterSearch.library
+                  )}`;
+                  moduleString = `/${libAfterSearch.name}`;
+                  resultName = libAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
+                }
+              } else if (type === "classes") {
+                try {
+                  const unknownAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as unknown;
+                  const libAfterSearch = unknownAfterSearch as SearchableToitClass;
+                  if (libAfterSearch.library.includes("font")) {
+                    return null;
+                  }
+                  libString = `/${librarySegmentsToURI(
+                    libAfterSearch.library
+                  )}`;
+                  moduleString = `/${libAfterSearch.module}`;
+                  classString = `/${libAfterSearch.name}`;
+                  resultName = libAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
+                }
+              }
 
-    return (
-      <>
-        {libraries.map((match, index) => {
-          if (typeof match.refIndex === "number") {
-            if (type === "libraries") {
-              try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
-                libString = "/" + libAfterSearch.name;
-                resultName = libAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
-            } else if (type === "modules") {
-              try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitModule;
-                if (libAfterSearch.library.includes("font")) {
-                  return null;
-                }
-                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
-                moduleString = `/${libAfterSearch.name}`;
-                resultName = libAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
-            } else if (type === "classes") {
-              try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitClass;
-                if (libAfterSearch.library.includes("font")) {
-                  return null;
-                }
-                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
-                moduleString = `/${libAfterSearch.module}`;
-                classString = `/${libAfterSearch.name}`;
-                resultName = libAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
+              return (
+                <Link
+                  to={`${libString}${moduleString}${classString}`}
+                  key={"list_item" + index}
+                  onClick={this.handleClickAway}
+                >
+                  <ListItem className="ListItem" button>
+                    <Typography variant="h6" color="secondary">
+                      {" "}
+                      {resultName}{" "}
+                    </Typography>
+                  </ListItem>
+                </Link>
+              );
+            } else {
+              return null;
             }
-
-            return (
-              <Link
-                to={`${libString}${moduleString}${classString}`}
-                key={"list_item" + index}
-                onClick={this.handleClickAway}
-              >
-                <ListItem className="ListItem" button>
-                  <Typography variant="h6" color="secondary">
-                    {" "}
-                    {resultName}{" "}
-                  </Typography>
-                </ListItem>
-              </Link>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </>
-    );
+          })}
+        </>
+      );
+    }
   }
 
   render(): JSX.Element {
