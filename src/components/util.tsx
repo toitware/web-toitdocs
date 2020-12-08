@@ -32,8 +32,19 @@ interface ReferenceProps {
 
 export class Reference extends Component<ReferenceProps> {
   render(): JSX.Element {
-    // TODO handle the reference for the type
     const reference = this.props.reference;
-    return <Link to={`/#todo`}>{reference.name}</Link>;
+    let path = "";
+    this.props.reference.path.forEach((element) => {
+      if (!path.endsWith(".") && element === "") {
+        path = path + ".";
+      } else if (path.endsWith(".")) {
+        path = path + element;
+      } else if (!path.endsWith("/") && element !== "") {
+        path = path + "/" + element;
+      } else {
+        path = path + element;
+      }
+    });
+    return <Link to={`${path}`}>{reference.name}</Link>;
   }
 }
