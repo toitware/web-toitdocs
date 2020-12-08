@@ -7,7 +7,6 @@ import { Link, match } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import ModuleContentList from "./module_content_list";
 import Toitdocs from "./toitdoc_info";
-import { FunctionsInModules } from "./methods";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Paper from "@material-ui/core/Paper";
@@ -21,6 +20,7 @@ import {
   ToitLibrary,
   ToitModule,
 } from "../model/toitsdk";
+import Methods from "./Methods";
 
 const style = createStyles({
   root: {
@@ -62,7 +62,7 @@ function GlobalFunctions(props: { functions: ToitFunction[] }): JSX.Element {
           </Typography>
         </Box>
       </Box>
-      <FunctionsInModules functions={props.functions} />
+      <Methods functions={props.functions} />
     </div>
   );
 }
@@ -155,9 +155,16 @@ interface ModuleInfoParams {
 interface ModuleInfoProps extends WithStyles<typeof style> {
   libraries: ToitLibraries;
   match: match<ModuleInfoParams>;
+  location: Location;
 }
 
 class ModuleInfo extends Component<ModuleInfoProps> {
+  componentDidMount(): void {
+    const hashId = this.props.location.hash.substring(1);
+    const element = document.getElementById(hashId);
+    element?.scrollIntoView(true);
+  }
+
   render(): JSX.Element {
     const libName = this.props.match.params.libName;
     const moduleName = this.props.match.params.moduleName;

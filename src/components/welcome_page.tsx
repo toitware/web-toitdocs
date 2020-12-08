@@ -1,15 +1,16 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
+import { Grid, List } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
-import { Grid, List, Paper } from "@material-ui/core";
+import React, { Component } from "react";
+import { CodeBlock } from "./general/codeblock/CodeBlock";
 
 class WelcomePage extends Component {
   render(): JSX.Element {
     return (
       <Grid container>
         <Grid item xs={12} sm={9}>
-          <Grid item container justify="center">
+          <Grid item container>
             <h1>ᴛᴏɪᴛ SDK Reference</h1>
           </Grid>
           <div style={{ padding: 20 }}>
@@ -52,29 +53,14 @@ class WelcomePage extends Component {
               </p>
             </Grid>
           </div>
-          <div style={{ padding: 20 }}>
-            <Grid item container justify="center">
-              <Paper elevation={0} variant="outlined">
-                <code>
-                  <p>
-                    <strong>import</strong> metrics
-                  </p>
-                  <p>
-                    <strong>import</strong> encoding.json &nbsp;
-                    <strong>as</strong> json
-                  </p>
-                  <p>
-                    <strong>import</strong> peripherals &nbsp;
-                    <strong>show</strong> *
-                  </p>
-                  <p>
-                    <strong>import</strong> pixel_display &nbsp;
-                    <strong>show</strong> TwoColorPixelDisplay
-                  </p>
-                </code>
-              </Paper>
-            </Grid>
-          </div>
+          <CodeBlock
+            code={[
+              "import metrics",
+              "import encoding.json as json",
+              "import peripherals show *",
+              "import pixel_display show TwoColorPixelDisplay",
+            ]}
+          ></CodeBlock>
           <div style={{ padding: 20 }}>
             <Grid>
               As can be seen from the examples above there different ways of
