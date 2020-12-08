@@ -24,7 +24,7 @@ import ToitFuse, {
   SearchableToitModule,
 } from "./fuse";
 import Fuse from "fuse.js";
-
+import { ClickAwayListener } from "@material-ui/core";
 // Search bar styling.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const style = (theme: Theme) =>
@@ -140,6 +140,10 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
         200
       );
     }
+  };
+
+  handleClickAway = (): void => {
+    this.setSearchTerm("");
   };
 
   renderSearch(
@@ -273,46 +277,48 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
         </Grid>
         <Grid item xs={9}></Grid>
         <div id="SearchResults">
-          <Grid
-            container
-            item
-            xs={3}
-            style={{
-              marginTop: "65px",
-              maxHeight: "50%",
-              overflow: "auto",
-              position: "fixed",
-              float: "left",
-              borderRadius: "5px",
-            }}
-          >
-            <List style={{ backgroundColor: "grey" }}>
-              {this.state.results !== undefined && (
-                <ListItem>
-                  <Typography variant="h5" color="primary">
-                    Libraries
-                  </Typography>
-                </ListItem>
-              )}
-              {this.renderSearch("libraries", this.state.results)}
-              {this.state.results !== undefined && (
-                <ListItem>
-                  <Typography variant="h5" color="primary">
-                    Modules
-                  </Typography>
-                </ListItem>
-              )}
-              {this.renderSearch("modules", this.state.results)}
-              {this.state.results !== undefined && (
-                <ListItem>
-                  <Typography variant="h5" color="primary">
-                    Classes
-                  </Typography>
-                </ListItem>
-              )}
-              {this.renderSearch("classes", this.state.results)}
-            </List>
-          </Grid>
+          <ClickAwayListener onClickAway={this.handleClickAway}>
+            <Grid
+              container
+              item
+              xs={3}
+              style={{
+                marginTop: "65px",
+                maxHeight: "50%",
+                overflow: "auto",
+                position: "fixed",
+                float: "left",
+                borderRadius: "5px",
+              }}
+            >
+              <List style={{ backgroundColor: "grey" }}>
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Libraries
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("libraries", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Modules
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("modules", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Classes
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("classes", this.state.results)}
+              </List>
+            </Grid>
+          </ClickAwayListener>
         </div>
       </Grid>
     );
