@@ -1,14 +1,21 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React from "react";
-import Toitdocs from "./toitdoc_info";
-import { ArrowRightAlt } from "@material-ui/icons";
+import { makeStyles, Typography } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
-import { Parameters } from "./parameters";
-import { Type } from "./util";
-import { ToitFunction } from "../model/toitsdk";
-import { Typography } from "@material-ui/core";
+import { ArrowRightAlt } from "@material-ui/icons";
+import React from "react";
 import { HashLink } from "react-router-hash-link";
+import { ToitFunction } from "../model/toitsdk";
+import { Parameters } from "./parameters";
+import Toitdocs from "./toitdoc_info";
+import { Type } from "./util";
+
+const useStyles = makeStyles((theme) => ({
+  arrowRight: {
+    verticalAlign: "middle",
+    display: "inline-flex",
+  },
+}));
 
 interface MethodsProps {
   functions: ToitFunction[];
@@ -34,6 +41,7 @@ function getId(fn: ToitFunction): string {
 }
 
 export default function Methods(props: MethodsProps): JSX.Element {
+  const classes = useStyles();
   return (
     <>
       {props.functions
@@ -57,12 +65,7 @@ export default function Methods(props: MethodsProps): JSX.Element {
                 </Typography>
               </HashLink>
               <Parameters parameters={fn.parameters} />
-              <ArrowRightAlt
-                style={{
-                  verticalAlign: "middle",
-                  display: "inline-flex",
-                }}
-              />
+              <ArrowRightAlt className={classes.arrowRight} />
               <span>
                 <Type type={fn.return_type}></Type>
               </span>

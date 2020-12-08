@@ -10,6 +10,7 @@ import {
   withStyles,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
+import { StyleRules } from "@material-ui/core/styles/withStyles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import React from "react";
 import { connect } from "react-redux";
@@ -30,10 +31,10 @@ import HeaderBar from "./containers/HeaderBar";
 import { ToitObject } from "./model/toitsdk";
 import { fetchSDK, RootState } from "./sdk";
 
-const styles = (theme: Theme) =>
+const styles = (theme: Theme): StyleRules =>
   createStyles({
     sideNav: {
-      marginTop: "45px",
+      marginTop: theme.spacing(2),
     },
   });
 
@@ -63,7 +64,7 @@ class App extends React.PureComponent<AppProps> {
   componentDidMount(): void {
     this.props.fetchSdk(this.props.sdkVersionFromParams);
   }
-  render() {
+  render(): JSX.Element {
     return (
       <ThemeProvider theme={theme}>
         <BrowserRouter>
