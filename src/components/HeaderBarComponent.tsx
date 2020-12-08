@@ -143,7 +143,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   };
 
   handleClickAway = (): void => {
-    this.setSearchTerm("");
+    // setOpen(false);
   };
 
   renderSearch(
@@ -183,7 +183,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                   match.refIndex
                 ] as unknown;
                 const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
-                libString = `/${libAfterSearch.name}`;
+                libString = "/" + libAfterSearch.name;
                 resultName = libAfterSearch.name;
               } catch {
                 console.log("Cast failed");

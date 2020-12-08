@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { flattenDataStructure, SearchableToitObject } from "./components/fuse";
-import { ToitLibrary, ToitObject } from "./model/toitsdk";
+import { ToitLibraries, ToitLibrary, ToitObject } from "./model/toitsdk";
 
 export interface RootState {
   sdk: SdkState;
@@ -105,7 +105,7 @@ export function librarySegmentsToURI(segments: string[]): string {
 }
 
 export function getLibrary(
-  libraries: { [libraryName: string]: ToitLibrary },
+  libraries: ToitLibraries,
   libraryName: string
 ): ToitLibrary {
   try {
@@ -114,13 +114,14 @@ export function getLibrary(
       const segments = libraryNameToSegments(libraryName);
       segments.forEach((name) => {
         if (!library) {
-          throw new Error("failed to find library: " + libraryName);
+          throw new Error("failed to find library: " + name);
         }
         library = library.libraries[name];
       });
     }
     return library;
   } catch (e) {
-    throw new Error("failed to find libaray: " + libraryName);
+    console.log(e);
+    throw new Error("failed to find library: " + libraryName);
   }
 }

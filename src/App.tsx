@@ -4,18 +4,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./App.css";
 import LibrariesNav from "./components/libraries_nav";
-import ModuleInfo from "./components/module_info";
+import ModuleInfo from "./components/ModuleInfoView";
 import { Grid, CircularProgress, Box } from "@material-ui/core";
-import { HashRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import ModuleNav from "./components/module_nav";
-import ClassInfo from "./components/class_info";
+import ClassInfo from "./containers/ClassInfo";
 import ClassNav from "./components/class_nav";
-import FunctionNav from "./components/function_nav";
 import LibraryInfo from "./components/library_info";
 import WelcomePage from "./components/welcome_page";
 import { ThemeProvider } from "@material-ui/core/styles";
 import "./assets/global_theme.css";
-import FunctionInfo from "./components/function_info";
 import ErrorBoundary from "./components/error_page";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
@@ -54,7 +52,7 @@ class App extends Component<AppProps> {
   render(): JSX.Element {
     return (
       <ThemeProvider theme={theme}>
-        <HashRouter>
+        <BrowserRouter>
           {this.props.object !== undefined ? (
             <>
               <ErrorBoundary>
@@ -74,11 +72,6 @@ class App extends Component<AppProps> {
                     path="/:libName/:moduleName/:className"
                     component={ClassNav}
                   />
-                  <Route
-                    exact
-                    path="/:libName/:moduleName/:className/:functionType/:functionName/:index"
-                    component={FunctionNav}
-                  />
                 </Grid>
 
                 <Grid item xs={12} sm={10}>
@@ -95,11 +88,6 @@ class App extends Component<AppProps> {
                       path="/:libName/:moduleName/:className"
                       component={ClassInfo}
                     />
-                    <Route
-                      exact
-                      path="/:libName/:moduleName/:className/:functionType/:functionName/:index"
-                      component={FunctionInfo}
-                    />
                   </ErrorBoundary>
                 </Grid>
                 <Grid item xs={12}>
@@ -112,7 +100,7 @@ class App extends Component<AppProps> {
           ) : (
             <CircularProgress disableShrink />
           )}
-        </HashRouter>
+        </BrowserRouter>
       </ThemeProvider>
     );
   }
