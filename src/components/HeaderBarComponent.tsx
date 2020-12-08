@@ -9,7 +9,7 @@ import {
   WithStyles,
 } from "@material-ui/core/styles";
 import logo from "../assets/images/logo-simple.png";
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -224,11 +224,17 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
 
             return (
               <div key={"list_item" + index}>
-                {index === 0 && <b>{categoryTitle}</b>}
+                {index === 0 && (
+                  <Typography variant="h5" color="primary">
+                    {categoryTitle}
+                  </Typography>
+                )}
                 <Link to={`${libString}${moduleString}${classString}`}>
                   <ListItem className="ListItem" button>
-                    {" "}
-                    <b> {resultName} </b>
+                    <Typography variant="h6" color="secondary">
+                      {" "}
+                      {resultName}{" "}
+                    </Typography>
                   </ListItem>
                 </Link>
               </div>
