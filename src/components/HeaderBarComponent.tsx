@@ -24,7 +24,6 @@ import ToitFuse, {
   SearchableToitModule,
 } from "./fuse";
 import Fuse from "fuse.js";
-import { ToitLibraries } from "../model/toitsdk";
 
 // Search bar styling.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

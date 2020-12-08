@@ -8,7 +8,6 @@ import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
 import { getLibrary, RootState } from "../sdk";
 import ListItemLink from "./list_item_link";
-import Typography from "@material-ui/core/Typography";
 import { ToitLibraries } from "../model/toitsdk";
 
 function mapStateToProps(
@@ -55,18 +54,16 @@ class ClassNav extends Component<ClassNavProps> {
               subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
                   <Link to={`/`}>Modules /</Link>
-                  <Typography color="secondary">
-                    <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>{" "}
-                    {" / "}
-                    <h1>
-                      <p></p>
-                    </h1>
-                    {className}
-                  </Typography>
+                  <Link to={`/${libName}/${moduleName}`}>
+                    {moduleName}
+                  </Link>{" "}
+                  <Link to={`/${libName}/${moduleName}/${className}`}>
+                    {" / " + className}
+                  </Link>
                 </ListSubheader>
               }
             >
-              <br></br>{" "}
+              {" "}
               {classes.map((klass, index) => (
                 <ListItemLink
                   to={`/${libName}/${module.name}/${klass.name}`}
