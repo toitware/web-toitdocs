@@ -7,6 +7,7 @@ import {
   Theme,
   createStyles,
   WithStyles,
+  StyleRules,
 } from "@material-ui/core/styles";
 import logo from "../assets/images/logo-simple.png";
 import { Grid, Typography } from "@material-ui/core";
@@ -26,8 +27,7 @@ import ToitFuse, {
 import Fuse from "fuse.js";
 import { ClickAwayListener } from "@material-ui/core";
 // Search bar styling.
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const style = (theme: Theme) =>
+const style = (theme: Theme): StyleRules =>
   createStyles({
     root: {
       flexGrow: 1,
