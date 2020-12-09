@@ -28,6 +28,7 @@ import Fuse from "fuse.js";
 import { ClickAwayListener } from "@material-ui/core";
 // Search bar styling.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 const style = (theme: Theme) =>
   createStyles({
     root: {
@@ -157,7 +158,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   };
 
   renderSearch(
-    type?: "libraries" | "classes" | "modules",
+    type?: "libraries" | "classes" | "modules" | "functions",
     results?: SearchResults
   ): JSX.Element {
     if (
@@ -168,12 +169,12 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     ) {
       return <></>;
     }
-    const libraries: Fuse.FuseResultMatch[] = [];
+    const fuseResults: Fuse.FuseResultMatch[] = [];
     results.matches.forEach((match, index) => {
       if (match.refIndex === undefined) {
         console.error("missing refindex for match", match);
       } else if (match.key === `${type}.name`) {
-        libraries.push(match);
+        fuseResults.push(match);
         return match;
       }
     });
@@ -181,11 +182,12 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let libString = "";
     let moduleString = "";
     let classString = "";
+    let functionString = "";
     let resultName = "";
 
     return (
       <>
-        {libraries.map((match, index) => {
+        {fuseResults.map((match, index) => {
           if (typeof match.refIndex === "number") {
             if (type === "libraries") {
               try {
@@ -229,11 +231,26 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               } catch {
                 console.log("Cast failed");
               }
+            } else if (type === "functions") {
+              try {
+                const unknownAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const libAfterSearch = unknownAfterSearch as SearchableToitFunction;
+                // TODO: Add the proper addressing to this bad boy
+                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
+                moduleString = `/${libAfterSearch.module}`;
+                classString = `/${libAfterSearch.class}`;
+                functionString = `/${libAfterSearch.name}`;
+                resultName = libAfterSearch.name;
+              } catch {
+                console.log("Cast failed");
+              }
             }
 
             return (
               <Link
-                to={`${libString}${moduleString}${classString}`}
+                to={`${libString}${moduleString}${classString}${functionString}`}
                 key={"list_item" + index}
                 onClick={this.handleClickAway}
               >
@@ -255,7 +272,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
 
   render(): JSX.Element {
     const classes = this.props.classes;
-
     return (
       <Grid container item xs={12} className={classes.root}>
         <Grid item xs={12}>
@@ -330,6 +346,14 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                   </ListItem>
                 )}
                 {this.renderSearch("classes", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Functions
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("functions", this.state.results)}
               </List>
             )}
           </Grid>

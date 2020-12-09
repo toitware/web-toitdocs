@@ -17,11 +17,11 @@ const optionsBasic = {
   includeMatches: true,
   findAllMatches: true,
   includeScore: true,
-  threshold: 0.2,
+  threshold: 0.1,
   ignoreLocation: true,
   maxPatternLength: 32,
   minMatchCharLength: 2,
-  keys: ["libraries.name", "modules.name", "classes.name"],
+  keys: ["libraries.name", "modules.name", "classes.name", "functions.name"],
 };
 
 function flattenDataStructureFunction(
@@ -29,7 +29,7 @@ function flattenDataStructureFunction(
   module: ToitModule,
   klass: ToitClass,
   fun: ToitFunction,
-  struct_type: string,
+  structType: string,
   result: SearchableToitObject
 ): void {
   result.functions.push({
@@ -37,22 +37,8 @@ function flattenDataStructureFunction(
     module: module.name,
     library: library.path,
     class: klass.name,
-    struct_type: struct_type,
+    struct_type: structType,
   });
-}
-
-function flattenDataStructureKlassStruct(
-  library: ToitLibrary,
-  module: ToitModule,
-  klass: ToitClass,
-  // function: ToitFunction,
-  result: SearchableToitObject
-): void {
-  // result.functions.push({
-  //   name: klass.name,
-  //   module: module.name,
-  //   library: library.path,
-  // });
 }
 
 function flattenDataStructureKlass(
@@ -66,6 +52,7 @@ function flattenDataStructureKlass(
     module: module.name,
     library: library.path,
   });
+
   klass.structure.constructors.forEach((func) =>
     flattenDataStructureFunction(
       library,
@@ -73,6 +60,26 @@ function flattenDataStructureKlass(
       klass,
       func,
       "constructors",
+      result
+    )
+  );
+  klass.structure.factories.forEach((func) =>
+    flattenDataStructureFunction(
+      library,
+      module,
+      klass,
+      func,
+      "factories",
+      result
+    )
+  );
+  klass.structure.methods.forEach((func) =>
+    flattenDataStructureFunction(
+      library,
+      module,
+      klass,
+      func,
+      "methods",
       result
     )
   );
