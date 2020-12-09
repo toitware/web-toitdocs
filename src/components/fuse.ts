@@ -3,9 +3,11 @@
 import Fuse from "fuse.js";
 import {
   ToitClass,
+  ToitFunction,
   ToitLibrary,
   ToitModule,
   ToitObject,
+  ToitStructure,
 } from "../model/toitsdk";
 import { rootLibrary } from "../sdk";
 
@@ -21,6 +23,36 @@ const optionsBasic = {
   minMatchCharLength: 2,
   keys: ["libraries.name", "modules.name", "classes.name"],
 };
+
+function flattenDataStructureFunction(
+  library: ToitLibrary,
+  module: ToitModule,
+  klass: ToitClass,
+  fun: ToitFunction,
+  struct_type: string,
+  result: SearchableToitObject
+): void {
+  result.functions.push({
+    name: fun.name,
+    module: module.name,
+    library: library.path,
+    class: klass.name,
+  });
+}
+
+// function flattenDataStructureKlassStruct(
+//   library: ToitLibrary,
+//   module: ToitModule,
+//   klass: ToitClass,
+//   // function: ToitFunction,
+//   result: SearchableToitObject
+// ): void {
+//   // result.functions.push({
+//   //   name: klass.name,
+//   //   module: module.name,
+//   //   library: library.path,
+//   // });
+// }
 
 function flattenDataStructureKlass(
   library: ToitLibrary,
@@ -105,6 +137,7 @@ export interface SearchableToitFunction {
   module: string;
   library: string[];
   class: string;
+  struct_type: string;
 }
 
 export default class ToitFuse {
