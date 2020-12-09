@@ -22,6 +22,7 @@ import ToitFuse, {
   SearchableToitClass,
   SearchableToitLibrary,
   SearchableToitModule,
+  SearchableToitFunction,
 } from "./fuse";
 import Fuse from "fuse.js";
 
