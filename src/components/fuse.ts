@@ -66,6 +66,7 @@ export function flattenDataStructure(
     libraries: [],
     modules: [],
     classes: [],
+    functions: [],
   };
   if (!data) {
     return result;
@@ -80,6 +81,7 @@ export interface SearchableToitObject {
   libraries: SearchableToitLibrary[];
   modules: SearchableToitModule[];
   classes: SearchableToitClass[];
+  functions: SearchableToitFunction[];
 }
 
 export interface SearchableToitLibrary {
@@ -96,6 +98,13 @@ export interface SearchableToitClass {
   name: string;
   module: string;
   library: string[];
+}
+
+export interface SearchableToitFunction {
+  name: string;
+  module: string;
+  library: string[];
+  class: string;
 }
 
 export default class ToitFuse {

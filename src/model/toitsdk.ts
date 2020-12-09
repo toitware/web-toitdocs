@@ -28,6 +28,7 @@ export interface ToitLibrary {
   path: string[];
   libraries: ToitLibraries;
   name: string;
+  functions: ToitFunctions;
 }
 
 export interface ToitLibraries {
@@ -128,6 +129,10 @@ export interface ToitFunction {
   parameters: ToitParameter[];
   return_type: ToitType;
   toitdoc: ToitDoc;
+}
+
+export interface ToitFunctions {
+  [functionName: string]: ToitFunction;
 }
 
 export interface ToitClass {
