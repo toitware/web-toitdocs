@@ -256,17 +256,17 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     const classes = this.props.classes;
 
     return (
-      <ClickAwayListener onClickAway={this.handleClickAway}>
-        <Grid container item xs={12} className={classes.root}>
-          <Grid item xs={12}>
-            <AppBar position="fixed">
-              <Toolbar>
-                <Grid item sm={9}>
-                  <Link to={`/`}>
-                    <img alt="Toitware" src={logo} height="32px"></img>
-                  </Link>
-                </Grid>
-                <Grid item sm={3}>
+      <Grid container item xs={12} className={classes.root}>
+        <Grid item xs={12}>
+          <AppBar position="fixed">
+            <Toolbar>
+              <Grid item sm={9}>
+                <Link to={`/`}>
+                  <img alt="Toitware" src={logo} height="32px"></img>
+                </Link>
+              </Grid>
+              <Grid item sm={3}>
+                <ClickAwayListener onClickAway={this.handleClickAway}>
                   <div className={classes.search}>
                     <div className={classes.searchIcon}>
                       <SearchIcon />
@@ -283,57 +283,57 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       onClick={this.handleClick}
                     />
                   </div>
-                </Grid>
-              </Toolbar>
-            </AppBar>
-          </Grid>
-          <Grid item xs={9}></Grid>
-          <div id="SearchResults">
-            <Grid
-              container
-              item
-              xs={3}
-              style={{
-                marginTop: "65px",
-                maxHeight: "50%",
-                overflow: "auto",
-                position: "fixed",
-                float: "left",
-                borderRadius: "5px",
-              }}
-            >
-              {this.state.resultsVisible && (
-                <List style={{ backgroundColor: "grey" }}>
-                  {this.state.results !== undefined && (
-                    <ListItem>
-                      <Typography variant="h5" color="primary">
-                        Libraries
-                      </Typography>
-                    </ListItem>
-                  )}
-                  {this.renderSearch("libraries", this.state.results)}
-                  {this.state.results !== undefined && (
-                    <ListItem>
-                      <Typography variant="h5" color="primary">
-                        Modules
-                      </Typography>
-                    </ListItem>
-                  )}
-                  {this.renderSearch("modules", this.state.results)}
-                  {this.state.results !== undefined && (
-                    <ListItem>
-                      <Typography variant="h5" color="primary">
-                        Classes
-                      </Typography>
-                    </ListItem>
-                  )}
-                  {this.renderSearch("classes", this.state.results)}
-                </List>
-              )}
-            </Grid>
-          </div>
+                </ClickAwayListener>
+              </Grid>
+            </Toolbar>
+          </AppBar>
         </Grid>
-      </ClickAwayListener>
+        <Grid item xs={9}></Grid>
+        <div id="SearchResults">
+          <Grid
+            container
+            item
+            xs={3}
+            style={{
+              marginTop: "65px",
+              maxHeight: "50%",
+              overflow: "auto",
+              position: "fixed",
+              float: "left",
+              borderRadius: "5px",
+            }}
+          >
+            {this.state.resultsVisible && (
+              <List style={{ backgroundColor: "grey" }}>
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Libraries
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("libraries", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Modules
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("modules", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Classes
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("classes", this.state.results)}
+              </List>
+            )}
+          </Grid>
+        </div>
+      </Grid>
     );
   }
 }
