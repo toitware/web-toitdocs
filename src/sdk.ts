@@ -9,7 +9,7 @@ export interface RootState {
 export const fetchSDK = createAsyncThunk(
   "sdk/fetch",
   async (version: string) => {
-    const response = await fetch("./sdk/" + version + ".json");
+    const response = await fetch("/sdk/" + version + ".json");
     return (await response.json()) as ToitObject;
   }
 );
