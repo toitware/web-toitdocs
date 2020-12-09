@@ -37,22 +37,23 @@ function flattenDataStructureFunction(
     module: module.name,
     library: library.path,
     class: klass.name,
+    struct_type: struct_type,
   });
 }
 
-// function flattenDataStructureKlassStruct(
-//   library: ToitLibrary,
-//   module: ToitModule,
-//   klass: ToitClass,
-//   // function: ToitFunction,
-//   result: SearchableToitObject
-// ): void {
-//   // result.functions.push({
-//   //   name: klass.name,
-//   //   module: module.name,
-//   //   library: library.path,
-//   // });
-// }
+function flattenDataStructureKlassStruct(
+  library: ToitLibrary,
+  module: ToitModule,
+  klass: ToitClass,
+  // function: ToitFunction,
+  result: SearchableToitObject
+): void {
+  // result.functions.push({
+  //   name: klass.name,
+  //   module: module.name,
+  //   library: library.path,
+  // });
+}
 
 function flattenDataStructureKlass(
   library: ToitLibrary,
@@ -65,6 +66,16 @@ function flattenDataStructureKlass(
     module: module.name,
     library: library.path,
   });
+  klass.structure.constructors.forEach((func) =>
+    flattenDataStructureFunction(
+      library,
+      module,
+      klass,
+      func,
+      "constructors",
+      result
+    )
+  );
 }
 
 function flattenDataStructureModule(
