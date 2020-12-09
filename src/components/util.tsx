@@ -45,6 +45,6 @@ export class Reference extends Component<ReferenceProps> {
         path = path + element;
       }
     });
-    return <Link to={`${path}`}>{reference.name}</Link>;
+    return <Link to={path}>{reference.name}</Link>;
   }
 }
