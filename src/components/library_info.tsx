@@ -2,7 +2,13 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { createStyles, Theme, WithStyles, withStyles } from "@material-ui/core";
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -12,8 +18,7 @@ import { getLibrary, RootState } from "../sdk";
 import { match } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const style = (theme: Theme) =>
+const style = (theme: Theme): StyleRules =>
   createStyles({
     root: {
       width: "100%",
