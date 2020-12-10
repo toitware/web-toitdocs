@@ -2,9 +2,24 @@
 
 import React, { ErrorInfo } from "react";
 import { Link } from "react-router-dom";
-import { Grid } from "@material-ui/core";
+import {
+  Grid,
+  WithStyles,
+  withStyles,
+  createStyles,
+  Theme,
+  StyleRules,
+} from "@material-ui/core";
 
-interface ErrorBoundaryProps {
+const style = (theme: Theme): StyleRules =>
+  createStyles({
+    errorGrid: {
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
+    },
+  });
+
+interface ErrorBoundaryProps extends WithStyles<typeof style> {
   children: React.ReactNode;
 }
 
@@ -23,7 +38,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
       // You can render any custom fallback UI
       console.log("ERROR: In the object ");
       return (
-        <Grid item style={{ padding: "10px", margin: "10px" }}>
+        <Grid item className={this.props.classes.errorGrid}>
           <h1>Something went wrong.</h1>
           <Link to={`/#`}>Home Page</Link>
         </Grid>
@@ -34,4 +49,4 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
   }
 }
 
-export default ErrorBoundary;
+export default withStyles(style)(ErrorBoundary);

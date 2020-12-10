@@ -31,6 +31,7 @@ const style = (theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
+      height: 64,
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -56,6 +57,17 @@ const style = (theme: Theme) =>
         marginLeft: theme.spacing(1),
         width: "auto",
       },
+    },
+    searchResults: {
+      marginTop: "30px",
+      maxHeight: "50%",
+      overflow: "auto",
+      position: "fixed",
+      float: "left",
+      borderRadius: "5px",
+    },
+    searchList: {
+      backgroundColor: theme.palette.primary.light,
     },
     searchIcon: {
       padding: theme.spacing(0, 2),
@@ -294,17 +306,10 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             container
             item
             xs={3}
-            style={{
-              marginTop: "65px",
-              maxHeight: "50%",
-              overflow: "auto",
-              position: "fixed",
-              float: "left",
-              borderRadius: "5px",
-            }}
+            className={this.props.classes.searchResults}
           >
             {this.state.resultsVisible && (
-              <List style={{ backgroundColor: "grey" }}>
+              <List className={this.props.classes.searchList}>
                 {this.state.results !== undefined && (
                   <ListItem>
                     <Typography variant="h5" color="primary">
