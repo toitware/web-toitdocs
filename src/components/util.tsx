@@ -32,19 +32,12 @@ interface ReferenceProps {
 
 export class Reference extends Component<ReferenceProps> {
   render(): JSX.Element {
-    const reference = this.props.reference;
-    let path = "";
-    this.props.reference.path.forEach((element) => {
-      if (!path.endsWith(".") && element === "") {
-        path = path + ".";
-      } else if (path.endsWith(".")) {
-        path = path + element;
-      } else if (!path.endsWith("/") && element !== "") {
-        path = path + "/" + element;
-      } else {
-        path = path + element;
-      }
-    });
-    return <Link to={path}>{reference.name}</Link>;
+    let url = this.props.reference.name;
+    const path = this.props.reference.path;
+    const pathLen = path.length;
+    for (let i = pathLen - 1; i >= 0 && path[i] !== "lib"; i--) {
+      url = path[i] + "/" + url;
+    }
+    return <Link to={`/${url}`}>{this.props.reference.name}</Link>;
   }
 }
