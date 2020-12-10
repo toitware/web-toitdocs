@@ -82,17 +82,17 @@ export interface SearchableToitObject {
   classes: SearchableToitClass[];
 }
 
-interface SearchableToitLibrary {
+export interface SearchableToitLibrary {
   name: string;
   path: string[];
 }
 
-interface SearchableToitModule {
+export interface SearchableToitModule {
   name: string;
   library: string[];
 }
 
-interface SearchableToitClass {
+export interface SearchableToitClass {
   name: string;
   module: string;
   library: string[];

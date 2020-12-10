@@ -9,7 +9,7 @@ import {
   WithStyles,
 } from "@material-ui/core/styles";
 import logo from "../assets/images/logo-simple.png";
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import { AppBar } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -17,9 +17,14 @@ import { List, ListItem } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import { librarySegmentsToURI } from "../sdk";
-import ToitFuse, { SearchableToitObject } from "./fuse";
+import ToitFuse, {
+  SearchableToitObject,
+  SearchableToitClass,
+  SearchableToitLibrary,
+  SearchableToitModule,
+} from "./fuse";
 import Fuse from "fuse.js";
-
+import { ClickAwayListener } from "@material-ui/core";
 // Search bar styling.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const style = (theme: Theme) =>
@@ -103,6 +108,7 @@ export interface HeaderBarProps extends WithStyles<typeof style> {
 interface HeaderBarState {
   searchTerm: string;
   results?: SearchResults;
+  resultsVisible?: boolean;
 }
 
 class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
@@ -116,6 +122,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   state = {
     searchTerm: "",
     results: undefined,
+    resultsVisible: true,
   };
 
   setSearchTerm(searchTerm: string): void {
@@ -142,78 +149,115 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
         matches = found[0].matches;
       }
 
-      setTimeout(
-        () => this.setResults({ matches: matches, isFilled: true }),
-        200
-      );
+      setTimeout(() => {
+        this.setResults({
+          matches: matches,
+          isFilled: true,
+        });
+        this.setState({ ...this.state, resultsVisible: true });
+      }, 200);
     }
   };
 
-  renderSearchResult(results?: SearchResults): JSX.Element {
-    if (!results || !results.isFilled) {
+  handleClickAway = (): void => {
+    this.setState({ ...this.state, resultsVisible: false });
+  };
+
+  handleClick = (): void => {
+    this.setState({ ...this.state, resultsVisible: true });
+  };
+
+  renderSearch(
+    type?: "libraries" | "classes" | "modules",
+    results?: SearchResults
+  ): JSX.Element {
+    if (
+      !results ||
+      !results.isFilled ||
+      results.matches.length === 0 ||
+      type === undefined
+    ) {
       return <></>;
     }
+    const libraries: Fuse.FuseResultMatch[] = [];
+    results.matches.forEach((match, index) => {
+      if (match.refIndex === undefined) {
+        console.error("missing refindex for match", match);
+      } else if (match.key === `${type}.name`) {
+        libraries.push(match);
+        return match;
+      }
+    });
+    const afterSearch = this.props.searchObject[type];
+    let libString = "";
+    let moduleString = "";
+    let classString = "";
+    let resultName = "";
 
-    if (results.matches.length === 0) {
-      return <>no results</>;
-    }
-
-    // TODO: Enable search on aliases
     return (
       <>
-        {results.matches.map((match, index) => {
-          if (match.refIndex === undefined) {
-            console.error("missing refindex for match", match);
+        {libraries.map((match, index) => {
+          if (typeof match.refIndex === "number") {
+            if (type === "libraries") {
+              try {
+                const unknownAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
+                libString = "/" + libAfterSearch.name;
+                resultName = libAfterSearch.name;
+              } catch {
+                console.log("Cast failed");
+              }
+            } else if (type === "modules") {
+              try {
+                const unknownAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const libAfterSearch = unknownAfterSearch as SearchableToitModule;
+                if (libAfterSearch.library.includes("font")) {
+                  return null;
+                }
+                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
+                moduleString = `/${libAfterSearch.name}`;
+                resultName = libAfterSearch.name;
+              } catch {
+                console.log("Cast failed");
+              }
+            } else if (type === "classes") {
+              try {
+                const unknownAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const libAfterSearch = unknownAfterSearch as SearchableToitClass;
+                if (libAfterSearch.library.includes("font")) {
+                  return null;
+                }
+                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
+                moduleString = `/${libAfterSearch.module}`;
+                classString = `/${libAfterSearch.name}`;
+                resultName = libAfterSearch.name;
+              } catch {
+                console.log("Cast failed");
+              }
+            }
+
+            return (
+              <Link
+                to={`${libString}${moduleString}${classString}`}
+                key={"list_item" + index}
+                onClick={this.handleClickAway}
+              >
+                <ListItem className="ListItem" button>
+                  <Typography variant="h6" color="secondary">
+                    {" "}
+                    {resultName}{" "}
+                  </Typography>
+                </ListItem>
+              </Link>
+            );
+          } else {
             return null;
-          }
-          switch (match.key) {
-            case "classes.name":
-              const klass = this.props.searchObject.classes[match.refIndex];
-              return (
-                <ListItem className="ListItem" button key={"list_item" + index}>
-                  <div id="ElementOfList">
-                    <Link
-                      to={`/${librarySegmentsToURI(klass.library)}/${
-                        klass.module
-                      }/${klass.name}`}
-                    >
-                      {" "}
-                      Name: <b> {klass.name} </b> Type: <b>Class</b>
-                    </Link>
-                  </div>
-                </ListItem>
-              );
-            case "libraries.name":
-              const library = this.props.searchObject.libraries[match.refIndex];
-              return (
-                <ListItem className="ListItem" button key={"list_item" + index}>
-                  <div id="ElementOfList">
-                    <Link to={`/${librarySegmentsToURI(library.path)}`}>
-                      {" "}
-                      Name: <b> {library.name} </b> Type: <b>Library</b>
-                    </Link>
-                  </div>
-                </ListItem>
-              );
-            case "modules.name":
-              const module = this.props.searchObject.modules[match.refIndex];
-              return (
-                <ListItem className="ListItem" button key={"list_item" + index}>
-                  <div id="ElementOfList">
-                    <Link
-                      to={`/${librarySegmentsToURI(module.library)}/${
-                        module.name
-                      }`}
-                    >
-                      {" "}
-                      Name: <b> {module.name} </b> Type: <b>Module</b>
-                    </Link>
-                  </div>
-                </ListItem>
-              );
-            default:
-              console.error("unhandled search result", match);
-              return null;
           }
         })}
       </>
@@ -234,21 +278,24 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 </Link>
               </Grid>
               <Grid item sm={3}>
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
+                <ClickAwayListener onClickAway={this.handleClickAway}>
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                      inputProps={{ "aria-label": "search" }}
+                      value={this.state.searchTerm}
+                      onChange={this.handleChange}
+                      onClick={this.handleClick}
+                    />
                   </div>
-                  <InputBase
-                    placeholder="Search…"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput,
-                    }}
-                    inputProps={{ "aria-label": "search" }}
-                    value={this.state.searchTerm}
-                    onChange={this.handleChange}
-                  />
-                </div>
+                </ClickAwayListener>
               </Grid>
             </Toolbar>
           </AppBar>
@@ -261,9 +308,34 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             xs={3}
             className={this.props.classes.searchResults}
           >
-            <List className={this.props.classes.searchList}>
-              {this.renderSearchResult(this.state.results)}
-            </List>
+            {this.state.resultsVisible && (
+              <List className={this.props.classes.searchList}>
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Libraries
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("libraries", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Modules
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("modules", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Classes
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("classes", this.state.results)}
+              </List>
+            )}
           </Grid>
         </div>
       </Grid>

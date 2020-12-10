@@ -9,7 +9,6 @@ import {
   withStyles,
 } from "@material-ui/core";
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
@@ -70,14 +69,16 @@ class ClassNav extends Component<ClassNavProps> {
               subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
                   <Link to={`/`}>Modules /</Link>
-                  <Typography color="secondary">
-                    <Link to={`/${libName}/${moduleName}`}>{moduleName}</Link>{" "}
+                  <Link to={`/${libName}/${moduleName}`}>
+                    {moduleName}
+                  </Link>{" "}
+                  <Link to={`/${libName}/${moduleName}/${className}`}>
                     {" / " + className}
-                  </Typography>
+                  </Link>
                 </ListSubheader>
               }
             >
-              <br></br>{" "}
+              {" "}
               {classes.map((klass, index) => (
                 <ListItemLink
                   to={`/${libName}/${module.name}/${klass.name}`}
