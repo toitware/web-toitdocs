@@ -1,37 +1,43 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
 import {
-  withStyles,
-  fade,
-  Theme,
+  AppBar,
+  ClickAwayListener,
+  Grid,
+  List,
+  ListItem,
+  Typography,
+} from "@material-ui/core";
+import InputBase from "@material-ui/core/InputBase";
+import {
   createStyles,
+  fade,
+  StyleRules,
+  Theme,
+  withStyles,
   WithStyles,
 } from "@material-ui/core/styles";
-import logo from "../assets/images/logo-simple.png";
-import { Grid, Typography } from "@material-ui/core";
-import { AppBar } from "@material-ui/core";
-import { Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
-import { List, ListItem } from "@material-ui/core";
-import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
+import Fuse from "fuse.js";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import logo from "../assets/images/logo-simple.png";
 import { librarySegmentsToURI } from "../sdk";
 import ToitFuse, {
-  SearchableToitObject,
   SearchableToitClass,
   SearchableToitLibrary,
   SearchableToitModule,
+  SearchableToitObject,
 } from "./fuse";
-import Fuse from "fuse.js";
-import { ClickAwayListener } from "@material-ui/core";
-// Search bar styling.
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const style = (theme: Theme) =>
+
+export const HEADER_BAR_HEIGHT = 64;
+
+const style = (theme: Theme): StyleRules =>
   createStyles({
     root: {
       flexGrow: 1,
-      height: 64,
+      height: HEADER_BAR_HEIGHT,
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -270,7 +276,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     return (
       <Grid container item xs={12} className={classes.root}>
         <Grid item xs={12}>
-          <AppBar position="fixed">
+          <AppBar position="fixed" elevation={0}>
             <Toolbar>
               <Grid item sm={9}>
                 <Link to={`/`}>

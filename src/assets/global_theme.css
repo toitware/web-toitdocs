@@ -1,5 +1,6 @@
 html {
   font-size: 100%;
+  overflow: hidden;
 }
 a:link {
   text-decoration: none;
