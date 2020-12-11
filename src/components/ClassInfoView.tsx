@@ -60,7 +60,6 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     if (!classInfo) {
       return this.notFound(className);
     }
-
     return (
       <Grid container>
         <Grid item xs={12} sm={9}>
