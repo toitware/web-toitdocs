@@ -13,7 +13,6 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route } from "react-router-dom";
-import "./App.css";
 import "./assets/global_theme.css";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
