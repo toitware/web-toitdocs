@@ -198,7 +198,9 @@ class ModuleInfo extends Component<ModuleInfoProps> {
                 </Typography>
               </Grid>
               <Grid item>
-                <CodeBlock code={"import " + importPath(library, module)} />
+                <CodeBlock
+                  code={`import ${importPath(library, module)}`}
+                ></CodeBlock>
               </Grid>
               {module.classes.length > 0 && (
                 <Box pt={2} pb={2}>
