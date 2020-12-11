@@ -1,28 +1,14 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import {
-  createStyles,
-  ListSubheader,
-  StyleRules,
-  Theme,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import List from "@material-ui/core/List";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import { Link, match } from "react-router-dom";
-import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary, RootState } from "../sdk";
+import List from "@material-ui/core/List";
 import ErrorBoundary from "./error_page";
+import { getLibrary, RootState } from "../sdk";
 import ListItemLink from "./list_item_link";
-
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    sideMenu: {
-      marginTop: theme.spacing(6),
-    },
-  });
+import { ToitLibraries } from "../model/toitsdk";
 
 function mapStateToProps(
   state: RootState,
@@ -31,7 +17,6 @@ function mapStateToProps(
   return {
     libraries: state.sdk.object?.libraries || {},
     match: props.match,
-    classes: props.classes,
   };
 }
 
@@ -41,7 +26,7 @@ interface ClassNavParams {
   className: string;
 }
 
-interface ClassNavProps extends WithStyles<typeof styles> {
+interface ClassNavProps {
   libraries: ToitLibraries;
   match: match<ClassNavParams>;
 }
@@ -61,7 +46,7 @@ class ClassNav extends Component<ClassNavProps> {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       return (
-        <div className="sideMenu">
+        <div className="sideMenu" style={{ paddingTop: "30px" }}>
           <ErrorBoundary>
             <List
               component="nav"
@@ -96,4 +81,4 @@ class ClassNav extends Component<ClassNavProps> {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps)(ClassNav));
+export default connect(mapStateToProps)(ClassNav);

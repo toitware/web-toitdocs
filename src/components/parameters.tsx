@@ -1,22 +1,8 @@
 import React from "react";
 import { ToitParameter } from "../model/toitsdk";
 import { Type } from "./util";
-import { makeStyles } from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  isNamed: {
-    color: "blue",
-  },
-  isBlock: {
-    backgroundColor: "#d2d2d2",
-  },
-  elsewise: {
-    color: "#303030",
-  },
-}));
 
 function Parameters(props: { parameters: ToitParameter[] }): JSX.Element {
-  const classes = useStyles();
   return (
     <>
       {" "}
@@ -38,8 +24,14 @@ function Parameters(props: { parameters: ToitParameter[] }): JSX.Element {
         if (!parameter.type.is_none && parameter.type.is_any) {
           return (
             <span key={i}>
-              <span className={parameter.is_named ? classes.isNamed : ""}>
-                <span className={parameter.is_block ? classes.isBlock : ""}>
+              <span
+                style={parameter.is_named === true ? { color: "blue" } : {}}
+              >
+                <span
+                  style={
+                    parameter.is_block ? { backgroundColor: "#d2d2d2" } : {}
+                  }
+                >
                   {param}
                   {"/"}
                   <Type type={parameter.type} />{" "}
@@ -49,7 +41,7 @@ function Parameters(props: { parameters: ToitParameter[] }): JSX.Element {
           );
         } else {
           return (
-            <span key={i} className={classes.elsewise}>
+            <span key={i} style={{ color: "#303030" }}>
               {param}
               {"/"}
               <Type type={parameter.type} />

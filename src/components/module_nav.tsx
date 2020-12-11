@@ -13,22 +13,8 @@ import {
   librarySegmentsToURI,
   RootState,
 } from "../sdk";
-import {
-  Typography,
-  WithStyles,
-  createStyles,
-  withStyles,
-  Theme,
-  StyleRules,
-} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import { ToitLibrary, ToitModule } from "../model/toitsdk";
-
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    sideMenu: {
-      paddingTop: theme.spacing(2),
-    },
-  });
 
 function mapStateToProps(
   state: RootState,
@@ -38,7 +24,6 @@ function mapStateToProps(
     version: state.sdk.version,
     libraries: state.sdk.object?.libraries || {},
     match: props.match,
-    classes: props.classes,
   };
 }
 
@@ -47,7 +32,7 @@ interface ModuleNavParams {
   moduleName: string;
 }
 
-interface ModuleNavProps extends WithStyles<typeof styles> {
+interface ModuleNavProps {
   version?: string;
   libraries: { [libraryName: string]: ToitLibrary };
   match: match<ModuleNavParams>;
@@ -73,7 +58,7 @@ class ModuleNav extends Component<ModuleNavProps> {
     const library = getLibrary(this.props.libraries, libName);
     const moduleNames = library ? Object.keys(library.modules).sort() : [];
     return (
-      <div className={this.props.classes.sideMenu}>
+      <div className="sideMenu" style={{ paddingTop: "20px" }}>
         <ErrorBoundary>
           <List
             component="nav"
@@ -96,4 +81,4 @@ class ModuleNav extends Component<ModuleNavProps> {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps)(ModuleNav));
+export default connect(mapStateToProps)(ModuleNav);
