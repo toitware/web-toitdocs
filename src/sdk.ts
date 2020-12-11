@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { flattenDataStructure, SearchableToitObject } from "./components/fuse";
 import { ToitLibraries, ToitLibrary, ToitObject } from "./model/toitsdk";
 
@@ -9,7 +9,7 @@ export interface RootState {
 export const fetchSDK = createAsyncThunk(
   "sdk/fetch",
   async (version: string) => {
-    const response = await fetch("./sdk/" + version + ".json");
+    const response = await fetch("/sdk/" + version + ".json");
     return (await response.json()) as ToitObject;
   }
 );
