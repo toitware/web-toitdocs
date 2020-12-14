@@ -19,7 +19,7 @@ import { theme } from "./assets/theme";
 import ClassNav from "./components/class_nav";
 import ErrorBoundary from "./components/error_page";
 import ScrollableContainer from "./components/general/ScrollableContainer";
-import { HEADER_BAR_HEIGHT } from "./components/HeaderBarComponent";
+import { HEADER_BAR_HEIGHT } from "./components/HeaderBarView";
 import LibrariesNav from "./components/libraries_nav";
 import LibraryInfo from "./components/library_info";
 import ModuleInfo from "./components/ModuleInfoView";
