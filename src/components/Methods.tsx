@@ -6,9 +6,9 @@ import { ArrowRightAlt } from "@material-ui/icons";
 import React from "react";
 import { HashLink } from "react-router-hash-link";
 import { ToitFunction } from "../model/toitsdk";
-import { Parameters } from "./parameters";
-import Toitdocs from "./toitdoc_info";
-import { Type } from "./util";
+import { Parameters } from "./Parameters";
+import Toitdocs from "./ToitdocInfo";
+import { Type } from "./Util";
 
 interface MethodsProps {
   functions: ToitFunction[];

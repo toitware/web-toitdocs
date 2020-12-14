@@ -1,17 +1,16 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { Hidden } from "@material-ui/core";
+import { Grid, Hidden } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { match } from "react-router-dom";
 import { ToitLibraries, ToitReference } from "../model/toitsdk";
 import { getLibrary } from "../sdk";
-import ClassContentList from "./class_content_list";
+import ClassContentList from "./ClassContentList";
 import Fields from "./Fields";
 import Methods from "./Methods";
-import { Reference } from "./util";
+import { Reference } from "./Util";
 
 function Extends(props: { reference: ToitReference }): JSX.Element {
   return (

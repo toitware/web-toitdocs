@@ -13,8 +13,8 @@ import {
   librarySegmentsToURI,
   RootState,
 } from "../sdk";
-import ErrorBoundary from "./error_page";
-import ListItemLink from "./list_item_link";
+import ErrorBoundary from "./ErrorPage";
+import ListItemLink from "./ListItemLink";
 
 function mapStateToProps(
   state: RootState,

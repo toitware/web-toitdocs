@@ -1,6 +1,6 @@
 import React from "react";
 import { ToitParameter } from "../model/toitsdk";
-import { Type } from "./util";
+import { Type } from "./Util";
 
 function Parameters(props: { parameters: ToitParameter[] }): JSX.Element {
   return (
