@@ -284,6 +284,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               position: "fixed",
               float: "left",
               borderRadius: "5px",
+              zIndex: 1250,
             }}
           >
             <List style={{ backgroundColor: "grey" }}>
