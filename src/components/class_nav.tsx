@@ -7,8 +7,8 @@ import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
 import { getLibrary, RootState } from "../sdk";
-import ErrorBoundary from "./error_page";
-import ListItemLink from "./list_item_link";
+import ErrorBoundary from "./ErrorPage";
+import ListItemLink from "./ListItemLink";
 
 function mapStateToProps(
   state: RootState,
