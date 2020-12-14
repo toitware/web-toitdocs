@@ -1,14 +1,14 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React from "react";
-import Toitdocs from "./toitdoc_info";
-import { ArrowRightAlt } from "@material-ui/icons";
-import Box from "@material-ui/core/Box";
-import { Parameters } from "./parameters";
-import { Type } from "./util";
-import { ToitFunction } from "../model/toitsdk";
 import { Typography } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import { ArrowRightAlt } from "@material-ui/icons";
+import React from "react";
 import { HashLink } from "react-router-hash-link";
+import { ToitFunction } from "../model/toitsdk";
+import { Parameters } from "./parameters";
+import Toitdocs from "./toitdoc_info";
+import { Type } from "./util";
 
 interface MethodsProps {
   functions: ToitFunction[];

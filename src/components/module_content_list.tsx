@@ -1,12 +1,12 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React from "react";
 import {
   StyleRules,
   Theme,
   WithStyles,
   withStyles,
 } from "@material-ui/core/styles";
+import React from "react";
 import { ToitModule } from "../model/toitsdk";
 
 const styles = (theme: Theme): StyleRules => ({
