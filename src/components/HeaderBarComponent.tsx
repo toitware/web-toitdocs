@@ -24,11 +24,13 @@ import ToitFuse, {
   SearchableToitObject,
 } from "./fuse";
 
-// Search bar styling.
+export const HEADER_BAR_HEIGHT = 64;
+
 const style = (theme: Theme): StyleRules =>
   createStyles({
     root: {
       flexGrow: 1,
+      height: HEADER_BAR_HEIGHT,
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -242,7 +244,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     return (
       <Grid container item xs={12} className={classes.root}>
         <Grid item xs={12}>
-          <AppBar position="fixed">
+          <AppBar position="fixed" elevation={0}>
             <Toolbar>
               <Grid item sm={9}>
                 <Link to={`/`}>
