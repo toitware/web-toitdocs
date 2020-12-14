@@ -6,6 +6,7 @@ import {
   StyleRules,
   Theme,
   ThemeProvider,
+  withStyles,
   WithStyles,
 } from "@material-ui/core/styles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
@@ -143,4 +144,7 @@ class App extends Component<AppProps> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(App));
