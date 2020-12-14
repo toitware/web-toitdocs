@@ -1,18 +1,15 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { Box, CircularProgress, Grid } from "@material-ui/core";
 import {
-  Box,
-  CircularProgress,
   createStyles,
-  Grid,
+  StyleRules,
   Theme,
+  ThemeProvider,
   WithStyles,
-  withStyles,
-} from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/core/styles";
-import { StyleRules } from "@material-ui/core/styles/withStyles";
+} from "@material-ui/core/styles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
-import React from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route } from "react-router-dom";
 import "./App.css";
@@ -65,10 +62,11 @@ interface AppProps extends WithStyles<typeof styles> {
   fetchSdk: (version: string) => void;
 }
 
-class App extends React.PureComponent<AppProps> {
+class App extends Component<AppProps> {
   componentDidMount(): void {
     this.props.fetchSdk(this.props.sdkVersionFromParams);
   }
+
   render(): JSX.Element {
     return (
       <ThemeProvider theme={theme}>
@@ -145,6 +143,4 @@ class App extends React.PureComponent<AppProps> {
   }
 }
 
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(App)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

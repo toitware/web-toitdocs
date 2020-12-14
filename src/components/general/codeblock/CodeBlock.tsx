@@ -15,7 +15,10 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "monospace",
   },
   containerMargin: {
-    padding: theme.spacing(3),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
   paperCode: {
     width: "100%",
@@ -23,39 +26,56 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface CodeBlockProps {
-  code: string[];
+  code: string[] | string;
 }
 
 export const CodeBlock: React.FC<CodeBlockProps> = ({
   code,
 }: CodeBlockProps) => {
   const classes = useStyles();
-  const formatCode = (arr: string[]): JSX.Element => {
+  const formatCode = (arr: string[] | string): JSX.Element => {
     //Iterates over the different lines of code and formats it.
     return (
       <div>
-        {code.map((value, i) => {
-          const piecesOfLine = value.split(" ");
-          return (
-            <div key={i}>
-              {piecesOfLine.map((word, j) => {
-                if (word === "import" || word === "show" || word === "as")
-                  return (
-                    <Typography className={classes.strong} key={j}>
-                      {word}{" "}
-                    </Typography>
-                  );
-                else {
-                  return (
-                    <Typography className={classes.normal} key={j}>
-                      {word}{" "}
-                    </Typography>
-                  );
-                }
-              })}
-            </div>
-          );
-        })}
+        {Array.isArray(code) &&
+          code.map((value, i) => {
+            const piecesOfLine = value.split(" ");
+            return (
+              <div key={i}>
+                {piecesOfLine.map((word, j) => {
+                  if (word === "import" || word === "show" || word === "as")
+                    return (
+                      <Typography className={classes.strong} key={j}>
+                        {word}{" "}
+                      </Typography>
+                    );
+                  else {
+                    return (
+                      <Typography className={classes.normal} key={j}>
+                        {word}{" "}
+                      </Typography>
+                    );
+                  }
+                })}
+              </div>
+            );
+          })}
+        {typeof code === "string" &&
+          code.split(" ").map((word, i) => {
+            if (word === "import" || word === "show" || word === "as")
+              return (
+                <Typography className={classes.strong} key={i}>
+                  {word}{" "}
+                </Typography>
+              );
+            else {
+              return (
+                <Typography className={classes.normal} key={i}>
+                  {word}{" "}
+                </Typography>
+              );
+            }
+          })}
       </div>
     );
   };
