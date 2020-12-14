@@ -1,30 +1,28 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
-import {
-  withStyles,
-  fade,
-  Theme,
-  createStyles,
-  WithStyles,
-  StyleRules,
-} from "@material-ui/core/styles";
-import logo from "../assets/images/logo-simple.png";
-import { Grid, Typography } from "@material-ui/core";
-import { AppBar } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import Toolbar from "@material-ui/core/Toolbar";
-import { List, ListItem } from "@material-ui/core";
+import { AppBar, Grid, List, ListItem, Typography } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
+import {
+  createStyles,
+  fade,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from "@material-ui/icons/Search";
+import Fuse from "fuse.js";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import logo from "../assets/images/logo-simple.png";
 import { librarySegmentsToURI } from "../sdk";
 import ToitFuse, {
-  SearchableToitObject,
   SearchableToitClass,
   SearchableToitLibrary,
   SearchableToitModule,
+  SearchableToitObject,
 } from "./fuse";
-import Fuse from "fuse.js";
 
 // Search bar styling.
 const style = (theme: Theme): StyleRules =>

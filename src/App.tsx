@@ -1,26 +1,26 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { Box, CircularProgress, Grid } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "./App.css";
-import LibrariesNav from "./components/libraries_nav";
-import ModuleInfo from "./components/ModuleInfoView";
-import { Grid, CircularProgress, Box } from "@material-ui/core";
 import { BrowserRouter, Route } from "react-router-dom";
-import ModuleNav from "./components/module_nav";
-import ClassInfo from "./containers/ClassInfo";
-import ClassNav from "./components/class_nav";
-import LibraryInfo from "./components/library_info";
-import WelcomePage from "./components/welcome_page";
-import { ThemeProvider } from "@material-ui/core/styles";
+import "./App.css";
 import "./assets/global_theme.css";
-import ErrorBoundary from "./components/error_page";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
+import ClassNav from "./components/class_nav";
+import ErrorBoundary from "./components/error_page";
+import LibrariesNav from "./components/libraries_nav";
+import LibraryInfo from "./components/library_info";
+import ModuleInfo from "./components/ModuleInfoView";
+import ModuleNav from "./components/module_nav";
+import WelcomePage from "./components/welcome_page";
+import ClassInfo from "./containers/ClassInfo";
+import HeaderBar from "./containers/HeaderBar";
 import { ToitObject } from "./model/toitsdk";
 import { fetchSDK, RootState } from "./sdk";
-import HeaderBar from "./containers/HeaderBar";
-import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
 const mapStateToProps = (state: RootState): Pick<AppProps, "object"> => {
   return {

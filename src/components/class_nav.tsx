@@ -1,14 +1,14 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import { Link, match } from "react-router-dom";
-import List from "@material-ui/core/List";
-import ErrorBoundary from "./error_page";
-import { getLibrary, RootState } from "../sdk";
-import ListItemLink from "./list_item_link";
 import { ToitLibraries } from "../model/toitsdk";
+import { getLibrary, RootState } from "../sdk";
+import ErrorBoundary from "./error_page";
+import ListItemLink from "./list_item_link";
 
 function mapStateToProps(
   state: RootState,

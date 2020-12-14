@@ -1,22 +1,22 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
-import { connect } from "react-redux";
 import {
   createStyles,
+  List,
   StyleRules,
   Theme,
   WithStyles,
   withStyles,
 } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { List } from "@material-ui/core";
-import { getLibrary, RootState } from "../sdk";
+import Typography from "@material-ui/core/Typography";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { match } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
+import { getLibrary, RootState } from "../sdk";
 
 const style = (theme: Theme): StyleRules =>
   createStyles({
