@@ -1,8 +1,8 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { Grid } from "@material-ui/core";
 import React, { ErrorInfo } from "react";
 import { Link } from "react-router-dom";
-import { Grid } from "@material-ui/core";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;

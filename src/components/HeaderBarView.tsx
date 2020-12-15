@@ -1,36 +1,43 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
 import {
-  withStyles,
-  fade,
-  Theme,
-  createStyles,
-  WithStyles,
-} from "@material-ui/core/styles";
-import logo from "../assets/images/logo-simple.png";
-import { Grid, Typography } from "@material-ui/core";
-import { AppBar } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import Toolbar from "@material-ui/core/Toolbar";
-import { List, ListItem } from "@material-ui/core";
+  AppBar,
+  ClickAwayListener,
+  Grid,
+  List,
+  ListItem,
+  Typography
+} from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
+import {
+  createStyles,
+  fade,
+  StyleRules,
+  Theme,
+
+  WithStyles
+} from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from "@material-ui/icons/Search";
+import Fuse from "fuse.js";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import logo from "../assets/images/logo-simple.png";
 import { librarySegmentsToURI } from "../sdk";
 import ToitFuse, {
-  SearchableToitObject,
   SearchableToitClass,
   SearchableToitLibrary,
   SearchableToitModule,
+  SearchableToitObject
 } from "./fuse";
-import Fuse from "fuse.js";
-import { ClickAwayListener } from "@material-ui/core";
-// Search bar styling.
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const style = (theme: Theme) =>
+
+export const HEADER_BAR_HEIGHT = 64;
+
+const style = (theme: Theme): StyleRules =>
   createStyles({
     root: {
       flexGrow: 1,
+      height: HEADER_BAR_HEIGHT,
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -110,8 +117,96 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   state = {
     searchTerm: "",
     results: undefined,
-    resultsVisible: true,
+    resultsVisible: false,
   };
+
+  render(): JSX.Element {
+    const classes = this.props.classes;
+
+    return (
+      <Grid container item xs={12} className={classes.root}>
+        <Grid item xs={12}>
+          <AppBar position="fixed" elevation={0}>
+            <Toolbar>
+              <Grid item sm={9}>
+                <Link to={`/`}>
+                  <img alt="Toitware" src={logo} height="32px"></img>
+                </Link>
+              </Grid>
+              <Grid item sm={3}>
+                <ClickAwayListener onClickAway={this.handleClickAway}>
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                      inputProps={{ "aria-label": "search" }}
+                      value={this.state.searchTerm}
+                      onChange={this.handleChange}
+                      onClick={this.handleClick}
+                    />
+                  </div>
+                </ClickAwayListener>
+              </Grid>
+            </Toolbar>
+          </AppBar>
+        </Grid>
+        <Grid item xs={9}></Grid>
+        {this.state.resultsVisible && (
+          <div id="SearchResults">
+            <Grid
+              container
+              item
+              xs={3}
+              style={{
+                marginTop: "32px",
+                maxHeight: "50%",
+                position: "fixed",
+                float: "left",
+                zIndex: 1250,
+              }}
+            >
+              <div
+                style={{ display: "flex", position: "fixed", maxHeight: "50%" }}
+              >
+                <List style={{ backgroundColor: "grey", overflow: "auto" }}>
+                  {this.state.results !== undefined && (
+                    <ListItem>
+                      <Typography variant="h5" color="primary">
+                        Libraries
+                      </Typography>
+                    </ListItem>
+                  )}
+                  {this.renderSearch("libraries", this.state.results)}
+                  {this.state.results !== undefined && (
+                    <ListItem>
+                      <Typography variant="h5" color="primary">
+                        Modules
+                      </Typography>
+                    </ListItem>
+                  )}
+                  {this.renderSearch("modules", this.state.results)}
+                  {this.state.results !== undefined && (
+                    <ListItem>
+                      <Typography variant="h5" color="primary">
+                        Classes
+                      </Typography>
+                    </ListItem>
+                  )}
+                  {this.renderSearch("classes", this.state.results)}
+                </List>
+              </div>
+            </Grid>
+          </div>
+        )}
+      </Grid>
+    );
+  }
 
   setSearchTerm(searchTerm: string): void {
     this.setState({
@@ -119,10 +214,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
       searchTerm: searchTerm,
       results: undefined,
     });
-  }
-
-  setResults(results: SearchResults): void {
-    this.setState({ ...this.state, results: results });
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -138,11 +229,11 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
       }
 
       setTimeout(() => {
-        this.setResults({
-          matches: matches,
-          isFilled: true,
+        this.setState({
+          ...this.state,
+          results: { matches: matches, isFilled: true },
+          resultsVisible: true,
         });
-        this.setState({ ...this.state, resultsVisible: true });
       }, 200);
     }
   };
@@ -243,113 +334,29 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 }
               }
 
-              return (
-                <Link
-                  to={`${libString}${moduleString}${classString}`}
-                  key={"list_item" + index}
-                  onClick={this.handleClickAway}
-                >
-                  <ListItem className="ListItem" button>
-                    <Typography variant="h6" color="secondary">
-                      {" "}
-                      {resultName}{" "}
-                    </Typography>
-                  </ListItem>
-                </Link>
-              );
-            } else {
-              return null;
-            }
-          })}
-        </>
-      );
-    }
-  }
-
-  render(): JSX.Element {
-    const classes = this.props.classes;
-
-    return (
-      <ClickAwayListener onClickAway={this.handleClickAway}>
-        <Grid container item xs={12} className={classes.root}>
-          <Grid item xs={12}>
-            <AppBar position="fixed">
-              <Toolbar>
-                <Grid item sm={9}>
-                  <Link to={`/`}>
-                    <img alt="Toitware" src={logo} height="32px"></img>
-                  </Link>
-                </Grid>
-                <Grid item sm={3}>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon />
-                    </div>
-                    <InputBase
-                      placeholder="Search…"
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                      inputProps={{ "aria-label": "search" }}
-                      value={this.state.searchTerm}
-                      onChange={this.handleChange}
-                      onClick={this.handleClick}
-                    />
-                  </div>
-                </Grid>
-              </Toolbar>
-            </AppBar>
-          </Grid>
-          <Grid item xs={9}></Grid>
-          <div id="SearchResults">
-            <Grid
-              container
-              item
-              xs={3}
-              style={{
-                marginTop: "65px",
-                maxHeight: "50%",
-                overflow: "auto",
-                position: "fixed",
-                float: "left",
-                borderRadius: "5px",
-              }}
-            >
-              {this.state.resultsVisible && (
-                <List style={{ backgroundColor: "grey" }}>
-                  {this.state.results !== undefined && (
-                    <ListItem>
-                      <Typography variant="h5" color="primary">
-                        Libraries
-                      </Typography>
-                    </ListItem>
-                  )}
-                  {this.renderSearch("libraries", this.state.results)}
-                  {this.state.results !== undefined && (
-                    <ListItem>
-                      <Typography variant="h5" color="primary">
-                        Modules
-                      </Typography>
-                    </ListItem>
-                  )}
-                  {this.renderSearch("modules", this.state.results)}
-                  {this.state.results !== undefined && (
-                    <ListItem>
-                      <Typography variant="h5" color="primary">
-                        Classes
-                      </Typography>
-                    </ListItem>
-                  )}
-                  {this.renderSearch("classes", this.state.results)}
-                </List>
-              )}
-            </Grid>
-          </div>
-        </Grid>
-      </ClickAwayListener>
+            return (
+              <Link
+                to={`${libString}${moduleString}${classString}`}
+                key={"list_item" + index}
+                onClick={this.handleClickAway}
+              >
+                <ListItem className="ListItem" button>
+                  <Typography variant="h6" color="secondary">
+                    {" "}
+                    {resultName}{" "}
+                  </Typography>
+                </ListItem>
+              </Link>
+            );
+          } else {
+            return null;
+          }
+        })}
+      </>
     );
   }
+
+
 }
 
 export default withStyles(style)(HeaderBar);
