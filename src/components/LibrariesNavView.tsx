@@ -1,20 +1,20 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import ListItemLink from "./list_item_link";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import ErrorBoundary from "./error_page";
+import Typography from "@material-ui/core/Typography";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { match } from "react-router-dom";
+import { ToitLibraries, ToitLibrary, ToitModule } from "../model/toitsdk";
 import {
-  librarySegmentsToName,
   getLibrary,
+  librarySegmentsToName,
   librarySegmentsToURI,
   RootState,
 } from "../sdk";
-import Typography from "@material-ui/core/Typography";
-import { ToitLibraries, ToitLibrary, ToitModule } from "../model/toitsdk";
-import { match } from "react-router-dom";
+import ErrorBoundary from "./ErrorPage";
+import ListItemLink from "./ListItemLink";
 
 function mapStateToProps(
   state: RootState,

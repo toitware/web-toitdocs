@@ -1,16 +1,9 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import {
-  OBJECT_TYPE_STATEMENT_PARAGRAPH,
-  OBJECT_TYPE_STATEMENT_CODE,
-  OBJECT_TYPE_STATEMENT_CODE_SECTION,
-  OBJECT_TYPE_STATEMENT_ITEMIZED,
-  OBJECT_TYPE_TOITDOCREF,
-} from "../sdk";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 import {
   ToitDoc,
   ToitDocRef,
@@ -23,6 +16,13 @@ import {
   ToitStatementItemized,
   ToitStatementParagraph,
 } from "../model/toitsdk";
+import {
+  OBJECT_TYPE_STATEMENT_CODE,
+  OBJECT_TYPE_STATEMENT_CODE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_STATEMENT_PARAGRAPH,
+  OBJECT_TYPE_TOITDOCREF,
+} from "../sdk";
 
 const useStyles = makeStyles((theme) => ({
   root: {

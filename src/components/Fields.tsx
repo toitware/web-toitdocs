@@ -2,8 +2,8 @@ import { Typography } from "@material-ui/core";
 import React from "react";
 import { HashLink } from "react-router-hash-link";
 import { ToitField } from "../model/toitsdk";
-import Toitdocs from "./toitdoc_info";
-import { Type } from "./util";
+import Toitdocs from "./ToitdocInfo";
+import { Type } from "./Util";
 
 interface FieldsProps {
   fields: ToitField[];

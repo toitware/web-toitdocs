@@ -24,8 +24,8 @@ import {
 import { getLibrary, librarySegmentsToName, RootState } from "../sdk";
 import { CodeBlock } from "./general/codeblock/CodeBlock";
 import Methods from "./Methods";
-import ModuleContentList from "./module_content_list";
-import Toitdocs from "./toitdoc_info";
+import ModuleContentList from "./ModuleContentList";
+import Toitdocs from "./ToitdocInfo";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
