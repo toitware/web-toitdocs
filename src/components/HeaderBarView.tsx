@@ -6,7 +6,7 @@ import {
   Grid,
   List,
   ListItem,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import {
@@ -14,8 +14,8 @@ import {
   fade,
   StyleRules,
   Theme,
-
-  WithStyles
+  WithStyles,
+  withStyles,
 } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from "@material-ui/icons/Search";
@@ -28,7 +28,7 @@ import ToitFuse, {
   SearchableToitClass,
   SearchableToitLibrary,
   SearchableToitModule,
-  SearchableToitObject
+  SearchableToitObject,
 } from "./fuse";
 
 export const HEADER_BAR_HEIGHT = 64;
@@ -334,29 +334,28 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 }
               }
 
-            return (
-              <Link
-                to={`${libString}${moduleString}${classString}`}
-                key={"list_item" + index}
-                onClick={this.handleClickAway}
-              >
-                <ListItem className="ListItem" button>
-                  <Typography variant="h6" color="secondary">
-                    {" "}
-                    {resultName}{" "}
-                  </Typography>
-                </ListItem>
-              </Link>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </>
-    );
+              return (
+                <Link
+                  to={`${libString}${moduleString}${classString}`}
+                  key={"list_item" + index}
+                  onClick={this.handleClickAway}
+                >
+                  <ListItem className="ListItem" button>
+                    <Typography variant="h6" color="secondary">
+                      {" "}
+                      {resultName}{" "}
+                    </Typography>
+                  </ListItem>
+                </Link>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </>
+      );
+    }
   }
-
-
 }
 
 export default withStyles(style)(HeaderBar);
