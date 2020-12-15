@@ -196,9 +196,9 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 const unknownAfterSearch = afterSearch[
                   match.refIndex
                 ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
-                libString = "/" + libAfterSearch.name;
-                resultName = libAfterSearch.name;
+                const resultAfterSearch = unknownAfterSearch as SearchableToitLibrary;
+                libString = "/" + resultAfterSearch.name;
+                resultName = resultAfterSearch.name;
               } catch {
                 console.log("Cast failed");
               }
@@ -207,13 +207,15 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 const unknownAfterSearch = afterSearch[
                   match.refIndex
                 ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitModule;
-                if (libAfterSearch.library.includes("font")) {
+                const resultAfterSearch = unknownAfterSearch as SearchableToitModule;
+                if (resultAfterSearch.library.includes("font")) {
                   return null;
                 }
-                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
-                moduleString = `/${libAfterSearch.name}`;
-                resultName = libAfterSearch.name;
+                libString = `/${librarySegmentsToURI(
+                  resultAfterSearch.library
+                )}`;
+                moduleString = `/${resultAfterSearch.name}`;
+                resultName = resultAfterSearch.name;
               } catch {
                 console.log("Cast failed");
               }
@@ -222,14 +224,16 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 const unknownAfterSearch = afterSearch[
                   match.refIndex
                 ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitClass;
-                if (libAfterSearch.library.includes("font")) {
+                const resultAfterSearch = unknownAfterSearch as SearchableToitClass;
+                if (resultAfterSearch.library.includes("font")) {
                   return null;
                 }
-                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
-                moduleString = `/${libAfterSearch.module}`;
-                classString = `/${libAfterSearch.name}`;
-                resultName = libAfterSearch.name;
+                libString = `/${librarySegmentsToURI(
+                  resultAfterSearch.library
+                )}`;
+                moduleString = `/${resultAfterSearch.module}`;
+                classString = `/${resultAfterSearch.name}`;
+                resultName = resultAfterSearch.name;
               } catch {
                 console.log("Cast failed");
               }
@@ -238,13 +242,15 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                 const unknownAfterSearch = afterSearch[
                   match.refIndex
                 ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitFunction;
+                const resultAfterSearch = unknownAfterSearch as SearchableToitFunction;
                 // TODO: Add the proper addressing to this bad boy
-                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
-                moduleString = `/${libAfterSearch.module}`;
-                classString = `/${libAfterSearch.class}`;
-                functionString = `/${libAfterSearch.name}`;
-                resultName = libAfterSearch.name;
+                libString = `/${librarySegmentsToURI(
+                  resultAfterSearch.library
+                )}`;
+                moduleString = `/${resultAfterSearch.module}`;
+                classString = `/${resultAfterSearch.class}`;
+                functionString = `/${resultAfterSearch.name}`;
+                resultName = resultAfterSearch.name;
               } catch {
                 console.log("Cast failed");
               }
