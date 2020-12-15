@@ -14,8 +14,8 @@ import {
   fade,
   StyleRules,
   Theme,
-  withStyles,
   WithStyles,
+  withStyles,
 } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from "@material-ui/icons/Search";
@@ -23,6 +23,7 @@ import Fuse from "fuse.js";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo-simple.png";
+import { ToitFunction } from "../model/toitsdk";
 import { librarySegmentsToURI } from "../sdk";
 import ToitFuse, {
   SearchableToitClass,
@@ -31,7 +32,7 @@ import ToitFuse, {
   SearchableToitModule,
   SearchableToitObject,
 } from "./fuse";
-
+import { getId } from "./Methods";
 export const HEADER_BAR_HEIGHT = 64;
 
 const style = (theme: Theme): StyleRules =>
@@ -158,9 +159,8 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   handleClick = (): void => {
     this.setState({ ...this.state, resultsVisible: true });
   };
-
-  renderSearch(
-    type?: "libraries" | "classes" | "modules" | "functions",
+  renderSearchFunctions(
+    type?: "functions",
     results?: SearchResults
   ): JSX.Element {
     if (
@@ -185,6 +185,76 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let moduleString = "";
     let classString = "";
     let functionString = "";
+    let resultName = "";
+    let funCont: ToitFunction;
+
+    return (
+      <>
+        {fuseResults.map((match, index) => {
+          if (typeof match.refIndex === "number") {
+            try {
+              const unknownAfterSearch = afterSearch[match.refIndex] as unknown;
+              const resultAfterSearch = unknownAfterSearch as SearchableToitFunction;
+              // TODO: Add the proper addressing to this bad boy
+              funCont = resultAfterSearch.funContents;
+              libString = `/${librarySegmentsToURI(resultAfterSearch.library)}`;
+              moduleString = `/${resultAfterSearch.module}`;
+              classString = `/${resultAfterSearch.class}`;
+              functionString = `/${resultAfterSearch.name}`;
+              resultName = resultAfterSearch.name;
+            } catch {
+              console.log("Cast failed");
+            }
+
+            return (
+              <Link
+                to={`${libString}${moduleString}${classString}#${getId(
+                  funCont
+                )}`}
+                onClick={this.handleClickAway}
+                key={"list_item" + index}
+              >
+                <ListItem className="ListItem" button>
+                  <Typography variant="h6" color="secondary">
+                    {" "}
+                    {resultName}{" "}
+                  </Typography>
+                </ListItem>
+              </Link>
+            );
+          } else {
+            return null;
+          }
+        })}
+      </>
+    );
+  }
+  renderSearch(
+    type?: "libraries" | "classes" | "modules",
+    results?: SearchResults
+  ): JSX.Element {
+    if (
+      !results ||
+      !results.isFilled ||
+      results.matches.length === 0 ||
+      type === undefined
+    ) {
+      return <></>;
+    }
+    const fuseResults: Fuse.FuseResultMatch[] = [];
+    results.matches.forEach((match, index) => {
+      if (match.refIndex === undefined) {
+        console.error("missing refindex for match", match);
+      } else if (match.key === `${type}.name`) {
+        fuseResults.push(match);
+        return match;
+      }
+    });
+    const afterSearch = this.props.searchObject[type];
+    let libString = "";
+    let moduleString = "";
+    let classString = "";
+    const functionString = "";
     let resultName = "";
 
     return (
@@ -237,30 +307,12 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               } catch {
                 console.log("Cast failed");
               }
-            } else if (type === "functions") {
-              try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const resultAfterSearch = unknownAfterSearch as SearchableToitFunction;
-                // TODO: Add the proper addressing to this bad boy
-                libString = `/${librarySegmentsToURI(
-                  resultAfterSearch.library
-                )}`;
-                moduleString = `/${resultAfterSearch.module}`;
-                classString = `/${resultAfterSearch.class}`;
-                functionString = `/${resultAfterSearch.name}`;
-                resultName = resultAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
             }
-
             return (
               <Link
                 to={`${libString}${moduleString}${classString}${functionString}`}
-                key={"list_item" + index}
                 onClick={this.handleClickAway}
+                key={"list_item" + index}
               >
                 <ListItem className="ListItem" button>
                   <Typography variant="h6" color="secondary">
@@ -363,7 +415,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearch("functions", this.state.results)}
+                  {this.renderSearchFunctions("functions", this.state.results)}
                 </List>
               </div>
             </Grid>

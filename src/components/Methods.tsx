@@ -14,7 +14,7 @@ interface MethodsProps {
   functions: ToitFunction[];
 }
 
-function getId(fn: ToitFunction): string {
+export function getId(fn: ToitFunction): string {
   const argsString = fn.parameters
     .map((p) => {
       if (p.type.is_any) {
