@@ -16,7 +16,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { match } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary, RootState } from "../sdk";
+import { getLibrary } from "../sdk";
 
 const style = (theme: Theme): StyleRules =>
   createStyles({
@@ -29,16 +29,6 @@ const style = (theme: Theme): StyleRules =>
       paddingLeft: theme.spacing(4),
     },
   });
-
-function mapStateToProps(
-  state: RootState,
-  props: LibraryInfoProps
-): LibraryInfoProps {
-  return {
-    ...props,
-    libraries: state.sdk.object?.libraries || {},
-  };
-}
 
 interface LibraryInfoParams {
   libName: string;

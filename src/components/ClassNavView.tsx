@@ -3,22 +3,11 @@
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary, RootState } from "../sdk";
+import { getLibrary } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
-
-function mapStateToProps(
-  state: RootState,
-  props: ClassNavProps
-): ClassNavProps {
-  return {
-    libraries: state.sdk.object?.libraries || {},
-    match: props.match,
-  };
-}
 
 interface ClassNavParams {
   libName: string;
@@ -26,12 +15,12 @@ interface ClassNavParams {
   className: string;
 }
 
-interface ClassNavProps {
+export interface ClassNavProps {
   libraries: ToitLibraries;
   match: match<ClassNavParams>;
 }
 
-class ClassNav extends Component<ClassNavProps> {
+export default class ClassNav extends Component<ClassNavProps> {
   render(): JSX.Element {
     const {
       params: { libName, moduleName, className },
@@ -80,5 +69,3 @@ class ClassNav extends Component<ClassNavProps> {
     }
   }
 }
-
-export default connect(mapStateToProps)(ClassNav);
