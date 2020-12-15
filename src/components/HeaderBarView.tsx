@@ -159,32 +159,23 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   handleClick = (): void => {
     this.setState({ ...this.state, resultsVisible: true });
   };
-  renderSearchFunctions(
-    type?: "functions",
-    results?: SearchResults
-  ): JSX.Element {
-    if (
-      !results ||
-      !results.isFilled ||
-      results.matches.length === 0 ||
-      type === undefined
-    ) {
+  renderSearchFunctions(results?: SearchResults): JSX.Element {
+    if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
     }
     const fuseResults: Fuse.FuseResultMatch[] = [];
     results.matches.forEach((match, index) => {
       if (match.refIndex === undefined) {
         console.error("missing refindex for match", match);
-      } else if (match.key === `${type}.name`) {
+      } else if (match.key === `functions.name`) {
         fuseResults.push(match);
         return match;
       }
     });
-    const afterSearch = this.props.searchObject[type];
+    const afterSearch = this.props.searchObject.functions;
     let libString = "";
     let moduleString = "";
     let classString = "";
-    let functionString = "";
     let resultName = "";
     let funCont: ToitFunction;
 
@@ -200,7 +191,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               libString = `/${librarySegmentsToURI(resultAfterSearch.library)}`;
               moduleString = `/${resultAfterSearch.module}`;
               classString = `/${resultAfterSearch.class}`;
-              functionString = `/${resultAfterSearch.name}`;
               resultName = resultAfterSearch.name;
             } catch {
               console.log("Cast failed");
@@ -229,7 +219,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
       </>
     );
   }
-  renderSearch(
+  renderSearchLibsModulesClasses(
     type?: "libraries" | "classes" | "modules",
     results?: SearchResults
   ): JSX.Element {
@@ -391,7 +381,10 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearch("libraries", this.state.results)}
+                  {this.renderSearchLibsModulesClasses(
+                    "libraries",
+                    this.state.results
+                  )}
                   {this.state.results !== undefined && (
                     <ListItem>
                       <Typography variant="h5" color="primary">
@@ -399,7 +392,10 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearch("modules", this.state.results)}
+                  {this.renderSearchLibsModulesClasses(
+                    "modules",
+                    this.state.results
+                  )}
                   {this.state.results !== undefined && (
                     <ListItem>
                       <Typography variant="h5" color="primary">
@@ -407,7 +403,10 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearch("classes", this.state.results)}
+                  {this.renderSearchLibsModulesClasses(
+                    "classes",
+                    this.state.results
+                  )}
                   {this.state.results !== undefined && (
                     <ListItem>
                       <Typography variant="h5" color="primary">
@@ -415,7 +414,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearchFunctions("functions", this.state.results)}
+                  {this.renderSearchFunctions(this.state.results)}
                 </List>
               </div>
             </Grid>
