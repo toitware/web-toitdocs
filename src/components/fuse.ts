@@ -36,7 +36,7 @@ function flattenDataStructureFunction(
     module: module.name,
     library: library.path,
     class: klass.name,
-    struct_type: structType,
+    structType: structType,
     funContents: fun,
   });
 }
@@ -155,7 +155,7 @@ export interface SearchableToitFunction {
   module: string;
   library: string[];
   class: string;
-  struct_type: string;
+  structType: string;
   funContents: ToitFunction;
 }
 
