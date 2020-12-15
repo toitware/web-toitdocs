@@ -208,9 +208,9 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               const resultAfterSearch = unknownAfterSearch as SearchableToitFunction;
               // TODO: Add the proper addressing to this bad boy
               funParams = resultAfterSearch.funParams;
-              libString = `/${librarySegmentsToURI(resultAfterSearch.library)}`;
-              moduleString = `/${resultAfterSearch.module}`;
-              classString = `/${resultAfterSearch.class}`;
+              libString = `${librarySegmentsToURI(resultAfterSearch.library)}`;
+              moduleString = `${resultAfterSearch.module}`;
+              classString = `${resultAfterSearch.class}`;
               resultName = resultAfterSearch.name;
             } catch {
               console.log("Cast failed");
@@ -218,7 +218,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
 
             return (
               <Link
-                to={`${libString}${moduleString}${classString}#${this.getFunId(
+                to={`/${libString}/${moduleString}/${classString}#${this.getFunId(
                   resultName,
                   funParams
                 )}`}
@@ -227,8 +227,14 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               >
                 <ListItem className="ListItem" button>
                   <Typography variant="h6" color="secondary">
-                    {" "}
-                    {resultName}{" "}
+                    {resultName}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    color="primary"
+                    style={{ paddingLeft: "5px", paddingRight: "5px" }}
+                  >
+                    {` ${moduleString}/${classString}`}
                   </Typography>
                 </ListItem>
               </Link>
