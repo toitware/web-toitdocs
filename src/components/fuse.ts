@@ -7,6 +7,7 @@ import {
   ToitLibrary,
   ToitModule,
   ToitObject,
+  ToitParameter,
 } from "../model/toitsdk";
 import { rootLibrary } from "../sdk";
 
@@ -37,7 +38,7 @@ function flattenDataStructureFunction(
     library: library.path,
     class: klass.name,
     structType: structType,
-    funContents: fun,
+    funParams: fun.parameters,
   });
 }
 
@@ -156,7 +157,7 @@ export interface SearchableToitFunction {
   library: string[];
   class: string;
   structType: string;
-  funContents: ToitFunction;
+  funParams: ToitParameter[];
 }
 
 export default class ToitFuse {

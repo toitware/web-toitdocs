@@ -14,8 +14,8 @@ import {
   fade,
   StyleRules,
   Theme,
-  WithStyles,
   withStyles,
+  WithStyles,
 } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import SearchIcon from "@material-ui/icons/Search";
@@ -23,7 +23,7 @@ import Fuse from "fuse.js";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo-simple.png";
-import { ToitFunction } from "../model/toitsdk";
+import { ToitParameter } from "../model/toitsdk";
 import { librarySegmentsToURI } from "../sdk";
 import ToitFuse, {
   SearchableToitClass,
@@ -32,7 +32,7 @@ import ToitFuse, {
   SearchableToitModule,
   SearchableToitObject,
 } from "./fuse";
-import { getId } from "./Methods";
+
 export const HEADER_BAR_HEIGHT = 64;
 
 const style = (theme: Theme): StyleRules =>
@@ -159,6 +159,26 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   handleClick = (): void => {
     this.setState({ ...this.state, resultsVisible: true });
   };
+
+  getFunId = (functionName: string, parameters: ToitParameter[]): string => {
+    const argsString = parameters
+      .map((p) => {
+        if (p.type.is_any) {
+          return "any";
+        } else if (p.type.is_none) {
+          return "none";
+        } else if (p.type.is_block) {
+          return "block";
+        } else if (p.type) {
+          return p.type.reference.name;
+        } else {
+          return "unknown";
+        }
+      })
+      .join(",");
+    return encodeURIComponent(functionName + "(" + argsString + ")");
+  };
+
   renderSearchFunctions(results?: SearchResults): JSX.Element {
     if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
@@ -177,7 +197,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let moduleString = "";
     let classString = "";
     let resultName = "";
-    let funCont: ToitFunction;
+    let funParams: ToitParameter[];
 
     return (
       <>
@@ -187,7 +207,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               const unknownAfterSearch = afterSearch[match.refIndex] as unknown;
               const resultAfterSearch = unknownAfterSearch as SearchableToitFunction;
               // TODO: Add the proper addressing to this bad boy
-              funCont = resultAfterSearch.funContents;
+              funParams = resultAfterSearch.funParams;
               libString = `/${librarySegmentsToURI(resultAfterSearch.library)}`;
               moduleString = `/${resultAfterSearch.module}`;
               classString = `/${resultAfterSearch.class}`;
@@ -198,8 +218,9 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
 
             return (
               <Link
-                to={`${libString}${moduleString}${classString}#${getId(
-                  funCont
+                to={`${libString}${moduleString}${classString}#${this.getFunId(
+                  resultName,
+                  funParams
                 )}`}
                 onClick={this.handleClickAway}
                 key={"list_item" + index}
