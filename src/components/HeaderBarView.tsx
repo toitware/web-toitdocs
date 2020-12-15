@@ -278,40 +278,43 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             item
             xs={3}
             style={{
-              marginTop: "65px",
+              marginTop: "32px",
               maxHeight: "50%",
-              overflow: "auto",
               position: "fixed",
               float: "left",
-              borderRadius: "5px",
+              zIndex: 1250,
             }}
           >
-            <List style={{ backgroundColor: "grey" }}>
-              {this.state.results !== undefined && (
-                <ListItem>
-                  <Typography variant="h5" color="primary">
-                    Libraries
-                  </Typography>
-                </ListItem>
-              )}
-              {this.renderSearch("libraries", this.state.results)}
-              {this.state.results !== undefined && (
-                <ListItem>
-                  <Typography variant="h5" color="primary">
-                    Modules
-                  </Typography>
-                </ListItem>
-              )}
-              {this.renderSearch("modules", this.state.results)}
-              {this.state.results !== undefined && (
-                <ListItem>
-                  <Typography variant="h5" color="primary">
-                    Classes
-                  </Typography>
-                </ListItem>
-              )}
-              {this.renderSearch("classes", this.state.results)}
-            </List>
+            <div
+              style={{ display: "flex", position: "fixed", maxHeight: "50%" }}
+            >
+              <List style={{ backgroundColor: "grey", overflow: "auto" }}>
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Libraries
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("libraries", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Modules
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("modules", this.state.results)}
+                {this.state.results !== undefined && (
+                  <ListItem>
+                    <Typography variant="h5" color="primary">
+                      Classes
+                    </Typography>
+                  </ListItem>
+                )}
+                {this.renderSearch("classes", this.state.results)}
+              </List>
+            </div>
           </Grid>
         </div>
       </Grid>

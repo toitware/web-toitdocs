@@ -1,15 +1,10 @@
 import { createMuiTheme } from "@material-ui/core";
-import { orange, amber, yellow } from "@material-ui/core/colors";
-
-export const graphColors = [amber[700], orange[700], yellow[700]];
-
-// Note! If the theme colors change, the color placeholder in ../pkg/emailprovider/ must be manually updated
 
 const theme = createMuiTheme({
   palette: {
-    type: "dark",
+    type: "light",
     primary: {
-      main: amber[500],
+      main: "#d7dce1",
     },
     secondary: {
       main: "#212121",
