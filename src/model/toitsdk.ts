@@ -55,6 +55,7 @@ export interface ToitParameter {
 export interface ToitReference {
   object_type: "reference";
   name: string;
+  path: string[];
 }
 
 export interface ToitModule {

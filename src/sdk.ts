@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { flattenDataStructure, SearchableToitObject } from "./components/fuse";
 import { ToitLibraries, ToitLibrary, ToitObject } from "./model/toitsdk";
 

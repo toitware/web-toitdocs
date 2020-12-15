@@ -1,11 +1,15 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import {
+  StyleRules,
+  Theme,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core/styles";
 import React from "react";
-import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import { ToitModule } from "../model/toitsdk";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const styles = (theme: Theme) => ({
+const styles = (theme: Theme): StyleRules => ({
   root: {
     width: "100%",
     maxWidth: 300,

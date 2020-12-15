@@ -1,16 +1,18 @@
-html {
-  font-size: 100%;
+body {
+  overflow: hidden;
 }
 a:link {
-  text-decoration: none;
-  color: #2d4d9d;
+  color: #374b64;
 }
 a:visited {
-  text-decoration: none;
-  color: #2d4d9d;
+  color: #374b64;
+}
+
+a:hover {
+  color: #ff8484;
 }
 .functionName {
-  color: #2d4d9d;
+  color: #374b64;
 }
 
 pre::first-line {

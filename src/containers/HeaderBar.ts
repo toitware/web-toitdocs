@@ -1,7 +1,5 @@
 import { connect } from "react-redux";
-import HeaderBarComponent, {
-  HeaderBarProps,
-} from "../components/HeaderBarComponent";
+import HeaderBarView, { HeaderBarProps } from "../components/HeaderBarView";
 import { RootState } from "../sdk";
 
 const mapStateToProps = (
@@ -17,4 +15,4 @@ const mapStateToProps = (
   };
 };
 
-export default connect(mapStateToProps)(HeaderBarComponent);
+export default connect(mapStateToProps)(HeaderBarView);

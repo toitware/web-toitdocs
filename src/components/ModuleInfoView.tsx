@@ -1,17 +1,18 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { Hidden, Theme } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import {
+  createStyles,
+  StyleRules,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { createStyles, WithStyles, withStyles } from "@material-ui/core/styles";
 import { Link, match } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
-import ModuleContentList from "./module_content_list";
-import Toitdocs from "./toitdoc_info";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import Paper from "@material-ui/core/Paper";
-import { Hidden } from "@material-ui/core";
-import { librarySegmentsToName, getLibrary, RootState } from "../sdk";
 import {
   ToitClass,
   ToitFunction,
@@ -20,13 +21,24 @@ import {
   ToitLibrary,
   ToitModule,
 } from "../model/toitsdk";
+import { getLibrary, librarySegmentsToName, RootState } from "../sdk";
+import { CodeBlock } from "./general/codeblock/CodeBlock";
 import Methods from "./Methods";
+import ModuleContentList from "./ModuleContentList";
+import Toitdocs from "./ToitdocInfo";
 
-const style = createStyles({
-  root: {
-    width: "100%",
-  },
-});
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    root: {
+      width: "100%",
+    },
+    importingText: {
+      marginBottom: theme.spacing(2),
+    },
+    heading: {
+      marginBottom: theme.spacing(3),
+    },
+  });
 
 function Globals(props: { globals: ToitGlobal[] }): JSX.Element {
   return (
@@ -152,7 +164,7 @@ interface ModuleInfoParams {
   moduleName: string;
 }
 
-interface ModuleInfoProps extends WithStyles<typeof style> {
+interface ModuleInfoProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<ModuleInfoParams>;
   location: Location;
@@ -175,15 +187,18 @@ class ModuleInfo extends Component<ModuleInfoProps> {
         <div>
           <Grid container className={this.props.classes.root}>
             <Grid item xs={9}>
-              <Box pt={2} pb={2}>
+              <Box pt={2} pb={2} className={this.props.classes.heading}>
                 <Typography component="h2" variant="h2">
                   module: {module.name}
                 </Typography>
               </Box>
+              <Grid item className={this.props.classes.importingText}>
+                <Typography variant="body1">
+                  To use this module in your code:
+                </Typography>
+              </Grid>
               <Grid item>
-                <Paper elevation={0} variant="outlined">
-                  <strong>import</strong> {importPath(library, module)}
-                </Paper>
+                <CodeBlock code={"import " + importPath(library, module)} />
               </Grid>
               {module.classes.length > 0 && (
                 <Box pt={2} pb={2}>
@@ -247,4 +262,4 @@ class ModuleInfo extends Component<ModuleInfoProps> {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(style)(ModuleInfo));
+export default connect(mapStateToProps)(withStyles(styles)(ModuleInfo));
