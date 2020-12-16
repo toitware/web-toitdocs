@@ -243,15 +243,10 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     );
   }
   renderSearchLibsModulesClasses(
-    type?: "libraries" | "classes" | "modules",
+    type: "libraries" | "classes" | "modules",
     results?: SearchResults
   ): JSX.Element {
-    if (
-      !results ||
-      !results.isFilled ||
-      results.matches.length === 0 ||
-      type === undefined
-    ) {
+    if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
     }
 
