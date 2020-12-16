@@ -268,6 +268,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
       }
     });
     const afterSearch = this.props.searchObject[type];
+
     let libString = "";
     let moduleString = "";
     let classString = "";
@@ -303,9 +304,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                     match.refIndex
                   ] as unknown;
                   const libAfterSearch = unknownAfterSearch as SearchableToitModule;
-                  if (libAfterSearch.library.includes("font")) {
-                    return null;
-                  }
                   libString = `/${librarySegmentsToURI(
                     libAfterSearch.library
                   )}`;
@@ -320,9 +318,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                     match.refIndex
                   ] as unknown;
                   const libAfterSearch = unknownAfterSearch as SearchableToitClass;
-                  if (libAfterSearch.library.includes("font")) {
-                    return null;
-                  }
                   libString = `/${librarySegmentsToURI(
                     libAfterSearch.library
                   )}`;
