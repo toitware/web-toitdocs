@@ -1,7 +1,9 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { createStyles, Theme, withStyles, WithStyles } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import clsx from "clsx";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
@@ -17,8 +19,16 @@ function mapStateToProps(
   return {
     libraries: state.sdk.object?.libraries || {},
     match: props.match,
+    classes: props.classes,
   };
 }
+
+const styles = (theme: Theme) =>
+  createStyles({
+    sideMenu: {
+      padding: theme.spacing(3),
+    },
+  });
 
 interface ClassNavParams {
   libName: string;
@@ -26,7 +36,7 @@ interface ClassNavParams {
   className: string;
 }
 
-interface ClassNavProps {
+interface ClassNavProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<ClassNavParams>;
 }
@@ -46,7 +56,7 @@ class ClassNav extends Component<ClassNavProps> {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       return (
-        <div className="sideMenu" style={{ paddingTop: "30px" }}>
+        <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
           <ErrorBoundary>
             <List
               component="nav"
@@ -81,4 +91,4 @@ class ClassNav extends Component<ClassNavProps> {
   }
 }
 
-export default connect(mapStateToProps)(ClassNav);
+export default withStyles(styles)(connect(mapStateToProps)(ClassNav));

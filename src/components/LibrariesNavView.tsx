@@ -1,8 +1,10 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { createStyles, Theme, withStyles, WithStyles } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { match } from "react-router-dom";
@@ -23,14 +25,22 @@ function mapStateToProps(
   return {
     libraries: state.sdk.object?.libraries || {},
     match: props.match,
+    classes: props.classes,
   };
 }
+
+const styles = (theme: Theme) =>
+  createStyles({
+    sideMenu: {
+      paddingTop: theme.spacing(3),
+    },
+  });
 
 interface LibrariesNavParams {
   libName: string;
 }
 
-interface LibrariesNavProps {
+interface LibrariesNavProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<LibrariesNavParams>;
 }
@@ -68,29 +78,29 @@ class LibrariesNav extends Component<LibrariesNavProps> {
     const libraryNames = Object.keys(library.libraries).sort();
 
     return (
-      <div className="sideMenu" style={{ paddingTop: "20px" }}>
+      <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
         <ErrorBoundary>
           <List>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Libraries</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
               {libraryNames.map((libraryName) =>
                 this.renderLibrary(library.libraries[libraryName])
               )}
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Modules</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
               {moduleNames.map((moduleName) =>
                 this.renderModule(library, library.modules[moduleName])
               )}
@@ -102,4 +112,4 @@ class LibrariesNav extends Component<LibrariesNavProps> {
   }
 }
 
-export default connect(mapStateToProps)(LibrariesNav);
+export default withStyles(styles)(connect(mapStateToProps)(LibrariesNav));

@@ -64,6 +64,22 @@ const style = (theme: Theme): StyleRules =>
         width: "auto",
       },
     },
+    searchResults: {
+      marginTop: "32px",
+      maxHeight: "50%",
+      position: "fixed",
+      float: "left",
+      zIndex: 1250,
+    },
+    searchList: {
+      backgroundColor: theme.palette.primary.light,
+      overflow: "auto",
+    },
+    searchContainer: {
+      display: "flex",
+      position: "fixed",
+      maxHeight: "50%",
+    },
     searchIcon: {
       padding: theme.spacing(0, 2),
       height: "100%",
@@ -298,21 +314,13 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               container
               item
               xs={3}
-              style={{
-                marginTop: "32px",
-                maxHeight: "50%",
-                position: "fixed",
-                float: "left",
-                zIndex: 1250,
-              }}
+              className={this.props.classes.searchResults}
             >
-              <div
-                style={{ display: "flex", position: "fixed", maxHeight: "50%" }}
-              >
-                <List style={{ backgroundColor: "grey", overflow: "auto" }}>
+              <div className={this.props.classes.searchContainer}>
+                <List className={this.props.classes.searchList}>
                   {this.state.results !== undefined && (
                     <ListItem>
-                      <Typography variant="h5" color="primary">
+                      <Typography variant="h5" color="secondary">
                         Libraries
                       </Typography>
                     </ListItem>
@@ -320,7 +328,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                   {this.renderSearch("libraries", this.state.results)}
                   {this.state.results !== undefined && (
                     <ListItem>
-                      <Typography variant="h5" color="primary">
+                      <Typography variant="h5" color="secondary">
                         Modules
                       </Typography>
                     </ListItem>
@@ -328,7 +336,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                   {this.renderSearch("modules", this.state.results)}
                   {this.state.results !== undefined && (
                     <ListItem>
-                      <Typography variant="h5" color="primary">
+                      <Typography variant="h5" color="secondary">
                         Classes
                       </Typography>
                     </ListItem>
