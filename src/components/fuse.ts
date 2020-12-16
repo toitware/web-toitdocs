@@ -54,6 +54,9 @@ function flattenDataStructureKlass(
   klass.structure.methods.forEach((func) =>
     flattenDataStructureFunction(library, module, klass, func, result)
   );
+  klass.structure.statics.forEach((func) =>
+    flattenDataStructureFunction(library, module, klass, func, result)
+  );
 }
 
 function flattenDataStructureModule(
