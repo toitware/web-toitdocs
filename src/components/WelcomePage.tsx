@@ -4,6 +4,7 @@ import {
   createStyles,
   Grid,
   List,
+  StyleRules,
   Theme,
   withStyles,
   WithStyles,
@@ -12,7 +13,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import React from "react";
 import { CodeBlock } from "./general/codeblock/CodeBlock";
 
-const styles = (theme: Theme) =>
+const styles = (theme: Theme): StyleRules =>
   createStyles({
     divider: {
       marginBottom: theme.spacing(2),

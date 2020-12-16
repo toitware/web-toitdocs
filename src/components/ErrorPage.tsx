@@ -3,6 +3,7 @@
 import {
   createStyles,
   Grid,
+  StyleRules,
   Theme,
   withStyles,
   WithStyles,
@@ -10,7 +11,7 @@ import {
 import React, { ErrorInfo } from "react";
 import { Link } from "react-router-dom";
 
-const styles = (theme: Theme) =>
+const styles = (theme: Theme): StyleRules =>
   createStyles({
     grid: {
       margin: theme.spacing(3),

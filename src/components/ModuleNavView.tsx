@@ -1,6 +1,12 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { createStyles, Theme, withStyles, WithStyles } from "@material-ui/core";
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
@@ -35,7 +41,7 @@ interface ModuleNavParams {
   moduleName: string;
 }
 
-const styles = (theme: Theme) =>
+const styles = (theme: Theme): StyleRules =>
   createStyles({
     sideMenu: {
       paddingTop: theme.spacing(2),
