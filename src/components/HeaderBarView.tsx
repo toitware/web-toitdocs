@@ -258,6 +258,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     ) {
       return <></>;
     }
+
     const fuseResults: Fuse.FuseResultMatch[] = [];
     results.matches.forEach((match, index) => {
       if (match.refIndex === undefined) {
@@ -271,7 +272,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let libString = "";
     let moduleString = "";
     let classString = "";
-    const functionString = "";
     let resultName = "";
 
     return (
@@ -327,7 +327,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
             }
             return (
               <Link
-                to={`${libString}${moduleString}${classString}${functionString}`}
+                to={`${libString}${moduleString}${classString}`}
                 onClick={this.handleClickAway}
                 key={"list_item" + index}
               >
