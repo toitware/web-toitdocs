@@ -29,7 +29,6 @@ function flattenDataStructureFunction(
   module: ToitModule,
   klass: ToitClass,
   fun: ToitFunction,
-  structType: string,
   result: SearchableToitObject
 ): void {
   result.functions.push({
@@ -37,7 +36,6 @@ function flattenDataStructureFunction(
     module: module.name,
     library: library.path,
     class: klass.name,
-    structType: structType,
     functionParameters: fun.parameters,
   });
 }
@@ -55,34 +53,13 @@ function flattenDataStructureKlass(
   });
 
   klass.structure.constructors.forEach((func) =>
-    flattenDataStructureFunction(
-      library,
-      module,
-      klass,
-      func,
-      "constructors",
-      result
-    )
+    flattenDataStructureFunction(library, module, klass, func, result)
   );
   klass.structure.factories.forEach((func) =>
-    flattenDataStructureFunction(
-      library,
-      module,
-      klass,
-      func,
-      "factories",
-      result
-    )
+    flattenDataStructureFunction(library, module, klass, func, result)
   );
   klass.structure.methods.forEach((func) =>
-    flattenDataStructureFunction(
-      library,
-      module,
-      klass,
-      func,
-      "methods",
-      result
-    )
+    flattenDataStructureFunction(library, module, klass, func, result)
   );
 }
 
@@ -156,7 +133,6 @@ export interface SearchableToitFunction {
   module: string;
   library: string[];
   class: string;
-  structType: string;
   functionParameters: ToitParameter[];
 }
 
