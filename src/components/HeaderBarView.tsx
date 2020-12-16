@@ -27,8 +27,6 @@ import { ToitParameter } from "../model/toitsdk";
 import { librarySegmentsToURI } from "../sdk";
 import ToitFuse, {
   SearchableToitClass,
-  SearchableToitFunction,
-  SearchableToitLibrary,
   SearchableToitModule,
   SearchableToitObject,
 } from "./fuse";
@@ -204,9 +202,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
         {fuseResults.map((match, index) => {
           if (typeof match.refIndex === "number") {
             try {
-              const unknownAfterSearch = afterSearch[match.refIndex] as unknown;
-              const resultAfterSearch = unknownAfterSearch as SearchableToitFunction;
-              // TODO: Add the proper addressing to this bad boy
+              const resultAfterSearch = afterSearch[match.refIndex];
               funParams = resultAfterSearch.functionParameters;
               libString = `${librarySegmentsToURI(resultAfterSearch.library)}`;
               moduleString = `${resultAfterSearch.module}`;
@@ -280,10 +276,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
           if (typeof match.refIndex === "number") {
             if (type === "libraries") {
               try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const resultAfterSearch = unknownAfterSearch as SearchableToitLibrary;
+                const resultAfterSearch = afterSearch[match.refIndex];
                 libString = "/" + resultAfterSearch.name;
                 resultName = resultAfterSearch.name;
               } catch {
@@ -291,10 +284,9 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               }
             } else if (type === "modules") {
               try {
-                const unknownAfterSearch = afterSearch[
+                const resultAfterSearch = afterSearch[
                   match.refIndex
-                ] as unknown;
-                const resultAfterSearch = unknownAfterSearch as SearchableToitModule;
+                ] as SearchableToitModule;
                 if (resultAfterSearch.library.includes("font")) {
                   return null;
                 }
@@ -308,10 +300,9 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               }
             } else if (type === "classes") {
               try {
-                const unknownAfterSearch = afterSearch[
+                const resultAfterSearch = afterSearch[
                   match.refIndex
-                ] as unknown;
-                const resultAfterSearch = unknownAfterSearch as SearchableToitClass;
+                ] as SearchableToitClass;
                 if (resultAfterSearch.library.includes("font")) {
                   return null;
                 }
