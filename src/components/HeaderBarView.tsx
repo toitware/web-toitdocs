@@ -207,7 +207,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               const unknownAfterSearch = afterSearch[match.refIndex] as unknown;
               const resultAfterSearch = unknownAfterSearch as SearchableToitFunction;
               // TODO: Add the proper addressing to this bad boy
-              funParams = resultAfterSearch.funParams;
+              funParams = resultAfterSearch.functionParameters;
               libString = `${librarySegmentsToURI(resultAfterSearch.library)}`;
               moduleString = `${resultAfterSearch.module}`;
               classString = `${resultAfterSearch.class}`;

@@ -38,7 +38,7 @@ function flattenDataStructureFunction(
     library: library.path,
     class: klass.name,
     structType: structType,
-    funParams: fun.parameters,
+    functionParameters: fun.parameters,
   });
 }
 
@@ -157,7 +157,7 @@ export interface SearchableToitFunction {
   library: string[];
   class: string;
   structType: string;
-  funParams: ToitParameter[];
+  functionParameters: ToitParameter[];
 }
 
 export default class ToitFuse {
