@@ -131,10 +131,6 @@ export interface ToitFunction {
   toitdoc: ToitDoc;
 }
 
-export interface ToitFunctions {
-  [functionName: string]: ToitFunction;
-}
-
 export interface ToitClass {
   object_type: typeof OBJECT_TYPE_CLASS;
   name: string;
