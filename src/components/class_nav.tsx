@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import clsx from "clsx";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
@@ -62,7 +61,7 @@ class ClassNav extends Component<ClassNavProps> {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       return (
-        <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
+        <div className={this.props.classes.sideMenu}>
           <ErrorBoundary>
             <List
               component="nav"

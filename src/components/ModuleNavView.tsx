@@ -10,7 +10,6 @@ import {
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
@@ -79,7 +78,7 @@ class ModuleNav extends Component<ModuleNavProps> {
     const library = getLibrary(this.props.libraries, libName);
     const moduleNames = library ? Object.keys(library.modules).sort() : [];
     return (
-      <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
+      <div className={this.props.classes.sideMenu}>
         <ErrorBoundary>
           <List
             component="nav"

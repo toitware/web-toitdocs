@@ -10,7 +10,6 @@ import {
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { match } from "react-router-dom";
@@ -84,29 +83,29 @@ class LibrariesNav extends Component<LibrariesNavProps> {
     const libraryNames = Object.keys(library.libraries).sort();
 
     return (
-      <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
+      <div className={this.props.classes.sideMenu}>
         <ErrorBoundary>
           <List>
-            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
+            <div className={this.props.classes.sideMenu}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Libraries</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
+            <div className={this.props.classes.sideMenu}>
               {libraryNames.map((libraryName) =>
                 this.renderLibrary(library.libraries[libraryName])
               )}
             </div>
-            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
+            <div className={this.props.classes.sideMenu}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Modules</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className={clsx(this.props.classes.sideMenu, "sideMenu")}>
+            <div className={this.props.classes.sideMenu}>
               {moduleNames.map((moduleName) =>
                 this.renderModule(library, library.modules[moduleName])
               )}
