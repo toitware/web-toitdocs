@@ -15,8 +15,8 @@ import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { match } from "react-router-dom";
-import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary, RootState } from "../sdk";
+import { ToitLibraries } from "../../model/toitsdk";
+import { getLibrary, RootState } from "../../sdk";
 
 const style = (theme: Theme): StyleRules =>
   createStyles({

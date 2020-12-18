@@ -20,12 +20,12 @@ import {
   ToitLibraries,
   ToitLibrary,
   ToitModule,
-} from "../model/toitsdk";
-import { getLibrary, librarySegmentsToName, RootState } from "../sdk";
-import { CodeBlock } from "./general/codeblock/CodeBlock";
-import Methods from "./Methods";
+} from "../../model/toitsdk";
+import { getLibrary, librarySegmentsToName, RootState } from "../../sdk";
+import { CodeBlock } from "../general/codeblock/CodeBlock";
+import Methods from "../Methods";
+import Toitdocs from "../ToitdocInfo";
 import ModuleContentList from "./ModuleContentList";
-import Toitdocs from "./ToitdocInfo";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

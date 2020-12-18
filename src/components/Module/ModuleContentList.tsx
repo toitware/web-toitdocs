@@ -7,7 +7,7 @@ import {
   withStyles,
 } from "@material-ui/core/styles";
 import React from "react";
-import { ToitModule } from "../model/toitsdk";
+import { ToitModule } from "../../model/toitsdk";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {

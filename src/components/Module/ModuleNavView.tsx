@@ -13,15 +13,15 @@ import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
-import { ToitLibrary, ToitModule } from "../model/toitsdk";
+import { ToitLibrary, ToitModule } from "../../model/toitsdk";
 import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
   RootState,
-} from "../sdk";
-import ErrorBoundary from "./ErrorPage";
-import ListItemLink from "./ListItemLink";
+} from "../../sdk";
+import ErrorBoundary from "../ErrorPage";
+import ListItemLink from "../ListItemLink";
 
 function mapStateToProps(
   state: RootState,

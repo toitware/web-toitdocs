@@ -1,15 +1,30 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { Grid } from "@material-ui/core";
+import {
+  createStyles,
+  Grid,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { match } from "react-router-dom";
-import { ToitLibraries, ToitReference } from "../model/toitsdk";
-import { getLibrary } from "../sdk";
-import Fields from "./Fields";
-import Methods from "./Methods";
-import { Reference } from "./Util";
+import { ToitLibraries, ToitReference } from "../../model/toitsdk";
+import { getLibrary } from "../../sdk";
+import Fields from "../Fields";
+import Methods from "../Methods";
+import { Reference } from "../Util";
+
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    container: {
+      paddingRight: theme.spacing(2),
+      paddingLeft: theme.spacing(2),
+    },
+  });
 
 function Extends(props: { reference: ToitReference }): JSX.Element {
   return (
@@ -25,13 +40,13 @@ interface ClassInfoParams {
   className: string;
 }
 
-export interface ClassInfoProps {
+export interface ClassInfoProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<ClassInfoParams>;
   location: Location;
 }
 
-export default class ClassInfoView extends Component<ClassInfoProps> {
+class ClassInfoView extends Component<ClassInfoProps> {
   componentDidMount(): void {
     const hashId = this.props.location.hash.substring(1);
     const element = document.getElementById(hashId);
@@ -59,7 +74,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
       return this.notFound(className);
     }
     return (
-      <Grid container>
+      <Grid container className={this.props.classes.container}>
         <Grid item xs={12}>
           <Box pt={2} pb={2}>
             <Typography variant="h2" component="h2">
@@ -124,3 +139,5 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     );
   }
 }
+
+export default withStyles(styles)(ClassInfoView);
