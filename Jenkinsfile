@@ -16,13 +16,19 @@ pipeline {
     stages {
         stage("install") {
             steps {
-                sh "npm install"
+                sh "yarn install"
+            }
+        }
+
+        stage("lint") {
+            steps {
+                sh "yarn lint"
             }
         }
 
         // stage("test") {
         //     steps {
-        //         sh "npm run test:jenkins"
+        //         sh "yarn run test:jenkins"
         //     }
         //     post {
         //         always {
@@ -33,7 +39,7 @@ pipeline {
 
         stage("build") {
             steps {
-                sh "npm run build"
+                sh "yarn run build"
             }
         }
 

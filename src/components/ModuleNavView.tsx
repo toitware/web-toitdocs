@@ -1,5 +1,12 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
@@ -24,6 +31,7 @@ function mapStateToProps(
     version: state.sdk.version,
     libraries: state.sdk.object?.libraries || {},
     match: props.match,
+    classes: props.classes,
   };
 }
 
@@ -32,7 +40,19 @@ interface ModuleNavParams {
   moduleName: string;
 }
 
-interface ModuleNavProps {
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    sideMenu: {
+      paddingTop: theme.spacing(2),
+    },
+    subHeader: {
+      position: "sticky",
+      height: theme.spacing(8),
+      backgroundColor: "#ffffff",
+    },
+  });
+
+interface ModuleNavProps extends WithStyles<typeof styles> {
   version?: string;
   libraries: { [libraryName: string]: ToitLibrary };
   match: match<ModuleNavParams>;
@@ -58,13 +78,17 @@ class ModuleNav extends Component<ModuleNavProps> {
     const library = getLibrary(this.props.libraries, libName);
     const moduleNames = library ? Object.keys(library.modules).sort() : [];
     return (
-      <div className="sideMenu" style={{ paddingTop: "20px" }}>
+      <div className={this.props.classes.sideMenu}>
         <ErrorBoundary>
           <List
             component="nav"
             disablePadding
             subheader={
-              <ListSubheader component="div" id="nested-list-subheader">
+              <ListSubheader
+                component="div"
+                id="nested-list-subheader"
+                className={this.props.classes.subHeader}
+              >
                 <Link to={`/`}>Modules /</Link>
                 <Typography color="secondary">{moduleName}</Typography>
               </ListSubheader>
@@ -81,4 +105,4 @@ class ModuleNav extends Component<ModuleNavProps> {
   }
 }
 
-export default connect(mapStateToProps)(ModuleNav);
+export default withStyles(styles)(connect(mapStateToProps)(ModuleNav));

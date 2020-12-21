@@ -1,5 +1,12 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import React, { Component } from "react";
@@ -9,18 +16,25 @@ import { getLibrary } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
 
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    sideMenu: {
+      padding: theme.spacing(3),
+    },
+  });
+
 interface ClassNavParams {
   libName: string;
   moduleName: string;
   className: string;
 }
 
-export interface ClassNavProps {
+export interface ClassNavProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<ClassNavParams>;
 }
 
-export default class ClassNav extends Component<ClassNavProps> {
+class ClassNavView extends Component<ClassNavProps> {
   render(): JSX.Element {
     const {
       params: { libName, moduleName, className },
@@ -35,7 +49,7 @@ export default class ClassNav extends Component<ClassNavProps> {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       return (
-        <div className="sideMenu" style={{ paddingTop: "30px" }}>
+        <div className={this.props.classes.sideMenu}>
           <ErrorBoundary>
             <List
               component="nav"
@@ -69,3 +83,5 @@ export default class ClassNav extends Component<ClassNavProps> {
     }
   }
 }
+
+export default withStyles(styles)(ClassNavView);

@@ -1,5 +1,12 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
@@ -14,16 +21,23 @@ import {
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
 
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    sideMenu: {
+      paddingTop: theme.spacing(3),
+    },
+  });
+
 interface LibrariesNavParams {
   libName: string;
 }
 
-export interface LibrariesNavProps {
+export interface LibrariesNavProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<LibrariesNavParams>;
 }
 
-export default class LibrariesNav extends Component<LibrariesNavProps> {
+class LibrariesNav extends Component<LibrariesNavProps> {
   renderModule(library: ToitLibrary, module: ToitModule): JSX.Element {
     const libraryName = librarySegmentsToName(library.path);
     const libraryURI = librarySegmentsToURI(library.path);
@@ -55,29 +69,29 @@ export default class LibrariesNav extends Component<LibrariesNavProps> {
     const libraryNames = Object.keys(library.libraries).sort();
 
     return (
-      <div className="sideMenu" style={{ paddingTop: "20px" }}>
+      <div className={this.props.classes.sideMenu}>
         <ErrorBoundary>
           <List>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Libraries</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               {libraryNames.map((libraryName) =>
                 this.renderLibrary(library.libraries[libraryName])
               )}
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Modules</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               {moduleNames.map((moduleName) =>
                 this.renderModule(library, library.modules[moduleName])
               )}
@@ -88,3 +102,5 @@ export default class LibrariesNav extends Component<LibrariesNavProps> {
     );
   }
 }
+
+export default withStyles(styles)(LibrariesNav);
