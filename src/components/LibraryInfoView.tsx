@@ -13,12 +13,11 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { match } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
 import { getLibrary } from "../sdk";
 
-const style = (theme: Theme): StyleRules =>
+const styles = (theme: Theme): StyleRules =>
   createStyles({
     root: {
       width: "100%",
@@ -34,7 +33,7 @@ interface LibraryInfoParams {
   libName: string;
 }
 
-interface LibraryInfoProps extends WithStyles<typeof style> {
+export interface LibraryInfoProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<LibraryInfoParams>;
 }
@@ -95,4 +94,4 @@ class LibraryInfo extends Component<LibraryInfoProps> {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(style)(LibraryInfo));
+export default withStyles(styles)(LibraryInfo);

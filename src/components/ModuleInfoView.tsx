@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
 import {
   ToitClass,
@@ -21,7 +20,7 @@ import {
   ToitLibrary,
   ToitModule,
 } from "../model/toitsdk";
-import { getLibrary, librarySegmentsToName, RootState } from "../sdk";
+import { getLibrary, librarySegmentsToName } from "../sdk";
 import { CodeBlock } from "./general/codeblock/CodeBlock";
 import Methods from "./Methods";
 import ModuleContentList from "./ModuleContentList";
@@ -149,28 +148,18 @@ function PrintClasses(props: {
   }
 }
 
-function mapStateToProps(
-  state: RootState,
-  props: ModuleInfoProps
-): ModuleInfoProps {
-  return {
-    ...props,
-    libraries: state.sdk.object?.libraries || {},
-  };
-}
-
 interface ModuleInfoParams {
   libName: string;
   moduleName: string;
 }
 
-interface ModuleInfoProps extends WithStyles<typeof styles> {
+export interface ModuleInfoProps extends WithStyles<typeof styles> {
   libraries: ToitLibraries;
   match: match<ModuleInfoParams>;
   location: Location;
 }
 
-class ModuleInfo extends Component<ModuleInfoProps> {
+class ModuleInfoView extends Component<ModuleInfoProps> {
   componentDidMount(): void {
     const hashId = this.props.location.hash.substring(1);
     const element = document.getElementById(hashId);
@@ -262,4 +251,4 @@ class ModuleInfo extends Component<ModuleInfoProps> {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(ModuleInfo));
+export default withStyles(styles)(ModuleInfoView);

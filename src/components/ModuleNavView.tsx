@@ -11,29 +11,15 @@ import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { Link, match } from "react-router-dom";
 import { ToitLibrary, ToitModule } from "../model/toitsdk";
 import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
-  RootState,
 } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
-
-function mapStateToProps(
-  state: RootState,
-  props: ModuleNavProps
-): ModuleNavProps {
-  return {
-    version: state.sdk.version,
-    libraries: state.sdk.object?.libraries || {},
-    match: props.match,
-    classes: props.classes,
-  };
-}
 
 interface ModuleNavParams {
   libName: string;
@@ -52,13 +38,12 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-interface ModuleNavProps extends WithStyles<typeof styles> {
-  version?: string;
+export interface ModuleNavProps extends WithStyles<typeof styles> {
   libraries: { [libraryName: string]: ToitLibrary };
   match: match<ModuleNavParams>;
 }
 
-class ModuleNav extends Component<ModuleNavProps> {
+class ModuleNavView extends Component<ModuleNavProps> {
   renderModule(library: ToitLibrary, module: ToitModule): JSX.Element {
     const libraryName = librarySegmentsToName(library.path);
     const libraryURI = librarySegmentsToURI(library.path);
@@ -105,4 +90,4 @@ class ModuleNav extends Component<ModuleNavProps> {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps)(ModuleNav));
+export default withStyles(styles)(ModuleNavView);
