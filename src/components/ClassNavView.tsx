@@ -10,23 +10,11 @@ import {
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link, match } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary, RootState } from "../sdk";
+import { getLibrary } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
-
-function mapStateToProps(
-  state: RootState,
-  props: ClassNavProps
-): ClassNavProps {
-  return {
-    libraries: state.sdk.object?.libraries || {},
-    match: props.match,
-    classes: props.classes,
-  };
-}
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -35,18 +23,19 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-interface ClassNavParams {
+export interface ClassNavParams {
   libName: string;
   moduleName: string;
   className: string;
 }
 
-interface ClassNavProps extends WithStyles<typeof styles> {
+export interface ClassNavProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<ClassNavParams> {
   libraries: ToitLibraries;
-  match: match<ClassNavParams>;
 }
 
-class ClassNav extends Component<ClassNavProps> {
+class ClassNavView extends Component<ClassNavProps> {
   render(): JSX.Element {
     const {
       params: { libName, moduleName, className },
@@ -96,4 +85,4 @@ class ClassNav extends Component<ClassNavProps> {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps)(ClassNav));
+export default withStyles(styles)(ClassNavView);
