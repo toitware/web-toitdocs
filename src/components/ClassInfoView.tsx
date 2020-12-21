@@ -4,7 +4,7 @@ import { Grid, Hidden } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { match } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries, ToitReference } from "../model/toitsdk";
 import { getLibrary } from "../sdk";
 import ClassContentList from "./ClassContentList";
@@ -20,16 +20,14 @@ function Extends(props: { reference: ToitReference }): JSX.Element {
   );
 }
 
-interface ClassInfoParams {
+export interface ClassInfoParams {
   libName: string;
   moduleName: string;
   className: string;
 }
 
-export interface ClassInfoProps {
+export interface ClassInfoProps extends RouteComponentProps<ClassInfoParams> {
   libraries: ToitLibraries;
-  match: match<ClassInfoParams>;
-  location: Location;
 }
 
 export default class ClassInfoView extends Component<ClassInfoProps> {

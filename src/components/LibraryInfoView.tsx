@@ -13,7 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { match } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
 import { getLibrary } from "../sdk";
 
@@ -29,13 +29,14 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-interface LibraryInfoParams {
+export interface LibraryInfoParams {
   libName: string;
 }
 
-export interface LibraryInfoProps extends WithStyles<typeof styles> {
+export interface LibraryInfoProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<LibraryInfoParams> {
   libraries: ToitLibraries;
-  match: match<LibraryInfoParams>;
 }
 
 class LibraryInfo extends Component<LibraryInfoProps> {

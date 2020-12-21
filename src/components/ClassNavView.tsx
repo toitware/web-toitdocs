@@ -10,7 +10,7 @@ import {
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import React, { Component } from "react";
-import { Link, match } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
 import { getLibrary } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
@@ -23,15 +23,16 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-interface ClassNavParams {
+export interface ClassNavParams {
   libName: string;
   moduleName: string;
   className: string;
 }
 
-export interface ClassNavProps extends WithStyles<typeof styles> {
+export interface ClassNavProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<ClassNavParams> {
   libraries: ToitLibraries;
-  match: match<ClassNavParams>;
 }
 
 class ClassNavView extends Component<ClassNavProps> {

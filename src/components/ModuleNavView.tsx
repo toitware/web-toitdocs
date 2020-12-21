@@ -11,7 +11,7 @@ import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { Link, match } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { ToitLibrary, ToitModule } from "../model/toitsdk";
 import {
   getLibrary,
@@ -20,11 +20,6 @@ import {
 } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
-
-interface ModuleNavParams {
-  libName: string;
-  moduleName: string;
-}
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -38,9 +33,15 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-export interface ModuleNavProps extends WithStyles<typeof styles> {
+export interface ModuleNavParams {
+  libName: string;
+  moduleName: string;
+}
+
+export interface ModuleNavProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<ModuleNavParams> {
   libraries: { [libraryName: string]: ToitLibrary };
-  match: match<ModuleNavParams>;
 }
 
 class ModuleNavView extends Component<ModuleNavProps> {

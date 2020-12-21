@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { Link, match } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import {
   ToitClass,
   ToitFunction,
@@ -148,15 +148,15 @@ function PrintClasses(props: {
   }
 }
 
-interface ModuleInfoParams {
+export interface ModuleInfoParams {
   libName: string;
   moduleName: string;
 }
 
-export interface ModuleInfoProps extends WithStyles<typeof styles> {
+export interface ModuleInfoProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<ModuleInfoParams> {
   libraries: ToitLibraries;
-  match: match<ModuleInfoParams>;
-  location: Location;
 }
 
 class ModuleInfoView extends Component<ModuleInfoProps> {
