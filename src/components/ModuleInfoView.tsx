@@ -20,7 +20,7 @@ import {
   ToitLibrary,
   ToitModule,
 } from "../model/toitsdk";
-import { getLibrary, librarySegmentsToName } from "../sdk";
+import { getLibrary, getModule, librarySegmentsToName } from "../sdk";
 import { CodeBlock } from "./general/codeblock/CodeBlock";
 import Methods from "./Methods";
 import ModuleContentList from "./ModuleContentList";
@@ -149,7 +149,7 @@ function PrintClasses(props: {
 }
 
 export interface ModuleInfoParams {
-  libName: string;
+  libraryName: string;
   moduleName: string;
 }
 
@@ -167,87 +167,89 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
   }
 
   render(): JSX.Element {
-    const libName = this.props.match.params.libName;
-    const moduleName = this.props.match.params.moduleName;
-    const library = getLibrary(this.props.libraries, libName);
-    const module = library && library.modules[moduleName];
-    if (module) {
-      return (
-        <div>
-          <Grid container className={this.props.classes.root}>
-            <Grid item xs={9}>
-              <Box pt={2} pb={2} className={this.props.classes.heading}>
-                <Typography component="h2" variant="h2">
-                  module: {module.name}
-                </Typography>
-              </Box>
-              <Grid item className={this.props.classes.importingText}>
-                <Typography variant="body1">
-                  To use this module in your code:
-                </Typography>
-              </Grid>
-              <Grid item>
-                <CodeBlock code={"import " + importPath(library, module)} />
-              </Grid>
-              {module.classes.length > 0 && (
-                <Box pt={2} pb={2}>
-                  <Box pt={1} pb={1}>
-                    <Typography component="h3" variant="h3">
-                      Classes
-                    </Typography>
-                  </Box>
-                  <PrintClasses
-                    libName={libName}
-                    moduleName={moduleName}
-                    classes={module.classes}
-                  />
-                </Box>
-              )}
-              {module.export_classes.length > 0 && (
-                <Box pt={2} pb={2}>
-                  <Box pt={1} pb={1}>
-                    <Typography component="h3" variant="h3">
-                      Exported classes
-                    </Typography>
-                  </Box>
-                  <PrintClasses
-                    classes={module.export_classes}
-                    libName={libName}
-                    moduleName={moduleName}
-                  />
-                </Box>
-              )}
-              {module.globals.length > 0 && (
-                <Globals globals={module.globals} />
-              )}
-              {module.export_globals.length > 0 && <ExportGlobals />}
-              {module.functions.length > 0 && (
-                <GlobalFunctions functions={module.functions} />
-              )}
-              {module.export_functions.length > 0 && <ExportFunctions />}
-            </Grid>
-            <Hidden xsDown>
-              <Grid item xs={3}>
-                <ModuleContentList module={module} />
-              </Grid>
-            </Hidden>
-          </Grid>
-        </div>
-      );
-    } else {
-      return (
+    const { libraryName, moduleName } = this.props.match.params;
+    const library = getLibrary(this.props.libraries, libraryName);
+    const module = getModule(this.props.libraries, libraryName, moduleName);
+
+    if (!library || !module) {
+      return this.notFound(this.props.match.params.moduleName);
+    }
+
+    return (
+      <div>
         <Grid container className={this.props.classes.root}>
           <Grid item xs={9}>
-            <Box pt={2} pb={2}>
+            <Box pt={2} pb={2} className={this.props.classes.heading}>
               <Typography component="h2" variant="h2">
-                ERROR:
-                <p>Module not found</p>
+                module: {module.name}
               </Typography>
             </Box>
+            <Grid item className={this.props.classes.importingText}>
+              <Typography variant="body1">
+                To use this module in your code:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <CodeBlock code={"import " + importPath(library, module)} />
+            </Grid>
+            {module.classes.length > 0 && (
+              <Box pt={2} pb={2}>
+                <Box pt={1} pb={1}>
+                  <Typography component="h3" variant="h3">
+                    Classes
+                  </Typography>
+                </Box>
+                <PrintClasses
+                  libName={libraryName}
+                  moduleName={moduleName}
+                  classes={module.classes}
+                />
+              </Box>
+            )}
+            {module.export_classes.length > 0 && (
+              <Box pt={2} pb={2}>
+                <Box pt={1} pb={1}>
+                  <Typography component="h3" variant="h3">
+                    Exported classes
+                  </Typography>
+                </Box>
+                <PrintClasses
+                  classes={module.export_classes}
+                  libName={libraryName}
+                  moduleName={moduleName}
+                />
+              </Box>
+            )}
+            {module.globals.length > 0 && <Globals globals={module.globals} />}
+            {module.export_globals.length > 0 && <ExportGlobals />}
+            {module.functions.length > 0 && (
+              <GlobalFunctions functions={module.functions} />
+            )}
+            {module.export_functions.length > 0 && <ExportFunctions />}
           </Grid>
+          <Hidden xsDown>
+            <Grid item xs={3}>
+              <ModuleContentList module={module} />
+            </Grid>
+          </Hidden>
         </Grid>
-      );
-    }
+      </div>
+    );
+  }
+
+  notFound(name: string): JSX.Element {
+    return (
+      <Grid container className={this.props.classes.root}>
+        <Grid item xs={9}>
+          <Box pt={2} pb={2}>
+            <Typography component="h2" variant="h2">
+              ERROR:
+              <p>Module {name} not found</p>
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    );
   }
 }
 

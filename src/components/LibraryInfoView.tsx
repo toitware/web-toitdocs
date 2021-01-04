@@ -30,7 +30,7 @@ const styles = (theme: Theme): StyleRules =>
   });
 
 export interface LibraryInfoParams {
-  libName: string;
+  libraryName: string;
 }
 
 export interface LibraryInfoProps
@@ -41,57 +41,60 @@ export interface LibraryInfoProps
 
 class LibraryInfo extends Component<LibraryInfoProps> {
   render(): JSX.Element {
-    const {
-      params: { libName },
-    } = this.props.match;
-    const library = getLibrary(this.props.libraries, libName);
-    const classes = this.props.classes;
+    const library = getLibrary(
+      this.props.libraries,
+      this.props.match.params.libraryName
+    );
+
+    if (!library) {
+      return this.notFound(this.props.match.params.libraryName);
+    }
 
     const moduleNames = Object.keys(library.modules).sort();
 
-    if (library) {
-      return (
-        <Grid container>
-          <Grid item xs={9}>
-            <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
-                Library: {library.name}
+    return (
+      <Grid container>
+        <Grid item xs={9}>
+          <Box pt={2} pb={2}>
+            <Typography component="h1" variant="h1">
+              Library: {library.name}
+            </Typography>
+          </Box>
+          <Box pt={2} pb={2}>
+            <Box pt={1} pb={1}>
+              <Typography component="h2" variant="h2">
+                Modules
               </Typography>
             </Box>
-            <Box pt={2} pb={2}>
-              <Box pt={1} pb={1}>
-                <Typography component="h2" variant="h2">
-                  Modules
-                </Typography>
-              </Box>
-              <Paper variant="outlined" className={classes.paper}>
-                <List>
-                  {moduleNames.map((moduleName) => (
-                    <li key={"library-module-" + moduleName}>
-                      {" "}
-                      {library.modules[moduleName].name}{" "}
-                    </li>
-                  ))}
-                </List>
-              </Paper>
-            </Box>
-          </Grid>
+            <Paper variant="outlined" className={this.props.classes.paper}>
+              <List>
+                {moduleNames.map((moduleName) => (
+                  <li key={"library-module-" + moduleName}>
+                    {" "}
+                    {library.modules[moduleName].name}{" "}
+                  </li>
+                ))}
+              </List>
+            </Paper>
+          </Box>
         </Grid>
-      );
-    } else {
-      return (
-        <Grid container className={classes.root}>
-          <Grid item xs={9}>
-            <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
-                ERROR:
-                <p>Library: {libName} not found</p>
-              </Typography>
-            </Box>
-          </Grid>
+      </Grid>
+    );
+  }
+
+  notFound(name: string): JSX.Element {
+    return (
+      <Grid container className={this.props.classes.root}>
+        <Grid item xs={9}>
+          <Box pt={2} pb={2}>
+            <Typography component="h1" variant="h1">
+              ERROR:
+              <p>Library: {name} not found</p>
+            </Typography>
+          </Box>
         </Grid>
-      );
-    }
+      </Grid>
+    );
   }
 }
 

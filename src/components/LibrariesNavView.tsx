@@ -29,7 +29,7 @@ const styles = (theme: Theme): StyleRules =>
   });
 
 export interface LibrariesNavParams {
-  libName: string;
+  libraryName: string;
 }
 
 export interface LibrariesNavProps
@@ -64,8 +64,15 @@ class LibrariesNav extends Component<LibrariesNavProps> {
   }
 
   render(): JSX.Element {
-    const libName = this.props.match.params.libName;
-    const library = getLibrary(this.props.libraries, libName);
+    const library = getLibrary(
+      this.props.libraries,
+      this.props.match.params.libraryName
+    );
+
+    if (!library) {
+      return <></>;
+    }
+
     const moduleNames = Object.keys(library.modules).sort();
     const libraryNames = Object.keys(library.libraries).sort();
 
