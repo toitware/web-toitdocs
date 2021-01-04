@@ -1,13 +1,12 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { Grid, Hidden } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries, ToitReference } from "../model/toitsdk";
 import { getLibrary } from "../sdk";
-import ClassContentList from "./ClassContentList";
 import Fields from "./Fields";
 import Methods from "./Methods";
 import { Reference } from "./Util";
@@ -59,7 +58,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     }
     return (
       <Grid container>
-        <Grid item xs={12} sm={9}>
+        <Grid item xs={12}>
           <Box pt={2} pb={2}>
             <Typography variant="h2" component="h2">
               Class: {classInfo.name}
@@ -107,11 +106,6 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
             </>
           )}
         </Grid>
-        <Hidden xsDown>
-          <Grid item sm={3}>
-            <ClassContentList class={classInfo} />
-          </Grid>
-        </Hidden>
       </Grid>
     );
   }
