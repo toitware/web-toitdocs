@@ -95,7 +95,7 @@ class App extends Component<AppProps> {
                         <Route exact path="/" component={LibrariesNav} />
                         <Route
                           exact
-                          path="/:libName"
+                          path="/:libraryName"
                           render={(
                             routeProps: RouteComponentProps<LibrariesNavParams>
                           ): React.ReactNode => (
@@ -104,14 +104,14 @@ class App extends Component<AppProps> {
                         />
                         <Route
                           exact
-                          path="/:libName/:moduleName"
+                          path="/:libraryName/:moduleName"
                           render={(
                             routeProps: RouteComponentProps<ModuleNavParams>
                           ): React.ReactNode => <ModuleNav {...routeProps} />}
                         />
                         <Route
                           exact
-                          path="/:libName/:moduleName/:className"
+                          path="/:libraryName/:moduleName/:className"
                           render={(
                             routeProps: RouteComponentProps<ClassNavParams>
                           ): React.ReactNode => <ClassNav {...routeProps} />}
@@ -123,7 +123,7 @@ class App extends Component<AppProps> {
                           <Route exact path="/" component={WelcomePage} />
                           <Route
                             exact
-                            path="/:libName"
+                            path="/:libraryName"
                             render={(
                               routeProps: RouteComponentProps<LibraryInfoParams>
                             ): React.ReactNode => (
@@ -132,7 +132,7 @@ class App extends Component<AppProps> {
                           />
                           <Route
                             exact
-                            path="/:libName/:moduleName"
+                            path="/:libraryName/:moduleName"
                             render={(
                               routeProps: RouteComponentProps<ModuleInfoParams>
                             ): React.ReactNode => (
@@ -141,11 +141,10 @@ class App extends Component<AppProps> {
                           />
                           <Route
                             exact
-                            path="/:libName/:moduleName/:className"
+                            path="/:libraryName/:moduleName/:className"
                             render={(
                               routeProps: RouteComponentProps<ClassInfoParams>
                             ): React.ReactNode => <ClassInfo {...routeProps} />}
-                            component={ClassInfo}
                           />
                         </ErrorBoundary>
                       </Grid>
