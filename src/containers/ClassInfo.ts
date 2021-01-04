@@ -1,5 +1,6 @@
 import { connect } from "react-redux";
-import ClassInfoView, { ClassInfoProps } from "../components/Class/ClassInfo";
+import { ClassInfoProps } from "../components/Class/ClassInfo";
+import ClassInfoView from "../components/ClassInfoView";
 import { RootState } from "../sdk";
 
 const mapStateToProps = (

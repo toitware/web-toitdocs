@@ -5,11 +5,11 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries, ToitReference } from "../../model/toitsdk";
-import { getLibrary } from "../../sdk";
-import Fields from "../Fields";
-import Methods from "../Methods";
-import { Reference } from "../Util";
+import { ToitLibraries, ToitReference } from "../model/toitsdk";
+import { getLibrary } from "../sdk";
+import Fields from "./Fields";
+import Methods from "./Methods";
+import { Reference } from "./Util";
 
 function Extends(props: { reference: ToitReference }): JSX.Element {
   return (
@@ -123,4 +123,4 @@ class ClassInfoView extends Component<ClassInfoProps> {
   }
 }
 
-export default ClassInfoParams;
+export default ClassInfoView;

@@ -12,21 +12,27 @@ import {
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, RouteComponentProps } from "react-router-dom";
 import "./assets/global_theme.css";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
-import ClassNav from "./components/Class/ClassNav";
+import { ClassInfoParams } from "./components/ClassInfoView";
+import { ClassNavParams } from "./components/ClassNavView";
 import ErrorBoundary from "./components/ErrorPage";
 import ScrollableContainer from "./components/general/ScrollableContainer";
 import { HEADER_BAR_HEIGHT } from "./components/HeaderBarView";
-import LibrariesNav from "./components/Library/LibrariesNavView";
-import LibraryInfo from "./components/Library/LibraryInfoView";
-import ModuleInfo from "./components/Module/ModuleInfoView";
-import ModuleNav from "./components/Module/ModuleNavView";
+import { LibrariesNavParams } from "./components/Library/LibrariesNavView";
+import { LibraryInfoParams } from "./components/Library/LibraryInfoView";
+import { ModuleInfoParams } from "./components/Module/ModuleInfoView";
+import { ModuleNavParams } from "./components/Module/ModuleNavView";
 import WelcomePage from "./components/WelcomePage";
 import ClassInfo from "./containers/ClassInfo";
+import ClassNav from "./containers/ClassNav";
 import HeaderBar from "./containers/HeaderBar";
+import LibrariesNav from "./containers/LibrariesNav";
+import LibraryInfo from "./containers/LibraryInfo";
+import ModuleInfo from "./containers/ModuleInfo";
+import ModuleNav from "./containers/ModuleNav";
 import { ToitObject } from "./model/toitsdk";
 import { fetchSDK, RootState } from "./sdk";
 
@@ -90,17 +96,25 @@ class App extends Component<AppProps> {
                         <Route
                           exact
                           path="/:libName"
-                          component={LibrariesNav}
+                          render={(
+                            routeProps: RouteComponentProps<LibrariesNavParams>
+                          ): React.ReactNode => (
+                            <LibrariesNav {...routeProps} />
+                          )}
                         />
                         <Route
                           exact
                           path="/:libName/:moduleName"
-                          component={ModuleNav}
+                          render={(
+                            routeProps: RouteComponentProps<ModuleNavParams>
+                          ): React.ReactNode => <ModuleNav {...routeProps} />}
                         />
                         <Route
                           exact
                           path="/:libName/:moduleName/:className"
-                          component={ClassNav}
+                          render={(
+                            routeProps: RouteComponentProps<ClassNavParams>
+                          ): React.ReactNode => <ClassNav {...routeProps} />}
                         />
                       </Grid>
 
@@ -110,16 +124,27 @@ class App extends Component<AppProps> {
                           <Route
                             exact
                             path="/:libName"
-                            component={LibraryInfo}
+                            render={(
+                              routeProps: RouteComponentProps<LibraryInfoParams>
+                            ): React.ReactNode => (
+                              <LibraryInfo {...routeProps} />
+                            )}
                           />
                           <Route
                             exact
                             path="/:libName/:moduleName"
-                            component={ModuleInfo}
+                            render={(
+                              routeProps: RouteComponentProps<ModuleInfoParams>
+                            ): React.ReactNode => (
+                              <ModuleInfo {...routeProps} />
+                            )}
                           />
                           <Route
                             exact
                             path="/:libName/:moduleName/:className"
+                            render={(
+                              routeProps: RouteComponentProps<ClassInfoParams>
+                            ): React.ReactNode => <ClassInfo {...routeProps} />}
                             component={ClassInfo}
                           />
                         </ErrorBoundary>

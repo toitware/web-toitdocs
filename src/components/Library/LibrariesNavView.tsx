@@ -11,28 +11,15 @@ import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { match } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries, ToitLibrary, ToitModule } from "../../model/toitsdk";
 import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
-  RootState,
 } from "../../sdk";
 import ErrorBoundary from "../ErrorPage";
 import ListItemLink from "../ListItemLink";
-
-function mapStateToProps(
-  state: RootState,
-  props: LibrariesNavProps
-): LibrariesNavProps {
-  return {
-    libraries: state.sdk.object?.libraries || {},
-    match: props.match,
-    classes: props.classes,
-  };
-}
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -41,16 +28,16 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-interface LibrariesNavParams {
+export interface LibrariesNavParams {
   libName: string;
 }
 
-interface LibrariesNavProps extends WithStyles<typeof styles> {
+export interface LibrariesNavProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<LibrariesNavParams> {
   libraries: ToitLibraries;
-  match: match<LibrariesNavParams>;
 }
 
-//Listing the libraries for navigation purposes
 class LibrariesNav extends Component<LibrariesNavProps> {
   renderModule(library: ToitLibrary, module: ToitModule): JSX.Element {
     const libraryName = librarySegmentsToName(library.path);
@@ -117,4 +104,4 @@ class LibrariesNav extends Component<LibrariesNavProps> {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps)(LibrariesNav));
+export default withStyles(styles)(LibrariesNav);
