@@ -34,7 +34,7 @@ const styles = (theme: Theme): StyleRules =>
   });
 
 export interface ModuleNavParams {
-  libName: string;
+  libraryName: string;
   moduleName: string;
 }
 
@@ -58,11 +58,14 @@ class ModuleNavView extends Component<ModuleNavProps> {
   }
 
   render(): JSX.Element {
-    const {
-      params: { libName, moduleName },
-    } = this.props.match;
-    const library = getLibrary(this.props.libraries, libName);
-    const moduleNames = library ? Object.keys(library.modules).sort() : [];
+    const { libraryName, moduleName } = this.props.match.params;
+    const library = getLibrary(this.props.libraries, libraryName);
+
+    if (!library) {
+      return <></>;
+    }
+
+    const moduleNames = Object.keys(library.modules).sort();
     return (
       <div className={this.props.classes.sideMenu}>
         <ErrorBoundary>

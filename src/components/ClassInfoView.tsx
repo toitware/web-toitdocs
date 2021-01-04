@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries, ToitReference } from "../model/toitsdk";
-import { getLibrary } from "../sdk";
+import { getClass } from "../sdk";
 import ClassContentList from "./ClassContentList";
 import Fields from "./Fields";
 import Methods from "./Methods";
@@ -21,7 +21,7 @@ function Extends(props: { reference: ToitReference }): JSX.Element {
 }
 
 export interface ClassInfoParams {
-  libName: string;
+  libraryName: string;
   moduleName: string;
   className: string;
 }
@@ -38,25 +38,17 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
   }
 
   render(): React.ReactNode {
-    const {
-      params: { libName, moduleName, className },
-    } = this.props.match;
-
-    const library = getLibrary(this.props.libraries, libName);
-    const module = library && library.modules[moduleName];
-
-    if (!module) {
-      return this.notFound(className);
-    }
-
-    let classInfo = module.classes.find(({ name }) => name === className);
-    if (!classInfo) {
-      classInfo = module.export_classes.find(({ name }) => name === className);
-    }
+    const classInfo = getClass(
+      this.props.libraries,
+      this.props.match.params.libraryName,
+      this.props.match.params.moduleName,
+      this.props.match.params.className
+    );
 
     if (!classInfo) {
-      return this.notFound(className);
+      return this.notFound(this.props.match.params.className);
     }
+
     return (
       <Grid container>
         <Grid item xs={12} sm={9}>
@@ -116,7 +108,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     );
   }
 
-  notFound(name: string): React.ReactNode {
+  notFound(name: string): JSX.Element {
     return (
       <Grid container>
         <Grid item xs={12} sm={9}>

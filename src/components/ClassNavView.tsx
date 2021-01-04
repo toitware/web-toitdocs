@@ -24,7 +24,7 @@ const styles = (theme: Theme): StyleRules =>
   });
 
 export interface ClassNavParams {
-  libName: string;
+  libraryName: string;
   moduleName: string;
   className: string;
 }
@@ -37,11 +37,9 @@ export interface ClassNavProps
 
 class ClassNavView extends Component<ClassNavProps> {
   render(): JSX.Element {
-    const {
-      params: { libName, moduleName, className },
-    } = this.props.match;
+    const { libraryName, moduleName, className } = this.props.match.params;
 
-    const library = getLibrary(this.props.libraries, libName);
+    const library = getLibrary(this.props.libraries, libraryName);
     const module = library && library.modules[moduleName];
 
     if (module) {
@@ -58,10 +56,10 @@ class ClassNavView extends Component<ClassNavProps> {
               subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
                   <Link to={`/`}>Modules /</Link>
-                  <Link to={`/${libName}/${moduleName}`}>
+                  <Link to={`/${libraryName}/${moduleName}`}>
                     {moduleName}
                   </Link>{" "}
-                  <Link to={`/${libName}/${moduleName}/${className}`}>
+                  <Link to={`/${libraryName}/${moduleName}/${className}`}>
                     {" / " + className}
                   </Link>
                 </ListSubheader>
@@ -70,7 +68,7 @@ class ClassNavView extends Component<ClassNavProps> {
               {" "}
               {classes.map((klass, index) => (
                 <ListItemLink
-                  to={`/${libName}/${module.name}/${klass.name}`}
+                  to={`/${libraryName}/${module.name}/${klass.name}`}
                   key={"class-index-" + index}
                   primary={klass.name}
                 />
