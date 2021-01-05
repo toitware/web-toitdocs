@@ -11,27 +11,36 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Tabs,
   Theme,
   Typography,
   withStyles,
-  WithStyles
+  WithStyles,
 } from "@material-ui/core";
 import React, { Component } from "react";
+import { HashLink } from "react-router-hash-link";
 import { ToitClass } from "../model/toitsdk";
+import { getId } from "./Methods";
 import { Parameters } from "./Parameters";
+import { Type } from "./Util";
 
-//Can first be used, when we have implemented the redux props correctly
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     table: {
       minWidth: 650,
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
     },
-    hiddenTab:{
+    tableContainer: {
+      padding: 0,
+    },
+    hiddenTab: {
       display: "none",
-    }
+    },
+    methodsTable: {
+      marginTop: theme.spacing(1),
+    },
   });
 
 interface TabPanelProps {
@@ -40,13 +49,7 @@ interface TabPanelProps {
   value: number;
 }
 
-export interface ClassOverviewParams {
-  libraryName: string;
-  moduleName: string;
-  className: string;
-}
-
-export interface ClassOverviewProps extends WithStyles<typeof styles> {
+interface ClassOverviewProps extends WithStyles<typeof styles> {
   libraries: ToitClass;
 }
 
@@ -62,7 +65,7 @@ function TabPanel(props: TabPanelProps): JSX.Element {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -70,143 +73,170 @@ function TabPanel(props: TabPanelProps): JSX.Element {
   );
 }
 
-function a11yProps(index: any) {
+function a11yProps(index: number): { id: string; "aria-controls": string } {
   return {
     id: `tab-${index}`,
     "aria-controls": `tabpanel-${index}`,
   };
 }
 
-interface TabProps{
+interface TabProps {
   tab: number;
 }
 
 class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
-  constructor(props: any) {
+  constructor(props: ClassOverviewProps) {
     super(props);
-    console.log(this.props.libraries);
     this.state = {
       tab: 0,
     };
-
   }
   render(): JSX.Element {
+    const classes = this.props.classes;
     return (
-      <Grid container>
+      <Grid container className={classes.table}>
         <div>
           <AppBar position="static">
             <Tabs value={this.state.tab} aria-label="Class overview">
-                <Tab
-                  label="Methods"
-                  {...a11yProps(2)}
-                  onClick={(): void => this.setState({ tab: 0 })}
-                />
-                <Tab
-                  label="Constructors"
-                  {...a11yProps(1)}
-                  onClick={(): void => this.setState({ tab: 1 })}
-                />
-                <Tab
-                  label="Statics"
-                  {...a11yProps(0)}
-                  onClick={(): void => this.setState({ tab: 2 })}
-                />
-                <Tab
-                  label="Fields"
-                  {...a11yProps(3)}
-                  onClick={(): void => this.setState({ tab: 3 })}
-                />
+              <Tab
+                label="Methods"
+                {...a11yProps(0)}
+                onClick={(): void => this.setState({ tab: 0 })}
+                className={
+                  this.props.libraries.structure.methods.length > 0
+                    ? ""
+                    : classes.hiddenTab
+                }
+              />
+              <Tab
+                label="Constructors"
+                {...a11yProps(1)}
+                onClick={(): void => this.setState({ tab: 1 })}
+                className={
+                  this.props.libraries.structure.constructors.length > 0
+                    ? ""
+                    : classes.hiddenTab
+                }
+              />
+              <Tab
+                label="Statics"
+                {...a11yProps(2)}
+                onClick={(): void => this.setState({ tab: 2 })}
+                className={
+                  this.props.libraries.structure.statics.length > 0
+                    ? ""
+                    : classes.hiddenTab
+                }
+              />
+              <Tab
+                label="Fields"
+                {...a11yProps(3)}
+                onClick={(): void => this.setState({ tab: 3 })}
+                className={
+                  this.props.libraries.structure.fields.length > 0
+                    ? ""
+                    : classes.hiddenTab
+                }
+              />
             </Tabs>
           </AppBar>
           <TabPanel value={this.state.tab} index={0}>
-          <TableContainer>
-              <Table size="small" aria-label="Class overview table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Method</TableCell>
-                  </TableRow>
-                </TableHead>
+            <TableContainer>
+              <Table
+                size="small"
+                aria-label="Class overview table"
+                className={classes.methodsTable}
+              >
                 <TableBody>
-                  {this.props.libraries.structure.methods.length > 0 ? this.props.libraries.structure.methods.map((method) => (
-                    <TableRow key={method.name}>
-                    <TableCell component="th" scope="row">
-                      {method.name}
-                      <Parameters parameters={method.parameters}></Parameters>
-                    </TableCell>
-                  </TableRow>
-                  )) : 
-                  "Nothing to show"}
+                  {this.props.libraries.structure.methods.length > 0 &&
+                    this.props.libraries.structure.methods.map((method) => (
+                      <TableRow key={method.name}>
+                        <TableCell component="th" scope="row">
+                          <HashLink to={{ hash: getId(method) }}>
+                            {method.name}
+                          </HashLink>
+                          <Parameters parameters={method.parameters} />
+                          <span>{" -> "}</span>
+                          <Type type={method.return_type}></Type>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
           </TabPanel>
           <TabPanel value={this.state.tab} index={1}>
-          <TableContainer>
-              <Table size="small" aria-label="Class overview table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Method</TableCell>
-                  </TableRow>
-                </TableHead>
+            <TableContainer>
+              <Table
+                size="small"
+                aria-label="Class overview table"
+                className={classes.methodsTable}
+              >
                 <TableBody>
-                  {this.props.libraries.structure.constructors.length > 0 ? this.props.libraries.structure.constructors.map((method) => (
-                    <TableRow key={method.name}>
-                    <TableCell component="th" scope="row">
-                      {method.name}
-                      <Parameters parameters={method.parameters}></Parameters>
-                    </TableCell>
-                  </TableRow>
-                  )) : 
-                  "Nothing to show"}
+                  {this.props.libraries.structure.constructors.length > 0 &&
+                    this.props.libraries.structure.constructors.map(
+                      (method) => (
+                        <TableRow key={method.name}>
+                          <TableCell component="th" scope="row">
+                            <HashLink to={{ hash: getId(method) }}>
+                              {method.name}
+                            </HashLink>
+                            <Parameters
+                              parameters={method.parameters}
+                            ></Parameters>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    )}
                 </TableBody>
               </Table>
             </TableContainer>
           </TabPanel>
           <TabPanel value={this.state.tab} index={2}>
             <TableContainer>
-              <Table size="small" aria-label="Class overview table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Method</TableCell>
-                  </TableRow>
-                </TableHead>
+              <Table
+                size="small"
+                aria-label="Class overview table"
+                className={classes.methodsTable}
+              >
                 <TableBody>
-                  {this.props.libraries.structure.statics.length > 0 ? this.props.libraries.structure.statics.map((method) => (
-                    <TableRow key={method.name}>
-                      <TableCell component="th" scope="row">
-                        {method.name} 
-                        <Parameters parameters={method.parameters}></Parameters>
-                      </TableCell>
-                    </TableRow>
-                  )) : 
-                  <TableRow key="Nothing">
-                      <TableCell component="th" scope="row">
-                      Nothing to show
-                      </TableCell>
+                  {this.props.libraries.structure.statics.length > 0 &&
+                    this.props.libraries.structure.statics.map((method) => (
+                      <TableRow key={method.name}>
+                        <TableCell component="th" scope="row">
+                          <HashLink to={{ hash: getId(method) }}>
+                            {method.name}
+                          </HashLink>
+                          <Parameters parameters={method.parameters} />
+                          <span>{" -> "}</span>
+                          <Type type={method.return_type}></Type>
+                        </TableCell>
                       </TableRow>
-                  }
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
           </TabPanel>
-          
+
           <TabPanel value={this.state.tab} index={3}>
-          <TableContainer>
-              <Table size="small" aria-label="Class overview table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Method</TableCell>
-                  </TableRow>
-                </TableHead>
+            <TableContainer>
+              <Table
+                size="small"
+                aria-label="Class overview table"
+                className={classes.methodsTable}
+              >
                 <TableBody>
-                  {this.props.libraries.structure.fields.length > 0 ? this.props.libraries.structure.fields.map((method) => (
-                    <TableRow key={method.name}>
-                    <TableCell component="th" scope="row">
-                      {method.name}
-                    </TableCell>
-                  </TableRow>
-                  )) : 
-                  "Nothing to show"}
+                  {this.props.libraries.structure.fields.length > 0 &&
+                    this.props.libraries.structure.fields.map((method) => (
+                      <TableRow key={method.name}>
+                        <TableCell component="th" scope="row">
+                          <HashLink to={{ hash: method.name }}>
+                            {method.name}
+                          </HashLink>
+                          <Type type={method.type} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
