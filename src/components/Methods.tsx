@@ -1,8 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { makeStyles, Typography } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import { ArrowRightAlt } from "@material-ui/icons";
+import { Divider, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import { HashLink } from "react-router-hash-link";
 import { ToitFunction } from "../model/toitsdk";
@@ -12,12 +10,24 @@ import { Type } from "./Util";
 
 interface MethodsProps {
   functions: ToitFunction[];
+  title: string;
+  hideReturnTypes?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
-  arrowRightAlt: {
-    verticalAlign: "middle",
-    display: "inline-flex",
+  methods: { paddingBottom: theme.spacing(3) },
+  title: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
+    color: theme.palette.primary.dark,
+  },
+  method: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+  },
+  toitdocs: {
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
   },
 }));
 
@@ -43,36 +53,39 @@ function getId(fn: ToitFunction): string {
 export default function Methods(props: MethodsProps): JSX.Element {
   const classes = useStyles();
   return (
-    <>
+    <div className={classes.methods}>
+      <div className={classes.title}>
+        <Typography variant="h4">{props.title}</Typography>
+      </div>
+      <Divider />
       {props.functions
         .concat([])
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((fn, i) => {
-          // Alternating background.
-          const background = i % 2 ? "#eeeeee" : "#fafafa";
           const id = getId(fn);
           return (
-            <Box
-              p={1}
-              bgcolor={background}
-              borderRadius={8}
-              key={"method" + i}
-              id={id}
-            >
-              <HashLink to={{ hash: id }}>
-                <Typography variant="h6" component="span">
-                  {fn.name}
-                </Typography>
-              </HashLink>
-              <Parameters parameters={fn.parameters} />
-              <ArrowRightAlt className={classes.arrowRightAlt} />
-              <span>
-                <Type type={fn.return_type}></Type>
-              </span>
-              <Toitdocs value={fn.toitdoc} />
-            </Box>
+            <div key={"method" + i} id={id}>
+              <div className={classes.method}>
+                <div>
+                  <HashLink to={{ hash: id }}>{fn.name}</HashLink>
+                  <Parameters parameters={fn.parameters} />
+                  {!props.hideReturnTypes && (
+                    <>
+                      <span>{" -> "}</span>
+                      <Type type={fn.return_type}></Type>
+                    </>
+                  )}
+                </div>
+                {fn.toitdoc && (
+                  <div className={classes.toitdocs}>
+                    <Toitdocs value={fn.toitdoc} />
+                  </div>
+                )}
+              </div>
+              <Divider />
+            </div>
           );
         })}
-    </>
+    </div>
   );
 }
