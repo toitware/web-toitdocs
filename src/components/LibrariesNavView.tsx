@@ -1,41 +1,43 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { match } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries, ToitLibrary, ToitModule } from "../model/toitsdk";
 import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
-  RootState,
 } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
 
-function mapStateToProps(
-  state: RootState,
-  props: LibrariesNavProps
-): LibrariesNavProps {
-  return {
-    libraries: state.sdk.object?.libraries || {},
-    match: props.match,
-  };
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    sideMenu: {
+      paddingTop: theme.spacing(3),
+    },
+  });
+
+export interface LibrariesNavParams {
+  libraryName: string;
 }
 
-interface LibrariesNavParams {
-  libName: string;
-}
-
-interface LibrariesNavProps {
+export interface LibrariesNavProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<LibrariesNavParams> {
   libraries: ToitLibraries;
-  match: match<LibrariesNavParams>;
 }
 
-//Listing the libraries for navigation purposes
 class LibrariesNav extends Component<LibrariesNavProps> {
   renderModule(library: ToitLibrary, module: ToitModule): JSX.Element {
     const libraryName = librarySegmentsToName(library.path);
@@ -62,35 +64,42 @@ class LibrariesNav extends Component<LibrariesNavProps> {
   }
 
   render(): JSX.Element {
-    const libName = this.props.match.params.libName;
-    const library = getLibrary(this.props.libraries, libName);
+    const library = getLibrary(
+      this.props.libraries,
+      this.props.match.params.libraryName
+    );
+
+    if (!library) {
+      return <></>;
+    }
+
     const moduleNames = Object.keys(library.modules).sort();
     const libraryNames = Object.keys(library.libraries).sort();
 
     return (
-      <div className="sideMenu" style={{ paddingTop: "20px" }}>
+      <div className={this.props.classes.sideMenu}>
         <ErrorBoundary>
           <List>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Libraries</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               {libraryNames.map((libraryName) =>
                 this.renderLibrary(library.libraries[libraryName])
               )}
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               <ListSubheader>
                 <Typography color="secondary">
                   <b>Modules</b>
                 </Typography>
               </ListSubheader>
             </div>
-            <div className="sideMenu" style={{ paddingTop: "20px" }}>
+            <div className={this.props.classes.sideMenu}>
               {moduleNames.map((moduleName) =>
                 this.renderModule(library, library.modules[moduleName])
               )}
@@ -102,4 +111,4 @@ class LibrariesNav extends Component<LibrariesNavProps> {
   }
 }
 
-export default connect(mapStateToProps)(LibrariesNav);
+export default withStyles(styles)(LibrariesNav);

@@ -1,43 +1,45 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link, match } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary, RootState } from "../sdk";
+import { getLibrary } from "../sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
 
-function mapStateToProps(
-  state: RootState,
-  props: ClassNavProps
-): ClassNavProps {
-  return {
-    libraries: state.sdk.object?.libraries || {},
-    match: props.match,
-  };
-}
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    sideMenu: {
+      padding: theme.spacing(3),
+    },
+  });
 
-interface ClassNavParams {
-  libName: string;
+export interface ClassNavParams {
+  libraryName: string;
   moduleName: string;
   className: string;
 }
 
-interface ClassNavProps {
+export interface ClassNavProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<ClassNavParams> {
   libraries: ToitLibraries;
-  match: match<ClassNavParams>;
 }
 
-class ClassNav extends Component<ClassNavProps> {
+class ClassNavView extends Component<ClassNavProps> {
   render(): JSX.Element {
-    const {
-      params: { libName, moduleName, className },
-    } = this.props.match;
+    const { libraryName, moduleName, className } = this.props.match.params;
 
-    const library = getLibrary(this.props.libraries, libName);
+    const library = getLibrary(this.props.libraries, libraryName);
     const module = library && library.modules[moduleName];
 
     if (module) {
@@ -46,7 +48,7 @@ class ClassNav extends Component<ClassNavProps> {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       return (
-        <div className="sideMenu" style={{ paddingTop: "30px" }}>
+        <div className={this.props.classes.sideMenu}>
           <ErrorBoundary>
             <List
               component="nav"
@@ -54,10 +56,10 @@ class ClassNav extends Component<ClassNavProps> {
               subheader={
                 <ListSubheader component="div" id="nested-list-subheader">
                   <Link to={`/`}>Modules /</Link>
-                  <Link to={`/${libName}/${moduleName}`}>
+                  <Link to={`/${libraryName}/${moduleName}`}>
                     {moduleName}
                   </Link>{" "}
-                  <Link to={`/${libName}/${moduleName}/${className}`}>
+                  <Link to={`/${libraryName}/${moduleName}/${className}`}>
                     {" / " + className}
                   </Link>
                 </ListSubheader>
@@ -66,7 +68,7 @@ class ClassNav extends Component<ClassNavProps> {
               {" "}
               {classes.map((klass, index) => (
                 <ListItemLink
-                  to={`/${libName}/${module.name}/${klass.name}`}
+                  to={`/${libraryName}/${module.name}/${klass.name}`}
                   key={"class-index-" + index}
                   primary={klass.name}
                 />
@@ -81,4 +83,4 @@ class ClassNav extends Component<ClassNavProps> {
   }
 }
 
-export default connect(mapStateToProps)(ClassNav);
+export default withStyles(styles)(ClassNavView);

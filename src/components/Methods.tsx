@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { Typography } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import { ArrowRightAlt } from "@material-ui/icons";
 import React from "react";
@@ -13,6 +13,13 @@ import { Type } from "./Util";
 interface MethodsProps {
   functions: ToitFunction[];
 }
+
+const useStyles = makeStyles((theme) => ({
+  arrowRightAlt: {
+    verticalAlign: "middle",
+    display: "inline-flex",
+  },
+}));
 
 function getId(fn: ToitFunction): string {
   const argsString = fn.parameters
@@ -34,6 +41,7 @@ function getId(fn: ToitFunction): string {
 }
 
 export default function Methods(props: MethodsProps): JSX.Element {
+  const classes = useStyles();
   return (
     <>
       {props.functions
@@ -57,12 +65,7 @@ export default function Methods(props: MethodsProps): JSX.Element {
                 </Typography>
               </HashLink>
               <Parameters parameters={fn.parameters} />
-              <ArrowRightAlt
-                style={{
-                  verticalAlign: "middle",
-                  display: "inline-flex",
-                }}
-              />
+              <ArrowRightAlt className={classes.arrowRightAlt} />
               <span>
                 <Type type={fn.return_type}></Type>
               </span>
