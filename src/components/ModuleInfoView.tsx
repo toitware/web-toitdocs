@@ -64,18 +64,7 @@ function Globals(props: { globals: ToitGlobal[] }): JSX.Element {
 }
 
 function GlobalFunctions(props: { functions: ToitFunction[] }): JSX.Element {
-  return (
-    <div>
-      <Box pt={2} pb={2}>
-        <Box pt={1} pb={1}>
-          <Typography component="h3" variant="h3">
-            Functions
-          </Typography>
-        </Box>
-      </Box>
-      <Methods functions={props.functions} />
-    </div>
-  );
+  return <Methods functions={props.functions} title="Functions" />;
 }
 
 function ExportFunctions(): JSX.Element {
