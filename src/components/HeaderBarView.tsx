@@ -27,6 +27,7 @@ import { ToitParameter } from "../model/toitsdk";
 import { librarySegmentsToURI } from "../sdk";
 import ToitFuse, {
   SearchableToitClass,
+  SearchableToitFunction,
   SearchableToitModule,
   SearchableToitObject,
 } from "./fuse";
@@ -175,73 +176,8 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     this.setState({ ...this.state, resultsVisible: true });
   };
 
-  renderSearchFunctions(results?: SearchResults): JSX.Element {
-    if (!results || !results.isFilled || results.matches.length === 0) {
-      return <></>;
-    }
-    const fuseResults: Fuse.FuseResultMatch[] = [];
-    results.matches.forEach((match, index) => {
-      if (match.refIndex === undefined) {
-        console.error("missing refindex for match", match);
-      } else if (match.key === `functions.name`) {
-        fuseResults.push(match);
-        return match;
-      }
-    });
-    const afterSearch = this.props.searchObject.functions;
-    let libString = "";
-    let moduleString = "";
-    let classString = "";
-    let resultName = "";
-    let funParams: ToitParameter[];
-
-    return (
-      <>
-        {fuseResults.map((match, index) => {
-          if (typeof match.refIndex === "number") {
-            try {
-              const resultAfterSearch = afterSearch[match.refIndex];
-              funParams = resultAfterSearch.functionParameters;
-              libString = `${librarySegmentsToURI(resultAfterSearch.library)}`;
-              moduleString = `${resultAfterSearch.module}`;
-              classString = `${resultAfterSearch.class}`;
-              resultName = resultAfterSearch.name;
-            } catch {
-              console.log("Cast failed");
-            }
-
-            return (
-              <Link
-                to={`/${libString}/${moduleString}/${classString}#${getId(
-                  resultName,
-                  funParams
-                )}`}
-                onClick={this.handleClickAway}
-                key={"list_item" + index}
-              >
-                <ListItem className="ListItem" button>
-                  <Typography variant="h6" color="secondary">
-                    {resultName}
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    color="primary"
-                    style={{ paddingLeft: "5px", paddingRight: "5px" }}
-                  >
-                    {` ${moduleString}/${classString}`}
-                  </Typography>
-                </ListItem>
-              </Link>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </>
-    );
-  }
-  renderSearchLibsModulesClasses(
-    type: "libraries" | "classes" | "modules",
+  renderSearchResults(
+    type: "libraries" | "classes" | "modules" | "functions",
     results?: SearchResults
   ): JSX.Element {
     if (!results || !results.isFilled || results.matches.length === 0) {
@@ -262,6 +198,8 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let moduleString = "";
     let classString = "";
     let resultName = "";
+    let funParams: ToitParameter[];
+    let funIDString = "";
 
     return (
       <>
@@ -308,10 +246,27 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
               } catch {
                 console.log("Cast failed");
               }
+            } else if (type === "functions") {
+              try {
+                const resultTempAfterSearch = afterSearch[
+                  match.refIndex
+                ] as unknown;
+                const resultAfterSearch = resultTempAfterSearch as SearchableToitFunction;
+                funParams = resultAfterSearch.functionParameters;
+                libString = `/${librarySegmentsToURI(
+                  resultAfterSearch.library
+                )}`;
+                moduleString = `/${resultAfterSearch.module}`;
+                classString = `/${resultAfterSearch.class}`;
+                resultName = resultAfterSearch.name;
+                funIDString = "#" + getId(resultName, funParams);
+              } catch {
+                console.log("Cast failed");
+              }
             }
             return (
               <Link
-                to={`${libString}${moduleString}${classString}`}
+                to={`${libString}${moduleString}${classString}${funIDString}`}
                 onClick={this.handleClickAway}
                 key={"list_item" + index}
               >
@@ -384,10 +339,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearchLibsModulesClasses(
-                    "libraries",
-                    this.state.results
-                  )}
+                  {this.renderSearchResults("libraries", this.state.results)}
                   {this.state.results !== undefined && (
                     <ListItem>
                       <Typography variant="h5" color="secondary">
@@ -395,10 +347,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearchLibsModulesClasses(
-                    "modules",
-                    this.state.results
-                  )}
+                  {this.renderSearchResults("modules", this.state.results)}
                   {this.state.results !== undefined && (
                     <ListItem>
                       <Typography variant="h5" color="secondary">
@@ -406,18 +355,15 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearchLibsModulesClasses(
-                    "classes",
-                    this.state.results
-                  )}
+                  {this.renderSearchResults("classes", this.state.results)}
                   {this.state.results !== undefined && (
                     <ListItem>
-                      <Typography variant="h5" color="primary">
+                      <Typography variant="h5" color="secondary">
                         Functions
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearchFunctions(this.state.results)}
+                  {this.renderSearchResults("functions", this.state.results)}
                 </List>
               </div>
             </Grid>
