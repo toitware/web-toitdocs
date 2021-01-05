@@ -5,11 +5,10 @@ import Box from "@material-ui/core/Box";
 import { ArrowRightAlt } from "@material-ui/icons";
 import React from "react";
 import { HashLink } from "react-router-hash-link";
-import { ToitFunction } from "../model/toitsdk";
+import { ToitFunction, ToitParameter } from "../model/toitsdk";
 import { Parameters } from "./Parameters";
 import Toitdocs from "./ToitdocInfo";
 import { Type } from "./Util";
-
 interface MethodsProps {
   functions: ToitFunction[];
 }
@@ -21,8 +20,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getId(fn: ToitFunction): string {
-  const argsString = fn.parameters
+export function getId(
+  functionName: string,
+  parameters: ToitParameter[]
+): string {
+  const argsString = parameters
     .map((p) => {
       if (p.type.is_any) {
         return "any";
@@ -37,7 +39,7 @@ function getId(fn: ToitFunction): string {
       }
     })
     .join(",");
-  return encodeURIComponent(fn.name + "(" + argsString + ")");
+  return encodeURIComponent(functionName + "(" + argsString + ")");
 }
 
 export default function Methods(props: MethodsProps): JSX.Element {
@@ -50,7 +52,7 @@ export default function Methods(props: MethodsProps): JSX.Element {
         .map((fn, i) => {
           // Alternating background.
           const background = i % 2 ? "#eeeeee" : "#fafafa";
-          const id = getId(fn);
+          const id = getId(fn.name, fn.parameters);
           return (
             <Box
               p={1}

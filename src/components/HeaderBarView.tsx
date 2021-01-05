@@ -30,6 +30,7 @@ import ToitFuse, {
   SearchableToitModule,
   SearchableToitObject,
 } from "./fuse";
+import { getId } from "./Methods";
 
 export const HEADER_BAR_HEIGHT = 64;
 
@@ -174,25 +175,6 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     this.setState({ ...this.state, resultsVisible: true });
   };
 
-  getFunId = (functionName: string, parameters: ToitParameter[]): string => {
-    const argsString = parameters
-      .map((p) => {
-        if (p.type.is_any) {
-          return "any";
-        } else if (p.type.is_none) {
-          return "none";
-        } else if (p.type.is_block) {
-          return "block";
-        } else if (p.type) {
-          return p.type.reference.name;
-        } else {
-          return "unknown";
-        }
-      })
-      .join(",");
-    return encodeURIComponent(functionName + "(" + argsString + ")");
-  };
-
   renderSearchFunctions(results?: SearchResults): JSX.Element {
     if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
@@ -230,7 +212,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
 
             return (
               <Link
-                to={`/${libString}/${moduleString}/${classString}#${this.getFunId(
+                to={`/${libString}/${moduleString}/${classString}#${getId(
                   resultName,
                   funParams
                 )}`}
