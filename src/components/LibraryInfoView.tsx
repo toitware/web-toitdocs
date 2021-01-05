@@ -13,12 +13,11 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { match } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary, RootState } from "../sdk";
+import { getLibrary } from "../sdk";
 
-const style = (theme: Theme): StyleRules =>
+const styles = (theme: Theme): StyleRules =>
   createStyles({
     root: {
       width: "100%",
@@ -30,79 +29,73 @@ const style = (theme: Theme): StyleRules =>
     },
   });
 
-function mapStateToProps(
-  state: RootState,
-  props: LibraryInfoProps
-): LibraryInfoProps {
-  return {
-    ...props,
-    libraries: state.sdk.object?.libraries || {},
-  };
+export interface LibraryInfoParams {
+  libraryName: string;
 }
 
-interface LibraryInfoParams {
-  libName: string;
-}
-
-interface LibraryInfoProps extends WithStyles<typeof style> {
+export interface LibraryInfoProps
+  extends WithStyles<typeof styles>,
+    RouteComponentProps<LibraryInfoParams> {
   libraries: ToitLibraries;
-  match: match<LibraryInfoParams>;
 }
 
 class LibraryInfo extends Component<LibraryInfoProps> {
   render(): JSX.Element {
-    const {
-      params: { libName },
-    } = this.props.match;
-    const library = getLibrary(this.props.libraries, libName);
-    const classes = this.props.classes;
+    const library = getLibrary(
+      this.props.libraries,
+      this.props.match.params.libraryName
+    );
+
+    if (!library) {
+      return this.notFound(this.props.match.params.libraryName);
+    }
 
     const moduleNames = Object.keys(library.modules).sort();
 
-    if (library) {
-      return (
-        <Grid container>
-          <Grid item xs={9}>
-            <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
-                Library: {library.name}
+    return (
+      <Grid container>
+        <Grid item xs={9}>
+          <Box pt={2} pb={2}>
+            <Typography component="h1" variant="h1">
+              Library: {library.name}
+            </Typography>
+          </Box>
+          <Box pt={2} pb={2}>
+            <Box pt={1} pb={1}>
+              <Typography component="h2" variant="h2">
+                Modules
               </Typography>
             </Box>
-            <Box pt={2} pb={2}>
-              <Box pt={1} pb={1}>
-                <Typography component="h2" variant="h2">
-                  Modules
-                </Typography>
-              </Box>
-              <Paper variant="outlined" className={classes.paper}>
-                <List>
-                  {moduleNames.map((moduleName) => (
-                    <li key={"library-module-" + moduleName}>
-                      {" "}
-                      {library.modules[moduleName].name}{" "}
-                    </li>
-                  ))}
-                </List>
-              </Paper>
-            </Box>
-          </Grid>
+            <Paper variant="outlined" className={this.props.classes.paper}>
+              <List>
+                {moduleNames.map((moduleName) => (
+                  <li key={"library-module-" + moduleName}>
+                    {" "}
+                    {library.modules[moduleName].name}{" "}
+                  </li>
+                ))}
+              </List>
+            </Paper>
+          </Box>
         </Grid>
-      );
-    } else {
-      return (
-        <Grid container className={classes.root}>
-          <Grid item xs={9}>
-            <Box pt={2} pb={2}>
-              <Typography component="h1" variant="h1">
-                ERROR:
-                <p>Library: {libName} not found</p>
-              </Typography>
-            </Box>
-          </Grid>
+      </Grid>
+    );
+  }
+
+  notFound(name: string): JSX.Element {
+    return (
+      <Grid container className={this.props.classes.root}>
+        <Grid item xs={9}>
+          <Box pt={2} pb={2}>
+            <Typography component="h1" variant="h1">
+              ERROR:
+              <p>Library: {name} not found</p>
+            </Typography>
+          </Box>
         </Grid>
-      );
-    }
+      </Grid>
+    );
   }
 }
 
-export default connect(mapStateToProps)(withStyles(style)(LibraryInfo));
+export default withStyles(styles)(LibraryInfo);

@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { flattenDataStructure, SearchableToitObject } from "./components/fuse";
-import { ToitLibraries, ToitLibrary, ToitObject } from "./model/toitsdk";
+import {
+  ToitClass,
+  ToitLibraries,
+  ToitLibrary,
+  ToitModule,
+  ToitObject,
+} from "./model/toitsdk";
 
 export interface RootState {
   sdk: SdkState;
@@ -107,14 +113,15 @@ export function librarySegmentsToURI(segments: string[]): string {
 export function getLibrary(
   libraries: ToitLibraries,
   libraryName: string
-): ToitLibrary {
+): ToitLibrary | undefined {
   try {
     let library = libraries[rootLibrary];
     if (libraryName) {
       const segments = libraryNameToSegments(libraryName);
       segments.forEach((name) => {
         if (!library) {
-          throw new Error("failed to find library: " + name);
+          console.log("failed to find library: " + name);
+          return undefined;
         }
         library = library.libraries[name];
       });
@@ -122,6 +129,27 @@ export function getLibrary(
     return library;
   } catch (e) {
     console.log(e);
-    throw new Error("failed to find library: " + libraryName);
+    return undefined;
   }
+}
+
+export function getModule(
+  libraries: ToitLibraries,
+  libraryName: string,
+  moduleName: string
+): ToitModule | undefined {
+  return getLibrary(libraries, libraryName)?.modules[moduleName];
+}
+
+export function getClass(
+  libraries: ToitLibraries,
+  libraryName: string,
+  moduleName: string,
+  className: string
+): ToitClass | undefined {
+  const module = getModule(libraries, libraryName, moduleName);
+  return (
+    module?.classes.find((c) => c.name === className) ||
+    module?.export_classes.find((c) => c.name === className)
+  );
 }
