@@ -5,20 +5,12 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries, ToitReference } from "../model/toitsdk";
+import { ToitLibraries } from "../model/toitsdk";
 import { getClass } from "../sdk";
 import ClassOverviewView from "./ClassOverviewView";
 import Fields from "./Fields";
 import Methods from "./Methods";
 import { Reference } from "./Util";
-
-function Extends(props: { reference: ToitReference }): JSX.Element {
-  return (
-    <div>
-      extends <Reference reference={props.reference} />
-    </div>
-  );
-}
 
 export interface ClassInfoParams {
   libraryName: string;
@@ -54,50 +46,41 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
         <Grid item xs={12}>
           <Box pt={2} pb={2}>
             <Typography variant="h2" component="h2">
-              Class: {classInfo.name}
+              Class {classInfo.name}
             </Typography>
-            {classInfo.extends && <Extends reference={classInfo.extends} />}
+            {classInfo.extends && (
+              <div>
+                extends <Reference reference={classInfo.extends} />
+              </div>
+            )}
           </Box>
-          <Grid item xs={12}>
-            <ClassOverviewView libraries={classInfo} />
-          </Grid>
-          {classInfo.structure.constructors.length > 0 && (
+          <ClassOverviewView libraries={classInfo} />
+          {classInfo.structure.constructors.concat(
+            classInfo.structure.factories
+          ).length > 0 && (
             <>
-              <Typography variant="h3" component="h3">
-                Constructors
-              </Typography>
-              <Methods functions={classInfo.structure.constructors} />
-            </>
-          )}
-          {classInfo.structure.factories.length > 0 && (
-            <>
-              <Typography variant="h3" component="h3">
-                Factories
-              </Typography>
-              <Methods functions={classInfo.structure.factories} />
+              <Methods
+                functions={classInfo.structure.constructors.concat(
+                  classInfo.structure.factories
+                )}
+                title="Constructors"
+                hideReturnTypes
+              />
             </>
           )}
           {classInfo.structure.statics.length > 0 && (
             <>
-              <Typography variant="h3" component="h3">
-                Statics
-              </Typography>
-              <Methods functions={classInfo.structure.statics} />
+              <Methods
+                functions={classInfo.structure.statics}
+                title="Statics"
+              />
             </>
           )}
           {classInfo.structure.methods.length > 0 && (
-            <>
-              <Typography variant="h3" component="h3">
-                Methods
-              </Typography>
-              <Methods functions={classInfo.structure.methods} />
-            </>
+            <Methods functions={classInfo.structure.methods} title="Methods" />
           )}
           {classInfo.structure.fields.length > 0 && (
             <>
-              <Typography variant="h3" component="h3">
-                Fields
-              </Typography>
               <Fields fields={classInfo.structure.fields} />
             </>
           )}

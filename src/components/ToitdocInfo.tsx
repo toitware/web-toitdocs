@@ -2,7 +2,6 @@
 
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import {
   ToitDoc,
@@ -24,22 +23,13 @@ import {
   OBJECT_TYPE_TOITDOCREF,
 } from "../sdk";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {},
-  paperSection: {},
-}));
-
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
 
 function StatementCodeSection(props: {
   code: ToitStatementCodeSection;
 }): JSX.Element {
-  const classes = useStyles();
   return (
-    <Paper elevation={0} variant="outlined" className={classes.paperSection}>
+    <Paper elevation={0} variant="outlined">
       <pre>
         <code>{props.code.text}</code>
       </pre>
@@ -48,8 +38,7 @@ function StatementCodeSection(props: {
 }
 
 function StatementCode(props: { code: ToitStatementCode }): JSX.Element {
-  const classes = useStyles();
-  return <span className={classes.paper}>{props.code.text}</span>;
+  return <span>{props.code.text}</span>;
 }
 
 function StatementItemized(props: {
@@ -124,9 +113,8 @@ function Statement(props: { statement: ToitStatement }): JSX.Element {
 }
 
 function Section(props: { section: ToitSection }): JSX.Element {
-  const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <>
       <Grid container>
         <Grid item>
           <strong>{props.section.title}</strong>
@@ -139,7 +127,7 @@ function Section(props: { section: ToitSection }): JSX.Element {
           ))}
         </Grid>
       </Grid>
-    </div>
+    </>
   );
 }
 
