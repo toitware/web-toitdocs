@@ -21,6 +21,7 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { ToitClass } from "../model/toitsdk";
+import { Parameters } from "./Parameters";
 
 //Can first be used, when we have implemented the redux props correctly
 const styles = (theme: Theme): StyleRules =>
@@ -96,8 +97,8 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
           <AppBar position="static">
             <Tabs value={this.state.tab} aria-label="Class overview">
                 <Tab
-                  label="Statics"
-                  {...a11yProps(0)}
+                  label="Methods"
+                  {...a11yProps(2)}
                   onClick={(): void => this.setState({ tab: 0 })}
                 />
                 <Tab
@@ -106,8 +107,8 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
                   onClick={(): void => this.setState({ tab: 1 })}
                 />
                 <Tab
-                  label="Methods"
-                  {...a11yProps(2)}
+                  label="Statics"
+                  {...a11yProps(0)}
                   onClick={(): void => this.setState({ tab: 2 })}
                 />
                 <Tab
@@ -118,29 +119,6 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
             </Tabs>
           </AppBar>
           <TabPanel value={this.state.tab} index={0}>
-            <TableContainer>
-              <Table size="small" aria-label="Class overview table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Method</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {this.props.libraries.structure.statics.length > 0 && this.props.libraries.structure.statics.map((row) => (
-                    <TableRow key={row.name}>
-                      <TableCell component="th" scope="row">
-                        {row.name} 
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </TabPanel>
-          <TabPanel value={this.state.tab} index={1}>
-            Constructors
-          </TabPanel>
-          <TabPanel value={this.state.tab} index={2}>
           <TableContainer>
               <Table size="small" aria-label="Class overview table">
                 <TableHead>
@@ -149,19 +127,89 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {this.props.libraries.structure.methods.length > 0 && this.props.libraries.structure.methods.map((method) => (
+                  {this.props.libraries.structure.methods.length > 0 ? this.props.libraries.structure.methods.map((method) => (
+                    <TableRow key={method.name}>
+                    <TableCell component="th" scope="row">
+                      {method.name}
+                      <Parameters parameters={method.parameters}></Parameters>
+                    </TableCell>
+                  </TableRow>
+                  )) : 
+                  "Nothing to show"}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </TabPanel>
+          <TabPanel value={this.state.tab} index={1}>
+          <TableContainer>
+              <Table size="small" aria-label="Class overview table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Method</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.props.libraries.structure.constructors.length > 0 ? this.props.libraries.structure.constructors.map((method) => (
+                    <TableRow key={method.name}>
+                    <TableCell component="th" scope="row">
+                      {method.name}
+                      <Parameters parameters={method.parameters}></Parameters>
+                    </TableCell>
+                  </TableRow>
+                  )) : 
+                  "Nothing to show"}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </TabPanel>
+          <TabPanel value={this.state.tab} index={2}>
+            <TableContainer>
+              <Table size="small" aria-label="Class overview table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Method</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.props.libraries.structure.statics.length > 0 ? this.props.libraries.structure.statics.map((method) => (
+                    <TableRow key={method.name}>
+                      <TableCell component="th" scope="row">
+                        {method.name} 
+                        <Parameters parameters={method.parameters}></Parameters>
+                      </TableCell>
+                    </TableRow>
+                  )) : 
+                  <TableRow key="Nothing">
+                      <TableCell component="th" scope="row">
+                      Nothing to show
+                      </TableCell>
+                      </TableRow>
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </TabPanel>
+          
+          <TabPanel value={this.state.tab} index={3}>
+          <TableContainer>
+              <Table size="small" aria-label="Class overview table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Method</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.props.libraries.structure.fields.length > 0 ? this.props.libraries.structure.fields.map((method) => (
                     <TableRow key={method.name}>
                     <TableCell component="th" scope="row">
                       {method.name}
                     </TableCell>
                   </TableRow>
-                  ))}
+                  )) : 
+                  "Nothing to show"}
                 </TableBody>
               </Table>
             </TableContainer>
-          </TabPanel>
-          <TabPanel value={this.state.tab} index={3}>
-            Fields
           </TabPanel>
         </div>
       </Grid>
