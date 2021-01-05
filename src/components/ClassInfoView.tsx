@@ -7,6 +7,7 @@ import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries, ToitReference } from "../model/toitsdk";
 import { getClass } from "../sdk";
+import ClassOverviewView from "./ClassOverviewView";
 import Fields from "./Fields";
 import Methods from "./Methods";
 import { Reference } from "./Util";
@@ -57,6 +58,9 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
             </Typography>
             {classInfo.extends && <Extends reference={classInfo.extends} />}
           </Box>
+          <Grid item xs={12}>
+            <ClassOverviewView libraries={classInfo} />
+          </Grid>
           {classInfo.structure.constructors.length > 0 && (
             <>
               <Typography variant="h3" component="h3">
