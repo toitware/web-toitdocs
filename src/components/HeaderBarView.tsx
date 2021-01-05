@@ -173,15 +173,31 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
           </AppBar>
         </Grid>
         <Grid item xs={9}></Grid>
-        {this.state.resultsVisible && (
-          <div id="SearchResults">
-            <Grid
-              container
-              item
-              xs={3}
-              className={this.props.classes.searchResults}
-            >
-              <div className={this.props.classes.searchContainer}>
+        {this.state.resultsVisible &&
+          this.state.results !== undefined &&
+          this.renderResultsContainer()}
+      </Grid>
+    );
+  }
+
+  renderResultsContainer(): JSX.Element {
+    let matches = [] as readonly Fuse.FuseResultMatch[];
+    if (this.state.results !== undefined) {
+      const unknownResults = this.state.results as unknown;
+      const results = unknownResults as SearchResults;
+      matches = results.matches;
+    }
+    if (matches.length !== 0) {
+      return (
+        <div id="SearchResults">
+          <Grid
+            container
+            item
+            xs={3}
+            className={this.props.classes.searchResults}
+          >
+            <div className={this.props.classes.searchContainer}>
+              {this.state.results !== undefined && (
                 <List className={this.props.classes.searchList}>
                   {this.state.results !== undefined && (
                     <ListItem>
@@ -208,12 +224,34 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                   )}
                   {this.renderSearch("classes", this.state.results)}
                 </List>
-              </div>
-            </Grid>
-          </div>
-        )}
-      </Grid>
-    );
+              )}
+            </div>
+          </Grid>
+        </div>
+      );
+    } else {
+      return (
+        <div id="SearchResults">
+          <Grid
+            container
+            item
+            xs={3}
+            className={this.props.classes.searchResults}
+          >
+            <div className={this.props.classes.searchContainer}>
+              <List className={this.props.classes.searchList}>
+                <ListItem>
+                  <Typography variant="h5" color="secondary">
+                    No results found
+                  </Typography>
+                </ListItem>
+              </List>
+            </div>
+          </Grid>
+        </div>
+      );
+    }
+    // }
   }
 
   setSearchTerm(searchTerm: string): void {
@@ -291,6 +329,9 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
         </ListItem>
       );
     } else {
+      // console.log("tu jestem");
+      // console.log(fuseResults);
+      // console.log(fuseResults.length);
       return (
         <>
           {fuseResults.map((match, index) => {
