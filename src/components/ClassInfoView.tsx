@@ -79,9 +79,6 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
           )}
           {classInfo.structure.fields.length > 0 && (
             <>
-              <Typography variant="h3" component="h3">
-                Fields
-              </Typography>
               <Fields fields={classInfo.structure.fields} />
             </>
           )}
