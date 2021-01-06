@@ -8,7 +8,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../model/toitsdk";
 import { getClass } from "../sdk";
 import Fields from "./Fields";
-import Methods from "./Methods";
+import Functions from "./Functions";
 import { Reference } from "./Util";
 
 export interface ClassInfoParams {
@@ -57,7 +57,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
             classInfo.structure.factories
           ).length > 0 && (
             <>
-              <Methods
+              <Functions
                 functions={classInfo.structure.constructors.concat(
                   classInfo.structure.factories
                 )}
@@ -68,14 +68,17 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
           )}
           {classInfo.structure.statics.length > 0 && (
             <>
-              <Methods
+              <Functions
                 functions={classInfo.structure.statics}
                 title="Statics"
               />
             </>
           )}
           {classInfo.structure.methods.length > 0 && (
-            <Methods functions={classInfo.structure.methods} title="Methods" />
+            <Functions
+              functions={classInfo.structure.methods}
+              title="Methods"
+            />
           )}
           {classInfo.structure.fields.length > 0 && (
             <>
