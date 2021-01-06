@@ -74,13 +74,22 @@ function flattenDataStructureLibrary(
   library: ToitLibrary,
   result: SearchableToitObject
 ): void {
-  result.libraries.push({ name: library.name, path: library.path });
-  Object.values(library.libraries).forEach((library) =>
-    flattenDataStructureLibrary(library, result)
-  );
-  Object.values(library.modules).forEach((module) =>
-    flattenDataStructureModule(library, module, result)
-  );
+  if (library.name !== "lib") {
+    result.libraries.push({ name: library.name, path: library.path });
+  }
+  Object.values(library.libraries).forEach((library) => {
+    /* This is a temporary solution for removing the fonts from the results
+       We should edit the toit generator and change the structure   
+    */
+    if (!library.path.includes("font")) {
+      flattenDataStructureLibrary(library, result);
+    }
+  });
+  Object.values(library.modules).forEach((module) => {
+    if (!library.path.includes("font")) {
+      flattenDataStructureModule(library, module, result);
+    }
+  });
 }
 
 export function flattenDataStructure(
