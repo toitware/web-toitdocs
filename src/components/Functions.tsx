@@ -1,7 +1,7 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React from "react";
-import { ToitFunction } from "../model/toitsdk";
+import { ToitFunction, ToitParameter } from "../model/toitsdk";
 import DetailsList from "./DetailsList";
 import { Type } from "./Util";
 
@@ -11,8 +11,11 @@ interface FunctionsProps {
   hideReturnTypes?: boolean;
 }
 
-function getId(fn: ToitFunction): string {
-  const argsString = fn.parameters
+export function getId(
+  functionName: string,
+  parameters: ToitParameter[]
+): string {
+  const argsString = parameters
     .map((p) => {
       if (p.type.is_any) {
         return "any";
@@ -27,7 +30,7 @@ function getId(fn: ToitFunction): string {
       }
     })
     .join(",");
-  return encodeURIComponent(fn.name + "(" + argsString + ")");
+  return encodeURIComponent(functionName + "(" + argsString + ")");
 }
 
 function getDescription(
@@ -68,7 +71,7 @@ export default function Functions(props: FunctionsProps): JSX.Element {
     <DetailsList
       title={props.title}
       elements={props.functions.map((fn, i) => {
-        const id = getId(fn);
+        const id = getId(fn.name, fn.parameters);
         return {
           name: fn.name,
           description: getDescription(fn, props.hideReturnTypes),

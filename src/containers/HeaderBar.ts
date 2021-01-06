@@ -10,6 +10,7 @@ const mapStateToProps = (
       libraries: [],
       modules: [],
       classes: [],
+      functions: [],
     },
   };
 };
