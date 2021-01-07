@@ -22,7 +22,7 @@ import {
 } from "../model/toitsdk";
 import { getLibrary, getModule, librarySegmentsToName } from "../sdk";
 import Functions from "./Functions";
-import { CodeBlock } from "./general/codeblock/CodeBlock";
+import CodeBlock from "./general/codeblock/CodeBlock";
 import ModuleContentList from "./ModuleContentList";
 import Toitdocs from "./ToitdocInfo";
 

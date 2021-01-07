@@ -1,21 +1,24 @@
-import {
-  ObjectTypeExpression,
-  ObjectTypeStatement,
-  OBJECT_TYPE_CLASS,
-  OBJECT_TYPE_FIELD,
-  OBJECT_TYPE_FUNCTION,
-  OBJECT_TYPE_GLOBAL,
-  OBJECT_TYPE_LIBRARY,
-  OBJECT_TYPE_MODULE,
-  OBJECT_TYPE_PARAMETER,
-  OBJECT_TYPE_SECTION,
-  OBJECT_TYPE_STATEMENT_CODE,
-  OBJECT_TYPE_STATEMENT_CODE_SECTION,
-  OBJECT_TYPE_STATEMENT_ITEM,
-  OBJECT_TYPE_STATEMENT_ITEMIZED,
-  OBJECT_TYPE_STATEMENT_PARAGRAPH,
-  OBJECT_TYPE_TOITDOCREF,
-} from "../sdk";
+export const OBJECT_TYPE_SECTION = "section";
+export const OBJECT_TYPE_STATEMENT_CODE_SECTION = "statement_code_section";
+export const OBJECT_TYPE_STATEMENT_ITEMIZED = "statement_itemized";
+export const OBJECT_TYPE_STATEMENT_ITEM = "statement_item";
+export const OBJECT_TYPE_STATEMENT_PARAGRAPH = "statement_paragraph";
+export const OBJECT_TYPE_STATEMENT_CODE = "statement_code";
+export const OBJECT_TYPE_STATEMENT_TEXT = "statement_text";
+export const OBJECT_TYPE_TOITDOCREF = "toitdocref";
+export const OBJECT_TYPE_FUNCTION = "function";
+export const OBJECT_TYPE_PARAMETER = "parameter";
+export const OBJECT_TYPE_FIELD = "field";
+export const OBJECT_TYPE_CLASS = "class";
+export const OBJECT_TYPE_MODULE = "module";
+export const OBJECT_TYPE_GLOBAL = "global";
+export const OBJECT_TYPE_LIBRARY = "library";
+export const OBJECT_TYPE_EXPRESSION = "expression";
+
+export type ObjectTypeExpression =
+  | typeof OBJECT_TYPE_STATEMENT_CODE
+  | typeof OBJECT_TYPE_STATEMENT_CODE_SECTION
+  | typeof OBJECT_TYPE_TOITDOCREF;
 
 export interface ToitObject {
   sdk_version: string;
@@ -72,51 +75,6 @@ export interface ToitModules {
   [moduleName: string]: ToitModule;
 }
 
-export interface ToitSection {
-  object_type: typeof OBJECT_TYPE_SECTION;
-  title: string | null;
-  statements: ToitStatement[];
-}
-
-export interface ToitStatement {
-  object_type: ObjectTypeStatement | ObjectTypeExpression;
-}
-
-export interface ToitStatementParagraph {
-  object_type: typeof OBJECT_TYPE_STATEMENT_PARAGRAPH;
-  expressions: ToitExpression[];
-}
-
-export interface ToitStatementItemized {
-  object_type: typeof OBJECT_TYPE_STATEMENT_ITEMIZED;
-  items: ToitStatementItem[];
-}
-
-export interface ToitStatementItem {
-  object_type: typeof OBJECT_TYPE_STATEMENT_ITEM;
-  statements: ToitStatement[];
-}
-
-export interface ToitStatementCode {
-  object_type: typeof OBJECT_TYPE_STATEMENT_CODE;
-  text: string;
-}
-
-export interface ToitStatementCodeSection {
-  object_type: typeof OBJECT_TYPE_STATEMENT_CODE_SECTION;
-  text: string;
-}
-
-export interface ToitExpression {
-  object_type: ObjectTypeExpression;
-  text: string;
-}
-
-export interface ToitDocRef {
-  object_type: typeof OBJECT_TYPE_TOITDOCREF;
-  text: string;
-}
-
 export interface ToitGlobal {
   object_type: typeof OBJECT_TYPE_GLOBAL;
   name: string;
@@ -154,4 +112,52 @@ export interface ToitField {
   toitdoc: ToitDoc;
 }
 
+// ToitDoc related
+
 export type ToitDoc = ToitSection[];
+
+export interface ToitSection {
+  object_type: typeof OBJECT_TYPE_SECTION;
+  title: string | null;
+  statements: ToitStatement[];
+}
+
+export type ToitStatement =
+  | ToitStatementParagraph
+  | ToitStatementItemized
+  | ToitStatementCodeSection;
+
+export interface ToitStatementItemized {
+  object_type: typeof OBJECT_TYPE_STATEMENT_ITEMIZED;
+  items: ToitStatementItem[];
+}
+
+export interface ToitStatementItem {
+  object_type: typeof OBJECT_TYPE_STATEMENT_ITEM;
+  statements: ToitStatement[];
+}
+
+export interface ToitStatementCodeSection {
+  object_type: typeof OBJECT_TYPE_STATEMENT_CODE_SECTION;
+  text: string;
+}
+
+export interface ToitStatementParagraph {
+  object_type: typeof OBJECT_TYPE_STATEMENT_PARAGRAPH;
+  expressions: ToitExpression[];
+}
+
+export type ToitExpression =
+  | ToitStatementCode
+  | ToitStatementCodeSection
+  | ToitDocRef;
+
+export interface ToitStatementCode {
+  object_type: typeof OBJECT_TYPE_STATEMENT_CODE;
+  text: string;
+}
+
+export interface ToitDocRef {
+  object_type: typeof OBJECT_TYPE_TOITDOCREF;
+  text: string;
+}

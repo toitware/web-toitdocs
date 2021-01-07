@@ -26,59 +26,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface CodeBlockProps {
-  code: string[] | string;
+  code: string;
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({
-  code,
-}: CodeBlockProps) => {
+export default function CodeBlock(props: CodeBlockProps): JSX.Element {
   const classes = useStyles();
-  const formatCode = (arr: string[] | string): JSX.Element => {
-    //Iterates over the different lines of code and formats it.
-    return (
-      <div>
-        {Array.isArray(code) &&
-          code.map((value, i) => {
-            const piecesOfLine = value.split(" ");
-            return (
-              <div key={i}>
-                {piecesOfLine.map((word, j) => {
-                  if (word === "import" || word === "show" || word === "as")
-                    return (
-                      <Typography className={classes.strong} key={j}>
-                        {word}{" "}
-                      </Typography>
-                    );
-                  else {
-                    return (
-                      <Typography className={classes.normal} key={j}>
-                        {word}{" "}
-                      </Typography>
-                    );
-                  }
-                })}
-              </div>
-            );
-          })}
-        {typeof code === "string" &&
-          code.split(" ").map((word, i) => {
-            if (word === "import" || word === "show" || word === "as")
-              return (
-                <Typography className={classes.strong} key={i}>
-                  {word}{" "}
-                </Typography>
-              );
-            else {
-              return (
-                <Typography className={classes.normal} key={i}>
-                  {word}{" "}
-                </Typography>
-              );
-            }
-          })}
-      </div>
-    );
-  };
   return (
     <Paper className="paperCode" elevation={0} variant="outlined">
       <Grid
@@ -88,8 +40,28 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         direction="row"
         className={classes.containerMargin}
       >
-        {formatCode(code)}
+        <div>
+          {props.code.split(/\r?\n/).map((value, i) => {
+            const piecesOfLine = value.split(" ");
+            return (
+              <div key={i}>
+                {piecesOfLine.map((word, j) => {
+                  const isStrong =
+                    word === "import" || word === "show" || word === "as";
+                  return (
+                    <Typography
+                      className={isStrong ? classes.strong : classes.normal}
+                      key={j}
+                    >
+                      {word}{" "}
+                    </Typography>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
       </Grid>
     </Paper>
   );
-};
+}
