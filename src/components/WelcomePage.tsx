@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
 import React from "react";
-import { CodeBlock } from "./general/codeblock/CodeBlock";
+import CodeBlock from "./general/codeblock/CodeBlock";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -74,7 +74,7 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
                 "import peripherals show *",
                 "import pixel_display show TwoColorPixelDisplay",
               ]}
-            ></CodeBlock>
+            />
           </div>
           <Grid item container>
             As can be seen from the examples above there different ways of

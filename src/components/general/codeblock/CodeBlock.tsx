@@ -29,56 +29,54 @@ interface CodeBlockProps {
   code: string[] | string;
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({
-  code,
-}: CodeBlockProps) => {
+function FormattedCode(props: { codeInput: string[] | string }): JSX.Element {
   const classes = useStyles();
-  const formatCode = (arr: string[] | string): JSX.Element => {
-    //Iterates over the different lines of code and formats it.
-    return (
-      <div>
-        {Array.isArray(code) &&
-          code.map((value, i) => {
-            const piecesOfLine = value.split(" ");
-            return (
-              <div key={i}>
-                {piecesOfLine.map((word, j) => {
-                  if (word === "import" || word === "show" || word === "as")
-                    return (
-                      <Typography className={classes.strong} key={j}>
-                        {word}{" "}
-                      </Typography>
-                    );
-                  else {
-                    return (
-                      <Typography className={classes.normal} key={j}>
-                        {word}{" "}
-                      </Typography>
-                    );
-                  }
-                })}
-              </div>
-            );
-          })}
-        {typeof code === "string" &&
-          code.split(" ").map((word, i) => {
-            if (word === "import" || word === "show" || word === "as")
-              return (
-                <Typography className={classes.strong} key={i}>
-                  {word}{" "}
-                </Typography>
-              );
-            else {
-              return (
-                <Typography className={classes.normal} key={i}>
-                  {word}{" "}
-                </Typography>
-              );
-            }
-          })}
-      </div>
-    );
-  };
+
+  let code = [] as string[];
+  if (typeof props.codeInput === "string") {
+    code = [props.codeInput];
+  } else {
+    code = props.codeInput;
+  }
+
+  // Split on newlines
+  code = code
+    .map((line) => {
+      return line.split(/\r?\n/);
+    })
+    .flat();
+
+  //Iterates over the different lines of code and formats it.
+  return (
+    <div>
+      {code.map((value, i) => {
+        const piecesOfLine = value.split(" ");
+        return (
+          <div key={i}>
+            {piecesOfLine.map((word, j) => {
+              if (word === "import" || word === "show" || word === "as")
+                return (
+                  <Typography className={classes.strong} key={j}>
+                    {word}{" "}
+                  </Typography>
+                );
+              else {
+                return (
+                  <Typography className={classes.normal} key={j}>
+                    {word}{" "}
+                  </Typography>
+                );
+              }
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function CodeBlock(props: CodeBlockProps): JSX.Element {
+  const classes = useStyles();
   return (
     <Paper className="paperCode" elevation={0} variant="outlined">
       <Grid
@@ -88,8 +86,8 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         direction="row"
         className={classes.containerMargin}
       >
-        {formatCode(code)}
+        <FormattedCode codeInput={props.code} />
       </Grid>
     </Paper>
   );
-};
+}
