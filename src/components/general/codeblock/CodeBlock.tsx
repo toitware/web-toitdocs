@@ -26,53 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface CodeBlockProps {
-  code: string[] | string;
-}
-
-function FormattedCode(props: { codeInput: string[] | string }): JSX.Element {
-  const classes = useStyles();
-
-  let code = [] as string[];
-  if (typeof props.codeInput === "string") {
-    code = [props.codeInput];
-  } else {
-    code = props.codeInput;
-  }
-
-  // Split on newlines
-  code = code
-    .map((line) => {
-      return line.split(/\r?\n/);
-    })
-    .flat();
-
-  //Iterates over the different lines of code and formats it.
-  return (
-    <div>
-      {code.map((value, i) => {
-        const piecesOfLine = value.split(" ");
-        return (
-          <div key={i}>
-            {piecesOfLine.map((word, j) => {
-              if (word === "import" || word === "show" || word === "as")
-                return (
-                  <Typography className={classes.strong} key={j}>
-                    {word}{" "}
-                  </Typography>
-                );
-              else {
-                return (
-                  <Typography className={classes.normal} key={j}>
-                    {word}{" "}
-                  </Typography>
-                );
-              }
-            })}
-          </div>
-        );
-      })}
-    </div>
-  );
+  code: string;
 }
 
 export default function CodeBlock(props: CodeBlockProps): JSX.Element {
@@ -86,7 +40,27 @@ export default function CodeBlock(props: CodeBlockProps): JSX.Element {
         direction="row"
         className={classes.containerMargin}
       >
-        <FormattedCode codeInput={props.code} />
+        <div>
+          {props.code.split(/\r?\n/).map((value, i) => {
+            const piecesOfLine = value.split(" ");
+            return (
+              <div key={i}>
+                {piecesOfLine.map((word, j) => {
+                  const isStrong =
+                    word === "import" || word === "show" || word === "as";
+                  return (
+                    <Typography
+                      className={isStrong ? classes.strong : classes.normal}
+                      key={j}
+                    >
+                      {word}{" "}
+                    </Typography>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
       </Grid>
     </Paper>
   );
