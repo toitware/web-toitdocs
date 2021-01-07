@@ -32,18 +32,6 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-function importPath(library: ToitLibrary, module: ToitModule): string {
-  const filename = module.name.substring(0, module.name.lastIndexOf("."));
-  const libraryName = librarySegmentsToName(library.path);
-  if (libraryName) {
-    if (library.name === filename) {
-      return libraryName;
-    }
-    return libraryName + "." + filename;
-  }
-  return filename;
-}
-
 export interface ModuleInfoParams {
   libraryName: string;
   moduleName: string;
@@ -60,6 +48,18 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
     const hashId = this.props.location.hash.substring(1);
     const element = document.getElementById(hashId);
     element?.scrollIntoView(true);
+  }
+
+  importPath(library: ToitLibrary, module: ToitModule): string {
+    const filename = module.name.substring(0, module.name.lastIndexOf("."));
+    const libraryName = librarySegmentsToName(library.path);
+    if (libraryName) {
+      if (library.name === filename) {
+        return libraryName;
+      }
+      return libraryName + "." + filename;
+    }
+    return filename;
   }
 
   render(): JSX.Element {
@@ -80,7 +80,7 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
         </div>
         <div className={this.props.classes.importingText}>
           <Typography>To use this module in your code:</Typography>
-          <CodeBlock code={"import " + importPath(library, module)} />
+          <CodeBlock code={"import " + this.importPath(library, module)} />
         </div>
         {module.classes.length > 0 && (
           <Classes
