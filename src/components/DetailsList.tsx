@@ -1,5 +1,6 @@
 import { Divider, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
+import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { ToitDoc } from "../model/toitsdk";
 import Toitdocs from "./ToitdocInfo";
@@ -12,6 +13,7 @@ interface DetailsListProps {
     key: string;
     id: string;
     toitdoc?: ToitDoc;
+    link?: string;
   }[];
 }
 
@@ -32,6 +34,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function name(name: string, id: string, link?: string): JSX.Element {
+  if (link) {
+    return <Link to={link}>{name}</Link>;
+  } else {
+    return <HashLink to={{ hash: id }}>{name}</HashLink>;
+  }
+}
+
 export default function DetailsList(props: DetailsListProps): JSX.Element {
   const classes = useStyles();
   return (
@@ -48,7 +58,7 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
             <div key={element.key} id={element.id}>
               <div className={classes.element}>
                 <div>
-                  <HashLink to={{ hash: element.id }}>{element.name}</HashLink>{" "}
+                  {name(element.name, element.id, element.link)}{" "}
                   {element.description}
                 </div>
                 {element.toitdoc && (
