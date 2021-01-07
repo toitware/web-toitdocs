@@ -11,9 +11,7 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    body1: {
-      lineHeight: "0.1rem",
-    },
+    body1: {},
     body2: {
       fontSize: "0.80rem",
     },

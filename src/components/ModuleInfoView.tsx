@@ -73,19 +73,15 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
 
     return (
       <>
-        <Box pt={2} pb={2} className={this.props.classes.heading}>
+        <div className={this.props.classes.heading}>
           <Typography component="h2" variant="h2">
-            module: {module.name}
+            Module {module.name}
           </Typography>
-        </Box>
-        <Grid item className={this.props.classes.importingText}>
-          <Typography variant="body1">
-            To use this module in your code:
-          </Typography>
-        </Grid>
-        <Grid item>
+        </div>
+        <div className={this.props.classes.importingText}>
+          <Typography>To use this module in your code:</Typography>
           <CodeBlock code={"import " + importPath(library, module)} />
-        </Grid>
+        </div>
         {module.classes.length > 0 && (
           <Classes
             classes={module.classes}
