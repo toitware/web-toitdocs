@@ -25,13 +25,13 @@ import { Link } from "react-router-dom";
 import logo from "../assets/images/logo-simple.png";
 import { ToitParameter } from "../model/toitsdk";
 import { librarySegmentsToURI } from "../sdk";
+import { getId } from "./Functions";
 import ToitFuse, {
   SearchableToitClass,
   SearchableToitFunction,
   SearchableToitModule,
   SearchableToitObject,
 } from "./fuse";
-import { getId } from "./Methods";
 
 export const HEADER_BAR_HEIGHT = 64;
 

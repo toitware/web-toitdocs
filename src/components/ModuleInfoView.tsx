@@ -21,8 +21,8 @@ import {
   ToitModule,
 } from "../model/toitsdk";
 import { getLibrary, getModule, librarySegmentsToName } from "../sdk";
+import Functions from "./Functions";
 import { CodeBlock } from "./general/codeblock/CodeBlock";
-import Methods from "./Methods";
 import ModuleContentList from "./ModuleContentList";
 import Toitdocs from "./ToitdocInfo";
 
@@ -64,7 +64,7 @@ function Globals(props: { globals: ToitGlobal[] }): JSX.Element {
 }
 
 function GlobalFunctions(props: { functions: ToitFunction[] }): JSX.Element {
-  return <Methods functions={props.functions} title="Functions" />;
+  return <Functions functions={props.functions} title="Functions" />;
 }
 
 function ExportFunctions(): JSX.Element {
