@@ -26,7 +26,6 @@ import CodeBlock from "./general/codeblock/CodeBlock";
 const useStyles = makeStyles((theme) => ({
   statementParagraph: { paddingBottom: theme.spacing(1) },
   sectionTitle: {
-    color: theme.palette.primary.dark,
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(1),
   },
