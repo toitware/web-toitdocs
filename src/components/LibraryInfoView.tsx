@@ -55,15 +55,11 @@ class LibraryInfo extends Component<LibraryInfoProps> {
     return (
       <>
         <div className={this.props.classes.heading}>
-          <Typography component="h2" variant="h2">
-            Library {library.name}
-          </Typography>
+          <Typography variant="h2">Library {library.name}</Typography>
         </div>
         <Box pt={2} pb={2}>
           <Box pt={1} pb={1}>
-            <Typography component="h2" variant="h2">
-              Modules
-            </Typography>
+            <Typography variant="h3">Modules</Typography>
           </Box>
           <Paper variant="outlined" className={this.props.classes.paper}>
             <List>
