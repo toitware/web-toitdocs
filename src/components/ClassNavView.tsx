@@ -19,7 +19,7 @@ import ListItemLink from "./ListItemLink";
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     sideMenu: {
-      padding: theme.spacing(3),
+      padding: theme.spacing(2),
     },
   });
 

@@ -53,32 +53,30 @@ class LibraryInfo extends Component<LibraryInfoProps> {
     const moduleNames = Object.keys(library.modules).sort();
 
     return (
-      <Grid container>
-        <Grid item xs={9}>
-          <Box pt={2} pb={2}>
-            <Typography component="h1" variant="h1">
-              Library: {library.name}
+      <>
+        <div className={this.props.classes.heading}>
+          <Typography component="h2" variant="h2">
+            Library {library.name}
+          </Typography>
+        </div>
+        <Box pt={2} pb={2}>
+          <Box pt={1} pb={1}>
+            <Typography component="h2" variant="h2">
+              Modules
             </Typography>
           </Box>
-          <Box pt={2} pb={2}>
-            <Box pt={1} pb={1}>
-              <Typography component="h2" variant="h2">
-                Modules
-              </Typography>
-            </Box>
-            <Paper variant="outlined" className={this.props.classes.paper}>
-              <List>
-                {moduleNames.map((moduleName) => (
-                  <li key={"library-module-" + moduleName}>
-                    {" "}
-                    {library.modules[moduleName].name}{" "}
-                  </li>
-                ))}
-              </List>
-            </Paper>
-          </Box>
-        </Grid>
-      </Grid>
+          <Paper variant="outlined" className={this.props.classes.paper}>
+            <List>
+              {moduleNames.map((moduleName) => (
+                <li key={"library-module-" + moduleName}>
+                  {" "}
+                  {library.modules[moduleName].name}{" "}
+                </li>
+              ))}
+            </List>
+          </Paper>
+        </Box>
+      </>
     );
   }
 

@@ -2,19 +2,14 @@ body {
   overflow: hidden;
 }
 a:link {
-  color: #374b64;
+  color: #8791a5;
+  text-decoration: none;
 }
 a:visited {
-  color: #374b64;
+  color: #8791a5;
+  text-decoration: none;
 }
 
 a:hover {
   color: #ff8484;
-}
-.functionName {
-  color: #374b64;
-}
-
-pre::first-line {
-  line-height: 0;
 }
