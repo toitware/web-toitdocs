@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import { Theme } from "@material-ui/core";
@@ -43,6 +44,23 @@ export interface ModuleInfoProps
   libraries: ToitLibraries;
 }
 
+function removePrivate(props: ToitModule): ToitModule {
+  const noPrivProps: ToitModule = {
+    object_type: props.object_type,
+    name: props.name,
+    classes: props.classes.filter((elem) => elem.is_private === false),
+    export_classes: props.export_classes.filter(
+      (elem) => elem.is_private === false
+    ),
+    globals: props.globals,
+    export_globals: props.export_globals,
+    functions: props.functions.filter((elem) => elem.is_private === false),
+    export_functions: props.export_functions,
+  };
+
+  return noPrivProps;
+}
+
 class ModuleInfoView extends Component<ModuleInfoProps> {
   componentDidMount(): void {
     const hashId = this.props.location.hash.substring(1);
@@ -66,10 +84,10 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
     const { libraryName, moduleName } = this.props.match.params;
     const library = getLibrary(this.props.libraries, libraryName);
     const module = getModule(this.props.libraries, libraryName, moduleName);
-
     if (!library || !module) {
       return this.notFound(this.props.match.params.moduleName);
     }
+    const noPrivModule = removePrivate(module);
     return (
       <>
         <div className={this.props.classes.heading}>
@@ -79,36 +97,41 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
         </div>
         <div className={this.props.classes.importingText}>
           <Typography>To use this module in your code:</Typography>
-          <CodeBlock code={"import " + this.importPath(library, module)} />
+          <CodeBlock
+            code={"import " + this.importPath(library, noPrivModule)}
+          />
         </div>
-        {module.classes.length > 0 && (
+        {noPrivModule.classes.length > 0 && (
           <Classes
-            classes={module.classes}
+            classes={noPrivModule.classes}
             libName={libraryName}
             moduleName={moduleName}
             title="Classes"
           />
         )}
-        {module.export_classes.length > 0 && (
+        {noPrivModule.export_classes.length > 0 && (
           <Classes
-            classes={module.export_classes}
+            classes={noPrivModule.export_classes}
             libName={libraryName}
             moduleName={moduleName}
             title="Exported classes"
           />
         )}
-        {module.globals.length > 0 && (
-          <Globals globals={module.globals} title="Globals" />
+        {noPrivModule.globals.length > 0 && (
+          <Globals globals={noPrivModule.globals} title="Globals" />
         )}
-        {module.export_globals.length > 0 && (
-          <Globals globals={module.export_globals} title="Exported globals" />
+        {noPrivModule.export_globals.length > 0 && (
+          <Globals
+            globals={noPrivModule.export_globals}
+            title="Exported globals"
+          />
         )}
-        {module.functions.length > 0 && (
-          <Functions functions={module.functions} title="Functions" />
+        {noPrivModule.functions.length > 0 && (
+          <Functions functions={noPrivModule.functions} title="Functions" />
         )}
-        {module.export_functions.length > 0 && (
+        {noPrivModule.export_functions.length > 0 && (
           <Functions
-            functions={module.export_functions}
+            functions={noPrivModule.export_functions}
             title="Exported functions"
           />
         )}
