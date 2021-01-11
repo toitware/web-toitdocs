@@ -95,6 +95,7 @@ export interface ToitClass {
   toitdoc: ToitDoc;
   structure: ToitStructure;
   extends: ToitReference;
+  is_private?: boolean;
 }
 
 export interface ToitStructure {
