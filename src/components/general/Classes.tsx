@@ -10,32 +10,21 @@ interface ClassesProps {
 }
 
 export default function Classes(props: ClassesProps): JSX.Element {
-  console.log(props);
-  const unhiddenProps = {
-    classes: props.classes.filter((elem) => elem.is_private === false),
-    libName: props.libName,
-    moduleName: props.moduleName,
-    title: props.title,
-  };
-  console.log(unhiddenProps);
   return (
     <DetailsList
-      title={unhiddenProps.title}
-      elements={unhiddenProps.classes.map((klass, i) => {
-        return {
-          name: klass.name,
-          description: <></>,
-          key: "class_" + i,
-          id: "",
-          link:
-            "/" +
-            unhiddenProps.libName +
-            "/" +
-            unhiddenProps.moduleName +
-            "/" +
-            klass.name,
-        };
-      })}
+      title={props.title}
+      elements={props.classes
+        .filter((elem) => elem.is_private === false)
+        .map((klass, i) => {
+          return {
+            name: klass.name,
+            description: <></>,
+            key: "class_" + i,
+            id: "",
+            link:
+              "/" + props.libName + "/" + props.moduleName + "/" + klass.name,
+          };
+        })}
     />
   );
 }
