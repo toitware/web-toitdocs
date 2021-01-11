@@ -17,11 +17,16 @@ const optionsBasic = {
   includeMatches: true,
   findAllMatches: true,
   includeScore: true,
-  threshold: 0.1,
+  threshold: 0.01,
   ignoreLocation: true,
   maxPatternLength: 32,
   minMatchCharLength: 2,
-  keys: ["libraries.name", "modules.name", "classes.name", "functions.name"],
+  keys: [
+    { name: "libraries.name", weight: 10 },
+    { name: "classes.name", weight: 8 },
+    { name: "modules.name", weight: 3 },
+    { name: "functions.name", weight: 1 },
+  ],
 };
 
 function flattenDataStructureFunction(
