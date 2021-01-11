@@ -70,16 +70,18 @@ export default function Functions(props: FunctionsProps): JSX.Element {
   return (
     <DetailsList
       title={props.title}
-      elements={props.functions.map((fn, i) => {
-        const id = getId(fn.name, fn.parameters);
-        return {
-          name: fn.name,
-          description: getDescription(fn, props.hideReturnTypes),
-          key: "function" + i,
-          id: id,
-          toitdoc: fn.toitdoc,
-        };
-      })}
+      elements={props.functions
+        .filter((elem) => elem.is_private === false)
+        .map((fn, i) => {
+          const id = getId(fn.name, fn.parameters);
+          return {
+            name: fn.name,
+            description: getDescription(fn, props.hideReturnTypes),
+            key: "function" + i,
+            id: id,
+            toitdoc: fn.toitdoc,
+          };
+        })}
     />
   );
 }
