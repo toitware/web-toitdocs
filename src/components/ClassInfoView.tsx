@@ -2,9 +2,10 @@
 
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import { RemoveRounded } from "@material-ui/icons";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries } from "../model/toitsdk";
+import { ToitLibraries, ToitStructure } from "../model/toitsdk";
 import { getClass } from "../sdk";
 import Fields from "./Fields";
 import Functions from "./Functions";
@@ -19,6 +20,20 @@ export interface ClassInfoParams {
 
 export interface ClassInfoProps extends RouteComponentProps<ClassInfoParams> {
   libraries: ToitLibraries;
+}
+
+function removePrivate(props: ToitStructure): ToitStructure {
+  const noPrivProps = {
+    statics: props.statics.filter((elem) => elem.is_private === false),
+    constructors: props.constructors.filter(
+      (elem) => elem.is_private === false
+    ),
+    factories: props.factories.filter((elem) => elem.is_private === false),
+    fields: props.fields.filter((elem) => elem.is_private === false),
+    methods: props.methods.filter((elem) => elem.is_private === false),
+  };
+
+  return noPrivProps;
 }
 
 export default class ClassInfoView extends Component<ClassInfoProps> {
@@ -39,7 +54,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     if (!classInfo) {
       return this.notFound(this.props.match.params.className);
     }
-
+    const classStructure = removePrivate(classInfo.structure);
     return (
       <>
         <Box pt={2} pb={2}>
@@ -55,32 +70,29 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
         <Box pb={3}>
           <Toitdocs value={classInfo.toitdoc} />
         </Box>
-        {classInfo.structure.constructors.concat(classInfo.structure.factories)
-          .length > 0 && (
+        {classStructure.constructors.concat(classStructure.factories).length >
+          0 && (
           <>
             <Functions
-              functions={classInfo.structure.constructors.concat(
-                classInfo.structure.factories
+              functions={classStructure.constructors.concat(
+                classStructure.factories
               )}
               title="Constructors"
               hideReturnTypes
             />
           </>
         )}
-        {classInfo.structure.statics.length > 0 && (
+        {classStructure.statics.length > 0 && (
           <>
-            <Functions
-              functions={classInfo.structure.statics}
-              title="Statics"
-            />
+            <Functions functions={classStructure.statics} title="Statics" />
           </>
         )}
-        {classInfo.structure.methods.length > 0 && (
-          <Functions functions={classInfo.structure.methods} title="Methods" />
+        {classStructure.methods.length > 0 && (
+          <Functions functions={classStructure.methods} title="Methods" />
         )}
-        {classInfo.structure.fields.length > 0 && (
+        {classStructure.fields.length > 0 && (
           <>
-            <Fields fields={classInfo.structure.fields} />
+            <Fields fields={classStructure.fields} />
           </>
         )}
       </>

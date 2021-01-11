@@ -87,6 +87,7 @@ export interface ToitFunction {
   parameters: ToitParameter[];
   return_type: ToitType;
   toitdoc: ToitDoc;
+  is_private?: boolean;
 }
 
 export interface ToitClass {
@@ -111,6 +112,7 @@ export interface ToitField {
   name: string;
   type: ToitType;
   toitdoc: ToitDoc;
+  is_private?: boolean;
 }
 
 // ToitDoc related

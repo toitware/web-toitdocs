@@ -70,7 +70,6 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
     if (!library || !module) {
       return this.notFound(this.props.match.params.moduleName);
     }
-
     return (
       <>
         <div className={this.props.classes.heading}>

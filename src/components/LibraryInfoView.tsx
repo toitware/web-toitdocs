@@ -45,7 +45,6 @@ class LibraryInfo extends Component<LibraryInfoProps> {
       this.props.libraries,
       this.props.match.params.libraryName
     );
-
     if (!library) {
       return this.notFound(this.props.match.params.libraryName);
     }
