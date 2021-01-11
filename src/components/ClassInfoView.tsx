@@ -2,7 +2,6 @@
 
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
-import { RemoveRounded } from "@material-ui/icons";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries, ToitStructure } from "../model/toitsdk";
