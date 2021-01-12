@@ -2,7 +2,7 @@ import { Divider, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-import { ToitDoc } from "../model/toitsdk";
+import { ToitDoc } from "../generator/sdk";
 import Toitdocs from "./ToitdocInfo";
 
 interface DetailsListProps {

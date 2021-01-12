@@ -14,8 +14,8 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary } from "../sdk";
+import { ToitLibraries } from "../generator/sdk";
+import { getLibrary } from "../redux/sdk";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

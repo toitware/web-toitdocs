@@ -1,12 +1,12 @@
 import React from "react";
-import thunkMiddleware from "redux-thunk";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import { sdk } from "./sdk";
-import "./assets/index.css";
-import * as serviceWorker from "./serviceWorker";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import thunkMiddleware from "redux-thunk";
 import App from "./App";
+import "./assets/index.css";
+import { sdk } from "./redux/sdk";
+import * as serviceWorker from "./serviceWorker";
 
 const rootReducer = combineReducers({
   sdk: sdk.reducer,

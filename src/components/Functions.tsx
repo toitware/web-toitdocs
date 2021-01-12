@@ -1,7 +1,7 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React from "react";
-import { ToitFunction, ToitParameter } from "../model/toitsdk";
+import { ToitFunction, ToitParameter } from "../generator/sdk";
 import DetailsList from "./DetailsList";
 import { Type } from "./Util";
 

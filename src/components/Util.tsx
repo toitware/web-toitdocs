@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { ToitReference, ToitType } from "../model/toitsdk";
+import { ToitReference, ToitType } from "../generator/sdk";
 
 interface TypeProps {
   type: ToitType;

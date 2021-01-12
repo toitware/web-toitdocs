@@ -1,5 +1,5 @@
 import React from "react";
-import { ToitField } from "../model/toitsdk";
+import { ToitField } from "../generator/sdk";
 import DetailsList from "./DetailsList";
 import { Type } from "./Util";
 

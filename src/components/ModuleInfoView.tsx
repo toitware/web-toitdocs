@@ -12,8 +12,8 @@ import {
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries, ToitLibrary, ToitModule } from "../model/toitsdk";
-import { getLibrary, getModule, librarySegmentsToName } from "../sdk";
+import { ToitLibraries, ToitLibrary, ToitModule } from "../generator/sdk";
+import { getLibrary, getModule, librarySegmentsToName } from "../redux/sdk";
 import Functions from "./Functions";
 import Classes from "./general/Classes";
 import CodeBlock from "./general/codeblock/CodeBlock";
