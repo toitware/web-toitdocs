@@ -151,20 +151,25 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     if (event.target.value.length >= 2) {
       //Results of searching through libraries, modules and classes
       const found = this.fuse.basic().search(this.state.searchTerm);
-
       let matches = [] as readonly Fuse.FuseResultMatch[];
-
       if (found.length !== 0 && found[0].matches) {
         matches = found[0].matches;
       }
-
       setTimeout(() => {
         this.setState({
           ...this.state,
           results: { matches: matches, isFilled: true },
           resultsVisible: true,
         });
-      }, 200);
+      }, 100);
+    } else {
+      setTimeout(() => {
+        this.setState({
+          ...this.state,
+          results: { matches: [], isFilled: false },
+          resultsVisible: false,
+        });
+      }, 100);
     }
   };
 
@@ -173,7 +178,15 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   };
 
   handleClick = (): void => {
-    this.setState({ ...this.state, resultsVisible: true });
+    if (this.state.searchTerm.length >= 2) {
+      setTimeout(() => {
+        this.setState({ ...this.state, resultsVisible: true });
+      }, 200);
+    } else {
+      setTimeout(() => {
+        this.setState({ ...this.state, resultsVisible: false });
+      }, 200);
+    }
   };
 
   renderSearchResults(
@@ -200,94 +213,110 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let resultName = "";
     let funParams: ToitParameter[];
     let funIDString = "";
-
-    return (
-      <>
-        {fuseResults.map((match, index) => {
-          if (typeof match.refIndex === "number") {
-            if (type === "libraries") {
-              try {
-                const resultAfterSearch = afterSearch[match.refIndex];
-                libString = "/" + resultAfterSearch.name;
-                resultName = resultAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
-            } else if (type === "modules") {
-              try {
-                const resultAfterSearch = afterSearch[
-                  match.refIndex
-                ] as SearchableToitModule;
-                if (resultAfterSearch.library.includes("font")) {
-                  return null;
+    if (fuseResults.length === 0) {
+      return (
+        <ListItem className="ListItem">
+          <Typography variant="body2" color="secondary">
+            {" "}
+            No result found{" "}
+          </Typography>
+        </ListItem>
+      );
+    } else {
+      return (
+        <>
+          {fuseResults.map((match, index) => {
+            if (typeof match.refIndex === "number") {
+              if (type === "libraries") {
+                try {
+                  const resultAfterSearch = afterSearch[match.refIndex];
+                  libString = "/" + resultAfterSearch.name;
+                  resultName = resultAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
                 }
-                libString = `/${librarySegmentsToURI(
-                  resultAfterSearch.library
-                )}`;
-                moduleString = `/${resultAfterSearch.name}`;
-                resultName = resultAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
-            } else if (type === "classes") {
-              try {
-                const resultAfterSearch = afterSearch[
-                  match.refIndex
-                ] as SearchableToitClass;
-                if (resultAfterSearch.library.includes("font")) {
-                  return null;
+              } else if (type === "modules") {
+                try {
+                  const resultAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as SearchableToitModule;
+                  if (resultAfterSearch.library.includes("font")) {
+                    return null;
+                  }
+                  libString = `/${librarySegmentsToURI(
+                    resultAfterSearch.library
+                  )}`;
+                  moduleString = `/${resultAfterSearch.name}`;
+                  resultName = resultAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
                 }
-                libString = `/${librarySegmentsToURI(
-                  resultAfterSearch.library
-                )}`;
-                moduleString = `/${resultAfterSearch.module}`;
-                classString = `/${resultAfterSearch.name}`;
-                resultName = resultAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
+              } else if (type === "classes") {
+                try {
+                  const resultAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as SearchableToitClass;
+                  if (resultAfterSearch.library.includes("font")) {
+                    return null;
+                  }
+                  libString = `/${librarySegmentsToURI(
+                    resultAfterSearch.library
+                  )}`;
+                  moduleString = `/${resultAfterSearch.module}`;
+                  classString = `/${resultAfterSearch.name}`;
+                  resultName = resultAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
+                }
+              } else if (type === "functions") {
+                try {
+                  const resultTempAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as unknown;
+                  const resultAfterSearch = resultTempAfterSearch as SearchableToitFunction;
+                  funParams = resultAfterSearch.functionParameters;
+                  libString = `/${librarySegmentsToURI(
+                    resultAfterSearch.library
+                  )}`;
+                  moduleString = `/${resultAfterSearch.module}`;
+                  classString = `/${resultAfterSearch.class}`;
+                  resultName = resultAfterSearch.name;
+                  funIDString = "#" + getId(resultName, funParams);
+                } catch {
+                  console.log("Cast failed");
+                }
               }
-            } else if (type === "functions") {
-              try {
-                const resultTempAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const resultAfterSearch = resultTempAfterSearch as SearchableToitFunction;
-                funParams = resultAfterSearch.functionParameters;
-                libString = `/${librarySegmentsToURI(
-                  resultAfterSearch.library
-                )}`;
-                moduleString = `/${resultAfterSearch.module}`;
-                classString = `/${resultAfterSearch.class}`;
-                resultName = resultAfterSearch.name;
-                funIDString = "#" + getId(resultName, funParams);
-              } catch {
-                console.log("Cast failed");
-              }
+              return (
+                <Link
+                  to={`${libString}${moduleString}${classString}${funIDString}`}
+                  onClick={this.handleClickAway}
+                  key={"list_item" + index}
+                >
+                  <ListItem className="ListItem" button>
+                    <Typography variant="h6" color="secondary">
+                      {" "}
+                      {resultName}{" "}
+                    </Typography>
+                  </ListItem>
+                </Link>
+              );
+            } else {
+              return null;
             }
-            return (
-              <Link
-                to={`${libString}${moduleString}${classString}${funIDString}`}
-                onClick={this.handleClickAway}
-                key={"list_item" + index}
-              >
-                <ListItem className="ListItem" button>
-                  <Typography variant="h6" color="secondary">
-                    {" "}
-                    {resultName}{" "}
-                  </Typography>
-                </ListItem>
-              </Link>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </>
-    );
+          })}
+        </>
+      );
+    }
   }
 
   render(): JSX.Element {
     const classes = this.props.classes;
+    let matches = [] as readonly Fuse.FuseResultMatch[];
+    if (this.state.results !== undefined) {
+      const unknownResults = this.state.results as unknown;
+      const results = unknownResults as SearchResults;
+      matches = results.matches;
+    }
     return (
       <Grid container item xs={12} className={classes.root}>
         <Grid item xs={12}>
@@ -322,7 +351,25 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
           </AppBar>
         </Grid>
         <Grid item xs={9}></Grid>
-        {this.state.resultsVisible && (
+        {this.state.resultsVisible && matches.length === 0 && (
+          <div id="SearchResults">
+            <Grid
+              container
+              item
+              xs={3}
+              className={this.props.classes.searchResults}
+            >
+              <List className={this.props.classes.searchList}>
+                <ListItem>
+                  <Typography variant="h5" color="secondary">
+                    No results found
+                  </Typography>
+                </ListItem>
+              </List>
+            </Grid>
+          </div>
+        )}
+        {this.state.resultsVisible && matches.length !== 0 && (
           <div id="SearchResults">
             <Grid
               container
