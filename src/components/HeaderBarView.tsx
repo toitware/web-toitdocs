@@ -23,8 +23,8 @@ import Fuse from "fuse.js";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo-simple.png";
-import { ToitParameter } from "../model/toitsdk";
-import { librarySegmentsToURI } from "../sdk";
+import { ToitParameter } from "../generator/sdk";
+import { librarySegmentsToURI } from "../redux/sdk";
 import { getId } from "./Functions";
 import ToitFuse, {
   SearchableToitClass,

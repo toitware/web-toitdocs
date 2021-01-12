@@ -12,12 +12,12 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { ToitLibrary, ToitModule } from "../model/toitsdk";
+import { ToitLibrary, ToitModule } from "../generator/sdk";
 import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
-} from "../sdk";
+} from "../redux/sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
 

@@ -33,8 +33,8 @@ import LibrariesNav from "./containers/LibrariesNav";
 import LibraryInfo from "./containers/LibraryInfo";
 import ModuleInfo from "./containers/ModuleInfo";
 import ModuleNav from "./containers/ModuleNav";
-import { ToitObject } from "./model/toitsdk";
-import { fetchSDK, RootState } from "./sdk";
+import { ToitObject } from "./generator/sdk";
+import { fetchSDK, RootState } from "./redux/sdk";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

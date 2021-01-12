@@ -1,5 +1,5 @@
 import React from "react";
-import { ToitGlobal } from "../model/toitsdk";
+import { ToitGlobal } from "../generator/sdk";
 import DetailsList from "./DetailsList";
 
 interface GlobalsProps {

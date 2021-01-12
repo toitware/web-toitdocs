@@ -18,7 +18,7 @@ import {
   ToitStatementItem,
   ToitStatementItemized,
   ToitStatementParagraph,
-} from "../model/toitsdk";
+} from "../generator/sdk";
 import CodeBlock from "./general/codeblock/CodeBlock";
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)

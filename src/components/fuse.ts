@@ -8,8 +8,8 @@ import {
   ToitModule,
   ToitObject,
   ToitParameter,
-} from "../model/toitsdk";
-import { rootLibrary } from "../sdk";
+} from "../generator/sdk";
+import { rootLibrary } from "../redux/sdk";
 
 // Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
@@ -79,7 +79,7 @@ function flattenDataStructureLibrary(
   }
   Object.values(library.libraries).forEach((library) => {
     /* This is a temporary solution for removing the fonts from the results
-       We should edit the toit generator and change the structure   
+       We should edit the toit generator and change the structure
     */
     if (!library.path.includes("font")) {
       flattenDataStructureLibrary(library, result);

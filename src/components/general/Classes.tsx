@@ -1,5 +1,5 @@
 import React from "react";
-import { ToitClass } from "../../model/toitsdk";
+import { ToitClass } from "../../generator/sdk";
 import DetailsList from "../DetailsList";
 
 interface ClassesProps {
