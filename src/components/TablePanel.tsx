@@ -8,7 +8,6 @@ import {
   TableContainer,
   TableRow,
   Theme,
-  Typography,
   withStyles,
   WithStyles,
 } from "@material-ui/core";
@@ -17,12 +16,6 @@ import { HashLink } from "react-router-hash-link";
 import { ToitField, ToitFunction } from "../generator/sdk";
 import { getDescription, getId } from "./Functions";
 import { Type } from "./Util";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -41,13 +34,11 @@ const styles = (theme: Theme): StyleRules =>
       marginTop: theme.spacing(1),
     },
   });
-interface TablePanelProps extends WithStyles<typeof styles> {
-  tab: number;
-  active: number;
-  tabData?: ToitFunction[];
-  tabFieldData?: ToitField[];
-  hideReturnTypes: boolean;
-  ariaLabel: string;
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }
 
 function TabPanel(props: TabPanelProps): JSX.Element {
@@ -63,11 +54,20 @@ function TabPanel(props: TabPanelProps): JSX.Element {
     >
       {value === index && (
         <Box>
-          <Typography>{children}</Typography>
+          <span>{children}</span>
         </Box>
       )}
     </div>
   );
+}
+
+interface TablePanelProps extends WithStyles<typeof styles> {
+  tab: number;
+  active: number;
+  tabData?: ToitFunction[];
+  tabFieldData?: ToitField[];
+  hideReturnTypes: boolean;
+  ariaLabel: string;
 }
 
 class TablePanel extends Component<TablePanelProps> {
