@@ -11,15 +11,15 @@ import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { ToitLibraries } from "../model/toitsdk";
-import { getLibrary } from "../sdk";
+import { ToitLibraries } from "../generator/sdk";
+import { getLibrary } from "../redux/sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     sideMenu: {
-      padding: theme.spacing(3),
+      padding: theme.spacing(2),
     },
   });
 

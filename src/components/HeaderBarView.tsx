@@ -23,10 +23,12 @@ import Fuse from "fuse.js";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo-simple.png";
-import { librarySegmentsToURI } from "../sdk";
+import { ToitParameter } from "../generator/sdk";
+import { librarySegmentsToURI } from "../redux/sdk";
+import { getId } from "./Functions";
 import ToitFuse, {
   SearchableToitClass,
-  SearchableToitLibrary,
+  SearchableToitFunction,
   SearchableToitModule,
   SearchableToitObject,
 } from "./fuse";
@@ -149,20 +151,25 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     if (event.target.value.length >= 2) {
       //Results of searching through libraries, modules and classes
       const found = this.fuse.basic().search(this.state.searchTerm);
-
       let matches = [] as readonly Fuse.FuseResultMatch[];
-
       if (found.length !== 0 && found[0].matches) {
         matches = found[0].matches;
       }
-
       setTimeout(() => {
         this.setState({
           ...this.state,
           results: { matches: matches, isFilled: true },
           resultsVisible: true,
         });
-      }, 200);
+      }, 100);
+    } else {
+      setTimeout(() => {
+        this.setState({
+          ...this.state,
+          results: { matches: [], isFilled: false },
+          resultsVisible: false,
+        });
+      }, 100);
     }
   };
 
@@ -171,27 +178,31 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
   };
 
   handleClick = (): void => {
-    this.setState({ ...this.state, resultsVisible: true });
+    if (this.state.searchTerm.length >= 2) {
+      setTimeout(() => {
+        this.setState({ ...this.state, resultsVisible: true });
+      }, 200);
+    } else {
+      setTimeout(() => {
+        this.setState({ ...this.state, resultsVisible: false });
+      }, 200);
+    }
   };
 
-  renderSearch(
-    type?: "libraries" | "classes" | "modules",
+  renderSearchResults(
+    type: "libraries" | "classes" | "modules" | "functions",
     results?: SearchResults
   ): JSX.Element {
-    if (
-      !results ||
-      !results.isFilled ||
-      results.matches.length === 0 ||
-      type === undefined
-    ) {
+    if (!results || !results.isFilled || results.matches.length === 0) {
       return <></>;
     }
-    const libraries: Fuse.FuseResultMatch[] = [];
+
+    const fuseResults: Fuse.FuseResultMatch[] = [];
     results.matches.forEach((match, index) => {
       if (match.refIndex === undefined) {
         console.error("missing refindex for match", match);
       } else if (match.key === `${type}.name`) {
-        libraries.push(match);
+        fuseResults.push(match);
         return match;
       }
     });
@@ -200,80 +211,112 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
     let moduleString = "";
     let classString = "";
     let resultName = "";
-
-    return (
-      <>
-        {libraries.map((match, index) => {
-          if (typeof match.refIndex === "number") {
-            if (type === "libraries") {
-              try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitLibrary;
-                libString = "/" + libAfterSearch.name;
-                resultName = libAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
-            } else if (type === "modules") {
-              try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitModule;
-                if (libAfterSearch.library.includes("font")) {
-                  return null;
+    let funParams: ToitParameter[];
+    let funIDString = "";
+    if (fuseResults.length === 0) {
+      return (
+        <ListItem className="ListItem">
+          <Typography variant="body2" color="secondary">
+            {" "}
+            No result found{" "}
+          </Typography>
+        </ListItem>
+      );
+    } else {
+      return (
+        <>
+          {fuseResults.map((match, index) => {
+            if (typeof match.refIndex === "number") {
+              if (type === "libraries") {
+                try {
+                  const resultAfterSearch = afterSearch[match.refIndex];
+                  libString = "/" + resultAfterSearch.name;
+                  resultName = resultAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
                 }
-                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
-                moduleString = `/${libAfterSearch.name}`;
-                resultName = libAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
-              }
-            } else if (type === "classes") {
-              try {
-                const unknownAfterSearch = afterSearch[
-                  match.refIndex
-                ] as unknown;
-                const libAfterSearch = unknownAfterSearch as SearchableToitClass;
-                if (libAfterSearch.library.includes("font")) {
-                  return null;
+              } else if (type === "modules") {
+                try {
+                  const resultAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as SearchableToitModule;
+                  if (resultAfterSearch.library.includes("font")) {
+                    return null;
+                  }
+                  libString = `/${librarySegmentsToURI(
+                    resultAfterSearch.library
+                  )}`;
+                  moduleString = `/${resultAfterSearch.name}`;
+                  resultName = resultAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
                 }
-                libString = `/${librarySegmentsToURI(libAfterSearch.library)}`;
-                moduleString = `/${libAfterSearch.module}`;
-                classString = `/${libAfterSearch.name}`;
-                resultName = libAfterSearch.name;
-              } catch {
-                console.log("Cast failed");
+              } else if (type === "classes") {
+                try {
+                  const resultAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as SearchableToitClass;
+                  if (resultAfterSearch.library.includes("font")) {
+                    return null;
+                  }
+                  libString = `/${librarySegmentsToURI(
+                    resultAfterSearch.library
+                  )}`;
+                  moduleString = `/${resultAfterSearch.module}`;
+                  classString = `/${resultAfterSearch.name}`;
+                  resultName = resultAfterSearch.name;
+                } catch {
+                  console.log("Cast failed");
+                }
+              } else if (type === "functions") {
+                try {
+                  const resultTempAfterSearch = afterSearch[
+                    match.refIndex
+                  ] as unknown;
+                  const resultAfterSearch = resultTempAfterSearch as SearchableToitFunction;
+                  funParams = resultAfterSearch.functionParameters;
+                  libString = `/${librarySegmentsToURI(
+                    resultAfterSearch.library
+                  )}`;
+                  moduleString = `/${resultAfterSearch.module}`;
+                  classString = `/${resultAfterSearch.class}`;
+                  resultName = resultAfterSearch.name;
+                  funIDString = "#" + getId(resultName, funParams);
+                } catch {
+                  console.log("Cast failed");
+                }
               }
+              return (
+                <Link
+                  to={`${libString}${moduleString}${classString}${funIDString}`}
+                  onClick={this.handleClickAway}
+                  key={"list_item" + index}
+                >
+                  <ListItem className="ListItem" button>
+                    <Typography variant="h6" color="secondary">
+                      {" "}
+                      {resultName}{" "}
+                    </Typography>
+                  </ListItem>
+                </Link>
+              );
+            } else {
+              return null;
             }
-
-            return (
-              <Link
-                to={`${libString}${moduleString}${classString}`}
-                key={"list_item" + index}
-                onClick={this.handleClickAway}
-              >
-                <ListItem className="ListItem" button>
-                  <Typography variant="h6" color="secondary">
-                    {" "}
-                    {resultName}{" "}
-                  </Typography>
-                </ListItem>
-              </Link>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </>
-    );
+          })}
+        </>
+      );
+    }
   }
 
   render(): JSX.Element {
     const classes = this.props.classes;
-
+    let matches = [] as readonly Fuse.FuseResultMatch[];
+    if (this.state.results !== undefined) {
+      const unknownResults = this.state.results as unknown;
+      const results = unknownResults as SearchResults;
+      matches = results.matches;
+    }
     return (
       <Grid container item xs={12} className={classes.root}>
         <Grid item xs={12}>
@@ -308,7 +351,25 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
           </AppBar>
         </Grid>
         <Grid item xs={9}></Grid>
-        {this.state.resultsVisible && (
+        {this.state.resultsVisible && matches.length === 0 && (
+          <div id="SearchResults">
+            <Grid
+              container
+              item
+              xs={3}
+              className={this.props.classes.searchResults}
+            >
+              <List className={this.props.classes.searchList}>
+                <ListItem>
+                  <Typography variant="h5" color="secondary">
+                    No results found
+                  </Typography>
+                </ListItem>
+              </List>
+            </Grid>
+          </div>
+        )}
+        {this.state.resultsVisible && matches.length !== 0 && (
           <div id="SearchResults">
             <Grid
               container
@@ -325,7 +386,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearch("libraries", this.state.results)}
+                  {this.renderSearchResults("libraries", this.state.results)}
                   {this.state.results !== undefined && (
                     <ListItem>
                       <Typography variant="h5" color="secondary">
@@ -333,7 +394,7 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearch("modules", this.state.results)}
+                  {this.renderSearchResults("modules", this.state.results)}
                   {this.state.results !== undefined && (
                     <ListItem>
                       <Typography variant="h5" color="secondary">
@@ -341,7 +402,15 @@ class HeaderBar extends Component<HeaderBarProps, HeaderBarState> {
                       </Typography>
                     </ListItem>
                   )}
-                  {this.renderSearch("classes", this.state.results)}
+                  {this.renderSearchResults("classes", this.state.results)}
+                  {this.state.results !== undefined && (
+                    <ListItem>
+                      <Typography variant="h5" color="secondary">
+                        Functions
+                      </Typography>
+                    </ListItem>
+                  )}
+                  {this.renderSearchResults("functions", this.state.results)}
                 </List>
               </div>
             </Grid>

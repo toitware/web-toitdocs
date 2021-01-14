@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import LibraryInfoView, {
   LibraryInfoProps,
 } from "../components/LibraryInfoView";
-import { RootState } from "../sdk";
+import { RootState } from "../redux/sdk";
 
 function mapStateToProps(
   state: RootState

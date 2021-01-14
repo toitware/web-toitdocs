@@ -3,11 +3,13 @@
 import Fuse from "fuse.js";
 import {
   ToitClass,
+  ToitFunction,
   ToitLibrary,
   ToitModule,
   ToitObject,
-} from "../model/toitsdk";
-import { rootLibrary } from "../sdk";
+  ToitParameter,
+} from "../generator/sdk";
+import { rootLibrary } from "../redux/sdk";
 
 // Parameters for searching through libraries, modules and classes.
 const optionsBasic = {
@@ -15,12 +17,33 @@ const optionsBasic = {
   includeMatches: true,
   findAllMatches: true,
   includeScore: true,
-  threshold: 0.2,
+  threshold: 0.01,
   ignoreLocation: true,
   maxPatternLength: 32,
   minMatchCharLength: 2,
-  keys: ["libraries.name", "modules.name", "classes.name"],
+  keys: [
+    { name: "libraries.name", weight: 10 },
+    { name: "classes.name", weight: 8 },
+    { name: "modules.name", weight: 3 },
+    { name: "functions.name", weight: 1 },
+  ],
 };
+
+function flattenDataStructureFunction(
+  library: ToitLibrary,
+  module: ToitModule,
+  klass: ToitClass,
+  fun: ToitFunction,
+  result: SearchableToitObject
+): void {
+  result.functions.push({
+    name: fun.name,
+    module: module.name,
+    library: library.path,
+    class: klass.name,
+    functionParameters: fun.parameters,
+  });
+}
 
 function flattenDataStructureKlass(
   library: ToitLibrary,
@@ -33,6 +56,12 @@ function flattenDataStructureKlass(
     module: module.name,
     library: library.path,
   });
+  klass.structure.methods.forEach((func) =>
+    flattenDataStructureFunction(library, module, klass, func, result)
+  );
+  klass.structure.statics.forEach((func) =>
+    flattenDataStructureFunction(library, module, klass, func, result)
+  );
 }
 
 function flattenDataStructureModule(
@@ -50,13 +79,22 @@ function flattenDataStructureLibrary(
   library: ToitLibrary,
   result: SearchableToitObject
 ): void {
-  result.libraries.push({ name: library.name, path: library.path });
-  Object.values(library.libraries).forEach((library) =>
-    flattenDataStructureLibrary(library, result)
-  );
-  Object.values(library.modules).forEach((module) =>
-    flattenDataStructureModule(library, module, result)
-  );
+  if (library.name !== "lib") {
+    result.libraries.push({ name: library.name, path: library.path });
+  }
+  Object.values(library.libraries).forEach((library) => {
+    /* This is a temporary solution for removing the fonts from the results
+       We should edit the toit generator and change the structure
+    */
+    if (!library.path.includes("font")) {
+      flattenDataStructureLibrary(library, result);
+    }
+  });
+  Object.values(library.modules).forEach((module) => {
+    if (!library.path.includes("font")) {
+      flattenDataStructureModule(library, module, result);
+    }
+  });
 }
 
 export function flattenDataStructure(
@@ -66,6 +104,7 @@ export function flattenDataStructure(
     libraries: [],
     modules: [],
     classes: [],
+    functions: [],
   };
   if (!data) {
     return result;
@@ -80,6 +119,7 @@ export interface SearchableToitObject {
   libraries: SearchableToitLibrary[];
   modules: SearchableToitModule[];
   classes: SearchableToitClass[];
+  functions: SearchableToitFunction[];
 }
 
 export interface SearchableToitLibrary {
@@ -96,6 +136,14 @@ export interface SearchableToitClass {
   name: string;
   module: string;
   library: string[];
+}
+
+export interface SearchableToitFunction {
+  name: string;
+  module: string;
+  library: string[];
+  class: string;
+  functionParameters: ToitParameter[];
 }
 
 export default class ToitFuse {

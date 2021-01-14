@@ -1,9 +1,13 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
+import { makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import {
+  OBJECT_TYPE_STATEMENT_CODE,
+  OBJECT_TYPE_STATEMENT_CODE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_STATEMENT_PARAGRAPH,
+  OBJECT_TYPE_TOITDOCREF,
   ToitDoc,
   ToitDocRef,
   ToitExpression,
@@ -14,27 +18,23 @@ import {
   ToitStatementItem,
   ToitStatementItemized,
   ToitStatementParagraph,
-} from "../model/toitsdk";
-import {
-  OBJECT_TYPE_STATEMENT_CODE,
-  OBJECT_TYPE_STATEMENT_CODE_SECTION,
-  OBJECT_TYPE_STATEMENT_ITEMIZED,
-  OBJECT_TYPE_STATEMENT_PARAGRAPH,
-  OBJECT_TYPE_TOITDOCREF,
-} from "../sdk";
+} from "../generator/sdk";
+import CodeBlock from "./general/codeblock/CodeBlock";
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
+
+const useStyles = makeStyles((theme) => ({
+  statementParagraph: { paddingBottom: theme.spacing(1) },
+  sectionTitle: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
+  },
+}));
 
 function StatementCodeSection(props: {
   code: ToitStatementCodeSection;
 }): JSX.Element {
-  return (
-    <Paper elevation={0} variant="outlined">
-      <pre>
-        <code>{props.code.text}</code>
-      </pre>
-    </Paper>
-  );
+  return <CodeBlock code={props.code.text} />;
 }
 
 function StatementCode(props: { code: ToitStatementCode }): JSX.Element {
@@ -60,14 +60,15 @@ function StatementItemized(props: {
 function StatementParagraph(props: {
   statement: ToitStatementParagraph;
 }): JSX.Element {
+  const classes = useStyles();
   return (
-    <>
+    <div className={classes.statementParagraph}>
       {props.statement.expressions.map(
         (expr: ToitExpression, index: number) => (
           <Expression key={"expression_" + index} expression={expr} />
         )
       )}
-    </>
+    </div>
   );
 }
 
@@ -80,13 +81,11 @@ function Expression(props: { expression: ToitExpression }): JSX.Element {
   const expression = props.expression;
   switch (expression.object_type) {
     case OBJECT_TYPE_STATEMENT_CODE:
-      return <StatementCode code={expression as ToitStatementCode} />;
+      return <StatementCode code={expression} />;
     case OBJECT_TYPE_STATEMENT_CODE_SECTION:
-      return (
-        <StatementCodeSection code={expression as ToitStatementCodeSection} />
-      );
+      return <StatementCodeSection code={expression} />;
     case OBJECT_TYPE_TOITDOCREF:
-      return <ToitdocRef reference={expression as ToitDocRef} />;
+      return <ToitdocRef reference={expression} />;
     default:
       throw Error("unhandled expression: " + expression);
   }
@@ -96,37 +95,26 @@ function Statement(props: { statement: ToitStatement }): JSX.Element {
   const statement = props.statement;
   switch (statement.object_type) {
     case OBJECT_TYPE_STATEMENT_PARAGRAPH:
-      return (
-        <StatementParagraph statement={statement as ToitStatementParagraph} />
-      );
+      return <StatementParagraph statement={statement} />;
     case OBJECT_TYPE_STATEMENT_CODE_SECTION:
-      return (
-        <StatementCodeSection code={statement as ToitStatementCodeSection} />
-      );
+      return <StatementCodeSection code={statement} />;
     case OBJECT_TYPE_STATEMENT_ITEMIZED:
-      return (
-        <StatementItemized itemized={statement as ToitStatementItemized} />
-      );
+      return <StatementItemized itemized={statement} />;
     default:
       throw Error("unhandled statement: " + statement);
   }
 }
 
 function Section(props: { section: ToitSection }): JSX.Element {
+  const classes = useStyles();
   return (
     <>
-      <Grid container>
-        <Grid item>
-          <strong>{props.section.title}</strong>
-        </Grid>
-      </Grid>
-      <Grid container>
-        <Grid item>
-          {props.section.statements.map((statement, index) => (
-            <Statement key={"statement_" + index} statement={statement} />
-          ))}
-        </Grid>
-      </Grid>
+      <Typography variant="h5" className={classes.sectionTitle}>
+        {props.section.title}
+      </Typography>
+      {props.section.statements.map((statement, index) => (
+        <Statement key={"statement_" + index} statement={statement} />
+      ))}
     </>
   );
 }

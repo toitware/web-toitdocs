@@ -5,11 +5,11 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries } from "../model/toitsdk";
-import { getClass } from "../sdk";
+import { ToitLibraries } from "../generator/sdk";
+import { getClass } from "../redux/sdk";
 import ClassOverviewView from "./ClassOverviewView";
 import Fields from "./Fields";
-import Methods from "./Methods";
+import Functions from "./Functions";
 import { Reference } from "./Util";
 
 export interface ClassInfoParams {
@@ -37,8 +37,16 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
       this.props.match.params.className
     );
 
+    function notFound(name: string): JSX.Element {
+      return (
+        <Typography variant="h2" component="h2">
+          {"Class: " + name + " not found!"}
+        </Typography>
+      );
+    }
+
     if (!classInfo) {
-      return this.notFound(this.props.match.params.className);
+      return notFound(this.props.match.params.className);
     }
 
     return (
@@ -59,7 +67,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
             classInfo.structure.factories
           ).length > 0 && (
             <>
-              <Methods
+              <Functions
                 functions={classInfo.structure.constructors.concat(
                   classInfo.structure.factories
                 )}
@@ -70,32 +78,23 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
           )}
           {classInfo.structure.statics.length > 0 && (
             <>
-              <Methods
+              <Functions
                 functions={classInfo.structure.statics}
                 title="Statics"
               />
             </>
           )}
           {classInfo.structure.methods.length > 0 && (
-            <Methods functions={classInfo.structure.methods} title="Methods" />
+            <Functions
+              functions={classInfo.structure.methods}
+              title="Methods"
+            />
           )}
           {classInfo.structure.fields.length > 0 && (
             <>
               <Fields fields={classInfo.structure.fields} />
             </>
           )}
-        </Grid>
-      </Grid>
-    );
-  }
-
-  notFound(name: string): JSX.Element {
-    return (
-      <Grid container>
-        <Grid item xs={12} sm={9}>
-          <Typography variant="h2" component="h2">
-            {"Class: " + name + " not found!"}
-          </Typography>
         </Grid>
       </Grid>
     );

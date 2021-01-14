@@ -8,23 +8,28 @@ import {
   WithStyles,
 } from "@material-ui/core";
 import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries, ToitLibrary, ToitModule } from "../model/toitsdk";
+import { ToitLibraries, ToitLibrary, ToitModule } from "../generator/sdk";
 import {
   getLibrary,
   librarySegmentsToName,
   librarySegmentsToURI,
-} from "../sdk";
+} from "../redux/sdk";
 import ErrorBoundary from "./ErrorPage";
 import ListItemLink from "./ListItemLink";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     sideMenu: {
-      paddingTop: theme.spacing(3),
+      padding: theme.spacing(2),
+    },
+    subList: {
+      paddingBottom: theme.spacing(2),
+    },
+    subListHeader: {
+      paddingBottom: theme.spacing(2),
     },
   });
 
@@ -80,26 +85,24 @@ class LibrariesNav extends Component<LibrariesNavProps> {
       <div className={this.props.classes.sideMenu}>
         <ErrorBoundary>
           <List>
-            <div className={this.props.classes.sideMenu}>
-              <ListSubheader>
-                <Typography color="secondary">
-                  <b>Libraries</b>
-                </Typography>
-              </ListSubheader>
-            </div>
-            <div className={this.props.classes.sideMenu}>
+            <div className={this.props.classes.subList}>
+              <Typography
+                variant="h5"
+                className={this.props.classes.subListHeader}
+              >
+                Libraries
+              </Typography>
               {libraryNames.map((libraryName) =>
                 this.renderLibrary(library.libraries[libraryName])
               )}
             </div>
-            <div className={this.props.classes.sideMenu}>
-              <ListSubheader>
-                <Typography color="secondary">
-                  <b>Modules</b>
-                </Typography>
-              </ListSubheader>
-            </div>
-            <div className={this.props.classes.sideMenu}>
+            <div className={this.props.classes.subList}>
+              <Typography
+                variant="h5"
+                className={this.props.classes.subListHeader}
+              >
+                Modules
+              </Typography>
               {moduleNames.map((moduleName) =>
                 this.renderModule(library, library.modules[moduleName])
               )}

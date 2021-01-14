@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { flattenDataStructure, SearchableToitObject } from "./components/fuse";
+import { flattenDataStructure, SearchableToitObject } from "../components/fuse";
 import {
   ToitClass,
   ToitLibraries,
   ToitLibrary,
   ToitModule,
   ToitObject,
-} from "./model/toitsdk";
+} from "../generator/sdk";
 
 export interface RootState {
   sdk: SdkState;
@@ -60,33 +60,6 @@ export const sdk = createSlice({
       });
   },
 });
-
-export const OBJECT_TYPE_SECTION = "section";
-export const OBJECT_TYPE_STATEMENT_CODE_SECTION = "statement_code_section";
-export const OBJECT_TYPE_STATEMENT_ITEMIZED = "statement_itemized";
-export const OBJECT_TYPE_STATEMENT_ITEM = "statement_item";
-export const OBJECT_TYPE_STATEMENT_PARAGRAPH = "statement_paragraph";
-export const OBJECT_TYPE_STATEMENT_CODE = "statement_code";
-export const OBJECT_TYPE_STATEMENT_TEXT = "statement_text";
-export const OBJECT_TYPE_TOITDOCREF = "toitdocref";
-export const OBJECT_TYPE_FUNCTION = "function";
-export const OBJECT_TYPE_PARAMETER = "parameter";
-export const OBJECT_TYPE_FIELD = "field";
-export const OBJECT_TYPE_CLASS = "class";
-export const OBJECT_TYPE_MODULE = "module";
-export const OBJECT_TYPE_GLOBAL = "global";
-export const OBJECT_TYPE_LIBRARY = "library";
-export const OBJECT_TYPE_EXPRESSION = "expression";
-
-export type ObjectTypeStatement =
-  | typeof OBJECT_TYPE_STATEMENT_CODE_SECTION
-  | typeof OBJECT_TYPE_STATEMENT_ITEMIZED
-  | typeof OBJECT_TYPE_STATEMENT_PARAGRAPH;
-
-export type ObjectTypeExpression =
-  | typeof OBJECT_TYPE_STATEMENT_CODE
-  | typeof OBJECT_TYPE_STATEMENT_CODE_SECTION
-  | typeof OBJECT_TYPE_TOITDOCREF;
 
 export const rootLibrary = "lib";
 

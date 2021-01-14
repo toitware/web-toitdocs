@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
 import React from "react";
-import { CodeBlock } from "./general/codeblock/CodeBlock";
+import CodeBlock from "./general/codeblock/CodeBlock";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -68,13 +68,13 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
           </Grid>
           <div className={this.props.classes.divider}>
             <CodeBlock
-              code={[
-                "import metrics",
-                "import encoding.json as json",
-                "import peripherals show *",
-                "import pixel_display show TwoColorPixelDisplay",
-              ]}
-            ></CodeBlock>
+              code={
+                "import metrics\n" +
+                "import encoding.json as json\n" +
+                "import peripherals show *\n" +
+                "import pixel_display show TwoColorPixelDisplay"
+              }
+            />
           </div>
           <Grid item container>
             As can be seen from the examples above there different ways of
