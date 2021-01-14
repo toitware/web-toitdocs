@@ -2,27 +2,18 @@
 
 import {
   AppBar,
-  Box,
   createStyles,
   Grid,
   StyleRules,
   Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
   Tabs,
   Theme,
-  Typography,
   withStyles,
   WithStyles,
 } from "@material-ui/core";
 import React, { Component } from "react";
-import { HashLink } from "react-router-hash-link";
 import { ToitClass } from "../generator/sdk";
-import { getDescription, getId } from "./Functions";
-import { Type } from "./Util";
+import TablePanel from "./TablePanel";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -50,26 +41,6 @@ interface TabPanelProps {
 
 interface ClassOverviewProps extends WithStyles<typeof styles> {
   libraries: ToitClass;
-}
-
-function TabPanel(props: TabPanelProps): JSX.Element {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
 }
 
 function a11yProps(index: number): { id: string; "aria-controls": string } {
@@ -138,106 +109,34 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
             />
           </Tabs>
         </AppBar>
-        <TabPanel value={this.state.tab} index={0}>
-          <TableContainer>
-            <Table
-              size="small"
-              aria-label="Class overview table"
-              className={classes.methodsTable}
-            >
-              <TableBody>
-                {this.props.libraries.structure.constructors.length > 0 &&
-                  this.props.libraries.structure.constructors.map((method) => (
-                    <TableRow key={method.name}>
-                      <TableCell component="th" scope="row">
-                        <HashLink
-                          to={{
-                            hash: getId(method.name, method.parameters),
-                          }}
-                        >
-                          {method.name}
-                        </HashLink>{" "}
-                        {getDescription(method, true)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </TabPanel>
-        <TabPanel value={this.state.tab} index={1}>
-          <TableContainer>
-            <Table
-              size="small"
-              aria-label="Class overview table"
-              className={classes.methodsTable}
-            >
-              <TableBody>
-                {this.props.libraries.structure.statics.length > 0 &&
-                  this.props.libraries.structure.statics.map((method) => (
-                    <TableRow key={method.name}>
-                      <TableCell component="th" scope="row">
-                        <HashLink
-                          to={{ hash: getId(method.name, method.parameters) }}
-                        >
-                          {method.name}
-                        </HashLink>{" "}
-                        {getDescription(method, false)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </TabPanel>
-        <TabPanel value={this.state.tab} index={2}>
-          <TableContainer>
-            <Table
-              size="small"
-              aria-label="Class overview table"
-              className={classes.methodsTable}
-            >
-              <TableBody>
-                {this.props.libraries.structure.methods.length > 0 &&
-                  this.props.libraries.structure.methods.map((method) => (
-                    <TableRow key={method.name}>
-                      <TableCell component="th" scope="row">
-                        <HashLink
-                          to={{ hash: getId(method.name, method.parameters) }}
-                        >
-                          {method.name}
-                        </HashLink>
-                        {getDescription(method, false)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </TabPanel>
-        <TabPanel value={this.state.tab} index={3}>
-          <TableContainer>
-            <Table
-              size="small"
-              aria-label="Class overview table"
-              className={classes.methodsTable}
-            >
-              <TableBody>
-                {this.props.libraries.structure.fields.length > 0 &&
-                  this.props.libraries.structure.fields.map((method) => (
-                    <TableRow key={method.name}>
-                      <TableCell component="th" scope="row">
-                        <HashLink to={{ hash: method.name }}>
-                          {method.name}
-                        </HashLink>{" "}
-                        <Type type={method.type} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </TabPanel>
+        <TablePanel
+          tab={0}
+          active={this.state.tab}
+          tabData={this.props.libraries.structure.constructors}
+          hideReturnTypes={true}
+          ariaLabel="Constructors"
+        />
+        <TablePanel
+          tab={1}
+          active={this.state.tab}
+          tabData={this.props.libraries.structure.statics}
+          hideReturnTypes={false}
+          ariaLabel="Statics"
+        />
+        <TablePanel
+          tab={2}
+          active={this.state.tab}
+          tabData={this.props.libraries.structure.methods}
+          hideReturnTypes={false}
+          ariaLabel="Methods"
+        />
+        <TablePanel
+          tab={3}
+          active={this.state.tab}
+          tabFieldData={this.props.libraries.structure.fields}
+          hideReturnTypes={false}
+          ariaLabel="Fields"
+        />
       </Grid>
     );
   }
