@@ -16,7 +16,7 @@ import {
   Theme,
   Typography,
   withStyles,
-  WithStyles
+  WithStyles,
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { HashLink } from "react-router-hash-link";
