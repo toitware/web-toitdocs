@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { ToitClass } from "../generator/sdk";
-import TablePanel from "./TablePanel";
+import TablePanel from "./Tab";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -30,6 +30,9 @@ const styles = (theme: Theme): StyleRules =>
     },
     methodsTable: {
       marginTop: theme.spacing(1),
+    },
+    tabs: {
+      backgroundColor: theme.palette.background.paper,
     },
   });
 
@@ -58,15 +61,26 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
   constructor(props: ClassOverviewProps) {
     super(props);
     this.state = {
-      tab: 0,
+      tab:
+        this.props.libraries.structure.constructors.length > 0
+          ? 0
+          : this.props.libraries.structure.statics.length > 0
+          ? 1
+          : this.props.libraries.structure.methods.length > 0
+          ? 2
+          : 3,
     };
   }
   render(): JSX.Element {
     const classes = this.props.classes;
     return (
       <Grid container className={classes.table}>
-        <AppBar position="static">
-          <Tabs value={this.state.tab} aria-label="Class overview">
+        <AppBar position="static" elevation={0}>
+          <Tabs
+            value={this.state.tab}
+            aria-label="Class overview"
+            className={classes.tabs}
+          >
             <Tab
               label="Constructors"
               {...a11yProps(0)}

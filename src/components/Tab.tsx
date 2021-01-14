@@ -23,6 +23,7 @@ const styles = (theme: Theme): StyleRules =>
       minWidth: 650,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
+      backgroundColor: theme.palette.background.paper,
     },
     tableContainer: {
       padding: 0,
