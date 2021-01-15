@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { ToitClass } from "../generator/sdk";
-import TablePanel from "./Tab";
+import TablePanel from "./TablePanel";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -22,25 +22,13 @@ const styles = (theme: Theme): StyleRules =>
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
     },
-    tableContainer: {
-      padding: 0,
-    },
     hiddenTab: {
       display: "none",
-    },
-    methodsTable: {
-      marginTop: theme.spacing(1),
     },
     tabs: {
       backgroundColor: theme.palette.background.paper,
     },
   });
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
 
 interface ClassOverviewProps extends WithStyles<typeof styles> {
   libraries: ToitClass;

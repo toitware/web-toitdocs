@@ -19,30 +19,18 @@ import { Type } from "./Util";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
-    table: {
-      minWidth: 650,
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-      backgroundColor: theme.palette.background.paper,
-    },
-    tableContainer: {
-      padding: 0,
-    },
-    hiddenTab: {
-      display: "none",
-    },
     methodsTable: {
       marginTop: theme.spacing(1),
     },
   });
 
-interface TabPanelProps {
+interface TablePanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
 
-function TabPanel(props: TabPanelProps): JSX.Element {
+function TablePandelGen(props: TablePanelProps): JSX.Element {
   const { children, value, index, ...other } = props;
 
   return (
@@ -62,7 +50,7 @@ function TabPanel(props: TabPanelProps): JSX.Element {
   );
 }
 
-interface TablePanelProps extends WithStyles<typeof styles> {
+interface TableProps extends WithStyles<typeof styles> {
   tab: number;
   active: number;
   tabData?: ToitFunction[];
@@ -71,12 +59,12 @@ interface TablePanelProps extends WithStyles<typeof styles> {
   ariaLabel: string;
 }
 
-class TablePanel extends Component<TablePanelProps> {
+class TablePanel extends Component<TableProps> {
   render(): JSX.Element {
     const classes = this.props.classes;
     if (this.props.tabFieldData)
       return (
-        <TabPanel value={this.props.active} index={this.props.tab}>
+        <TablePandelGen value={this.props.active} index={this.props.tab}>
           <TableContainer>
             <Table
               size="small"
@@ -98,11 +86,11 @@ class TablePanel extends Component<TablePanelProps> {
               </TableBody>
             </Table>
           </TableContainer>
-        </TabPanel>
+        </TablePandelGen>
       );
     else if (this.props.tabData)
       return (
-        <TabPanel value={this.props.active} index={this.props.tab}>
+        <TablePandelGen value={this.props.active} index={this.props.tab}>
           <TableContainer>
             <Table
               size="small"
@@ -126,7 +114,7 @@ class TablePanel extends Component<TablePanelProps> {
               </TableBody>
             </Table>
           </TableContainer>
-        </TabPanel>
+        </TablePandelGen>
       );
     else return <></>;
   }
