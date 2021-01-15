@@ -33,7 +33,7 @@ export function getId(
   return encodeURIComponent(functionName + "(" + argsString + ")");
 }
 
-function getDescription(
+export function getDescription(
   fn: ToitFunction,
   hideReturnTypes?: boolean
 ): JSX.Element {

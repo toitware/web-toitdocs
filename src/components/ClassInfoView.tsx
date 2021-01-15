@@ -1,14 +1,15 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { Grid } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../generator/sdk";
 import { getClass } from "../redux/sdk";
+import ClassOverviewView from "./ClassOverview";
 import Fields from "./Fields";
 import Functions from "./Functions";
-import Toitdocs from "./ToitdocInfo";
 import { Reference } from "./Util";
 
 export interface ClassInfoParams {
@@ -36,62 +37,66 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
       this.props.match.params.className
     );
 
+    function notFound(name: string): JSX.Element {
+      return (
+        <Typography variant="h2" component="h2">
+          {"Class: " + name + " not found!"}
+        </Typography>
+      );
+    }
+
     if (!classInfo) {
-      return this.notFound(this.props.match.params.className);
+      return notFound(this.props.match.params.className);
     }
 
     return (
-      <>
-        <Box pt={2} pb={2}>
-          <Typography variant="h2" component="h2">
-            Class {classInfo.name}
-          </Typography>
-          {classInfo.extends && (
-            <div>
-              extends <Reference reference={classInfo.extends} />
-            </div>
+      <Grid container>
+        <Grid item xs={12}>
+          <Box pt={2} pb={2}>
+            <Typography variant="h2" component="h2">
+              Class {classInfo.name}
+            </Typography>
+            {classInfo.extends && (
+              <div>
+                extends <Reference reference={classInfo.extends} />
+              </div>
+            )}
+          </Box>
+          <ClassOverviewView libraries={classInfo} />
+          {classInfo.structure.constructors.concat(
+            classInfo.structure.factories
+          ).length > 0 && (
+            <>
+              <Functions
+                functions={classInfo.structure.constructors.concat(
+                  classInfo.structure.factories
+                )}
+                title="Constructors"
+                hideReturnTypes
+              />
+            </>
           )}
-        </Box>
-        <Box pb={3}>
-          <Toitdocs value={classInfo.toitdoc} />
-        </Box>
-        {classInfo.structure.constructors.concat(classInfo.structure.factories)
-          .length > 0 && (
-          <>
+          {classInfo.structure.statics.length > 0 && (
+            <>
+              <Functions
+                functions={classInfo.structure.statics}
+                title="Statics"
+              />
+            </>
+          )}
+          {classInfo.structure.methods.length > 0 && (
             <Functions
-              functions={classInfo.structure.constructors.concat(
-                classInfo.structure.factories
-              )}
-              title="Constructors"
-              hideReturnTypes
+              functions={classInfo.structure.methods}
+              title="Methods"
             />
-          </>
-        )}
-        {classInfo.structure.statics.length > 0 && (
-          <>
-            <Functions
-              functions={classInfo.structure.statics}
-              title="Statics"
-            />
-          </>
-        )}
-        {classInfo.structure.methods.length > 0 && (
-          <Functions functions={classInfo.structure.methods} title="Methods" />
-        )}
-        {classInfo.structure.fields.length > 0 && (
-          <>
-            <Fields fields={classInfo.structure.fields} />
-          </>
-        )}
-      </>
-    );
-  }
-
-  notFound(name: string): JSX.Element {
-    return (
-      <Typography variant="h2" component="h2">
-        {"Class: " + name + " not found!"}
-      </Typography>
+          )}
+          {classInfo.structure.fields.length > 0 && (
+            <>
+              <Fields fields={classInfo.structure.fields} />
+            </>
+          )}
+        </Grid>
+      </Grid>
     );
   }
 }
