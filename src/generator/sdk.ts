@@ -392,24 +392,33 @@ function moduleFromLibrary(
     modules = { ...modules, [lib.name]: moduleFromLibrary(lib, modulePath) };
   });
 
+  let moduleContent = undefined as Module | undefined;
+
   Object.values(toitLibrary.modules).forEach((module) => {
-    const name = moduleName(module.name);
-    if (modules[name]) {
-      console.log("Name clash", name);
+    const subModuleName = moduleName(module.name);
+    if (subModuleName === name) {
+      moduleContent = moduleFromModule(module, path);
+      return;
     }
-    modules = { ...modules, [name]: moduleFromModule(module, modulePath) };
+    if (modules[subModuleName]) {
+      console.log("Name clash", subModuleName);
+    }
+    modules = {
+      ...modules,
+      [subModuleName]: moduleFromModule(module, modulePath),
+    };
   });
 
   return {
     name: name,
     id: { name: name, path: modulePath },
     modules: modules,
-    classes: {},
-    exportedClasses: {},
-    globals: [],
-    exportedGlobals: [],
-    functions: [],
-    exportedFunctions: [],
+    classes: moduleContent ? moduleContent.classes : {},
+    exportedClasses: moduleContent ? moduleContent.exportedClasses : {},
+    globals: moduleContent ? moduleContent.globals : [],
+    exportedGlobals: moduleContent ? moduleContent.exportedGlobals : [],
+    functions: moduleContent ? moduleContent.functions : [],
+    exportedFunctions: moduleContent ? moduleContent.exportedFunctions : [],
   };
 }
 
