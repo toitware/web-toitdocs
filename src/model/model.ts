@@ -8,8 +8,8 @@ export interface Module {
   name: string;
   id: ModuleRef;
   modules: Modules;
-  classes: { [className: string]: Class };
-  exportedClasses: { [className: string]: Class };
+  classes: Classes;
+  exportedClasses: Classes;
   globals: Global[];
   exportedGlobals: Global[];
   functions: Function[];

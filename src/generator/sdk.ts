@@ -375,6 +375,35 @@ function moduleFromModule(toitModule: ToitModule, path: string[]): Module {
   };
 }
 
+function mergeModules(module: Module, otherModule: Module): Module {
+  if (module.name !== otherModule.name) {
+    throw Error("Only modules with the same name can be merged");
+  }
+  if (JSON.stringify(module.id) !== JSON.stringify(otherModule.id)) {
+    throw Error("Only modules with the same id can be merged");
+  }
+  return {
+    name: module.name,
+    id: module.id,
+    modules: { ...module.modules, ...otherModule.modules },
+    classes: { ...module.classes, ...otherModule.classes },
+    exportedClasses: {
+      ...module.exportedClasses,
+      ...otherModule.exportedClasses,
+    },
+    globals: { ...module.globals, ...otherModule.globals },
+    exportedGlobals: {
+      ...module.exportedGlobals,
+      ...otherModule.exportedGlobals,
+    },
+    functions: { ...module.functions, ...otherModule.functions },
+    exportedFunctions: {
+      ...module.exportedFunctions,
+      ...otherModule.exportedFunctions,
+    },
+  };
+}
+
 function moduleFromLibrary(
   toitLibrary: ToitLibrary,
   path: string[],
@@ -402,6 +431,15 @@ function moduleFromLibrary(
     }
     if (modules[subModuleName]) {
       console.log("Name clash", subModuleName);
+      const libModule = modules[subModuleName];
+      modules = {
+        ...modules,
+        [subModuleName]: mergeModules(
+          libModule,
+          moduleFromModule(module, modulePath)
+        ),
+      };
+      return;
     }
     modules = {
       ...modules,
