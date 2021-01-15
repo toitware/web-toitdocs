@@ -7,7 +7,7 @@ import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { ToitLibraries } from "../generator/sdk";
 import { getClass } from "../redux/sdk";
-import ClassOverviewView from "./ClassOverviewView";
+import ClassOverviewView from "./ClassOverview";
 import Fields from "./Fields";
 import Functions from "./Functions";
 import { Reference } from "./Util";
