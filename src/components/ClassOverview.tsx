@@ -52,6 +52,8 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
       tab:
         this.props.libraries.structure.constructors.length > 0
           ? 0
+          : this.props.libraries.structure.factories.length > 0
+          ? 0
           : this.props.libraries.structure.statics.length > 0
           ? 1
           : this.props.libraries.structure.methods.length > 0
@@ -74,7 +76,9 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
               {...a11yProps(0)}
               onClick={(): void => this.setState({ tab: 0 })}
               className={
-                this.props.libraries.structure.constructors.length > 0
+                this.props.libraries.structure.constructors.concat(
+                  this.props.libraries.structure.factories
+                ).length > 0
                   ? ""
                   : classes.hiddenTab
               }
@@ -114,7 +118,9 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
         <TablePanel
           tab={0}
           active={this.state.tab}
-          tabData={this.props.libraries.structure.constructors}
+          tabData={this.props.libraries.structure.constructors.concat(
+            this.props.libraries.structure.factories
+          )}
           hideReturnTypes={true}
           ariaLabel="Constructors"
         />
