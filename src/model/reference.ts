@@ -1,27 +1,27 @@
 // Used for referencing modules
-export interface ModuleRef {
+export interface TopLevelRef {
   name: string;
   path: string[];
 }
 
 // Used for referencing elements on modules, e.g. classes, globals and functions
-export interface ModuleItemRef {
+export interface TopLevelItemRef {
   name: string;
   path: string[];
-  type?: ModuleItemType;
+  type?: TopLevelItemType;
   offset?: number;
 }
 
 // Used for referencing elements on classes or interfaces, e.g. fields, methods, constructors, statics, ...
-export interface LocalRef {
+export interface ClassMemberRef {
   name: string;
   path: string[];
   classOffset: number;
-  type: LocalType;
+  type: ClassMemberType;
   offset: number;
 }
 
-export type ModuleItemType =
+export type TopLevelItemType =
   | "class"
   | "exported_class"
   | "global"
@@ -29,4 +29,4 @@ export type ModuleItemType =
   | "function"
   | "exported_function";
 
-export type LocalType = "field" | "method" | "constructor" | "static";
+export type ClassMemberType = "field" | "method" | "constructor" | "static";

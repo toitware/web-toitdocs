@@ -10,7 +10,11 @@ import {
   Parameter,
   Type,
 } from "../model/model";
-import { LocalType, ModuleItemRef, ModuleItemType } from "../model/reference";
+import {
+  ClassMemberType,
+  TopLevelItemRef,
+  TopLevelItemType,
+} from "../model/reference";
 
 export const OBJECT_TYPE_SECTION = "section";
 export const OBJECT_TYPE_STATEMENT_CODE_SECTION = "statement_code_section";
@@ -182,9 +186,9 @@ function moduleName(name: string): string {
   return name.endsWith(".toit") ? name.substring(0, name.length - 5) : name;
 }
 
-function referenceFrom(toitReference: ToitReference): ModuleItemRef {
+function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
   const path = toitReference.path.map((s) => moduleName(s));
-  path.shift(); // Get rid of first "lib" entry.
+  path.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
 
   return {
     name: toitReference.name,
@@ -239,7 +243,7 @@ function methodFrom(
   toitMethod: ToitFunction,
   path: string[],
   classOffset: number,
-  type: LocalType,
+  type: ClassMemberType,
   offset: number
 ): Method {
   const parameters = toitMethod.parameters.map((parameter) =>
@@ -264,7 +268,7 @@ function methodFrom(
 function classFrom(
   toitClass: ToitClass,
   path: string[],
-  type: ModuleItemType,
+  type: TopLevelItemType,
   offset: number
 ): Class {
   const extend = toitClass.extends
@@ -301,7 +305,7 @@ function classFrom(
 function globalFrom(
   toitGlobal: ToitGlobal,
   path: string[],
-  type: ModuleItemType,
+  type: TopLevelItemType,
   offset: number
 ): Global {
   return {
@@ -314,7 +318,7 @@ function globalFrom(
 function functionFrom(
   toitFunction: ToitFunction,
   path: string[],
-  type: ModuleItemType,
+  type: TopLevelItemType,
   offset: number
 ): Function {
   const parameters = toitFunction.parameters.map((parameter) =>

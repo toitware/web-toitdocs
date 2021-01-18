@@ -1,12 +1,12 @@
 import { ToitDoc } from "../generator/sdk";
-import { LocalRef, ModuleItemRef, ModuleRef } from "./reference";
+import { ClassMemberRef, TopLevelItemRef, TopLevelRef } from "./reference";
 
 export type Modules = { [moduleName: string]: Module };
 export type Classes = { [className: string]: Class };
 
 export interface Module {
   name: string;
-  id: ModuleRef;
+  id: TopLevelRef;
   modules: Modules;
   classes: Classes;
   exportedClasses: Classes;
@@ -18,8 +18,8 @@ export interface Module {
 
 export interface Class {
   name: string;
-  id: ModuleItemRef;
-  extends?: ModuleItemRef;
+  id: TopLevelItemRef;
+  extends?: TopLevelItemRef;
   fields: Field[];
   constructors: Method[];
   statics: Method[];
@@ -29,13 +29,13 @@ export interface Class {
 
 export interface Global {
   name: string;
-  id: ModuleItemRef;
+  id: TopLevelItemRef;
   toitdoc: ToitDoc; // TODO (rikke): Change this...
 }
 
 export interface Function {
   name: string;
-  id: ModuleItemRef;
+  id: TopLevelItemRef;
   parameters: Parameter[];
   returnType: Type;
   toitdoc: ToitDoc; // TODO (rikke): Change this...
@@ -43,7 +43,7 @@ export interface Function {
 
 export interface Method {
   name: string;
-  id: LocalRef;
+  id: ClassMemberRef;
   parameters: Parameter[];
   returnType: Type;
   toitdoc: ToitDoc; // TODO (rikke): Change this...
@@ -59,7 +59,7 @@ export interface Parameter {
 
 export interface Field {
   name: string;
-  id: LocalRef;
+  id: ClassMemberRef;
   type: Type;
   toitdoc: ToitDoc;
 }
@@ -68,5 +68,5 @@ export interface Type {
   isNone: boolean;
   isAny: boolean;
   isBlock: boolean;
-  reference?: ModuleItemRef;
+  reference?: TopLevelItemRef;
 }
