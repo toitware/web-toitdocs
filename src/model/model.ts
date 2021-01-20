@@ -1,4 +1,3 @@
-import { ToitDoc } from "../generator/sdk";
 import { ClassMemberRef, TopLevelItemRef, TopLevelRef } from "./reference";
 
 export type Modules = { [moduleName: string]: Module };
@@ -24,13 +23,13 @@ export interface Class {
   constructors: Method[];
   statics: Method[];
   methods: Method[];
-  toitdoc: ToitDoc; // TODO (rikke): Change this...
+  toitdoc: Doc;
 }
 
 export interface Global {
   name: string;
   id: TopLevelItemRef;
-  toitdoc: ToitDoc; // TODO (rikke): Change this...
+  toitdoc: Doc;
 }
 
 export interface Function {
@@ -38,7 +37,7 @@ export interface Function {
   id: TopLevelItemRef;
   parameters: Parameter[];
   returnType: Type;
-  toitdoc: ToitDoc; // TODO (rikke): Change this...
+  toitdoc: Doc;
 }
 
 export interface Method {
@@ -46,7 +45,7 @@ export interface Method {
   id: ClassMemberRef;
   parameters: Parameter[];
   returnType: Type;
-  toitdoc: ToitDoc; // TODO (rikke): Change this...
+  toitdoc: Doc;
 }
 
 export interface Parameter {
@@ -61,7 +60,7 @@ export interface Field {
   name: string;
   id: ClassMemberRef;
   type: Type;
-  toitdoc: ToitDoc;
+  toitdoc: Doc;
 }
 
 export interface Type {
@@ -69,4 +68,40 @@ export interface Type {
   isAny: boolean;
   isBlock: boolean;
   reference?: TopLevelItemRef;
+}
+
+// Toitdoc related
+
+export type Doc = DocSection[];
+
+export interface DocSection {
+  title: string | null;
+  statements: DocStatement[];
+}
+
+export type DocStatement =
+  | DocStatementParagraph
+  | DocStatementItemized
+  | DocStatementCode;
+
+export interface DocStatementItemized {
+  items: DocStatementItem[];
+}
+
+export interface DocStatementItem {
+  statements: DocStatement[];
+}
+
+export interface DocStatementCode {
+  text: string;
+}
+
+export interface DocStatementParagraph {
+  expressions: DocExpression[];
+}
+
+export type DocExpression = DocStatementCode | DocRef;
+
+export interface DocRef {
+  text: string;
 }
