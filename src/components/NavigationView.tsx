@@ -19,6 +19,9 @@ const styles = (theme: Theme): StyleRules =>
     subModules: {
       paddingLeft: theme.spacing(2),
     },
+    openModule: {
+      fontWeight: "bold",
+    },
   });
 
 export interface NavigationParams {
@@ -53,7 +56,12 @@ class NavigationView extends Component<NavigationProps> {
 
     return (
       <div key={topLevelRefToId(module.id)}>
-        <Link to={moduleUrlFromRef(module.id)}>{module.name}</Link>
+        <Link
+          to={moduleUrlFromRef(module.id)}
+          className={showSubModules ? this.props.classes.openModule : ""}
+        >
+          {module.name}
+        </Link>
         {showSubModules && (
           <div className={this.props.classes.subModules}>
             {Object.values(module.modules)
