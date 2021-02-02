@@ -24,7 +24,8 @@ export function classFrom(
   className: string,
   rootModules: Modules
 ): Class | undefined {
-  return moduleFrom(moduleName, rootModules)?.classes[className];
+  const module = moduleFrom(moduleName, rootModules);
+  return module?.classes[className] || module?.exportedClasses[className];
 }
 
 export function topLevelRefToId(ref: TopLevelRef): string {
