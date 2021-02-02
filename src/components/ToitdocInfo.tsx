@@ -8,17 +8,19 @@ import {
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_STATEMENT_PARAGRAPH,
   OBJECT_TYPE_TOITDOCREF,
-  ToitDoc,
-  ToitDocRef,
-  ToitExpression,
-  ToitSection,
-  ToitStatement,
-  ToitStatementCode,
-  ToitStatementCodeSection,
-  ToitStatementItem,
-  ToitStatementItemized,
-  ToitStatementParagraph,
 } from "../generator/sdk";
+import {
+  Doc,
+  DocExpression,
+  DocRef,
+  DocSection,
+  DocStatement,
+  DocStatementCode,
+  DocStatementCodeSection,
+  DocStatementItem,
+  DocStatementItemized,
+  DocStatementParagraph,
+} from "../model/model";
 import CodeBlock from "./general/codeblock/CodeBlock";
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
@@ -32,21 +34,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function StatementCodeSection(props: {
-  code: ToitStatementCodeSection;
+  code: DocStatementCodeSection;
 }): JSX.Element {
   return <CodeBlock code={props.code.text} />;
 }
 
-function StatementCode(props: { code: ToitStatementCode }): JSX.Element {
+function StatementCode(props: { code: DocStatementCode }): JSX.Element {
   return <span>{props.code.text}</span>;
 }
 
 function StatementItemized(props: {
-  itemized: ToitStatementItemized;
+  itemized: DocStatementItemized;
 }): JSX.Element {
   return (
     <ul>
-      {props.itemized.items.map((item: ToitStatementItem) =>
+      {props.itemized.items.map((item: DocStatementItem) =>
         item.statements.map((statement, index) => (
           <li key={index}>
             <Statement statement={statement} />
@@ -58,26 +60,24 @@ function StatementItemized(props: {
 }
 
 function StatementParagraph(props: {
-  statement: ToitStatementParagraph;
+  statement: DocStatementParagraph;
 }): JSX.Element {
   const classes = useStyles();
   return (
     <div className={classes.statementParagraph}>
-      {props.statement.expressions.map(
-        (expr: ToitExpression, index: number) => (
-          <Expression key={"expression_" + index} expression={expr} />
-        )
-      )}
+      {props.statement.expressions.map((expr: DocExpression, index: number) => (
+        <Expression key={"expression_" + index} expression={expr} />
+      ))}
     </div>
   );
 }
 
-function ToitdocRef(props: { reference: ToitDocRef }): JSX.Element {
+function ToitdocRef(props: { reference: DocRef }): JSX.Element {
   // TODO: Handle references to other objects.
   return <span>{props.reference.text}</span>;
 }
 
-function Expression(props: { expression: ToitExpression }): JSX.Element {
+function Expression(props: { expression: DocExpression }): JSX.Element {
   const expression = props.expression;
   switch (expression.object_type) {
     case OBJECT_TYPE_STATEMENT_CODE:
@@ -91,7 +91,7 @@ function Expression(props: { expression: ToitExpression }): JSX.Element {
   }
 }
 
-function Statement(props: { statement: ToitStatement }): JSX.Element {
+function Statement(props: { statement: DocStatement }): JSX.Element {
   const statement = props.statement;
   switch (statement.object_type) {
     case OBJECT_TYPE_STATEMENT_PARAGRAPH:
@@ -105,7 +105,7 @@ function Statement(props: { statement: ToitStatement }): JSX.Element {
   }
 }
 
-function Section(props: { section: ToitSection }): JSX.Element {
+function Section(props: { section: DocSection }): JSX.Element {
   const classes = useStyles();
   return (
     <>
@@ -120,7 +120,7 @@ function Section(props: { section: ToitSection }): JSX.Element {
 }
 
 // Function that prints the content of currently presented element.
-function Toitdocs(props: { value: ToitDoc }): JSX.Element | null {
+function Toitdocs(props: { value: Doc }): JSX.Element | null {
   if (!props.value) {
     return null;
   }

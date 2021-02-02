@@ -1,10 +1,10 @@
 import React from "react";
-import { ToitField } from "../generator/sdk";
+import { Field } from "../model/model";
 import DetailsList from "./DetailsList";
-import { Type } from "./Util";
+import { TypeView } from "./Util";
 
 interface FieldsProps {
-  fields: ToitField[];
+  fields: Field[];
 }
 
 export default function Fields(props: FieldsProps): JSX.Element {
@@ -14,7 +14,7 @@ export default function Fields(props: FieldsProps): JSX.Element {
       elements={props.fields.map((field, i) => {
         return {
           name: field.name,
-          description: <Type type={field.type} />,
+          description: <TypeView type={field.type} />,
           key: "field_" + i,
           id: field.name,
           toitdoc: field.toitdoc,

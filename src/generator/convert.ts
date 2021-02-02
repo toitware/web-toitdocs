@@ -310,8 +310,5 @@ function moduleFromLibrary(
 }
 
 export function modelFrom(rootLibrary: ToitLibrary): Modules {
-  const model = moduleFromLibrary(rootLibrary, [], true).modules;
-
-  console.log(model);
-  return model;
+  return moduleFromLibrary(rootLibrary, [], true).modules;
 }

@@ -1,9 +1,9 @@
 import React from "react";
-import { ToitGlobal } from "../generator/sdk";
+import { Global } from "../model/model";
 import DetailsList from "./DetailsList";
 
 interface GlobalsProps {
-  globals: ToitGlobal[];
+  globals: Global[];
   title: string;
 }
 

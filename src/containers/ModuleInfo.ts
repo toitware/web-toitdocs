@@ -2,9 +2,9 @@ import { connect } from "react-redux";
 import ModuleInfoView, { ModuleInfoProps } from "../components/ModuleInfoView";
 import { RootState } from "../redux/sdk";
 
-function mapStateToProps(state: RootState): Pick<ModuleInfoProps, "libraries"> {
+function mapStateToProps(state: RootState): Pick<ModuleInfoProps, "modules"> {
   return {
-    libraries: state.sdk.object?.libraries || {},
+    modules: state.sdk.modules || {},
   };
 }
 

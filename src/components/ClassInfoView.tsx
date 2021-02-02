@@ -1,25 +1,22 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { Grid } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries } from "../generator/sdk";
-import { getClass } from "../redux/sdk";
-import ClassOverviewView from "./ClassOverview";
+import { classFrom } from "../misc/util";
+import { Modules } from "../model/model";
+import ClassOverview from "./ClassOverview";
 import Fields from "./Fields";
 import Functions from "./Functions";
-import { Reference } from "./Util";
+import { TypeReference } from "./Util";
 
 export interface ClassInfoParams {
-  libraryName: string;
   moduleName: string;
   className: string;
 }
 
 export interface ClassInfoProps extends RouteComponentProps<ClassInfoParams> {
-  libraries: ToitLibraries;
+  modules: Modules;
 }
 
 export default class ClassInfoView extends Component<ClassInfoProps> {
@@ -30,73 +27,57 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
   }
 
   render(): React.ReactNode {
-    const classInfo = getClass(
-      this.props.libraries,
-      this.props.match.params.libraryName,
+    const classInfo = classFrom(
       this.props.match.params.moduleName,
-      this.props.match.params.className
+      this.props.match.params.className,
+      this.props.modules
     );
-
-    function notFound(name: string): JSX.Element {
-      return (
-        <Typography variant="h2" component="h2">
-          {"Class: " + name + " not found!"}
-        </Typography>
-      );
-    }
-
     if (!classInfo) {
-      return notFound(this.props.match.params.className);
+      return this.notFound(this.props.match.params.className);
     }
 
     return (
-      <Grid container>
-        <Grid item xs={12}>
-          <Box pt={2} pb={2}>
-            <Typography variant="h2" component="h2">
-              Class {classInfo.name}
-            </Typography>
-            {classInfo.extends && (
-              <div>
-                extends <Reference reference={classInfo.extends} />
-              </div>
-            )}
-          </Box>
-          <ClassOverviewView libraries={classInfo} />
-          {classInfo.structure.constructors.concat(
-            classInfo.structure.factories
-          ).length > 0 && (
-            <>
-              <Functions
-                functions={classInfo.structure.constructors.concat(
-                  classInfo.structure.factories
-                )}
-                title="Constructors"
-                hideReturnTypes
-              />
-            </>
-          )}
-          {classInfo.structure.statics.length > 0 && (
-            <>
-              <Functions
-                functions={classInfo.structure.statics}
-                title="Statics"
-              />
-            </>
-          )}
-          {classInfo.structure.methods.length > 0 && (
+      <>
+        <Typography variant="h2" component="h2">
+          Class {classInfo.name}
+        </Typography>
+        {classInfo.extends && (
+          <div>
+            extends <TypeReference reference={classInfo.extends} />
+          </div>
+        )}
+        <ClassOverview klass={classInfo} />
+        {classInfo.constructors.length > 0 && (
+          <>
             <Functions
-              functions={classInfo.structure.methods}
-              title="Methods"
+              functions={classInfo.constructors}
+              title="Constructors"
+              hideReturnTypes
             />
-          )}
-          {classInfo.structure.fields.length > 0 && (
-            <>
-              <Fields fields={classInfo.structure.fields} />
-            </>
-          )}
-        </Grid>
-      </Grid>
+          </>
+        )}
+        {classInfo.statics.length > 0 && (
+          <>
+            <Functions functions={classInfo.statics} title="Statics" />
+          </>
+        )}
+        {classInfo.methods.length > 0 && (
+          <Functions functions={classInfo.methods} title="Methods" />
+        )}
+        {classInfo.fields.length > 0 && (
+          <>
+            <Fields fields={classInfo.fields} />
+          </>
+        )}
+      </>
+    );
+  }
+
+  notFound(className: string): JSX.Element {
+    return (
+      <Typography variant="h4">
+        {"Error: Class " + className + " not found"}
+      </Typography>
     );
   }
 }
