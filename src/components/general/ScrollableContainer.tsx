@@ -28,7 +28,10 @@ class ScrollableContainer extends React.Component<ScrollableContainerProps> {
   render(): JSX.Element {
     return (
       <div className={this.props.classes.container}>
-        <div className={this.props.classes.containerInner}>
+        <div
+          className={this.props.classes.containerInner}
+          id="scrollablecontainer"
+        >
           {this.props.children}
         </div>
       </div>

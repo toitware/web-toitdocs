@@ -22,6 +22,7 @@ import ScrollableContainer from "./components/general/ScrollableContainer";
 import { HEADER_BAR_HEIGHT } from "./components/HeaderBarView";
 import { ModuleInfoParams } from "./components/ModuleInfoView";
 import { NavigationParams } from "./components/NavigationView";
+import ScrollToTop from "./components/ScrollToTop";
 import WelcomePage from "./components/WelcomePage";
 import ClassInfo from "./containers/ClassInfo";
 import HeaderBar from "./containers/HeaderBar";
@@ -75,6 +76,7 @@ class App extends Component<AppProps> {
     return (
       <ThemeProvider theme={theme}>
         <BrowserRouter>
+          <ScrollToTop />
           {this.props.object !== undefined ? (
             <>
               <ErrorBoundary>
