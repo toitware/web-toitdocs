@@ -13,9 +13,9 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { HashLink } from "react-router-hash-link";
-import { ToitField, ToitFunction } from "../generator/sdk";
+import { Field, Function, Method } from "../model/model";
 import { getDescription, getId } from "./Functions";
-import { Type } from "./Util";
+import { TypeView } from "./Util";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -24,13 +24,13 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-interface TablePanelProps {
+interface TablePanelGenProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
 
-function TablePandelGen(props: TablePanelProps): JSX.Element {
+function TablePanelGen(props: TablePanelGenProps): JSX.Element {
   const { children, value, index, ...other } = props;
 
   return (
@@ -50,21 +50,21 @@ function TablePandelGen(props: TablePanelProps): JSX.Element {
   );
 }
 
-interface TableProps extends WithStyles<typeof styles> {
+interface TablePanelProps extends WithStyles<typeof styles> {
   tab: number;
   active: number;
-  tabData?: ToitFunction[];
-  tabFieldData?: ToitField[];
-  hideReturnTypes: boolean;
+  tabData?: (Function | Method)[];
+  tabFieldData?: Field[];
+  hideReturnTypes?: boolean;
   ariaLabel: string;
 }
 
-class TablePanel extends Component<TableProps> {
+class TablePanel extends Component<TablePanelProps> {
   render(): JSX.Element {
     const classes = this.props.classes;
     if (this.props.tabFieldData)
       return (
-        <TablePandelGen value={this.props.active} index={this.props.tab}>
+        <TablePanelGen value={this.props.active} index={this.props.tab}>
           <TableContainer>
             <Table
               size="small"
@@ -73,24 +73,24 @@ class TablePanel extends Component<TableProps> {
             >
               <TableBody>
                 {this.props.tabFieldData.length > 0 &&
-                  this.props.tabFieldData.map((method) => (
-                    <TableRow key={method.name}>
+                  this.props.tabFieldData.map((field, index) => (
+                    <TableRow key={field.name + index}>
                       <TableCell component="th" scope="row">
-                        <HashLink to={{ hash: method.name }}>
-                          {method.name}
+                        <HashLink to={{ hash: field.name }}>
+                          {field.name}
                         </HashLink>{" "}
-                        <Type type={method.type} />
+                        <TypeView type={field.type} />
                       </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
             </Table>
           </TableContainer>
-        </TablePandelGen>
+        </TablePanelGen>
       );
     else if (this.props.tabData)
       return (
-        <TablePandelGen value={this.props.active} index={this.props.tab}>
+        <TablePanelGen value={this.props.active} index={this.props.tab}>
           <TableContainer>
             <Table
               size="small"
@@ -99,8 +99,8 @@ class TablePanel extends Component<TableProps> {
             >
               <TableBody>
                 {this.props.tabData.length > 0 &&
-                  this.props.tabData.map((method) => (
-                    <TableRow key={method.name}>
+                  this.props.tabData.map((method, index) => (
+                    <TableRow key={method.name + index}>
                       <TableCell component="th" scope="row">
                         <HashLink
                           to={{ hash: getId(method.name, method.parameters) }}
@@ -114,7 +114,7 @@ class TablePanel extends Component<TableProps> {
               </TableBody>
             </Table>
           </TableContainer>
-        </TablePandelGen>
+        </TablePanelGen>
       );
     else return <></>;
   }

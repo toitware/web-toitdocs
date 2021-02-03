@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { Box, CircularProgress, Grid } from "@material-ui/core";
+import { CircularProgress, Grid } from "@material-ui/core";
 import {
   createStyles,
   StyleRules,
@@ -17,34 +17,18 @@ import "./assets/global_theme.css";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
 import { ClassInfoParams } from "./components/ClassInfoView";
-import { ClassNavParams } from "./components/ClassNavView";
 import ErrorBoundary from "./components/ErrorPage";
 import ScrollableContainer from "./components/general/ScrollableContainer";
 import { HEADER_BAR_HEIGHT } from "./components/HeaderBarView";
-import { LibrariesNavParams } from "./components/LibrariesNavView";
-import { LibraryInfoParams } from "./components/LibraryInfoView";
 import { ModuleInfoParams } from "./components/ModuleInfoView";
-import { ModuleNavParams } from "./components/ModuleNavView";
+import { NavigationParams } from "./components/NavigationView";
 import WelcomePage from "./components/WelcomePage";
 import ClassInfo from "./containers/ClassInfo";
-import ClassNav from "./containers/ClassNav";
 import HeaderBar from "./containers/HeaderBar";
-import LibrariesNav from "./containers/LibrariesNav";
-import LibraryInfo from "./containers/LibraryInfo";
 import ModuleInfo from "./containers/ModuleInfo";
-import ModuleNav from "./containers/ModuleNav";
+import Navigation from "./containers/Navigation";
 import { ToitObject } from "./generator/sdk";
 import { fetchSDK, RootState } from "./redux/sdk";
-
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    sideNav: {
-      marginTop: theme.spacing(2),
-    },
-    outerGrid: {
-      height: `calc(100vh - ${HEADER_BAR_HEIGHT}px)`,
-    },
-  });
 
 const mapStateToProps = (state: RootState): Pick<AppProps, "object"> => {
   return {
@@ -61,6 +45,20 @@ const mapDispatchToProps = (
     },
   };
 };
+
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    outer: {
+      height: `calc(100vh - ${HEADER_BAR_HEIGHT}px)`,
+    },
+    mainContent: {
+      padding: theme.spacing(2),
+    },
+    sdkVersion: {
+      display: "flex",
+      justifyContent: "center",
+    },
+  });
 
 interface AppProps extends WithStyles<typeof styles> {
   sdkVersionFromParams: string;
@@ -82,81 +80,58 @@ class App extends Component<AppProps> {
               <ErrorBoundary>
                 <HeaderBar />
               </ErrorBoundary>
-              <Grid container className={this.props.classes.outerGrid}>
-                <Grid item xs={12}>
-                  <ScrollableContainer>
-                    <Grid container className={this.props.classes.sideNav}>
-                      <Grid
-                        item
-                        xs={12}
-                        className={this.props.classes.topBuffer}
+              <div className={this.props.classes.outer}>
+                <ScrollableContainer>
+                  <Grid
+                    container
+                    spacing={2}
+                    className={this.props.classes.mainContent}
+                  >
+                    <Grid item xs={12} />
+                    <Grid item sm={2}>
+                      <Route
+                        exact
+                        path="/"
+                        render={(
+                          routeProps: RouteComponentProps<NavigationParams>
+                        ): React.ReactNode => <Navigation {...routeProps} />}
                       />
-                      <Grid item xs={12} sm={2}>
-                        <Route exact path="/" component={LibrariesNav} />
-                        <Route
-                          exact
-                          path="/:libraryName"
-                          render={(
-                            routeProps: RouteComponentProps<LibrariesNavParams>
-                          ): React.ReactNode => (
-                            <LibrariesNav {...routeProps} />
-                          )}
-                        />
-                        <Route
-                          exact
-                          path="/:libraryName/:moduleName"
-                          render={(
-                            routeProps: RouteComponentProps<ModuleNavParams>
-                          ): React.ReactNode => <ModuleNav {...routeProps} />}
-                        />
-                        <Route
-                          exact
-                          path="/:libraryName/:moduleName/:className"
-                          render={(
-                            routeProps: RouteComponentProps<ClassNavParams>
-                          ): React.ReactNode => <ClassNav {...routeProps} />}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={10}>
-                        <ErrorBoundary>
-                          <Route exact path="/" component={WelcomePage} />
-                          <Route
-                            exact
-                            path="/:libraryName"
-                            render={(
-                              routeProps: RouteComponentProps<LibraryInfoParams>
-                            ): React.ReactNode => (
-                              <LibraryInfo {...routeProps} />
-                            )}
-                          />
-                          <Route
-                            exact
-                            path="/:libraryName/:moduleName"
-                            render={(
-                              routeProps: RouteComponentProps<ModuleInfoParams>
-                            ): React.ReactNode => (
-                              <ModuleInfo {...routeProps} />
-                            )}
-                          />
-                          <Route
-                            exact
-                            path="/:libraryName/:moduleName/:className"
-                            render={(
-                              routeProps: RouteComponentProps<ClassInfoParams>
-                            ): React.ReactNode => <ClassInfo {...routeProps} />}
-                          />
-                        </ErrorBoundary>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Box display="flex" justifyContent="center">
-                          SDK version: {this.props.object.sdk_version}
-                        </Box>
-                      </Grid>
+                      <Route
+                        exact
+                        path="/:moduleName*/:rest"
+                        render={(
+                          routeProps: RouteComponentProps<NavigationParams>
+                        ): React.ReactNode => <Navigation {...routeProps} />}
+                      />
                     </Grid>
-                  </ScrollableContainer>
-                </Grid>
-              </Grid>
+
+                    <Grid item xs={12} sm={10}>
+                      <ErrorBoundary>
+                        <Route exact path="/" component={WelcomePage} />
+                        <Route
+                          exact
+                          path="/:moduleName+/module-summary"
+                          render={(
+                            routeProps: RouteComponentProps<ModuleInfoParams>
+                          ): React.ReactNode => <ModuleInfo {...routeProps} />}
+                        />
+                        <Route
+                          exact
+                          path="/:moduleName+/class-:className"
+                          render={(
+                            routeProps: RouteComponentProps<ClassInfoParams>
+                          ): React.ReactNode => <ClassInfo {...routeProps} />}
+                        />
+                      </ErrorBoundary>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <div className={this.props.classes.sdkVersion}>
+                        SDK version: {this.props.object.sdk_version}
+                      </div>
+                    </Grid>
+                  </Grid>
+                </ScrollableContainer>
+              </div>
             </>
           ) : (
             <CircularProgress disableShrink />

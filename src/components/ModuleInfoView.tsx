@@ -1,8 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import { Theme } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
 import {
   createStyles,
   StyleRules,
@@ -12,8 +10,8 @@ import {
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { ToitLibraries, ToitLibrary, ToitModule } from "../generator/sdk";
-import { getLibrary, getModule, librarySegmentsToName } from "../redux/sdk";
+import { moduleFrom } from "../misc/util";
+import { Modules } from "../model/model";
 import Functions from "./Functions";
 import Classes from "./general/Classes";
 import CodeBlock from "./general/codeblock/CodeBlock";
@@ -33,14 +31,13 @@ const styles = (theme: Theme): StyleRules =>
   });
 
 export interface ModuleInfoParams {
-  libraryName: string;
   moduleName: string;
 }
 
 export interface ModuleInfoProps
   extends WithStyles<typeof styles>,
     RouteComponentProps<ModuleInfoParams> {
-  libraries: ToitLibraries;
+  modules: Modules;
 }
 
 class ModuleInfoView extends Component<ModuleInfoProps> {
@@ -50,26 +47,16 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
     element?.scrollIntoView(true);
   }
 
-  importPath(library: ToitLibrary, module: ToitModule): string {
-    const filename = module.name.substring(0, module.name.lastIndexOf("."));
-    const libraryName = librarySegmentsToName(library.path);
-    if (libraryName) {
-      if (library.name === filename) {
-        return libraryName;
-      }
-      return libraryName + "." + filename;
-    }
-    return filename;
-  }
-
   render(): JSX.Element {
-    const { libraryName, moduleName } = this.props.match.params;
-    const library = getLibrary(this.props.libraries, libraryName);
-    const module = getModule(this.props.libraries, libraryName, moduleName);
-
-    if (!library || !module) {
+    const module = moduleFrom(
+      this.props.match.params.moduleName,
+      this.props.modules
+    );
+    if (!module) {
       return this.notFound(this.props.match.params.moduleName);
     }
+
+    const importPath = this.props.match.params.moduleName.replaceAll("/", ".");
 
     return (
       <>
@@ -80,36 +67,29 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
         </div>
         <div className={this.props.classes.importingText}>
           <Typography>To use this module in your code:</Typography>
-          <CodeBlock code={"import " + this.importPath(library, module)} />
+          <CodeBlock code={"import " + importPath} />
         </div>
-        {module.classes.length > 0 && (
-          <Classes
-            classes={module.classes}
-            libName={libraryName}
-            moduleName={moduleName}
-            title="Classes"
-          />
+        {Object.keys(module.classes).length > 0 && (
+          <Classes classes={Object.values(module.classes)} title="Classes" />
         )}
-        {module.export_classes.length > 0 && (
+        {Object.keys(module.exportedClasses).length > 0 && (
           <Classes
-            classes={module.export_classes}
-            libName={libraryName}
-            moduleName={moduleName}
+            classes={Object.values(module.exportedClasses)}
             title="Exported classes"
           />
         )}
         {module.globals.length > 0 && (
           <Globals globals={module.globals} title="Globals" />
         )}
-        {module.export_globals.length > 0 && (
-          <Globals globals={module.export_globals} title="Exported globals" />
+        {module.exportedGlobals.length > 0 && (
+          <Globals globals={module.exportedGlobals} title="Exported globals" />
         )}
         {module.functions.length > 0 && (
           <Functions functions={module.functions} title="Functions" />
         )}
-        {module.export_functions.length > 0 && (
+        {module.exportedFunctions.length > 0 && (
           <Functions
-            functions={module.export_functions}
+            functions={module.exportedFunctions}
             title="Exported functions"
           />
         )}
@@ -117,18 +97,11 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
     );
   }
 
-  notFound(name: string): JSX.Element {
+  notFound(moduleName: string): JSX.Element {
     return (
-      <Grid container className={this.props.classes.root}>
-        <Grid item xs={9}>
-          <Box pt={2} pb={2}>
-            <Typography component="h2" variant="h2">
-              ERROR:
-              <p>Module {name} not found</p>
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
+      <Typography variant="h4">
+        {"Error: Module " + moduleName + " not found"}
+      </Typography>
     );
   }
 }

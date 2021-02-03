@@ -1,11 +1,10 @@
 import React from "react";
-import { ToitClass } from "../../generator/sdk";
+import { classUrlFromRef } from "../../misc/util";
+import { Class } from "../../model/model";
 import DetailsList from "../DetailsList";
 
 interface ClassesProps {
-  classes: ToitClass[];
-  libName: string;
-  moduleName: string;
+  classes: Class[];
   title: string;
 }
 
@@ -19,7 +18,7 @@ export default function Classes(props: ClassesProps): JSX.Element {
           description: <></>,
           key: "class_" + i,
           id: "",
-          link: "/" + props.libName + "/" + props.moduleName + "/" + klass.name,
+          link: classUrlFromRef(klass.id),
         };
       })}
     />

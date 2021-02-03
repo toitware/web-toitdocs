@@ -1,3 +1,12 @@
+import {
+  OBJECT_TYPE_SECTION,
+  OBJECT_TYPE_STATEMENT_CODE,
+  OBJECT_TYPE_STATEMENT_CODE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEM,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_STATEMENT_PARAGRAPH,
+  OBJECT_TYPE_TOITDOCREF,
+} from "../generator/sdk";
 import { ClassMemberRef, TopLevelItemRef, TopLevelRef } from "./reference";
 
 export type Modules = { [moduleName: string]: Module };
@@ -75,6 +84,7 @@ export interface Type {
 export type Doc = DocSection[];
 
 export interface DocSection {
+  object_type: typeof OBJECT_TYPE_SECTION;
   title: string | null;
   statements: DocStatement[];
 }
@@ -82,26 +92,36 @@ export interface DocSection {
 export type DocStatement =
   | DocStatementParagraph
   | DocStatementItemized
-  | DocStatementCode;
+  | DocStatementCodeSection;
 
 export interface DocStatementItemized {
+  object_type: typeof OBJECT_TYPE_STATEMENT_ITEMIZED;
   items: DocStatementItem[];
 }
 
 export interface DocStatementItem {
+  object_type: typeof OBJECT_TYPE_STATEMENT_ITEM;
   statements: DocStatement[];
 }
 
-export interface DocStatementCode {
+export interface DocStatementCodeSection {
+  object_type: typeof OBJECT_TYPE_STATEMENT_CODE_SECTION;
   text: string;
 }
 
 export interface DocStatementParagraph {
+  object_type: typeof OBJECT_TYPE_STATEMENT_PARAGRAPH;
   expressions: DocExpression[];
 }
 
-export type DocExpression = DocStatementCode | DocRef;
+export type DocExpression = DocStatementCode | DocStatementCodeSection | DocRef;
+
+export interface DocStatementCode {
+  object_type: typeof OBJECT_TYPE_STATEMENT_CODE;
+  text: string;
+}
 
 export interface DocRef {
+  object_type: typeof OBJECT_TYPE_TOITDOCREF;
   text: string;
 }

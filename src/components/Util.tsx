@@ -1,43 +1,42 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { ToitReference, ToitType } from "../generator/sdk";
+import { classUrlFromRef } from "../misc/util";
+import { Type } from "../model/model";
+import { TopLevelItemRef } from "../model/reference";
 
 interface TypeProps {
-  type: ToitType;
+  type: Type;
 }
 
-export class Type extends Component<TypeProps> {
+export class TypeView extends Component<TypeProps> {
   render(): JSX.Element {
     const type = this.props.type;
-    if (type.is_none) {
+    if (type.isNone) {
       return <span>none</span>;
     }
-    if (type.is_any) {
+    if (type.isAny) {
       return <span>any</span>;
     }
-    if (type.is_block) {
+    if (type.isBlock) {
       return <span>[block]</span>;
     }
-    return (
-      <span>
-        <Reference reference={type.reference} />
-      </span>
-    );
+    if (type.reference) {
+      return <TypeReference reference={type.reference} />;
+    }
+    return <></>;
   }
 }
 
-interface ReferenceProps {
-  reference: ToitReference;
+interface TypeReferenceProps {
+  reference: TopLevelItemRef;
 }
 
-export class Reference extends Component<ReferenceProps> {
+export class TypeReference extends Component<TypeReferenceProps> {
   render(): JSX.Element {
-    let url = this.props.reference.name;
-    const path = this.props.reference.path;
-    const pathLen = path.length;
-    for (let i = pathLen - 1; i >= 0 && path[i] !== "lib"; i--) {
-      url = path[i] + "/" + url;
-    }
-    return <Link to={`/${url}`}>{this.props.reference.name}</Link>;
+    return (
+      <Link to={classUrlFromRef(this.props.reference)}>
+        {this.props.reference.name}
+      </Link>
+    );
   }
 }

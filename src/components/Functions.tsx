@@ -1,30 +1,27 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React from "react";
-import { ToitFunction, ToitParameter } from "../generator/sdk";
+import { Function, Method, Parameter } from "../model/model";
 import DetailsList from "./DetailsList";
-import { Type } from "./Util";
+import { TypeView } from "./Util";
 
 interface FunctionsProps {
-  functions: ToitFunction[];
+  functions: (Function | Method)[];
   title: string;
   hideReturnTypes?: boolean;
 }
 
-export function getId(
-  functionName: string,
-  parameters: ToitParameter[]
-): string {
+export function getId(functionName: string, parameters: Parameter[]): string {
   const argsString = parameters
     .map((p) => {
-      if (p.type.is_any) {
+      if (p.type.isAny) {
         return "any";
-      } else if (p.type.is_none) {
+      } else if (p.type.isNone) {
         return "none";
-      } else if (p.type.is_block) {
+      } else if (p.type.isBlock) {
         return "block";
       } else if (p.type) {
-        return p.type.reference.name;
+        return p.type.reference?.name || "unknown";
       } else {
         return "unknown";
       }
@@ -34,17 +31,17 @@ export function getId(
 }
 
 export function getDescription(
-  fn: ToitFunction,
+  fn: Function | Method,
   hideReturnTypes?: boolean
 ): JSX.Element {
   return (
     <>
       {fn.parameters.map((parameter, i) => {
         let param = parameter.name;
-        if (parameter.is_named) {
+        if (parameter.isNamed) {
           param = "--" + param;
         }
-        if (parameter.is_block) {
+        if (parameter.isBlock) {
           param = "[" + param + "]";
           return param;
         }
@@ -52,14 +49,14 @@ export function getDescription(
         return (
           <span key={i}>
             {param + "/"}
-            <Type type={parameter.type} />{" "}
+            <TypeView type={parameter.type} />{" "}
           </span>
         );
       })}
       {!hideReturnTypes && (
         <>
           <span>{" -> "}</span>
-          <Type type={fn.return_type}></Type>
+          <TypeView type={fn.returnType} />
         </>
       )}
     </>
