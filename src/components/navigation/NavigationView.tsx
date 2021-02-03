@@ -8,8 +8,8 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { moduleUrlFromRef, topLevelRefToId } from "../misc/util";
-import { Module, Modules } from "../model/model";
+import { moduleUrlFromRef, topLevelRefToId } from "../../misc/util";
+import { Module, Modules } from "../../model/model";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

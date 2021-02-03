@@ -3,12 +3,12 @@
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { classFrom } from "../misc/util";
-import { Modules } from "../model/model";
+import { classFrom } from "../../misc/util";
+import { Modules } from "../../model/model";
+import Fields from "../sdk/Fields";
+import Functions from "../sdk/Functions";
+import { TypeReference } from "../sdk/Type";
 import ClassOverview from "./ClassOverview";
-import Fields from "./Fields";
-import Functions from "./Functions";
-import { TypeReference } from "./Util";
 
 export interface ClassInfoParams {
   moduleName: string;

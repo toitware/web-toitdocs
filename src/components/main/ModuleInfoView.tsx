@@ -10,12 +10,12 @@ import {
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { moduleFrom } from "../misc/util";
-import { Modules } from "../model/model";
-import Functions from "./Functions";
-import Classes from "./general/Classes";
-import CodeBlock from "./general/codeblock/CodeBlock";
-import Globals from "./Globals";
+import { moduleFrom } from "../../misc/util";
+import { Modules } from "../../model/model";
+import CodeBlock from "../general/CodeBlock";
+import Classes from "../sdk/Classes";
+import Functions from "../sdk/Functions";
+import Globals from "../sdk/Globals";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

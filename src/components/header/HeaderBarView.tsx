@@ -22,8 +22,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import Fuse from "fuse.js";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/images/logo-simple.png";
-import ToitFuse, { SearchableToitObject } from "./fuse";
+import logo from "../../assets/images/logo-simple.png";
+import ToitFuse, { SearchableToitObject } from "../../model/fuse";
 
 export const HEADER_BAR_HEIGHT = 64;
 

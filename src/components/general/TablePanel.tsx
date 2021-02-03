@@ -13,9 +13,9 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { HashLink } from "react-router-hash-link";
-import { Field, Function, Method } from "../model/model";
-import { getDescription, getId } from "./Functions";
-import { TypeView } from "./Util";
+import { Field, Function, Method } from "../../model/model";
+import { getDescription, getId } from "../sdk/Functions";
+import { TypeView } from "../sdk/Type";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

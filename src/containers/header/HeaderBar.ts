@@ -1,6 +1,8 @@
 import { connect } from "react-redux";
-import HeaderBarView, { HeaderBarProps } from "../components/HeaderBarView";
-import { RootState } from "../redux/sdk";
+import HeaderBarView, {
+  HeaderBarProps,
+} from "../../components/header/HeaderBarView";
+import { RootState } from "../../redux/sdk";
 
 const mapStateToProps = (
   state: RootState

@@ -13,8 +13,8 @@ import {
   WithStyles,
 } from "@material-ui/core";
 import React, { Component } from "react";
-import { Class } from "../model/model";
-import TablePanel from "./TablePanel";
+import { Class } from "../../model/model";
+import TablePanel from "../general/TablePanel";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

@@ -1,6 +1,6 @@
 import React from "react";
-import { Global } from "../model/model";
-import DetailsList from "./DetailsList";
+import { Global } from "../../model/model";
+import DetailsList from "../general/DetailsList";
 
 interface GlobalsProps {
   globals: Global[];
