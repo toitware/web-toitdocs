@@ -1,9 +1,9 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React from "react";
-import { Function, Method, Parameter } from "../model/model";
-import DetailsList from "./DetailsList";
-import { TypeView } from "./Util";
+import { Function, Method, Parameter } from "../../model/model";
+import DetailsList from "../general/DetailsList";
+import { TypeView } from "./Type";
 
 interface FunctionsProps {
   functions: (Function | Method)[];

@@ -1,7 +1,7 @@
 import React from "react";
-import { Field } from "../model/model";
-import DetailsList from "./DetailsList";
-import { TypeView } from "./Util";
+import { Field } from "../../model/model";
+import DetailsList from "../general/DetailsList";
+import { TypeView } from "./Type";
 
 interface FieldsProps {
   fields: Field[];

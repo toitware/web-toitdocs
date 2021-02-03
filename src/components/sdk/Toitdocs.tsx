@@ -8,7 +8,7 @@ import {
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_STATEMENT_PARAGRAPH,
   OBJECT_TYPE_TOITDOCREF,
-} from "../generator/sdk";
+} from "../../generator/sdk";
 import {
   Doc,
   DocExpression,
@@ -20,8 +20,8 @@ import {
   DocStatementItem,
   DocStatementItemized,
   DocStatementParagraph,
-} from "../model/model";
-import CodeBlock from "./general/codeblock/CodeBlock";
+} from "../../model/model";
+import CodeBlock from "../general/CodeBlock";
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
 

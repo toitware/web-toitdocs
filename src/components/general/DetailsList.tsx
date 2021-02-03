@@ -2,8 +2,8 @@ import { Divider, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-import { Doc } from "../model/model";
-import Toitdocs from "./ToitdocInfo";
+import { Doc } from "../../model/model";
+import Toitdocs from "../sdk/Toitdocs";
 
 interface DetailsListProps {
   title: string;

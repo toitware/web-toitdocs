@@ -9,7 +9,7 @@ import {
   WithStyles,
 } from "@material-ui/core";
 import React from "react";
-import CodeBlock from "./general/codeblock/CodeBlock";
+import CodeBlock from "../general/CodeBlock";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

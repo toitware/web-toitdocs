@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { flattenDataStructure, SearchableToitObject } from "../components/fuse";
 import { modelFrom } from "../generator/convert";
 import {
   ToitClass,
@@ -8,6 +7,7 @@ import {
   ToitModule,
   ToitObject,
 } from "../generator/sdk";
+import { flattenDataStructure, SearchableToitObject } from "../model/fuse";
 import { Modules } from "../model/model";
 
 export interface RootState {

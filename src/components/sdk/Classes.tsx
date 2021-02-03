@@ -1,7 +1,7 @@
 import React from "react";
 import { classUrlFromRef } from "../../misc/util";
 import { Class } from "../../model/model";
-import DetailsList from "../DetailsList";
+import DetailsList from "../general/DetailsList";
 
 interface ClassesProps {
   classes: Class[];

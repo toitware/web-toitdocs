@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { classUrlFromRef } from "../misc/util";
-import { Type } from "../model/model";
-import { TopLevelItemRef } from "../model/reference";
+import { classUrlFromRef } from "../../misc/util";
+import { Type } from "../../model/model";
+import { TopLevelItemRef } from "../../model/reference";
 
 interface TypeProps {
   type: Type;
