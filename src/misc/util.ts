@@ -33,9 +33,9 @@ export function topLevelRefToId(ref: TopLevelRef): string {
 }
 
 export function classUrlFromRef(ref: TopLevelItemRef): string {
-  return "/" + ref.path.join("/") + "/class-" + ref.name + ".html";
+  return "/" + ref.path.join("/") + "/class-" + ref.name;
 }
 
 export function moduleUrlFromRef(ref: TopLevelRef): string {
-  return "/" + ref.path.join("/") + "/module-summary.html";
+  return "/" + ref.path.join("/") + "/module-summary";
 }

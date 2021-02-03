@@ -48,27 +48,19 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
         )}
         <ClassOverview klass={classInfo} />
         {classInfo.constructors.length > 0 && (
-          <>
-            <Functions
-              functions={classInfo.constructors}
-              title="Constructors"
-              hideReturnTypes
-            />
-          </>
+          <Functions
+            functions={classInfo.constructors}
+            title="Constructors"
+            hideReturnTypes
+          />
         )}
         {classInfo.statics.length > 0 && (
-          <>
-            <Functions functions={classInfo.statics} title="Statics" />
-          </>
+          <Functions functions={classInfo.statics} title="Statics" />
         )}
         {classInfo.methods.length > 0 && (
           <Functions functions={classInfo.methods} title="Methods" />
         )}
-        {classInfo.fields.length > 0 && (
-          <>
-            <Fields fields={classInfo.fields} />
-          </>
-        )}
+        {classInfo.fields.length > 0 && <Fields fields={classInfo.fields} />}
       </>
     );
   }

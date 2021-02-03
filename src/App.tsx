@@ -110,14 +110,14 @@ class App extends Component<AppProps> {
                         <Route exact path="/" component={WelcomePage} />
                         <Route
                           exact
-                          path="/:moduleName+/module-summary.html"
+                          path="/:moduleName+/module-summary"
                           render={(
                             routeProps: RouteComponentProps<ModuleInfoParams>
                           ): React.ReactNode => <ModuleInfo {...routeProps} />}
                         />
                         <Route
                           exact
-                          path="/:moduleName+/class-:className.html"
+                          path="/:moduleName+/class-:className"
                           render={(
                             routeProps: RouteComponentProps<ClassInfoParams>
                           ): React.ReactNode => <ClassInfo {...routeProps} />}
