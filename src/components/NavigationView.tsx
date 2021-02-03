@@ -51,7 +51,7 @@ class NavigationView extends Component<NavigationProps> {
   }
 
   showModule(module: Module, openModule?: string): JSX.Element {
-    const showSubModules = openModule?.startsWith(module.name);
+    const showSubModules = openModule?.split("/")[0] === module.name;
     const openSubModule = openModule?.split("/").slice(1).join("/");
 
     return (
