@@ -2,7 +2,7 @@ pipeline {
 
     agent {
         docker {
-            image 'gcr.io/infrastructure-220307/jenkins-console-toolchain:20210203152910'
+            image 'gcr.io/infrastructure-220307/jenkins-console-toolchain:20210204155459'
             label 'docker'
             args '-v /home/jenkins/agent:/home/jenkins/.cache/ -u jenkins'
             reuseNode true
@@ -49,7 +49,7 @@ pipeline {
                 withCredentials([[$class: 'FileBinding', credentialsId: 'gcloud-service-auth', variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
                     sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
                     sh "gcloud config set project infrastructure-220307"
-                    sh "toitarchive ${BUILD_VERSION}.tar.gz toit-web toitdocs.toit.io ${BUILD_VERSION}"
+                    sh "FILEEXT=tar.gz toitarchive ${BUILD_VERSION}.tar.gz toit-web toitdocs.toit.io ${BUILD_VERSION}"
                 }
             }
 
