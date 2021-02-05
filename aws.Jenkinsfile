@@ -12,6 +12,9 @@ spec:
     command:
     - cat
     tty: true
+    env:
+      - name: BUILD_VERSION
+        value: "sh gitversion"
 """
       }
     }
