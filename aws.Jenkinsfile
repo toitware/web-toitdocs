@@ -20,10 +20,6 @@ spec:
       timeout(time: 30, unit: 'MINUTES')
     }
 
-    environment {
-        BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
-    }
-
     stages {
         stage("install") {
             steps {
