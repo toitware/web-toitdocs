@@ -7,7 +7,7 @@ export interface TopLevelRef {
 // Used for referencing elements on modules, e.g. classes, globals and functions
 export interface TopLevelItemRef {
   name: string;
-  path: string[];
+  moduleRef: TopLevelRef;
   type?: TopLevelItemType;
   offset?: number;
 }
@@ -15,8 +15,7 @@ export interface TopLevelItemRef {
 // Used for referencing elements on classes or interfaces, e.g. fields, methods, constructors, statics, ...
 export interface ClassMemberRef {
   name: string;
-  path: string[];
-  classOffset: number;
+  classRef: TopLevelItemRef;
   type: ClassMemberType;
   offset: number;
 }

@@ -14,6 +14,7 @@ import {
   ClassMemberType,
   TopLevelItemRef,
   TopLevelItemType,
+  TopLevelRef,
 } from "../model/reference";
 import {
   ToitClass,
@@ -37,7 +38,7 @@ function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
 
   return {
     name: toitReference.name,
-    path: path,
+    moduleRef: { name: toitReference.name, path: path },
   };
 }
 
@@ -66,16 +67,14 @@ function parameterFrom(toitParameter: ToitParameter): Parameter {
 
 function fieldFrom(
   toitField: ToitField,
-  path: string[],
-  classOffset: number,
+  classRef: TopLevelItemRef,
   offset: number
 ): Field {
   return {
     name: toitField.name,
     id: {
       name: toitField.name,
-      path: path,
-      classOffset: classOffset,
+      classRef: classRef,
       type: "field",
       offset: offset,
     },
@@ -86,8 +85,7 @@ function fieldFrom(
 
 function methodFrom(
   toitMethod: ToitFunction,
-  path: string[],
-  classOffset: number,
+  classRef: TopLevelItemRef,
   type: ClassMemberType,
   offset: number
 ): Method {
@@ -99,8 +97,7 @@ function methodFrom(
     name: toitMethod.name,
     id: {
       name: toitMethod.name,
-      path: path,
-      classOffset: classOffset,
+      classRef: classRef,
       type: type,
       offset: offset,
     },
@@ -112,32 +109,39 @@ function methodFrom(
 
 function classFrom(
   toitClass: ToitClass,
-  path: string[],
+  moduleRef: TopLevelRef,
   type: TopLevelItemType,
   offset: number
 ): Class {
+  const classId = {
+    name: toitClass.name,
+    moduleRef: moduleRef,
+    type: type,
+    offset: offset,
+  };
+
   const extend = toitClass.extends
     ? referenceFrom(toitClass.extends)
     : undefined;
 
   const fields = toitClass.structure.fields.map((field, index) =>
-    fieldFrom(field, path, offset, index)
+    fieldFrom(field, classId, index)
   );
   const constructors = toitClass.structure.constructors
     .concat(toitClass.structure.factories)
     .map((constructor, index) =>
-      methodFrom(constructor, path, offset, "constructor", index)
+      methodFrom(constructor, classId, "constructor", index)
     );
   const statics = toitClass.structure.statics.map((statik, index) =>
-    methodFrom(statik, path, offset, "static", index)
+    methodFrom(statik, classId, "static", index)
   );
   const methods = toitClass.structure.methods.map((method, index) =>
-    methodFrom(method, path, offset, "method", index)
+    methodFrom(method, classId, "method", index)
   );
 
   return {
     name: toitClass.name,
-    id: { name: toitClass.name, path: path, type: type, offset: offset },
+    id: classId,
     extends: extend,
     fields: fields,
     constructors: constructors,
@@ -149,20 +153,25 @@ function classFrom(
 
 function globalFrom(
   toitGlobal: ToitGlobal,
-  path: string[],
+  moduleRef: TopLevelRef,
   type: TopLevelItemType,
   offset: number
 ): Global {
   return {
     name: toitGlobal.name,
-    id: { name: toitGlobal.name, path: path, type: type, offset: offset },
+    id: {
+      name: toitGlobal.name,
+      moduleRef: moduleRef,
+      type: type,
+      offset: offset,
+    },
     toitdoc: toitGlobal.toitdoc,
   };
 }
 
 function functionFrom(
   toitFunction: ToitFunction,
-  path: string[],
+  moduleRef: TopLevelRef,
   type: TopLevelItemType,
   offset: number
 ): Function {
@@ -172,7 +181,12 @@ function functionFrom(
 
   return {
     name: toitFunction.name,
-    id: { name: toitFunction.name, path: path, type: type, offset: offset },
+    id: {
+      name: toitFunction.name,
+      moduleRef: moduleRef,
+      type: type,
+      offset: offset,
+    },
     parameters: parameters,
     returnType: typeFrom(toitFunction.return_type),
     toitdoc: toitFunction.toitdoc,
@@ -181,7 +195,7 @@ function functionFrom(
 
 function moduleFromModule(toitModule: ToitModule, path: string[]): Module {
   const name = moduleName(toitModule.name);
-  const modulePath = [...path, name];
+  const moduleId = { name: name, path: [...path, name] };
 
   let classes = {} as Classes;
   let exportedClasses = {} as Classes;
@@ -189,31 +203,31 @@ function moduleFromModule(toitModule: ToitModule, path: string[]): Module {
   toitModule.classes.forEach((klass, index) => {
     classes = {
       ...classes,
-      [klass.name]: classFrom(klass, modulePath, "class", index),
+      [klass.name]: classFrom(klass, moduleId, "class", index),
     };
   });
   toitModule.export_classes.forEach((klass, index) => {
     exportedClasses = {
       ...exportedClasses,
-      [klass.name]: classFrom(klass, modulePath, "exported_class", index),
+      [klass.name]: classFrom(klass, moduleId, "exported_class", index),
     };
   });
   const globals = toitModule.globals.map((global, index) =>
-    globalFrom(global, modulePath, "global", index)
+    globalFrom(global, moduleId, "global", index)
   );
   const exportedGlobals = toitModule.export_globals.map((global, index) =>
-    globalFrom(global, modulePath, "exported_global", index)
+    globalFrom(global, moduleId, "exported_global", index)
   );
   const functions = toitModule.functions.map((f, index) =>
-    functionFrom(f, modulePath, "function", index)
+    functionFrom(f, moduleId, "function", index)
   );
   const exportedFunctions = toitModule.export_functions.map((f, index) =>
-    functionFrom(f, modulePath, "exported_function", index)
+    functionFrom(f, moduleId, "exported_function", index)
   );
 
   return {
     name: name,
-    id: { name: name, path: modulePath },
+    id: moduleId,
     modules: {},
     classes: classes,
     exportedClasses: exportedClasses,

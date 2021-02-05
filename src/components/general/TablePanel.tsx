@@ -107,7 +107,11 @@ class TablePanel extends Component<TablePanelProps> {
                         >
                           {method.name}
                         </HashLink>{" "}
-                        {getDescription(method, this.props.hideReturnTypes)}
+                        {getDescription(
+                          method.parameters,
+                          method.returnType,
+                          this.props.hideReturnTypes
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
