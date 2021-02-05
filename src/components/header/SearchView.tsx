@@ -120,10 +120,12 @@ class SearchView extends React.Component<SearchProps, SearchState> {
             onFocus={this.onFocus}
           />
           <SearchResults
-            modules={this.state.modules}
-            classes={this.state.classes}
-            functions={this.state.functions}
-            methods={this.state.methods}
+            results={[
+              ...this.state.classes,
+              ...this.state.functions,
+              ...this.state.methods,
+              ...this.state.modules,
+            ]}
             hideResults={this.state.hideResults}
           />
         </div>

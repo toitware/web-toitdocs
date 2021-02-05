@@ -27,7 +27,7 @@ class HeaderBar extends Component<HeaderBarProps> {
           <AppBar position="fixed" elevation={0}>
             <Toolbar>
               <Link to={"/"}>
-                <img alt="Toitware" src={logo} height="32px"></img>
+                <img alt="Toit" src={logo} height="32px"></img>
               </Link>
               <Search />
             </Toolbar>

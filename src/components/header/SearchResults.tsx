@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import {
+  Searchable,
   SearchableClass,
   SearchableFunction,
   SearchableMethod,
@@ -40,69 +41,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface SearchResultsProps {
-  modules: SearchableModule[];
-  classes: SearchableClass[];
-  functions: SearchableFunction[];
-  methods: SearchableMethod[];
+  results: Searchable[];
   hideResults: boolean;
-}
-
-function resultItems(
-  classes: SearchableClass[],
-  functions: SearchableFunction[],
-  methods: SearchableMethod[],
-  modules: SearchableModule[]
-): JSX.Element[] {
-  const classItems = classes.map((c, index) => (
-    <ResultItem
-      key={"class-" + index}
-      name={c.name}
-      type="class"
-      from={c.ref.moduleRef.path.join(".")}
-      url={c.url}
-    />
-  ));
-  const functionItems = functions.map((f, index) => (
-    <ResultItem
-      key={"function-" + index}
-      name={f.name + " " + f.parameters + " "}
-      type="function"
-      from={f.ref.moduleRef.path.join(".")}
-      url={f.url}
-    />
-  ));
-  const methodItems = methods.map((m, index) => {
-    return (
-      <ResultItem
-        key={"method-" + index}
-        name={m.name + " " + m.parameters + " "}
-        type="method"
-        from={m.className + " in " + m.ref.classRef.moduleRef.path.join(".")}
-        url={m.url}
-      />
-    );
-  });
-  const moduleItems = modules.map((m, index) => (
-    <ResultItem
-      key={"module-" + index}
-      name={m.name}
-      type="module"
-      from={m.ref.path.join(".")}
-      url={m.url}
-    />
-  ));
-  return [...classItems, ...functionItems, ...methodItems, ...moduleItems];
 }
 
 export default function SearchResults(props: SearchResultsProps): JSX.Element {
   const classes = useStyles();
 
-  const results = resultItems(
-    props.classes,
-    props.functions,
-    props.methods,
-    props.modules
-  );
+  const results = props.results.map((item, index) => (
+    <ResultItem item={item} key={"resultItem" + index} />
+  ));
 
   return (
     <>
@@ -115,29 +63,55 @@ export default function SearchResults(props: SearchResultsProps): JSX.Element {
   );
 }
 
-function ResultItem(props: {
-  name: string;
-  type: string;
-  from?: string;
-  url: string;
-}): JSX.Element {
+function ResultItem(props: { item: Searchable }): JSX.Element {
   const classes = useStyles();
+
+  let name = "";
+  let from = "";
+
+  switch (props.item.type) {
+    case "module": {
+      const item = props.item as SearchableModule;
+      name = item.name;
+      from = item.ref.path.join(".");
+      break;
+    }
+    case "class": {
+      const item = props.item as SearchableClass;
+      name = item.name;
+      from = item.ref.moduleRef.path.join(".");
+      break;
+    }
+    case "function": {
+      const item = props.item as SearchableFunction;
+      name = item.name + " " + item.parameters + " ";
+      from = item.ref.moduleRef.path.join(".");
+      break;
+    }
+    case "method": {
+      const item = props.item as SearchableMethod;
+      name = item.name + " " + item.parameters + " ";
+      from =
+        item.className + " in " + item.ref.classRef.moduleRef.path.join(".");
+      break;
+    }
+  }
 
   return (
     <ListItem
       button
       component="a"
-      href={props.url}
+      href={props.item.url}
       className={classes.listItem}
     >
       <div>
-        <Typography className={classes.text}>{props.name} </Typography>
-        <Typography className={classes.emphText}>{props.type}</Typography>
+        <Typography className={classes.text}>{name} </Typography>
+        <Typography className={classes.emphText}>{props.item.type}</Typography>
       </div>
-      {props.from && (
+      {from && (
         <div>
           <Typography variant="body2" className={classes.emphText}>
-            from {props.from}
+            from {from}
           </Typography>
         </div>
       )}

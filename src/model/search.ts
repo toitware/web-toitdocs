@@ -57,6 +57,7 @@ function flattenMethod(
     className: method.id.classRef.name,
     parameters: parametersString(method.parameters),
     url: methodUrlFromRef(modules, method.id),
+    type: "method",
   });
 }
 
@@ -70,6 +71,7 @@ function flattenFunction(
     ref: fhunction.id,
     parameters: parametersString(fhunction.parameters),
     url: functionUrlFromRef(modules, fhunction.id),
+    type: "function",
   });
 }
 
@@ -82,6 +84,7 @@ function flattenClass(
     name: klass.name,
     ref: klass.id,
     url: classUrlFromRef(klass.id),
+    type: "class",
   });
 
   klass.statics
@@ -98,6 +101,7 @@ function flattenModule(
     name: module.name,
     ref: module.id,
     url: moduleUrlFromRef(module.id),
+    type: "module",
   });
 
   Object.values(module.modules).forEach((m) =>
@@ -126,6 +130,14 @@ export function flatten(modules: Modules | undefined): SearchableModel {
   return result;
 }
 
+type SearchableType = "module" | "class" | "function" | "method";
+
+export interface Searchable {
+  type: SearchableType;
+  name: string;
+  url: string;
+}
+
 export interface SearchableModel {
   modules: SearchableModule[];
   classes: SearchableClass[];
@@ -133,29 +145,33 @@ export interface SearchableModel {
   methods: SearchableMethod[];
 }
 
-export interface SearchableModule {
+export interface SearchableModule extends Searchable {
   name: string;
   ref: TopLevelRef;
   url: string;
+  type: "module";
 }
 
-export interface SearchableClass {
+export interface SearchableClass extends Searchable {
   name: string;
   ref: TopLevelItemRef;
   url: string;
+  type: "class";
 }
 
-export interface SearchableFunction {
+export interface SearchableFunction extends Searchable {
   name: string;
   ref: TopLevelItemRef;
   parameters: string;
   url: string;
+  type: "function";
 }
 
-export interface SearchableMethod {
+export interface SearchableMethod extends Searchable {
   name: string;
   ref: ClassMemberRef;
   className: string;
   parameters: string;
   url: string;
+  type: "method";
 }
