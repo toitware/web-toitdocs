@@ -12,9 +12,6 @@ spec:
     command:
     - cat
     tty: true
-    env:
-      - name: BUILD_VERSION
-        value: "sh gitversion"
 """
       }
     }
@@ -62,6 +59,9 @@ spec:
             }
             steps {
                 container("webtoitdocs"){
+                    script {
+                        BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
+                    }
                     sh "tar -zcf ${BUILD_VERSION}.tar.gz -C build ."
                     withCredentials([[$class: 'FileBinding', credentialsId: 'gcloud-service-auth', variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
                         sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
