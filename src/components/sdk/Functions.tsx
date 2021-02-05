@@ -1,7 +1,7 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React from "react";
-import { Function, Method, Parameter } from "../../model/model";
+import { Function, Method, Parameter, Type } from "../../model/model";
 import DetailsList from "../general/DetailsList";
 import { TypeView } from "./Type";
 
@@ -31,12 +31,13 @@ export function getId(functionName: string, parameters: Parameter[]): string {
 }
 
 export function getDescription(
-  fn: Function | Method,
+  parameters: Parameter[],
+  returnType?: Type,
   hideReturnTypes?: boolean
 ): JSX.Element {
   return (
     <>
-      {fn.parameters.map((parameter, i) => {
+      {parameters.map((parameter, i) => {
         let param = parameter.name;
         if (parameter.isNamed) {
           param = "--" + param;
@@ -53,10 +54,10 @@ export function getDescription(
           </span>
         );
       })}
-      {!hideReturnTypes && (
+      {!hideReturnTypes && returnType && (
         <>
           <span>{" -> "}</span>
-          <TypeView type={fn.returnType} />
+          <TypeView type={returnType} />
         </>
       )}
     </>
@@ -71,7 +72,11 @@ export default function Functions(props: FunctionsProps): JSX.Element {
         const id = getId(fn.name, fn.parameters);
         return {
           name: fn.name,
-          description: getDescription(fn, props.hideReturnTypes),
+          description: getDescription(
+            fn.parameters,
+            fn.returnType,
+            props.hideReturnTypes
+          ),
           key: "function" + i,
           id: id,
           toitdoc: fn.toitdoc,
