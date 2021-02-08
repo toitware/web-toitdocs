@@ -27,12 +27,14 @@ import { NavigationParams } from "./components/navigation/NavigationView";
 import ClassInfo from "./containers/main/ClassInfo";
 import ModuleInfo from "./containers/main/ModuleInfo";
 import Navigation from "./containers/navigation/Navigation";
-import { ToitObject } from "./generator/sdk";
 import { fetchSDK, RootState } from "./redux/sdk";
 
-const mapStateToProps = (state: RootState): Pick<AppProps, "object"> => {
+const mapStateToProps = (
+  state: RootState
+): Pick<AppProps, "ready" | "sdkVersion"> => {
   return {
-    object: state.sdk.object,
+    ready: state.sdk.modules !== undefined,
+    sdkVersion: state.sdk.sdkVersion,
   };
 };
 
@@ -62,7 +64,8 @@ const styles = (theme: Theme): StyleRules =>
 
 interface AppProps extends WithStyles<typeof styles> {
   sdkVersionFromParams: string;
-  object?: ToitObject;
+  ready: boolean;
+  sdkVersion: string | undefined;
   fetchSdk: (version: string) => void;
 }
 
@@ -76,7 +79,7 @@ class App extends Component<AppProps> {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <ScrollToTop />
-          {this.props.object !== undefined ? (
+          {this.props.ready ? (
             <>
               <ErrorBoundary>
                 <HeaderBar />
@@ -127,7 +130,7 @@ class App extends Component<AppProps> {
                     </Grid>
                     <Grid item xs={12}>
                       <div className={this.props.classes.sdkVersion}>
-                        SDK version: {this.props.object.sdk_version}
+                        SDK version: {this.props.sdkVersion}
                       </div>
                     </Grid>
                   </Grid>
