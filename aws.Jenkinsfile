@@ -17,8 +17,12 @@ spec:
       }
     }
 
+    environment {
+        BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
+    }
+
     options {
-      timeout(time: 30, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
     }
 
     stages {
@@ -49,9 +53,6 @@ spec:
                 }
             }
             steps {
-                script {
-                    BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
-                }
                 sh "tar -zcf ${BUILD_VERSION}.tar.gz -C build ."
                 withCredentials([[$class: 'FileBinding', credentialsId: 'gcloud-service-auth', variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
                     sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
