@@ -1,20 +1,28 @@
 pipeline {
-
     agent {
-        docker {
-            image 'gcr.io/infrastructure-220307/jenkins-console-toolchain:20210204155459'
-            label 'docker'
-            args '-v /home/jenkins/agent:/home/jenkins/.cache/ -u jenkins'
-            reuseNode true
-        }
-    }
-
-    options {
-      timeout(time: 30, unit: 'MINUTES')
+      kubernetes {
+      defaultContainer 'webtoitdocs'
+      yaml """
+kind: Pod
+metadata:
+  name: agent
+spec:
+  containers:
+  - name: webtoitdocs
+    image: 465068080952.dkr.ecr.eu-west-1.amazonaws.com/jenkins-console-toolchain:20210204155459
+    command:
+    - cat
+    tty: true
+"""
+      }
     }
 
     environment {
         BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
+    }
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
     }
 
     stages {
