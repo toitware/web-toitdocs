@@ -1,6 +1,7 @@
 pipeline {
     agent {
       kubernetes {
+      defaultContainer 'webtoitdocs'
       yaml """
 kind: Pod
 metadata:
@@ -23,25 +24,19 @@ spec:
     stages {
         stage("install") {
             steps {
-                container("webtoitdocs"){
-                    sh "yarn install"
-                }
+                sh "yarn install"
             }
         }
 
         stage("lint") {
             steps {
-                container("webtoitdocs"){
-                    sh "yarn lint"
-                }
+                sh "yarn lint"
             }
         }
 
         stage("build") {
             steps {
-                container("webtoitdocs"){
-                    sh "yarn run build"
-                }
+                sh "yarn run build"
             }
         }
 
@@ -54,16 +49,14 @@ spec:
                 }
             }
             steps {
-                container("webtoitdocs"){
-                    script {
-                        BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
-                    }
-                    sh "tar -zcf ${BUILD_VERSION}.tar.gz -C build ."
-                    withCredentials([[$class: 'FileBinding', credentialsId: 'gcloud-service-auth', variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
-                        sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
-                        sh "gcloud config set project infrastructure-220307"
-                        sh "FILEEXT=tar.gz toitarchive ${BUILD_VERSION}.tar.gz toit-web toitdocs.toit.io ${BUILD_VERSION}"
-                    }
+                script {
+                    BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
+                }
+                sh "tar -zcf ${BUILD_VERSION}.tar.gz -C build ."
+                withCredentials([[$class: 'FileBinding', credentialsId: 'gcloud-service-auth', variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
+                    sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
+                    sh "gcloud config set project infrastructure-220307"
+                    sh "FILEEXT=tar.gz toitarchive ${BUILD_VERSION}.tar.gz toit-web toitdocs.toit.io ${BUILD_VERSION}"
                 }
             }
 
