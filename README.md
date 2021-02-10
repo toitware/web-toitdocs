@@ -1,5 +1,11 @@
 # Setup for development
 
+This project takes the generated JSON language description and builds the
+documentation for it.
+
+To be able to build/run the project locally, get the `latest.json` from a
+coworker and put it in `public/sdk/`.
+
 ## yarn
 
 `yarn` is used in web projects. To install `yarn`, follow the guide [here](https://yarnpkg.com/lang/en/docs/install/#debian-stable).
