@@ -1,19 +1,8 @@
 pipeline {
     agent {
       kubernetes {
-      defaultContainer 'webtoitdocs'
-      yaml """
-kind: Pod
-metadata:
-  name: agent
-spec:
-  containers:
-  - name: webtoitdocs
-    image: 465068080952.dkr.ecr.eu-west-1.amazonaws.com/jenkins-console-toolchain:20210204155459
-    command:
-    - cat
-    tty: true
-"""
+        defaultContainer 'webtoitdocs'
+        yamlFile 'Jenkins.pod.yaml'
       }
     }
 
