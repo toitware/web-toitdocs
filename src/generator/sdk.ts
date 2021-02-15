@@ -3,8 +3,8 @@ export const OBJECT_TYPE_STATEMENT_CODE_SECTION = "statement_code_section";
 export const OBJECT_TYPE_STATEMENT_ITEMIZED = "statement_itemized";
 export const OBJECT_TYPE_STATEMENT_ITEM = "statement_item";
 export const OBJECT_TYPE_STATEMENT_PARAGRAPH = "statement_paragraph";
-export const OBJECT_TYPE_STATEMENT_CODE = "statement_code";
-export const OBJECT_TYPE_STATEMENT_TEXT = "statement_text";
+export const OBJECT_TYPE_EXPRESSION_CODE = "expression_code";
+export const OBJECT_TYPE_EXPRESSION_TEXT = "expression_text";
 export const OBJECT_TYPE_TOITDOCREF = "toitdocref";
 export const OBJECT_TYPE_FUNCTION = "function";
 export const OBJECT_TYPE_PARAMETER = "parameter";
@@ -16,8 +16,8 @@ export const OBJECT_TYPE_LIBRARY = "library";
 export const OBJECT_TYPE_EXPRESSION = "expression";
 
 export type ObjectTypeExpression =
-  | typeof OBJECT_TYPE_STATEMENT_CODE
-  | typeof OBJECT_TYPE_STATEMENT_CODE_SECTION
+  | typeof OBJECT_TYPE_EXPRESSION_CODE
+  | typeof OBJECT_TYPE_EXPRESSION_TEXT
   | typeof OBJECT_TYPE_TOITDOCREF;
 
 export interface ToitObject {
@@ -148,12 +148,17 @@ export interface ToitStatementParagraph {
 }
 
 export type ToitExpression =
-  | ToitStatementCode
-  | ToitStatementCodeSection
+  | ToitExpressionCode
+  | ToitExpressionText
   | ToitDocRef;
 
-export interface ToitStatementCode {
-  object_type: typeof OBJECT_TYPE_STATEMENT_CODE;
+export interface ToitExpressionCode {
+  object_type: typeof OBJECT_TYPE_EXPRESSION_CODE;
+  text: string;
+}
+
+export interface ToitExpressionText {
+  object_type: typeof OBJECT_TYPE_EXPRESSION_TEXT;
   text: string;
 }
 

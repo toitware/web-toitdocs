@@ -1,6 +1,7 @@
 import {
   OBJECT_TYPE_SECTION,
-  OBJECT_TYPE_STATEMENT_CODE,
+  OBJECT_TYPE_EXPRESSION_CODE,
+  OBJECT_TYPE_EXPRESSION_TEXT,
   OBJECT_TYPE_STATEMENT_CODE_SECTION,
   OBJECT_TYPE_STATEMENT_ITEM,
   OBJECT_TYPE_STATEMENT_ITEMIZED,
@@ -114,10 +115,15 @@ export interface DocStatementParagraph {
   expressions: DocExpression[];
 }
 
-export type DocExpression = DocStatementCode | DocStatementCodeSection | DocRef;
+export type DocExpression = DocExpressionCode | DocExpressionText | DocRef;
 
-export interface DocStatementCode {
-  object_type: typeof OBJECT_TYPE_STATEMENT_CODE;
+export interface DocExpressionCode {
+  object_type: typeof OBJECT_TYPE_EXPRESSION_CODE;
+  text: string;
+}
+
+export interface DocExpressionText {
+  object_type: typeof OBJECT_TYPE_EXPRESSION_TEXT;
   text: string;
 }
 

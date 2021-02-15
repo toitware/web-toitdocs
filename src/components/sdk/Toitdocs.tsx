@@ -3,7 +3,8 @@
 import { makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import {
-  OBJECT_TYPE_STATEMENT_CODE,
+  OBJECT_TYPE_EXPRESSION_CODE,
+  OBJECT_TYPE_EXPRESSION_TEXT,
   OBJECT_TYPE_STATEMENT_CODE_SECTION,
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_STATEMENT_PARAGRAPH,
@@ -15,7 +16,8 @@ import {
   DocRef,
   DocSection,
   DocStatement,
-  DocStatementCode,
+  DocExpressionCode,
+  DocExpressionText,
   DocStatementCodeSection,
   DocStatementItem,
   DocStatementItemized,
@@ -39,8 +41,12 @@ function StatementCodeSection(props: {
   return <CodeBlock code={props.code.text} />;
 }
 
-function StatementCode(props: { code: DocStatementCode }): JSX.Element {
-  return <span>{props.code.text}</span>;
+function ExpressionCode(props: { code: DocExpressionCode }): JSX.Element {
+  return <code>{props.code.text}</code>;
+}
+
+function ExpressionText(props: { text: DocExpressionText }): JSX.Element {
+  return <span>{props.text.text}</span>;
 }
 
 function StatementItemized(props: {
@@ -80,10 +86,10 @@ function ToitdocRef(props: { reference: DocRef }): JSX.Element {
 function Expression(props: { expression: DocExpression }): JSX.Element {
   const expression = props.expression;
   switch (expression.object_type) {
-    case OBJECT_TYPE_STATEMENT_CODE:
-      return <StatementCode code={expression} />;
-    case OBJECT_TYPE_STATEMENT_CODE_SECTION:
-      return <StatementCodeSection code={expression} />;
+    case OBJECT_TYPE_EXPRESSION_CODE:
+      return <ExpressionCode code={expression} />;
+    case OBJECT_TYPE_EXPRESSION_TEXT:
+      return <ExpressionText text={expression} />;
     case OBJECT_TYPE_TOITDOCREF:
       return <ToitdocRef reference={expression} />;
     default:
