@@ -56,7 +56,7 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
       return this.notFound(this.props.match.params.moduleName);
     }
 
-    const importPath = this.props.match.params.moduleName.replaceAll("/", ".");
+    const importPath = this.props.match.params.moduleName.replace(/\//g, ".");
 
     return (
       <>
