@@ -5,7 +5,7 @@
 
 (function (mod) {
   if (typeof window === "undefined" || typeof window.navigator == 'undefined')
-    import("codemirror-node").then(mod);
+    import("codemirror").then(mod);
   else if ( typeof module == "object" && module.hot)
     import("codemirror").then(mod);
   else if (typeof exports == "object" && typeof module == "object") // CommonJS
