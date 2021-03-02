@@ -1,27 +1,18 @@
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
+import { makeStyles, Paper } from "@material-ui/core";
+import "codemirror/lib/codemirror.css";
 import React from "react";
+import { UnControlled as CodeMirror } from "react-codemirror2";
+import "../../assets/codemirror/codemirror.css";
+import "../../assets/codemirror/toit";
 
 const useStyles = makeStyles((theme) => ({
-  page: {
-    width: "100%",
-  },
-  strong: {
-    fontWeight: 600,
-    fontFamily: "monospace",
-    display: "inline",
-  },
-  normal: {
-    display: "inline",
-    fontFamily: "monospace",
-  },
-  containerMargin: {
+  paperCode: {
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
-  },
-  paperCode: {
-    width: "100%",
+    maxHeight: 400,
+    display: "flex",
   },
 }));
 
@@ -32,36 +23,15 @@ interface CodeBlockProps {
 export default function CodeBlock(props: CodeBlockProps): JSX.Element {
   const classes = useStyles();
   return (
-    <Paper className="paperCode" elevation={0} variant="outlined">
-      <Grid
-        container
-        item
-        xs={12}
-        direction="row"
-        className={classes.containerMargin}
-      >
-        <div>
-          {props.code.split(/\r?\n/).map((value, i) => {
-            const piecesOfLine = value.split(" ");
-            return (
-              <div key={i}>
-                {piecesOfLine.map((word, j) => {
-                  const isStrong =
-                    word === "import" || word === "show" || word === "as";
-                  return (
-                    <Typography
-                      className={isStrong ? classes.strong : classes.normal}
-                      key={j}
-                    >
-                      {word}{" "}
-                    </Typography>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      </Grid>
+    <Paper className={classes.paperCode} elevation={0} variant="outlined">
+      <CodeMirror
+        value={props.code}
+        options={{
+          mode: "toit",
+          readOnly: true,
+          tabSize: 2,
+        }}
+      />
     </Paper>
   );
 }
