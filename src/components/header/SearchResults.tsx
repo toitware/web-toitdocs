@@ -11,8 +11,8 @@ import {
   Searchable,
   SearchableClass,
   SearchableFunction,
+  SearchableLibrary,
   SearchableMethod,
-  SearchableModule,
 } from "../../model/search";
 import { SEARCH_BAR_WIDTH, SEARCH_RESULTS_WIDTH } from "./SearchView";
 
@@ -70,8 +70,8 @@ function ResultItem(props: { item: Searchable }): JSX.Element {
   let from = "";
 
   switch (props.item.type) {
-    case "module": {
-      const item = props.item as SearchableModule;
+    case "library": {
+      const item = props.item as SearchableLibrary;
       name = item.name;
       from = item.ref.path.join(".");
       break;
@@ -79,20 +79,20 @@ function ResultItem(props: { item: Searchable }): JSX.Element {
     case "class": {
       const item = props.item as SearchableClass;
       name = item.name;
-      from = item.ref.moduleRef.path.join(".");
+      from = item.ref.libraryRef.path.join(".");
       break;
     }
     case "function": {
       const item = props.item as SearchableFunction;
       name = item.name + " " + item.parameters + " ";
-      from = item.ref.moduleRef.path.join(".");
+      from = item.ref.libraryRef.path.join(".");
       break;
     }
     case "method": {
       const item = props.item as SearchableMethod;
       name = item.name + " " + item.parameters + " ";
       from =
-        item.className + " in " + item.ref.classRef.moduleRef.path.join(".");
+        item.className + " in " + item.ref.classRef.libraryRef.path.join(".");
       break;
     }
   }

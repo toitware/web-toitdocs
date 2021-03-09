@@ -1,77 +1,77 @@
 import { getId } from "../components/sdk/Functions";
-import { Class, Function, Method, Module, Modules } from "../model/model";
+import { Class, Function, Libraries, Library, Method } from "../model/model";
 import {
   ClassMemberRef,
   TopLevelItemRef,
   TopLevelRef,
 } from "../model/reference";
 
-export function moduleFrom(
-  moduleName: string,
-  rootModules: Modules
-): Module | undefined {
-  const path = moduleName.split("/");
-  let module = undefined;
-  let modules = rootModules;
+export function libraryFrom(
+  libraryName: string,
+  rootLibraries: Libraries
+): Library | undefined {
+  const path = libraryName.split("/");
+  let library = undefined;
+  let libraries = rootLibraries;
 
   for (const p of path) {
-    module = modules[p];
-    if (!module) {
+    library = libraries[p];
+    if (!library) {
       break;
     }
-    modules = module.modules;
+    libraries = library.libraries;
   }
-  return module;
+  return library;
 }
 
 export function classFrom(
-  moduleName: string,
+  libraryName: string,
   className: string,
-  rootModules: Modules
+  rootLibraries: Libraries
 ): Class | undefined {
-  const module = moduleFrom(moduleName, rootModules);
-  return module?.classes[className] || module?.exportedClasses[className];
+  const library = libraryFrom(libraryName, rootLibraries);
+  return library?.classes[className] || library?.exportedClasses[className];
 }
 
-export function moduleFromRef(
-  rootModules: Modules,
+export function libraryFromRef(
+  rootLibraries: Libraries,
   ref: TopLevelRef
-): Module | undefined {
-  return moduleFrom(ref.path.join("/"), rootModules);
+): Library | undefined {
+  return libraryFrom(ref.path.join("/"), rootLibraries);
 }
 
 export function classFromRef(
-  rootModules: Modules,
+  rootLibraries: Libraries,
   ref: TopLevelItemRef
 ): Class | undefined {
-  const module = moduleFromRef(rootModules, ref.moduleRef);
-  if (!module || ref.offset === undefined) {
+  const library = libraryFromRef(rootLibraries, ref.libraryRef);
+  if (!library || ref.offset === undefined) {
     return undefined;
   }
 
   return (
-    Object.values(module.classes)[ref.offset] ||
-    Object.values(module.exportedClasses)[ref.offset]
+    Object.values(library.classes)[ref.offset] ||
+    Object.values(library.exportedClasses)[ref.offset]
   );
 }
 
 export function functionFromRef(
-  rootModules: Modules,
+  rootLibraries: Libraries,
   ref: TopLevelItemRef
 ): Function | undefined {
-  const module = moduleFromRef(rootModules, ref.moduleRef);
-  if (!module || ref.offset === undefined) {
+  const library = libraryFromRef(rootLibraries, ref.libraryRef);
+  if (!library || ref.offset === undefined) {
     return undefined;
   }
 
-  return module.functions[ref.offset] || module.exportedFunctions[ref.offset];
+  return library.functions[ref.offset] || library.exportedFunctions[ref.offset];
 }
 
 export function methodFromRef(
-  rootModules: Modules,
+  rootLibraries: Libraries,
   ref: ClassMemberRef
 ): Method | undefined {
-  const klass = classFromRef(rootModules, ref.classRef);
+  const klass = classFromRef(rootLibraries, ref.classRef);
   if (!klass || ref.offset === undefined) {
     return undefined;
   }
@@ -83,33 +83,33 @@ export function topLevelRefToId(ref: TopLevelRef): string {
 }
 
 export function classUrlFromRef(ref: TopLevelItemRef): string {
-  return "/" + ref.moduleRef.path.join("/") + "/class-" + ref.name;
+  return "/" + ref.libraryRef.path.join("/") + "/class-" + ref.name;
 }
 
-export function moduleUrlFromRef(ref: TopLevelRef): string {
-  return "/" + ref.path.join("/") + "/module-summary";
+export function libraryUrlFromRef(ref: TopLevelRef): string {
+  return "/" + ref.path.join("/") + "/library-summary";
 }
 
 export function functionUrlFromRef(
-  rootModules: Modules,
+  rootLibraries: Libraries,
   ref: TopLevelItemRef
 ): string {
-  const fhunction = functionFromRef(rootModules, ref);
+  const fhunction = functionFromRef(rootLibraries, ref);
   if (!fhunction) {
     return "/";
   }
   return (
-    moduleUrlFromRef(ref.moduleRef) +
+    libraryUrlFromRef(ref.libraryRef) +
     "#" +
     getId(fhunction.name, fhunction.parameters)
   );
 }
 
 export function methodUrlFromRef(
-  rootModules: Modules,
+  rootLibraries: Libraries,
   ref: ClassMemberRef
 ): string {
-  const method = methodFromRef(rootModules, ref);
+  const method = methodFromRef(rootLibraries, ref);
   if (!method) {
     return "/";
   }

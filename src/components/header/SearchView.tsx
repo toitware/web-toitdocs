@@ -9,9 +9,9 @@ import React from "react";
 import {
   SearchableClass,
   SearchableFunction,
+  SearchableLibrary,
   SearchableMethod,
   SearchableModel,
-  SearchableModule,
 } from "../../model/search";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
@@ -32,7 +32,7 @@ export interface SearchProps extends WithStyles<typeof styles> {
 
 interface SearchState {
   searchBy: string;
-  modules: SearchableModule[];
+  libraries: SearchableLibrary[];
   classes: SearchableClass[];
   functions: SearchableFunction[];
   methods: SearchableMethod[];
@@ -44,7 +44,7 @@ let delayTimer: number;
 class SearchView extends React.Component<SearchProps, SearchState> {
   state = {
     searchBy: "",
-    modules: [],
+    libraries: [],
     classes: [],
     functions: [],
     methods: [],
@@ -69,13 +69,13 @@ class SearchView extends React.Component<SearchProps, SearchState> {
     clearTimeout(delayTimer);
     delayTimer = window.setTimeout(
       () => {
-        let modules = [] as SearchableModule[];
+        let libraries = [] as SearchableLibrary[];
         let classes = [] as SearchableClass[];
         let functions = [] as SearchableFunction[];
         let methods = [] as SearchableMethod[];
 
         if (searchString && searchString.length > 1) {
-          modules = this.search(this.props.model.modules, searchString).map(
+          libraries = this.search(this.props.model.libraries, searchString).map(
             (m) => m.item
           );
           classes = this.search(this.props.model.classes, searchString).map(
@@ -92,7 +92,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
         this.setState({
           ...this.state,
           searchBy: searchString,
-          modules: modules,
+          libraries: libraries,
           classes: classes,
           functions: functions,
           methods: methods,
@@ -124,7 +124,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
               ...this.state.classes,
               ...this.state.functions,
               ...this.state.methods,
-              ...this.state.modules,
+              ...this.state.libraries,
             ]}
             hideResults={this.state.hideResults}
           />

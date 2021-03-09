@@ -5,7 +5,7 @@ import { RootState } from "../../redux/sdk";
 const mapStateToProps = (state: RootState): Pick<SearchProps, "model"> => {
   return {
     model: state.sdk.searchableModel || {
-      modules: [],
+      libraries: [],
       classes: [],
       functions: [],
       methods: [],

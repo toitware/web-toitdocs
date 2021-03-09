@@ -21,11 +21,11 @@ import ScrollableContainer from "./components/general/ScrollableContainer";
 import ScrollToTop from "./components/general/ScrollToTop";
 import HeaderBar, { HEADER_BAR_HEIGHT } from "./components/header/HeaderBar";
 import { ClassInfoParams } from "./components/main/ClassInfoView";
-import { ModuleInfoParams } from "./components/main/ModuleInfoView";
+import { LibraryInfoParams } from "./components/main/LibraryInfoView";
 import WelcomePage from "./components/main/WelcomePage";
 import { NavigationParams } from "./components/navigation/NavigationView";
 import ClassInfo from "./containers/main/ClassInfo";
-import ModuleInfo from "./containers/main/ModuleInfo";
+import LibraryInfo from "./containers/main/LibraryInfo";
 import Navigation from "./containers/navigation/Navigation";
 import { fetchSDK, RootState } from "./redux/sdk";
 
@@ -33,7 +33,7 @@ const mapStateToProps = (
   state: RootState
 ): Pick<AppProps, "ready" | "sdkVersion"> => {
   return {
-    ready: state.sdk.modules !== undefined,
+    ready: state.sdk.libraries !== undefined,
     sdkVersion: state.sdk.sdkVersion,
   };
 };
@@ -102,7 +102,7 @@ class App extends Component<AppProps> {
                       />
                       <Route
                         exact
-                        path="/:moduleName*/:rest"
+                        path="/:libraryName*/:rest"
                         render={(
                           routeProps: RouteComponentProps<NavigationParams>
                         ): React.ReactNode => <Navigation {...routeProps} />}
@@ -114,14 +114,14 @@ class App extends Component<AppProps> {
                         <Route exact path="/" component={WelcomePage} />
                         <Route
                           exact
-                          path="/:moduleName+/module-summary"
+                          path="/:libraryName+/library-summary"
                           render={(
-                            routeProps: RouteComponentProps<ModuleInfoParams>
-                          ): React.ReactNode => <ModuleInfo {...routeProps} />}
+                            routeProps: RouteComponentProps<LibraryInfoParams>
+                          ): React.ReactNode => <LibraryInfo {...routeProps} />}
                         />
                         <Route
                           exact
-                          path="/:moduleName+/class-:className"
+                          path="/:libraryName+/class-:className"
                           render={(
                             routeProps: RouteComponentProps<ClassInfoParams>
                           ): React.ReactNode => <ClassInfo {...routeProps} />}
