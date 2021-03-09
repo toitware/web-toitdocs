@@ -8,30 +8,30 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { moduleUrlFromRef, topLevelRefToId } from "../../misc/util";
-import { Module, Modules } from "../../model/model";
+import { libraryUrlFromRef, topLevelRefToId } from "../../misc/util";
+import { Libraries, Library } from "../../model/model";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     heading: {
       marginBottom: theme.spacing(3),
     },
-    subModules: {
+    subLibraries: {
       paddingLeft: theme.spacing(2),
     },
-    openModule: {
+    openLibrary: {
       fontWeight: "bold",
     },
   });
 
 export interface NavigationParams {
-  moduleName: string;
+  libraryName: string;
 }
 
 export interface NavigationProps
   extends WithStyles<typeof styles>,
     RouteComponentProps<NavigationParams> {
-  modules: Modules;
+  libraries: Libraries;
 }
 
 class NavigationView extends Component<NavigationProps> {
@@ -39,34 +39,36 @@ class NavigationView extends Component<NavigationProps> {
     return (
       <>
         <div className={this.props.classes.heading}>
-          <Typography variant="h5">Modules</Typography>
+          <Typography variant="h5">Libraries</Typography>
         </div>
-        {Object.values(this.props.modules)
+        {Object.values(this.props.libraries)
           .sort((a, b) => a.name.localeCompare(b.name))
-          .map((module) =>
-            this.showModule(module, this.props.match.params.moduleName)
+          .map((library) =>
+            this.showLibrary(library, this.props.match.params.libraryName)
           )}
       </>
     );
   }
 
-  showModule(module: Module, openModule?: string): JSX.Element {
-    const showSubModules = openModule?.split("/")[0] === module.name;
-    const openSubModule = openModule?.split("/").slice(1).join("/");
+  showLibrary(library: Library, openLibrary?: string): JSX.Element {
+    const showSubLibraries = openLibrary?.split("/")[0] === library.name;
+    const openSubLibrary = openLibrary?.split("/").slice(1).join("/");
 
     return (
-      <div key={topLevelRefToId(module.id)}>
+      <div key={topLevelRefToId(library.id)}>
         <Link
-          to={moduleUrlFromRef(module.id)}
-          className={showSubModules ? this.props.classes.openModule : ""}
+          to={libraryUrlFromRef(library.id)}
+          className={showSubLibraries ? this.props.classes.openLibrary : ""}
         >
-          {module.name}
+          {library.name}
         </Link>
-        {showSubModules && (
-          <div className={this.props.classes.subModules}>
-            {Object.values(module.modules)
+        {showSubLibraries && (
+          <div className={this.props.classes.subLibraries}>
+            {Object.values(library.libraries)
               .sort((a, b) => a.name.localeCompare(b.name))
-              .map((subModule) => this.showModule(subModule, openSubModule))}
+              .map((subLibrary) =>
+                this.showLibrary(subLibrary, openSubLibrary)
+              )}
           </div>
         )}
       </div>

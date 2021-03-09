@@ -10,8 +10,8 @@ import {
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { moduleFrom } from "../../misc/util";
-import { Modules } from "../../model/model";
+import { libraryFrom } from "../../misc/util";
+import { Libraries } from "../../model/model";
 import CodeBlock from "../general/CodeBlock";
 import Classes from "../sdk/Classes";
 import Functions from "../sdk/Functions";
@@ -30,17 +30,17 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-export interface ModuleInfoParams {
-  moduleName: string;
+export interface LibraryInfoParams {
+  libraryName: string;
 }
 
-export interface ModuleInfoProps
+export interface LibraryInfoProps
   extends WithStyles<typeof styles>,
-    RouteComponentProps<ModuleInfoParams> {
-  modules: Modules;
+    RouteComponentProps<LibraryInfoParams> {
+  libraries: Libraries;
 }
 
-class ModuleInfoView extends Component<ModuleInfoProps> {
+class LibraryInfoView extends Component<LibraryInfoProps> {
   componentDidMount(): void {
     const hashId = this.props.location.hash.substring(1);
     const element = document.getElementById(hashId);
@@ -48,48 +48,48 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
   }
 
   render(): JSX.Element {
-    const module = moduleFrom(
-      this.props.match.params.moduleName,
-      this.props.modules
+    const library = libraryFrom(
+      this.props.match.params.libraryName,
+      this.props.libraries
     );
-    if (!module) {
-      return this.notFound(this.props.match.params.moduleName);
+    if (!library) {
+      return this.notFound(this.props.match.params.libraryName);
     }
 
-    const importPath = this.props.match.params.moduleName.replace(/\//g, ".");
+    const importPath = this.props.match.params.libraryName.replace(/\//g, ".");
 
     return (
       <>
         <div className={this.props.classes.heading}>
           <Typography component="h2" variant="h2">
-            Module {module.name}
+            Library {library.name}
           </Typography>
         </div>
         <div className={this.props.classes.importingText}>
-          <Typography>To use this module in your code:</Typography>
+          <Typography>To use this library in your code:</Typography>
           <CodeBlock code={"import " + importPath} />
         </div>
-        {Object.keys(module.classes).length > 0 && (
-          <Classes classes={Object.values(module.classes)} title="Classes" />
+        {Object.keys(library.classes).length > 0 && (
+          <Classes classes={Object.values(library.classes)} title="Classes" />
         )}
-        {Object.keys(module.exportedClasses).length > 0 && (
+        {Object.keys(library.exportedClasses).length > 0 && (
           <Classes
-            classes={Object.values(module.exportedClasses)}
+            classes={Object.values(library.exportedClasses)}
             title="Exported classes"
           />
         )}
-        {module.globals.length > 0 && (
-          <Globals globals={module.globals} title="Globals" />
+        {library.globals.length > 0 && (
+          <Globals globals={library.globals} title="Globals" />
         )}
-        {module.exportedGlobals.length > 0 && (
-          <Globals globals={module.exportedGlobals} title="Exported globals" />
+        {library.exportedGlobals.length > 0 && (
+          <Globals globals={library.exportedGlobals} title="Exported globals" />
         )}
-        {module.functions.length > 0 && (
-          <Functions functions={module.functions} title="Functions" />
+        {library.functions.length > 0 && (
+          <Functions functions={library.functions} title="Functions" />
         )}
-        {module.exportedFunctions.length > 0 && (
+        {library.exportedFunctions.length > 0 && (
           <Functions
-            functions={module.exportedFunctions}
+            functions={library.exportedFunctions}
             title="Exported functions"
           />
         )}
@@ -97,13 +97,13 @@ class ModuleInfoView extends Component<ModuleInfoProps> {
     );
   }
 
-  notFound(moduleName: string): JSX.Element {
+  notFound(libraryName: string): JSX.Element {
     return (
       <Typography variant="h4">
-        {"Error: Module " + moduleName + " not found"}
+        {"Error: Library " + libraryName + " not found"}
       </Typography>
     );
   }
 }
 
-export default withStyles(styles)(ModuleInfoView);
+export default withStyles(styles)(LibraryInfoView);

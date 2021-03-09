@@ -4,9 +4,9 @@ import NavigationView, {
 } from "../../components/navigation/NavigationView";
 import { RootState } from "../../redux/sdk";
 
-function mapStateToProps(state: RootState): Pick<NavigationProps, "modules"> {
+function mapStateToProps(state: RootState): Pick<NavigationProps, "libraries"> {
   return {
-    modules: state.sdk.modules || {},
+    libraries: state.sdk.libraries || {},
   };
 }
 

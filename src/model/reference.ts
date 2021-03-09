@@ -1,13 +1,13 @@
-// Used for referencing modules
+// Used for referencing libraries
 export interface TopLevelRef {
   name: string;
   path: string[];
 }
 
-// Used for referencing elements on modules, e.g. classes, globals and functions
+// Used for referencing elements on libraries, e.g. classes, globals and functions
 export interface TopLevelItemRef {
   name: string;
-  moduleRef: TopLevelRef;
+  libraryRef: TopLevelRef;
   type?: TopLevelItemType;
   offset?: number;
 }

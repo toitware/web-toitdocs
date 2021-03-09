@@ -32,13 +32,13 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
         </Typography>
         <Typography className={this.props.classes.section}>
           Welcome to the ᴛᴏɪᴛ SDK reference. ᴛᴏɪᴛ SDK contains a vast amount of
-          modules, ready-to use classes and functionalities that allow a fast
+          libraries, ready-to use classes and functionalities that allow a fast
           and easy use of Toit. This documentation contains the structure of
-          ᴛᴏɪᴛ modules.
+          ᴛᴏɪᴛ libraries.
         </Typography>
         <Typography className={this.props.classes.section}>
-          Except for the <b>core</b> module, you must import a module before you
-          can use it. Here is an example of how to do it:
+          Except for the <b>core</b> library, you must import a library before
+          you can use it. Here is an example of how to do it:
         </Typography>
         <CodeBlock
           code={

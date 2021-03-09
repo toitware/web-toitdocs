@@ -4,9 +4,9 @@ import {
   Field,
   Function,
   Global,
+  Libraries,
+  Library,
   Method,
-  Module,
-  Modules,
   Parameter,
   Type,
 } from "../model/model";
@@ -28,17 +28,17 @@ import {
   ToitType,
 } from "./sdk";
 
-function moduleName(name: string): string {
+function libraryName(name: string): string {
   return name.endsWith(".toit") ? name.substring(0, name.length - 5) : name;
 }
 
 function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
-  const path = toitReference.path.map((s) => moduleName(s));
+  const path = toitReference.path.map((s) => libraryName(s));
   path.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
 
   return {
     name: toitReference.name,
-    moduleRef: { name: toitReference.name, path: path },
+    libraryRef: { name: toitReference.name, path: path },
   };
 }
 
@@ -109,13 +109,13 @@ function methodFrom(
 
 function classFrom(
   toitClass: ToitClass,
-  moduleRef: TopLevelRef,
+  libraryRef: TopLevelRef,
   type: TopLevelItemType,
   offset: number
 ): Class {
   const classId = {
     name: toitClass.name,
-    moduleRef: moduleRef,
+    libraryRef: libraryRef,
     type: type,
     offset: offset,
   };
@@ -153,7 +153,7 @@ function classFrom(
 
 function globalFrom(
   toitGlobal: ToitGlobal,
-  moduleRef: TopLevelRef,
+  libraryRef: TopLevelRef,
   type: TopLevelItemType,
   offset: number
 ): Global {
@@ -161,7 +161,7 @@ function globalFrom(
     name: toitGlobal.name,
     id: {
       name: toitGlobal.name,
-      moduleRef: moduleRef,
+      libraryRef: libraryRef,
       type: type,
       offset: offset,
     },
@@ -171,7 +171,7 @@ function globalFrom(
 
 function functionFrom(
   toitFunction: ToitFunction,
-  moduleRef: TopLevelRef,
+  libraryRef: TopLevelRef,
   type: TopLevelItemType,
   offset: number
 ): Function {
@@ -183,7 +183,7 @@ function functionFrom(
     name: toitFunction.name,
     id: {
       name: toitFunction.name,
-      moduleRef: moduleRef,
+      libraryRef: libraryRef,
       type: type,
       offset: offset,
     },
@@ -193,9 +193,9 @@ function functionFrom(
   };
 }
 
-function moduleFromModule(toitModule: ToitModule, path: string[]): Module {
-  const name = moduleName(toitModule.name);
-  const moduleId = { name: name, path: [...path, name] };
+function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
+  const name = libraryName(toitModule.name);
+  const libraryId = { name: name, path: [...path, name] };
 
   let classes = {} as Classes;
   let exportedClasses = {} as Classes;
@@ -203,32 +203,32 @@ function moduleFromModule(toitModule: ToitModule, path: string[]): Module {
   toitModule.classes.forEach((klass, index) => {
     classes = {
       ...classes,
-      [klass.name]: classFrom(klass, moduleId, "class", index),
+      [klass.name]: classFrom(klass, libraryId, "class", index),
     };
   });
   toitModule.export_classes.forEach((klass, index) => {
     exportedClasses = {
       ...exportedClasses,
-      [klass.name]: classFrom(klass, moduleId, "exported_class", index),
+      [klass.name]: classFrom(klass, libraryId, "exported_class", index),
     };
   });
   const globals = toitModule.globals.map((global, index) =>
-    globalFrom(global, moduleId, "global", index)
+    globalFrom(global, libraryId, "global", index)
   );
   const exportedGlobals = toitModule.export_globals.map((global, index) =>
-    globalFrom(global, moduleId, "exported_global", index)
+    globalFrom(global, libraryId, "exported_global", index)
   );
   const functions = toitModule.functions.map((f, index) =>
-    functionFrom(f, moduleId, "function", index)
+    functionFrom(f, libraryId, "function", index)
   );
   const exportedFunctions = toitModule.export_functions.map((f, index) =>
-    functionFrom(f, moduleId, "exported_function", index)
+    functionFrom(f, libraryId, "exported_function", index)
   );
 
   return {
     name: name,
-    id: moduleId,
-    modules: {},
+    id: libraryId,
+    libraries: {},
     classes: classes,
     exportedClasses: exportedClasses,
     globals: globals,
@@ -238,93 +238,95 @@ function moduleFromModule(toitModule: ToitModule, path: string[]): Module {
   };
 }
 
-function mergeModules(module: Module, otherModule: Module): Module {
-  if (module.name !== otherModule.name) {
-    throw Error("Only modules with the same name can be merged");
+function mergeLibraries(library: Library, otherLibrary: Library): Library {
+  if (library.name !== otherLibrary.name) {
+    throw Error("Only libraries with the same name can be merged");
   }
-  if (JSON.stringify(module.id) !== JSON.stringify(otherModule.id)) {
-    throw Error("Only modules with the same id can be merged");
+  if (JSON.stringify(library.id) !== JSON.stringify(otherLibrary.id)) {
+    throw Error("Only libraries with the same id can be merged");
   }
   return {
-    name: module.name,
-    id: module.id,
-    modules: { ...module.modules, ...otherModule.modules },
-    classes: { ...module.classes, ...otherModule.classes },
+    name: library.name,
+    id: library.id,
+    libraries: { ...library.libraries, ...otherLibrary.libraries },
+    classes: { ...library.classes, ...otherLibrary.classes },
     exportedClasses: {
-      ...module.exportedClasses,
-      ...otherModule.exportedClasses,
+      ...library.exportedClasses,
+      ...otherLibrary.exportedClasses,
     },
-    globals: { ...module.globals, ...otherModule.globals },
+    globals: { ...library.globals, ...otherLibrary.globals },
     exportedGlobals: {
-      ...module.exportedGlobals,
-      ...otherModule.exportedGlobals,
+      ...library.exportedGlobals,
+      ...otherLibrary.exportedGlobals,
     },
-    functions: { ...module.functions, ...otherModule.functions },
+    functions: { ...library.functions, ...otherLibrary.functions },
     exportedFunctions: {
-      ...module.exportedFunctions,
-      ...otherModule.exportedFunctions,
+      ...library.exportedFunctions,
+      ...otherLibrary.exportedFunctions,
     },
   };
 }
 
-function moduleFromLibrary(
+function libraryFromLibrary(
   toitLibrary: ToitLibrary,
   path: string[],
   root?: boolean
-): Module {
-  let modules = {} as Modules;
+): Library {
+  let libraries = {} as Libraries;
 
   const name = toitLibrary.name;
-  const modulePath = root ? [] : [...path, name];
+  const libraryPath = root ? [] : [...path, name];
 
   Object.values(toitLibrary.libraries).forEach((lib) => {
-    if (modules[lib.name]) {
+    if (libraries[lib.name]) {
       console.log("Name clash", lib.name);
     }
-    modules = { ...modules, [lib.name]: moduleFromLibrary(lib, modulePath) };
+    libraries = {
+      ...libraries,
+      [lib.name]: libraryFromLibrary(lib, libraryPath),
+    };
   });
 
-  let moduleContent = undefined as Module | undefined;
+  let libraryContent = undefined as Library | undefined;
 
   Object.values(toitLibrary.modules).forEach((module) => {
-    const subModuleName = moduleName(module.name);
-    if (subModuleName === name) {
-      moduleContent = moduleFromModule(module, path);
+    const subLibraryName = libraryName(module.name);
+    if (subLibraryName === name) {
+      libraryContent = libraryFromModule(module, path);
       return;
     }
-    if (modules[subModuleName]) {
-      console.log("Name clash", subModuleName);
-      const libModule = modules[subModuleName];
-      modules = {
-        ...modules,
-        [subModuleName]: mergeModules(
-          libModule,
-          moduleFromModule(module, modulePath)
+    if (libraries[subLibraryName]) {
+      console.log("Name clash", subLibraryName);
+      const libLibrary = libraries[subLibraryName];
+      libraries = {
+        ...libraries,
+        [subLibraryName]: mergeLibraries(
+          libLibrary,
+          libraryFromModule(module, libraryPath)
         ),
       };
       return;
     }
-    modules = {
-      ...modules,
-      [subModuleName]: moduleFromModule(module, modulePath),
+    libraries = {
+      ...libraries,
+      [subLibraryName]: libraryFromModule(module, libraryPath),
     };
   });
 
   return {
     name: name,
-    id: { name: name, path: modulePath },
-    modules: modules,
-    classes: moduleContent ? moduleContent.classes : {},
-    exportedClasses: moduleContent ? moduleContent.exportedClasses : {},
-    globals: moduleContent ? moduleContent.globals : [],
-    exportedGlobals: moduleContent ? moduleContent.exportedGlobals : [],
-    functions: moduleContent ? moduleContent.functions : [],
-    exportedFunctions: moduleContent ? moduleContent.exportedFunctions : [],
+    id: { name: name, path: libraryPath },
+    libraries: libraries,
+    classes: libraryContent ? libraryContent.classes : {},
+    exportedClasses: libraryContent ? libraryContent.exportedClasses : {},
+    globals: libraryContent ? libraryContent.globals : [],
+    exportedGlobals: libraryContent ? libraryContent.exportedGlobals : [],
+    functions: libraryContent ? libraryContent.functions : [],
+    exportedFunctions: libraryContent ? libraryContent.exportedFunctions : [],
   };
 }
 
-export function modelFrom(rootLibrary: ToitLibrary): Modules {
-  const model = moduleFromLibrary(rootLibrary, [], true).modules;
-  console.log(model);
+export function modelFrom(rootLibrary: ToitLibrary): Libraries {
+  const model = libraryFromLibrary(rootLibrary, [], true).libraries;
   return model;
 }

@@ -4,9 +4,11 @@ import ClassInfoView, {
 } from "../../components/main/ClassInfoView";
 import { RootState } from "../../redux/sdk";
 
-const mapStateToProps = (state: RootState): Pick<ClassInfoProps, "modules"> => {
+const mapStateToProps = (
+  state: RootState
+): Pick<ClassInfoProps, "libraries"> => {
   return {
-    modules: state.sdk.modules || {},
+    libraries: state.sdk.libraries || {},
   };
 };
 

@@ -4,19 +4,19 @@ import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { classFrom } from "../../misc/util";
-import { Modules } from "../../model/model";
+import { Libraries } from "../../model/model";
 import Fields from "../sdk/Fields";
 import Functions from "../sdk/Functions";
 import { TypeReference } from "../sdk/Type";
 import ClassOverview from "./ClassOverview";
 
 export interface ClassInfoParams {
-  moduleName: string;
+  libraryName: string;
   className: string;
 }
 
 export interface ClassInfoProps extends RouteComponentProps<ClassInfoParams> {
-  modules: Modules;
+  libraries: Libraries;
 }
 
 export default class ClassInfoView extends Component<ClassInfoProps> {
@@ -28,9 +28,9 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
 
   render(): React.ReactNode {
     const classInfo = classFrom(
-      this.props.match.params.moduleName,
+      this.props.match.params.libraryName,
       this.props.match.params.className,
-      this.props.modules
+      this.props.libraries
     );
     if (!classInfo) {
       return this.notFound(this.props.match.params.className);

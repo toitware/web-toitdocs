@@ -3,15 +3,15 @@
 import {
   classUrlFromRef,
   functionUrlFromRef,
+  libraryUrlFromRef,
   methodUrlFromRef,
-  moduleUrlFromRef,
 } from "../misc/util";
 import {
   Class,
   Function,
+  Libraries,
+  Library,
   Method,
-  Module,
-  Modules,
   Parameter,
   Type,
 } from "./model";
@@ -47,7 +47,7 @@ function parametersString(parameters: Parameter[]): string {
 }
 
 function flattenMethod(
-  modules: Modules,
+  libraries: Libraries,
   method: Method,
   result: SearchableModel
 ): void {
@@ -56,13 +56,13 @@ function flattenMethod(
     ref: method.id,
     className: method.id.classRef.name,
     parameters: parametersString(method.parameters),
-    url: methodUrlFromRef(modules, method.id),
+    url: methodUrlFromRef(libraries, method.id),
     type: "method",
   });
 }
 
 function flattenFunction(
-  modules: Modules,
+  libraries: Libraries,
   fhunction: Function,
   result: SearchableModel
 ): void {
@@ -70,13 +70,13 @@ function flattenFunction(
     name: fhunction.name,
     ref: fhunction.id,
     parameters: parametersString(fhunction.parameters),
-    url: functionUrlFromRef(modules, fhunction.id),
+    url: functionUrlFromRef(libraries, fhunction.id),
     type: "function",
   });
 }
 
 function flattenClass(
-  modules: Modules,
+  libraries: Libraries,
   klass: Class,
   result: SearchableModel
 ): void {
@@ -89,48 +89,48 @@ function flattenClass(
 
   klass.statics
     .concat(klass.methods)
-    .forEach((m) => flattenMethod(modules, m, result));
+    .forEach((m) => flattenMethod(libraries, m, result));
 }
 
-function flattenModule(
-  modules: Modules,
-  module: Module,
+function flattenLibrary(
+  libraries: Libraries,
+  library: Library,
   result: SearchableModel
 ): void {
-  result.modules.push({
-    name: module.name,
-    ref: module.id,
-    url: moduleUrlFromRef(module.id),
-    type: "module",
+  result.libraries.push({
+    name: library.name,
+    ref: library.id,
+    url: libraryUrlFromRef(library.id),
+    type: "library",
   });
 
-  Object.values(module.modules).forEach((m) =>
-    flattenModule(modules, m, result)
+  Object.values(library.libraries).forEach((m) =>
+    flattenLibrary(libraries, m, result)
   );
-  Object.values(module.classes).forEach((c) =>
-    flattenClass(modules, c, result)
+  Object.values(library.classes).forEach((c) =>
+    flattenClass(libraries, c, result)
   );
-  Object.values(module.functions).forEach((f) =>
-    flattenFunction(modules, f, result)
+  Object.values(library.functions).forEach((f) =>
+    flattenFunction(libraries, f, result)
   );
 }
 
-export function flatten(modules: Modules | undefined): SearchableModel {
+export function flatten(libraries: Libraries | undefined): SearchableModel {
   const result = {
-    modules: [],
+    libraries: [],
     classes: [],
     functions: [],
     methods: [],
   };
-  if (!modules) {
+  if (!libraries) {
     return result;
   }
 
-  Object.values(modules).forEach((m) => flattenModule(modules, m, result));
+  Object.values(libraries).forEach((m) => flattenLibrary(libraries, m, result));
   return result;
 }
 
-type SearchableType = "module" | "class" | "function" | "method";
+type SearchableType = "library" | "class" | "function" | "method";
 
 export interface Searchable {
   type: SearchableType;
@@ -139,17 +139,17 @@ export interface Searchable {
 }
 
 export interface SearchableModel {
-  modules: SearchableModule[];
+  libraries: SearchableLibrary[];
   classes: SearchableClass[];
   functions: SearchableFunction[];
   methods: SearchableMethod[];
 }
 
-export interface SearchableModule extends Searchable {
+export interface SearchableLibrary extends Searchable {
   name: string;
   ref: TopLevelRef;
   url: string;
-  type: "module";
+  type: "library";
 }
 
 export interface SearchableClass extends Searchable {

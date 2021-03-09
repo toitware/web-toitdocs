@@ -1,7 +1,7 @@
 import {
-  OBJECT_TYPE_SECTION,
   OBJECT_TYPE_EXPRESSION_CODE,
   OBJECT_TYPE_EXPRESSION_TEXT,
+  OBJECT_TYPE_SECTION,
   OBJECT_TYPE_STATEMENT_CODE_SECTION,
   OBJECT_TYPE_STATEMENT_ITEM,
   OBJECT_TYPE_STATEMENT_ITEMIZED,
@@ -10,13 +10,13 @@ import {
 } from "../generator/sdk";
 import { ClassMemberRef, TopLevelItemRef, TopLevelRef } from "./reference";
 
-export type Modules = { [moduleName: string]: Module };
+export type Libraries = { [libraryName: string]: Library };
 export type Classes = { [className: string]: Class };
 
-export interface Module {
+export interface Library {
   name: string;
   id: TopLevelRef;
-  modules: Modules;
+  libraries: Libraries;
   classes: Classes;
   exportedClasses: Classes;
   globals: Global[];
