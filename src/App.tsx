@@ -21,11 +21,11 @@ import ScrollableContainer from "./components/general/ScrollableContainer";
 import ScrollToTop from "./components/general/ScrollToTop";
 import HeaderBar, { HEADER_BAR_HEIGHT } from "./components/header/HeaderBar";
 import { ClassInfoParams } from "./components/main/ClassInfoView";
-import { ModuleInfoParams } from "./components/main/ModuleInfoView";
+import { ModuleInfoParams } from "./components/main/LibraryInfoView";
 import WelcomePage from "./components/main/WelcomePage";
 import { NavigationParams } from "./components/navigation/NavigationView";
 import ClassInfo from "./containers/main/ClassInfo";
-import ModuleInfo from "./containers/main/ModuleInfo";
+import ModuleInfo from "./containers/main/LibraryInfo";
 import Navigation from "./containers/navigation/Navigation";
 import { fetchSDK, RootState } from "./redux/sdk";
 

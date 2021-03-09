@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import ModuleInfoView, {
   ModuleInfoProps,
-} from "../../components/main/ModuleInfoView";
+} from "../../components/main/LibraryInfoView";
 import { RootState } from "../../redux/sdk";
 
 function mapStateToProps(state: RootState): Pick<ModuleInfoProps, "modules"> {
