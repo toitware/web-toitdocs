@@ -64,7 +64,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
   }
 
   onSearch = (searchString: string): void => {
-    this.setState({ ...this.state, searchBy: searchString });
+    this.setState({ searchBy: searchString });
 
     clearTimeout(delayTimer);
     delayTimer = window.setTimeout(
@@ -90,7 +90,6 @@ class SearchView extends React.Component<SearchProps, SearchState> {
         }
 
         this.setState({
-          ...this.state,
           searchBy: searchString,
           libraries: libraries,
           classes: classes,
@@ -103,11 +102,11 @@ class SearchView extends React.Component<SearchProps, SearchState> {
   };
 
   onFocus = (): void => {
-    this.setState({ ...this.state, hideResults: false });
+    this.setState({ hideResults: false });
   };
 
   onClickAway = (): void => {
-    this.setState({ ...this.state, hideResults: true });
+    this.setState({ hideResults: true });
   };
 
   render(): JSX.Element {
