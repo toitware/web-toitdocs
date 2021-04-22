@@ -12,9 +12,12 @@ interface FunctionsProps {
 }
 
 export function getId(functionName: string, shape: Shape): string {
+  if (shape.isSetter) {
+    return encodeURIComponent(functionName + "=");
+  }
   const shapeString = `${shape.arity},${shape.totalBlockCount},${
     shape.namedBlockCount
-  },${shape.isSetter},${shape.names.join(",")}`;
+  },${shape.names.join(",")}`;
   return encodeURIComponent(functionName + "(" + shapeString + ")");
 }
 
