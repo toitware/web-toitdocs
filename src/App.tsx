@@ -10,6 +10,7 @@ import {
   WithStyles,
 } from "@material-ui/core/styles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import CookieConsent from "@toitware/cookie-consent";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route, RouteComponentProps } from "react-router-dom";
@@ -141,6 +142,13 @@ class App extends Component<AppProps> {
             <CircularProgress disableShrink />
           )}
         </BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CookieConsent
+            segmentKey="123"
+            callback={(): void => {}}
+            show={true}
+          />
+        </ThemeProvider>
       </ThemeProvider>
     );
   }

@@ -57,7 +57,8 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
             <div key={element.key} id={element.id}>
               <div className={classes.element}>
                 <div>
-                  {name(element.name, element.id, element.link)}{" "}
+                  {name(element.name, element.id, element.link)}
+                  {""}
                   {element.description}
                 </div>
                 {element.toitdoc && (

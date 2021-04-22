@@ -4,16 +4,18 @@
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function (mod) {
-  if (typeof window === "undefined" || typeof window.navigator == 'undefined')
+  if (typeof window === "undefined" || typeof window.navigator == "undefined")
     import("codemirror").then(mod);
-  else if ( typeof module == "object" && module.hot)
+  else if (typeof module == "object" && module.hot)
     import("codemirror").then(mod);
-  else if (typeof exports == "object" && typeof module == "object") // CommonJS
+  else if (typeof exports == "object" && typeof module == "object")
+    // CommonJS
     mod(require("codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
+  else if (typeof define == "function" && define.amd)
+    // AMD
     define(["codemirror"], mod);
-  else // Plain browser env
-    mod(CodeMirror);
+  // Plain browser env
+  else mod(CodeMirror);
 })(function (CodeMirror) {
   "use strict";
 
@@ -40,13 +42,14 @@
     }
     var keywords = makeJsObject(
       "assert|and|or|not|if|unless|for|else|try|finally|" +
-      "while|until|break|continue|throw|static|abstract|return|unreachable");
+        "while|until|break|continue|throw|static|abstract|return|unreachable"
+    );
     var atoms = makeJsObject("true|false|null");
     var specialVars = makeJsObject("this|super|it");
 
     var IDENTIFIER = /[a-zA-Z_]\w*/;
     var TYPE = /[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?/;
-    var OVERRIDABLE_OPERATOR = /==|>=|<=|<<|>>>|>>|\*|\+|-|%|\/|<|>|&|\||\^|~|\[\]\=|\[\]/
+    var OVERRIDABLE_OPERATOR = /==|>=|<=|<<|>>>|>>|\*|\+|-|%|\/|<|>|&|\||\^|~|\[\]\=|\[\]/;
 
     var CONSTANT_HEURISTIC = /_?[A-Z][A-Z_0-9]+/;
     var TYPE_HEURISTIC = /_?[A-Z]\w*[a-z]\w*/;
@@ -127,7 +130,7 @@
       if (expression_result) return expression_result;
       while (true) {
         var peek = stream.peek();
-        if (!peek || peek == ' ') return "enclosed";
+        if (!peek || peek == " ") return "enclosed";
         var next = stream.next();
         if (next == closing) {
           state.context.pop();
@@ -144,9 +147,18 @@
         var closing;
         var style;
         switch (stream.current()) {
-          case "(": closing = ")"; style = "paren"; break;
-          case "{": closing = "}"; style = "brace"; break;
-          case "[": closing = "]"; style = "bracket"; break;
+          case "(":
+            closing = ")";
+            style = "paren";
+            break;
+          case "{":
+            closing = "}";
+            style = "brace";
+            break;
+          case "[":
+            closing = "]";
+            style = "bracket";
+            break;
         }
         state.subState.push(closing);
         return style;
@@ -167,7 +179,7 @@
       if (stream.match(/not\b/)) {
         return "is_as";
       } else {
-        tokenizeIsAs(stream, state)
+        tokenizeIsAs(stream, state);
       }
     }
 
@@ -206,7 +218,7 @@
           return "string_dollar";
 
         case STRING_ESCAPE_EXPRESSION:
-          if (stream.match('(')) {
+          if (stream.match("(")) {
             setSubState(state, STRING_ESCAPE_AFTER_PAREN);
             return "paren";
           }
@@ -228,7 +240,7 @@
             setSubState(state, STRING_ESCAPE_EXPRESSION);
             return "dot";
           }
-          if (stream.match('[')) {
+          if (stream.match("[")) {
             stream.next();
             // Keeping the current substate, as we want to continue as if
             // we just finished parsing an identifier.
@@ -241,14 +253,14 @@
           return null;
 
         case STRING_ESCAPE_AFTER_PAREN:
-          if (stream.peek() == '%') {
+          if (stream.peek() == "%") {
             stream.eatWhile(/[^ ]/);
             setSubState(state, STRING_ESCAPE_AFTER_FORMAT);
             return "string_format";
           }
         // Fall through:
         case STRING_ESCAPE_AFTER_FORMAT:
-          setSubState(state, STRING_PART);  // When we come back.
+          setSubState(state, STRING_PART); // When we come back.
           state.context.push([tokenizeDelimited, -1]);
           // Abusing `subState` to store the delimiter.
           state.subState.push(")");
@@ -269,8 +281,8 @@
         stream.eatWhile(/[^"$\\]/);
         if (stream.eol()) return "unfinished_string";
         // TODO: we could highlight escapes. (Especially \x and \u).
-        if (stream.match("\\")) stream.next();  // Consume the escaped character.
-        if (stream.peek() == '$') {
+        if (stream.match("\\")) stream.next(); // Consume the escaped character.
+        if (stream.peek() == "$") {
           setSubState(state, STRING_ESCAPE_DOLLAR);
           return "singleline_string";
         }
@@ -291,8 +303,8 @@
         stream.eatWhile(/[^"$\\]/);
         if (stream.eol()) return "multiline_string";
         // TODO: we could highlight escapes. (Especially \x and \u).
-        if (stream.match("\\")) stream.next();  // Consume the escaped character.
-        if (stream.peek() == '$') {
+        if (stream.match("\\")) stream.next(); // Consume the escaped character.
+        if (stream.peek() == "$") {
           setSubState(state, STRING_ESCAPE_DOLLAR);
           return "multiline_string";
         }
@@ -311,7 +323,7 @@
           if (stream.match("'")) {
             return "character";
           }
-          stream.match("\\");  // If there is a backslash, consume it and the next character.
+          stream.match("\\"); // If there is a backslash, consume it and the next character.
           stream.next();
           if (stream.eol()) {
             return "unfinished_character";
@@ -322,12 +334,25 @@
     }
 
     function tryNumber(stream, state) {
-      if (stream.match(/(\d(\d|_\d)*)?\.\d(\d|_\d)*([eE][+-]?\d(\d|_\d)*)?/)) return "float";  // 0.5e10 and .5e+10
-      if (stream.match(/\d(\d|_\d)*[eE][+-]?\d(\d|_\d)*/)) return "float";  // 1e+10
-      if (stream.match(/0[xX]([\da-fA-F]([\da-fA-F]|_[\da-fA-F])*)?\.[\da-fA-F]([\da-fA-F]|_[\da-fA-F])*[pP][+-]?\d(\d|_\d)*/)) return "hex_float";  // 0x.D7P-3 and 0xAb.D7p+10
-      if (stream.match(/0[xX][\da-fA-F]([\da-fA-F]|_[\da-fA-F])*[pP][+-]?\d(\d|_\d)*/)) return "hex_float";  // 0xap+10
-      if (stream.match(/0[xX][\da-fA-F]([\da-fA-F]|_[\da-fA-F])*/)) return "hex";
-      if (stream.match(/0[bB][01a-fA-F]([01a-fA-F]|_[01a-fA-F])*/)) return "binary";
+      if (stream.match(/(\d(\d|_\d)*)?\.\d(\d|_\d)*([eE][+-]?\d(\d|_\d)*)?/))
+        return "float"; // 0.5e10 and .5e+10
+      if (stream.match(/\d(\d|_\d)*[eE][+-]?\d(\d|_\d)*/)) return "float"; // 1e+10
+      if (
+        stream.match(
+          /0[xX]([\da-fA-F]([\da-fA-F]|_[\da-fA-F])*)?\.[\da-fA-F]([\da-fA-F]|_[\da-fA-F])*[pP][+-]?\d(\d|_\d)*/
+        )
+      )
+        return "hex_float"; // 0x.D7P-3 and 0xAb.D7p+10
+      if (
+        stream.match(
+          /0[xX][\da-fA-F]([\da-fA-F]|_[\da-fA-F])*[pP][+-]?\d(\d|_\d)*/
+        )
+      )
+        return "hex_float"; // 0xap+10
+      if (stream.match(/0[xX][\da-fA-F]([\da-fA-F]|_[\da-fA-F])*/))
+        return "hex";
+      if (stream.match(/0[bB][01a-fA-F]([01a-fA-F]|_[01a-fA-F])*/))
+        return "binary";
       if (stream.match(/\d(\d|_\d)*/)) return "integer";
       return null;
     }
@@ -345,13 +370,13 @@
         if (stream.match("=")) {
           return "op_assig";
         }
-        return "overridable_op"
+        return "overridable_op";
       }
       if (stream.match(/==|!=|>=|<=|<|>/)) {
         return "relational";
       }
       if (stream.match("=")) {
-        return "assig"
+        return "assig";
       }
       if (stream.match(/:=|::=/)) {
         return "define";
@@ -365,13 +390,13 @@
       var sub = subState(state);
       if (sub == LOCAL_ANNOTATION_DIV) {
         if (stream.match("/")) {
-          setSubState(state, LOCAL_ANNOTATION_TYPE)
+          setSubState(state, LOCAL_ANNOTATION_TYPE);
           return "type_div";
         }
-        throw "Internal Error"
+        throw "Internal Error";
       }
       if (sub != LOCAL_ANNOTATION_TYPE) {
-        throw "Internal Error"
+        throw "Internal Error";
       }
       state.context.pop();
       state.subState.pop();
@@ -385,7 +410,7 @@
       if (!stream.match(IDENTIFIER)) return null;
       var id = stream.current();
       if (isKeyword(id)) return "keyword";
-      if (isSpecialVar(id)) return "special_var"
+      if (isSpecialVar(id)) return "special_var";
       if (isAtom(id)) return "atom";
       if (id.match(CONSTANT_HEURISTIC)) {
         return "constant";
@@ -424,7 +449,12 @@
       if (stream.match(/any\b/) || stream.match(/none\b/)) {
         return "type_special";
       }
-      if (stream.match(/int\b\??/) || stream.match(/float\b\??/) || stream.match(/bool\b\??/) || stream.match(/string\b\??/)) {
+      if (
+        stream.match(/int\b\??/) ||
+        stream.match(/float\b\??/) ||
+        stream.match(/bool\b\??/) ||
+        stream.match(/string\b\??/)
+      ) {
         return "type_short";
       }
       state.context.push([tokenizeType2, -1]);
@@ -436,10 +466,13 @@
       var sub = subState(state);
       if (sub == TYPE_START || sub == TYPE_START_NULLABLE) {
         stream.match(TYPE);
-        var indexOfDot = stream.current().indexOf('.');
+        var indexOfDot = stream.current().indexOf(".");
         if (indexOfDot >= 0) {
           // Backup.
-          setSubState(state, sub == TYPE_START ? TYPE_AFTER_PREFIX : TYPE_AFTER_PREFIX_NULLABLE);
+          setSubState(
+            state,
+            sub == TYPE_START ? TYPE_AFTER_PREFIX : TYPE_AFTER_PREFIX_NULLABLE
+          );
           stream.backUp(stream.current().length - indexOfDot);
           return "type_prefix";
         }
@@ -465,7 +498,7 @@
       if (stream.match(/import\b/)) {
         state.context.push([tokenizeImport, 2]);
         state.subState.push(IMPORT_AFTER_IMPORT);
-        return "keyword"
+        return "keyword";
       }
       return null;
     }
@@ -519,7 +552,7 @@
       if (stream.match(/export\b/)) {
         state.context.push([tokenizeExport, 2]);
         state.subState.push(EXPORT_AFTER_EXPORT);
-        return "keyword"
+        return "keyword";
       }
       return null;
     }
@@ -548,15 +581,18 @@
     var CLASS_SIGNATURE_AFTER_CLASS = 0;
     var CLASS_SIGNATURE_AFTER_NAME = 1;
     var CLASS_SIGNATURE_AFTER_EXTENDS = 2;
-    var CLASS_SIGNATURE_AFTER_EXTENDS_TYPE = 3
+    var CLASS_SIGNATURE_AFTER_EXTENDS_TYPE = 3;
     var CLASS_SIGNATURE_AFTER_IMPLEMENTS = 4;
     var CLASS_SIGNATURE_AFTER_FIRST_IMPLEMENTS_NAME = 5;
     var CLASS_BODY = 6;
     function tryClass(stream, state) {
-      if (stream.match(/(abstract[ ]+)?class\b/) || stream.match(/interface\b/)) {
+      if (
+        stream.match(/(abstract[ ]+)?class\b/) ||
+        stream.match(/interface\b/)
+      ) {
         state.context.push([tokenizeClass, 2]);
         state.subState.push(CLASS_SIGNATURE_AFTER_CLASS);
-        return "keyword"
+        return "keyword";
       }
       return null;
     }
@@ -575,7 +611,7 @@
         setSubState(state, CLASS_BODY); // Once the error function is popped.
         // Eat everything until we are back to 2-indentation.
         state.context.push([tokenizeClassError, 4]);
-        state.subState.push(null)
+        state.subState.push(null);
         return tokenizeClassError(stream, state);
       }
 
@@ -661,15 +697,17 @@
             state.context.push([tokenizeFunctionSignature, 6]);
             state.subState.push(null);
           }
-          return "constructor_keyword"
+          return "constructor_keyword";
         }
-      } else if (subState(state) == MEMBER_DECLARATION_AFTER_NAMED_CONSTRUCTOR) {
+      } else if (
+        subState(state) == MEMBER_DECLARATION_AFTER_NAMED_CONSTRUCTOR
+      ) {
         stream.match(/\.[a-zA-Z_]\w*/);
         state.context.push([tokenizeFunctionBody, 4]);
         state.subState.push(null);
         state.context.push([tokenizeFunctionSignature, 6]);
         state.subState.push(null);
-        return "member_named_constructor"
+        return "member_named_constructor";
       }
 
       var currentSubState = subState(state);
@@ -681,8 +719,11 @@
       state.subState.push(null);
       state.context.push([tokenizeFunctionSignature, 6]);
       state.subState.push(null);
-      if (currentSubState == MEMBER_DECLARATION_AFTER_OPERATOR && stream.match(OVERRIDABLE_OPERATOR)) {
-        return "member_operator_name"
+      if (
+        currentSubState == MEMBER_DECLARATION_AFTER_OPERATOR &&
+        stream.match(OVERRIDABLE_OPERATOR)
+      ) {
+        return "member_operator_name";
       } else if (stream.match(IDENTIFIER)) {
         if (isReserved(stream.current())) {
           return "member_name_error";
@@ -714,7 +755,8 @@
     }
 
     function tryDefaultValue(stream, state) {
-      var expression_result = tryNumber(stream, state) ||
+      var expression_result =
+        tryNumber(stream, state) ||
         tryString(stream, state) ||
         tryChar(stream, state) ||
         tryDelimited(stream, state);
@@ -743,8 +785,8 @@
             state.subState.pop();
             return "default_value_dot_error";
           }
-          if (stream.peek() == '[') {
-            setSubState(state, DEFAULT_VALUE_AFTER_IDENTIFIER);  // When we return;
+          if (stream.peek() == "[") {
+            setSubState(state, DEFAULT_VALUE_AFTER_IDENTIFIER); // When we return;
             return tryDelimited(stream, state);
           }
           // Not part of the default value anymore.
@@ -785,7 +827,7 @@
 
       switch (subState(state)) {
         case SIGNATURE_EXPECTING_DEFAULT_VALUE:
-          setSubState(state, null);  // For when the sub-expression returns.
+          setSubState(state, null); // For when the sub-expression returns.
           // TODO: tokenize default values.
           var result = tryDefaultValue(stream, state);
           if (!result) return error("default_value_error");
@@ -808,7 +850,7 @@
       }
       if (stream.match("=")) {
         setSubState(state, SIGNATURE_EXPECTING_DEFAULT_VALUE);
-        return "default_equals"
+        return "default_equals";
       }
       if (stream.match("[")) {
         setSubState(state, SIGNATURE_AFTER_BRACKET_BLOCK);
@@ -876,7 +918,8 @@
     }
 
     function tryExpression(stream, state) {
-      return tryComments(stream, state) ||
+      return (
+        tryComments(stream, state) ||
         tryNumber(stream, state) ||
         tryChar(stream, state) ||
         tryNamedArgument(stream, state) ||
@@ -886,16 +929,19 @@
         tryIdentifier(stream, state) ||
         tryPrimitive(stream, state) ||
         tryDelimited(stream, state) ||
-        tryControl(stream, state);
+        tryControl(stream, state)
+      );
     }
 
     function tokenizeTopLevel(stream, state) {
-      return tryComments(stream, state) ||
+      return (
+        tryComments(stream, state) ||
         tryImport(stream, state) ||
         tryExport(stream, state) ||
         tryClass(stream, state) ||
         tryToplevelDeclaration(stream, state) ||
-        tokenizeError(stream, state);
+        tokenizeError(stream, state)
+      );
     }
 
     return {
@@ -908,7 +954,7 @@
           // Used for indentation.
           atColonIndentation: -1,
           context: [[tokenizeTopLevel, -1]],
-          subState: [null]
+          subState: [null],
         };
       },
 
@@ -1096,7 +1142,7 @@
         return state.atColonIndentation + 2;
       },
 
-      closeBrackets: { triples: "\"" },
+      closeBrackets: { triples: '"' },
       lineComment: "//",
       blockCommentStart: "/*",
       blockCommentEnd: "*/",
@@ -1105,5 +1151,4 @@
   });
 
   CodeMirror.defineMIME("text/x-toit", "toit");
-
 });

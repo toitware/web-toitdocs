@@ -1,0 +1,14 @@
+# Ignore all files that are in a directories above this one.
+# This is necessary because otherwise prettier acts on symlinks too, which
+# happens when you use `yarn link`.
+/../*
+
+# Now exclude this directory again.
+!/*
+
+# And exclude the typical stuff.
+/node_modules
+/public
+/coverage
+/build
+/.cache

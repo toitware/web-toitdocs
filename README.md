@@ -19,7 +19,7 @@ The version of `node` must be >= v12.16.1, i.e. the version of node that comes w
 ## Linting and imports in VS Code
 
 - Add the ESLint extension to VS Code to get linting directly in the code. https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint.
-- To get the right indentation, etc. directly in the code, and on save add the Prettier extension to VS Code. https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode. 
+- To get the right indentation, etc. directly in the code, and on save add the Prettier extension to VS Code. https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode.
 - To get VS Code to automatically fix linting errors (if possible) and organize imports on save, add the following to your settings.json file:
 
         "editor.codeActionsOnSave": [
