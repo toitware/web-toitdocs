@@ -8,6 +8,7 @@ import {
   Library,
   Method,
   Parameter,
+  Shape,
   Type,
 } from "../model/model";
 import {
@@ -25,6 +26,7 @@ import {
   ToitModule,
   ToitParameter,
   ToitReference,
+  ToitShape,
   ToitType,
 } from "./sdk";
 
@@ -52,6 +54,16 @@ function typeFrom(toitType: ToitType): Type {
     isAny: toitType.is_any,
     isBlock: toitType.is_block,
     reference: reference,
+  };
+}
+
+function shapeFrom(toitShape: ToitShape): Shape {
+  return {
+    arity: toitShape.arity,
+    totalBlockCount: toitShape.total_block_count,
+    namedBlockCount: toitShape.named_block_count,
+    isSetter: toitShape.is_setter,
+    names: toitShape.names,
   };
 }
 
@@ -104,6 +116,7 @@ function methodFrom(
     parameters: parameters,
     returnType: typeFrom(toitMethod.return_type),
     toitdoc: toitMethod.toitdoc,
+    shape: shapeFrom(toitMethod.shape),
   };
 }
 
@@ -190,6 +203,7 @@ function functionFrom(
     parameters: parameters,
     returnType: typeFrom(toitFunction.return_type),
     toitdoc: toitFunction.toitdoc,
+    shape: shapeFrom(toitFunction.shape),
   };
 }
 
@@ -328,5 +342,6 @@ function libraryFromLibrary(
 
 export function modelFrom(rootLibrary: ToitLibrary): Libraries {
   const model = libraryFromLibrary(rootLibrary, [], true).libraries;
+  console.log(model);
   return model;
 }
