@@ -7,6 +7,7 @@ import { classFrom } from "../../misc/util";
 import { Libraries } from "../../model/model";
 import Fields from "../sdk/Fields";
 import Functions from "../sdk/Functions";
+import Toitdocs from "../sdk/Toitdocs";
 import { TypeReference } from "../sdk/Type";
 import ClassOverview from "./ClassOverview";
 
@@ -46,6 +47,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
             extends <TypeReference reference={classInfo.extends} />
           </div>
         )}
+        {classInfo.toitdoc && <Toitdocs value={classInfo.toitdoc} />}
         <ClassOverview klass={classInfo} />
         {classInfo.constructors.length > 0 && (
           <Functions
