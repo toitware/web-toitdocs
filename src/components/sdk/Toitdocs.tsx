@@ -13,11 +13,11 @@ import {
 import {
   Doc,
   DocExpression,
+  DocExpressionCode,
+  DocExpressionText,
   DocRef,
   DocSection,
   DocStatement,
-  DocExpressionCode,
-  DocExpressionText,
   DocStatementCodeSection,
   DocStatementItem,
   DocStatementItemized,
@@ -125,14 +125,36 @@ function Section(props: { section: DocSection }): JSX.Element {
   );
 }
 
+function headerToitdoc(toitdoc?: Doc): Doc | undefined {
+  if (!toitdoc) return toitdoc;
+  if (toitdoc.length === 0) return toitdoc;
+  const first = toitdoc[0];
+  const statements = first.statements;
+  if (statements.length === 0) return undefined;
+  return [
+    {
+      object_type: "section", // eslint-disable-line @typescript-eslint/camelcase
+      title: "",
+      statements: [statements[0]],
+    },
+  ];
+}
+
 // Function that prints the content of currently presented element.
-function Toitdocs(props: { value: Doc }): JSX.Element | null {
-  if (!props.value) {
+function Toitdocs(props: {
+  value?: Doc;
+  headerOnly?: boolean;
+}): JSX.Element | null {
+  let value = props.value;
+  if (props.headerOnly) {
+    value = headerToitdoc(value);
+  }
+  if (!value) {
     return null;
   }
   return (
     <>
-      {props.value.map((section, index) => (
+      {value.map((section, index) => (
         <Section key={"section_" + index} section={section} />
       ))}
     </>
