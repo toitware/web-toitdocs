@@ -23,6 +23,7 @@ export interface Library {
   exportedGlobals: Global[];
   functions: Function[];
   exportedFunctions: Function[];
+  toitdoc?: Doc;
 }
 
 export interface Class {
