@@ -103,7 +103,7 @@ class TablePanel extends Component<TablePanelProps> {
                     <TableRow key={method.name + index}>
                       <TableCell component="th" scope="row">
                         <HashLink
-                          to={{ hash: getId(method.name, method.parameters) }}
+                          to={{ hash: getId(method.name, method.shape) }}
                         >
                           {method.name}
                         </HashLink>{" "}
