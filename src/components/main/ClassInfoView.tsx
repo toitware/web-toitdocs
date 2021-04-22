@@ -9,6 +9,8 @@ import Fields from "../sdk/Fields";
 import Functions from "../sdk/Functions";
 import { TypeReference } from "../sdk/Type";
 import ClassOverview from "./ClassOverview";
+import Toitdocs from "../sdk/Toitdocs";
+
 
 export interface ClassInfoParams {
   libraryName: string;
@@ -44,6 +46,12 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
         {classInfo.extends && (
           <div>
             extends <TypeReference reference={classInfo.extends} />
+          </div>
+        )}
+        {classInfo.toitdoc && (
+          // TODO(florian): the div should have a class.
+          <div>
+            <Toitdocs value={classInfo.toitdoc} />
           </div>
         )}
         <ClassOverview klass={classInfo} />
