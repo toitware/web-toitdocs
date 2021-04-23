@@ -177,4 +177,7 @@ export interface ToitExpressionText {
 export interface ToitDocRef {
   object_type: typeof OBJECT_TYPE_TOITDOCREF;
   text: string;
+  path: string[];
+  name: string;
+  shape: ToitShape | null;
 }
