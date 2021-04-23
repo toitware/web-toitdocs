@@ -101,7 +101,7 @@ export function functionUrlFromRef(
   return (
     libraryUrlFromRef(ref.libraryRef) +
     "#" +
-    getId(fhunction.name, fhunction.parameters)
+    getId(fhunction.name, fhunction.shape)
   );
 }
 
@@ -113,7 +113,5 @@ export function methodUrlFromRef(
   if (!method) {
     return "/";
   }
-  return (
-    classUrlFromRef(ref.classRef) + "#" + getId(method.name, method.parameters)
-  );
+  return classUrlFromRef(ref.classRef) + "#" + getId(method.name, method.shape);
 }

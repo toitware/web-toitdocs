@@ -125,19 +125,13 @@ function Section(props: { section: DocSection }): JSX.Element {
   );
 }
 
-function headerToitdoc(toitdoc?: Doc): Doc | undefined {
+function headerToitdoc(toitdoc?: Doc): DocStatement | undefined {
   if (!toitdoc) return toitdoc;
-  if (toitdoc.length === 0) return toitdoc;
+  if (toitdoc.length === 0) return undefined;
   const first = toitdoc[0];
   const statements = first.statements;
   if (statements.length === 0) return undefined;
-  return [
-    {
-      object_type: "section", // eslint-disable-line @typescript-eslint/camelcase
-      title: "",
-      statements: [statements[0]],
-    },
-  ];
+  return statements[0];
 }
 
 // Function that prints the content of currently presented element.
@@ -145,10 +139,12 @@ function Toitdocs(props: {
   value?: Doc;
   headerOnly?: boolean;
 }): JSX.Element | null {
-  let value = props.value;
   if (props.headerOnly) {
-    value = headerToitdoc(value);
+    const statement = headerToitdoc(props.value);
+    if (!statement) return null;
+    return <Statement key="statement_0" statement={statement} />;
   }
+  const value = props.value;
   if (!value) {
     return null;
   }
