@@ -48,6 +48,7 @@ export interface Function {
   parameters: Parameter[];
   returnType: Type;
   toitdoc: Doc;
+  shape: Shape;
 }
 
 export interface Method {
@@ -56,6 +57,7 @@ export interface Method {
   parameters: Parameter[];
   returnType: Type;
   toitdoc: Doc;
+  shape: Shape;
 }
 
 export interface Parameter {
@@ -78,6 +80,14 @@ export interface Type {
   isAny: boolean;
   isBlock: boolean;
   reference?: TopLevelItemRef;
+}
+
+export interface Shape {
+  arity: number;
+  totalBlockCount: number;
+  namedBlockCount: number;
+  isSetter: boolean;
+  names: string[];
 }
 
 // Toitdoc related

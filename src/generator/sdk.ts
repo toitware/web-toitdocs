@@ -14,6 +14,7 @@ export const OBJECT_TYPE_MODULE = "module";
 export const OBJECT_TYPE_GLOBAL = "global";
 export const OBJECT_TYPE_LIBRARY = "library";
 export const OBJECT_TYPE_EXPRESSION = "expression";
+export const OBJECT_TYPE_SHAPE = "shape";
 
 export type ObjectTypeExpression =
   | typeof OBJECT_TYPE_EXPRESSION_CODE
@@ -87,6 +88,7 @@ export interface ToitFunction {
   parameters: ToitParameter[];
   return_type: ToitType;
   toitdoc: ToitDoc;
+  shape: ToitShape;
 }
 
 export interface ToitClass {
@@ -110,6 +112,15 @@ export interface ToitField {
   name: string;
   type: ToitType;
   toitdoc: ToitDoc;
+}
+
+export interface ToitShape {
+  object_type: typeof OBJECT_TYPE_SHAPE;
+  arity: number;
+  total_block_count: number;
+  named_block_count: number;
+  is_setter: boolean;
+  names: string[];
 }
 
 // ToitDoc related
