@@ -13,11 +13,11 @@ import {
 import {
   Doc,
   DocExpression,
+  DocExpressionCode,
+  DocExpressionText,
   DocRef,
   DocSection,
   DocStatement,
-  DocExpressionCode,
-  DocExpressionText,
   DocStatementCodeSection,
   DocStatementItem,
   DocStatementItemized,
@@ -125,14 +125,32 @@ function Section(props: { section: DocSection }): JSX.Element {
   );
 }
 
+function headerToitdoc(toitdoc?: Doc): DocStatement | undefined {
+  if (!toitdoc) return toitdoc;
+  if (toitdoc.length === 0) return undefined;
+  const first = toitdoc[0];
+  const statements = first.statements;
+  if (statements.length === 0) return undefined;
+  return statements[0];
+}
+
 // Function that prints the content of currently presented element.
-function Toitdocs(props: { value: Doc }): JSX.Element | null {
-  if (!props.value) {
+function Toitdocs(props: {
+  value?: Doc;
+  headerOnly?: boolean;
+}): JSX.Element | null {
+  if (props.headerOnly) {
+    const statement = headerToitdoc(props.value);
+    if (!statement) return null;
+    return <Statement key="statement_0" statement={statement} />;
+  }
+  const value = props.value;
+  if (!value) {
     return null;
   }
   return (
     <>
-      {props.value.map((section, index) => (
+      {value.map((section, index) => (
         <Section key={"section_" + index} section={section} />
       ))}
     </>
