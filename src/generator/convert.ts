@@ -249,6 +249,7 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     exportedGlobals: exportedGlobals,
     functions: functions,
     exportedFunctions: exportedFunctions,
+    toitdoc: toitModule.toitdoc,
   };
 }
 
@@ -278,6 +279,9 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
       ...library.exportedFunctions,
       ...otherLibrary.exportedFunctions,
     },
+    // TODO(florian): we currently just pick the toitdoc of the first
+    // library.
+    toitdoc: library.toitdoc || otherLibrary.toitdoc,
   };
 }
 
@@ -337,6 +341,7 @@ function libraryFromLibrary(
     exportedGlobals: libraryContent ? libraryContent.exportedGlobals : [],
     functions: libraryContent ? libraryContent.functions : [],
     exportedFunctions: libraryContent ? libraryContent.exportedFunctions : [],
+    toitdoc: libraryContent ? libraryContent.toitdoc : undefined,
   };
 }
 
