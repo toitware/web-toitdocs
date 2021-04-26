@@ -34,14 +34,14 @@ export function getDescription(
           param = "--" + param;
         }
         if (parameter.isBlock) {
-          param = "[" + param + "]";
+          param = "[" + param + "] ";
           return param;
         }
-
         return (
           <span key={i}>
             {param + "/"}
-            <TypeView type={parameter.type} />{" "}
+            <TypeView type={parameter.type} />
+            {parameter.isRequired ? " " : "= "}
           </span>
         );
       })}
