@@ -88,7 +88,7 @@ export interface ToitFunction {
   parameters: ToitParameter[];
   return_type: ToitType;
   toitdoc: ToitDoc;
-  shape: ToitShape;
+  shape?: ToitShape;
 }
 
 export interface ToitClass {
