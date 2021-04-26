@@ -34,7 +34,7 @@ export function getDescription(
           param = "--" + param;
         }
         if (parameter.isBlock) {
-          param = "[" + param + "]";
+          param = "[" + param + "] ";
           return param;
         }
 
