@@ -155,6 +155,7 @@ function classFrom(
   return {
     name: toitClass.name,
     id: classId,
+    isInterface: toitClass.is_interface || false,
     extends: extend,
     fields: fields,
     constructors: constructors,
@@ -212,7 +213,9 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
   const libraryId = { name: name, path: [...path, name] };
 
   let classes = {} as Classes;
+  let interfaces = {} as Classes;
   let exportedClasses = {} as Classes;
+  let exportedInterfaces = {} as Classes;
 
   toitModule.classes.forEach((klass, index) => {
     classes = {
@@ -220,12 +223,26 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
       [klass.name]: classFrom(klass, libraryId, "class", index),
     };
   });
+  toitModule.interfaces &&
+    toitModule.interfaces.forEach((inter, index) => {
+      interfaces = {
+        ...interfaces,
+        [inter.name]: classFrom(inter, libraryId, "class", index),
+      };
+    });
   toitModule.export_classes.forEach((klass, index) => {
     exportedClasses = {
       ...exportedClasses,
       [klass.name]: classFrom(klass, libraryId, "exported_class", index),
     };
   });
+  toitModule.export_interfaces &&
+    toitModule.export_interfaces.forEach((inter, index) => {
+      exportedInterfaces = {
+        ...exportedInterfaces,
+        [inter.name]: classFrom(inter, libraryId, "exported_class", index),
+      };
+    });
   const globals = toitModule.globals.map((global, index) =>
     globalFrom(global, libraryId, "global", index)
   );
@@ -244,7 +261,9 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     id: libraryId,
     libraries: {},
     classes: classes,
+    interfaces: interfaces,
     exportedClasses: exportedClasses,
+    exportedInterfaces: exportedInterfaces,
     globals: globals,
     exportedGlobals: exportedGlobals,
     functions: functions,
@@ -265,9 +284,14 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
     id: library.id,
     libraries: { ...library.libraries, ...otherLibrary.libraries },
     classes: { ...library.classes, ...otherLibrary.classes },
+    interfaces: { ...library.interfaces, ...otherLibrary.interfaces },
     exportedClasses: {
       ...library.exportedClasses,
       ...otherLibrary.exportedClasses,
+    },
+    exportedInterfaces: {
+      ...library.exportedInterfaces,
+      ...otherLibrary.exportedInterfaces,
     },
     globals: { ...library.globals, ...otherLibrary.globals },
     exportedGlobals: {
@@ -336,7 +360,9 @@ function libraryFromLibrary(
     id: { name: name, path: libraryPath },
     libraries: libraries,
     classes: libraryContent ? libraryContent.classes : {},
+    interfaces: libraryContent ? libraryContent.interfaces : {},
     exportedClasses: libraryContent ? libraryContent.exportedClasses : {},
+    exportedInterfaces: libraryContent ? libraryContent.exportedInterfaces : {},
     globals: libraryContent ? libraryContent.globals : [],
     exportedGlobals: libraryContent ? libraryContent.exportedGlobals : [],
     functions: libraryContent ? libraryContent.functions : [],

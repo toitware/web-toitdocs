@@ -92,6 +92,23 @@ function flattenClass(
     .forEach((m) => flattenMethod(libraries, m, result));
 }
 
+function flattenInterface(
+  libraries: Libraries,
+  inter: Class,
+  result: SearchableModel
+): void {
+  result.interfaces.push({
+    name: inter.name,
+    ref: inter.id,
+    url: classUrlFromRef(inter.id),
+    type: "interface",
+  });
+
+  inter.statics
+    .concat(inter.methods)
+    .forEach((m) => flattenMethod(libraries, m, result));
+}
+
 function flattenLibrary(
   libraries: Libraries,
   library: Library,
@@ -107,6 +124,9 @@ function flattenLibrary(
   Object.values(library.libraries).forEach((m) =>
     flattenLibrary(libraries, m, result)
   );
+  Object.values(library.interfaces).forEach((inter) =>
+    flattenInterface(libraries, inter, result)
+  );
   Object.values(library.classes).forEach((c) =>
     flattenClass(libraries, c, result)
   );
@@ -119,6 +139,7 @@ export function flatten(libraries: Libraries | undefined): SearchableModel {
   const result = {
     libraries: [],
     classes: [],
+    interfaces: [],
     functions: [],
     methods: [],
   };
@@ -130,7 +151,7 @@ export function flatten(libraries: Libraries | undefined): SearchableModel {
   return result;
 }
 
-type SearchableType = "library" | "class" | "function" | "method";
+type SearchableType = "library" | "class" | "interface" | "function" | "method";
 
 export interface Searchable {
   type: SearchableType;
@@ -141,6 +162,7 @@ export interface Searchable {
 export interface SearchableModel {
   libraries: SearchableLibrary[];
   classes: SearchableClass[];
+  interfaces: SearchableInterface[];
   functions: SearchableFunction[];
   methods: SearchableMethod[];
 }
@@ -157,6 +179,13 @@ export interface SearchableClass extends Searchable {
   ref: TopLevelItemRef;
   url: string;
   type: "class";
+}
+
+export interface SearchableInterface extends Searchable {
+  name: string;
+  ref: TopLevelItemRef;
+  url: string;
+  type: "interface";
 }
 
 export interface SearchableFunction extends Searchable {

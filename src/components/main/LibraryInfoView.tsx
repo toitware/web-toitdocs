@@ -71,6 +71,18 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
           <CodeBlock code={"import " + importPath} />
         </div>
         {library.toitdoc && <Toitdocs value={library.toitdoc} />}
+        {Object.keys(library.interfaces).length > 0 && (
+          <Classes
+            classes={Object.values(library.interfaces)}
+            title="Interfaces"
+          />
+        )}
+        {Object.keys(library.exportedInterfaces).length > 0 && (
+          <Classes
+            classes={Object.values(library.exportedInterfaces)}
+            title="Exported interfaces"
+          />
+        )}
         {Object.keys(library.classes).length > 0 && (
           <Classes classes={Object.values(library.classes)} title="Classes" />
         )}
