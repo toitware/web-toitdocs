@@ -69,7 +69,7 @@ export interface ToitModule {
   export_globals: ToitGlobal[];
   functions: ToitFunction[];
   export_functions: ToitFunction[];
-  toitdoc: ToitDoc;
+  toitdoc?: ToitDoc;
 }
 
 export interface ToitModules {
