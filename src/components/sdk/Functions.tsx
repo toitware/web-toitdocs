@@ -11,7 +11,10 @@ interface FunctionsProps {
   hideReturnTypes?: boolean;
 }
 
-export function getId(functionName: string, shape: Shape): string {
+export function getId(functionName: string, shape?: Shape): string {
+  if (!shape) {
+    return "";
+  }
   if (shape.isSetter) {
     return encodeURIComponent(functionName + "=");
   }

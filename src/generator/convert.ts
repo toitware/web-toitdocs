@@ -116,7 +116,7 @@ function methodFrom(
     parameters: parameters,
     returnType: typeFrom(toitMethod.return_type),
     toitdoc: toitMethod.toitdoc,
-    shape: shapeFrom(toitMethod.shape),
+    shape: toitMethod.shape ? shapeFrom(toitMethod.shape) : undefined,
   };
 }
 
@@ -203,7 +203,7 @@ function functionFrom(
     parameters: parameters,
     returnType: typeFrom(toitFunction.return_type),
     toitdoc: toitFunction.toitdoc,
-    shape: shapeFrom(toitFunction.shape),
+    shape: toitFunction.shape ? shapeFrom(toitFunction.shape) : undefined,
   };
 }
 
