@@ -67,10 +67,11 @@ function StatementItemized(props: {
 
 function StatementParagraph(props: {
   statement: DocStatementParagraph;
+  isHeader?: boolean;
 }): JSX.Element {
   const classes = useStyles();
   return (
-    <div className={classes.statementParagraph}>
+    <div className={props.isHeader ? "" : classes.statementParagraph}>
       {props.statement.expressions.map((expr: DocExpression, index: number) => (
         <Expression key={"expression_" + index} expression={expr} />
       ))}
@@ -97,11 +98,16 @@ function Expression(props: { expression: DocExpression }): JSX.Element {
   }
 }
 
-function Statement(props: { statement: DocStatement }): JSX.Element {
+function Statement(props: {
+  statement: DocStatement;
+  isHeader?: boolean;
+}): JSX.Element {
   const statement = props.statement;
   switch (statement.object_type) {
     case OBJECT_TYPE_STATEMENT_PARAGRAPH:
-      return <StatementParagraph statement={statement} />;
+      return (
+        <StatementParagraph isHeader={props.isHeader} statement={statement} />
+      );
     case OBJECT_TYPE_STATEMENT_CODE_SECTION:
       return <StatementCodeSection code={statement} />;
     case OBJECT_TYPE_STATEMENT_ITEMIZED:
@@ -142,7 +148,13 @@ function Toitdocs(props: {
   if (props.headerOnly) {
     const statement = headerToitdoc(props.value);
     if (!statement) return null;
-    return <Statement key="statement_0" statement={statement} />;
+    return (
+      <Statement
+        key="statement_0"
+        isHeader={props.headerOnly}
+        statement={statement}
+      />
+    );
   }
   const value = props.value;
   if (!value) {
