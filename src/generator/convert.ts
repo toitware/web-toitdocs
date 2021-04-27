@@ -223,13 +223,12 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
       [klass.name]: classFrom(klass, libraryId, "class", index),
     };
   });
-  toitModule.interfaces &&
-    toitModule.interfaces.forEach((inter, index) => {
-      interfaces = {
-        ...interfaces,
-        [inter.name]: classFrom(inter, libraryId, "class", index),
-      };
-    });
+  toitModule.interfaces?.forEach((inter, index) => {
+    interfaces = {
+      ...interfaces,
+      [inter.name]: classFrom(inter, libraryId, "class", index),
+    };
+  });
   toitModule.export_classes.forEach((klass, index) => {
     exportedClasses = {
       ...exportedClasses,
