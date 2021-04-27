@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(1),
   },
+  otherDocRef: {
+    fontWeight: 590,
+  },
 }));
 
 function StatementCodeSection(props: {
@@ -80,9 +83,10 @@ function StatementParagraph(props: {
 }
 
 function ToitdocRef(props: { reference: DocRef }): JSX.Element {
+  const classes = useStyles();
   const url = urlFromLinkRef(props.reference.reference);
   if (!url) {
-    return <span>{props.reference.text}</span>;
+    return <span className={classes.otherDocRef}>{props.reference.text}</span>;
   }
   return <HashLink to={url}>{props.reference.text}</HashLink>;
 }
