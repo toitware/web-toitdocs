@@ -49,7 +49,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
                 extends <TypeReference reference={classInfo.extends} />
               </>
             )}
-            {classInfo.interfaces.length != 0 && " implements "}
+            {classInfo.interfaces.length !== 0 && " implements "}
             {classInfo.interfaces.map((ref) => {
               const key = classUrlFromRef(ref);
               return (
