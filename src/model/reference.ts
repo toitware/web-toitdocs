@@ -1,3 +1,5 @@
+import { Shape } from "./model";
+
 // Used for referencing libraries
 export interface TopLevelRef {
   name: string;
@@ -29,3 +31,24 @@ export type TopLevelItemType =
   | "exported_function";
 
 export type ClassMemberType = "field" | "method" | "constructor" | "static";
+
+export type LinkRefKind =
+  | "other"
+  | "class"
+  | "global"
+  | "global-method"
+  | "static-method"
+  | "constructor"
+  | "factory"
+  | "method"
+  | "field"
+  | "unknown";
+
+// Contains all the information needed to be able to create a link for something.
+export interface LinkRef {
+  kind: LinkRefKind;
+  path: string[];
+  holder: string;
+  name: string;
+  shape?: Shape;
+}

@@ -13,8 +13,9 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { HashLink } from "react-router-hash-link";
+import { getFunctionId } from "../../misc/util";
 import { Field, Function, Method } from "../../model/model";
-import { getDescription, getId } from "../sdk/Functions";
+import { getDescription } from "../sdk/Functions";
 import Toitdocs from "../sdk/Toitdocs";
 import { TypeView } from "../sdk/Type";
 
@@ -107,7 +108,9 @@ class TablePanel extends Component<TablePanelProps> {
                     <TableRow key={method.name + index}>
                       <TableCell component="th" scope="row">
                         <HashLink
-                          to={{ hash: getId(method.name, method.shape) }}
+                          to={{
+                            hash: getFunctionId(method.name, method.shape),
+                          }}
                         >
                           {method.name}
                         </HashLink>{" "}

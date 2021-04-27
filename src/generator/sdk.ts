@@ -80,7 +80,7 @@ export interface ToitModules {
 export interface ToitGlobal {
   object_type: typeof OBJECT_TYPE_GLOBAL;
   name: string;
-  toitdoc: ToitDoc;
+  toitdoc: ToitDoc | null;
 }
 
 export interface ToitFunction {
@@ -88,14 +88,14 @@ export interface ToitFunction {
   name: string;
   parameters: ToitParameter[];
   return_type: ToitType;
-  toitdoc: ToitDoc;
+  toitdoc: ToitDoc | null;
   shape?: ToitShape;
 }
 
 export interface ToitClass {
   object_type: typeof OBJECT_TYPE_CLASS;
   name: string;
-  toitdoc: ToitDoc;
+  toitdoc: ToitDoc | null;
   structure: ToitStructure;
   extends: ToitReference;
 }
@@ -112,7 +112,7 @@ export interface ToitField {
   object_type: typeof OBJECT_TYPE_FIELD;
   name: string;
   type: ToitType;
-  toitdoc: ToitDoc;
+  toitdoc: ToitDoc | null;
 }
 
 export interface ToitShape {
@@ -174,10 +174,24 @@ export interface ToitExpressionText {
   text: string;
 }
 
+export type ToitDocRefKind =
+  | "other"
+  | "class"
+  | "global"
+  | "global-method"
+  | "static-method"
+  | "constructor"
+  | "factory"
+  | "method"
+  | "field"
+  | "";
+
 export interface ToitDocRef {
   object_type: typeof OBJECT_TYPE_TOITDOCREF;
+  kind: ToitDocRefKind;
   text: string;
-  path: string[];
+  path: string[] | null;
+  holder: string | null;
   name: string;
   shape: ToitShape | null;
 }
