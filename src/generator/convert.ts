@@ -116,7 +116,7 @@ function methodFrom(
     parameters: parameters,
     returnType: typeFrom(toitMethod.return_type),
     toitdoc: toitMethod.toitdoc,
-    shape: shapeFrom(toitMethod.shape),
+    shape: toitMethod.shape ? shapeFrom(toitMethod.shape) : undefined,
   };
 }
 
@@ -208,7 +208,7 @@ function functionFrom(
     parameters: parameters,
     returnType: typeFrom(toitFunction.return_type),
     toitdoc: toitFunction.toitdoc,
-    shape: shapeFrom(toitFunction.shape),
+    shape: toitFunction.shape ? shapeFrom(toitFunction.shape) : undefined,
   };
 }
 
@@ -254,6 +254,7 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     exportedGlobals: exportedGlobals,
     functions: functions,
     exportedFunctions: exportedFunctions,
+    toitdoc: toitModule.toitdoc,
   };
 }
 
@@ -283,6 +284,9 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
       ...library.exportedFunctions,
       ...otherLibrary.exportedFunctions,
     },
+    // TODO(florian): we currently just pick the toitdoc of the first
+    // library.
+    toitdoc: library.toitdoc || otherLibrary.toitdoc,
   };
 }
 
@@ -342,6 +346,7 @@ function libraryFromLibrary(
     exportedGlobals: libraryContent ? libraryContent.exportedGlobals : [],
     functions: libraryContent ? libraryContent.functions : [],
     exportedFunctions: libraryContent ? libraryContent.exportedFunctions : [],
+    toitdoc: libraryContent ? libraryContent.toitdoc : undefined,
   };
 }
 

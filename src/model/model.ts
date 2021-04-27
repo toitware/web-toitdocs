@@ -23,6 +23,7 @@ export interface Library {
   exportedGlobals: Global[];
   functions: Function[];
   exportedFunctions: Function[];
+  toitdoc?: Doc;
 }
 
 export interface Class {
@@ -49,7 +50,7 @@ export interface Function {
   parameters: Parameter[];
   returnType: Type;
   toitdoc: Doc;
-  shape: Shape;
+  shape?: Shape;
 }
 
 export interface Method {
@@ -58,7 +59,7 @@ export interface Method {
   parameters: Parameter[];
   returnType: Type;
   toitdoc: Doc;
-  shape: Shape;
+  shape?: Shape;
 }
 
 export interface Parameter {
