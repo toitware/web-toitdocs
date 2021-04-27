@@ -137,6 +137,9 @@ function classFrom(
     ? referenceFrom(toitClass.extends)
     : undefined;
 
+  const interfaces = toitClass.interfaces.map((inter, index) =>
+    referenceFrom(inter)
+  );
   const fields = toitClass.structure.fields.map((field, index) =>
     fieldFrom(field, classId, index)
   );
@@ -156,6 +159,7 @@ function classFrom(
     name: toitClass.name,
     id: classId,
     extends: extend,
+    interfaces: interfaces,
     fields: fields,
     constructors: constructors,
     statics: statics,

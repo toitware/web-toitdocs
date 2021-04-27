@@ -30,6 +30,7 @@ export interface Class {
   name: string;
   id: TopLevelItemRef;
   extends?: TopLevelItemRef;
+  interfaces: TopLevelItemRef[];
   fields: Field[];
   constructors: Method[];
   statics: Method[];

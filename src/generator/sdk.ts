@@ -98,6 +98,7 @@ export interface ToitClass {
   toitdoc: ToitDoc;
   structure: ToitStructure;
   extends: ToitReference;
+  interfaces: ToitReference[];
 }
 
 export interface ToitStructure {
