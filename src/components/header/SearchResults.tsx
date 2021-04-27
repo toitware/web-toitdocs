@@ -11,6 +11,7 @@ import {
   Searchable,
   SearchableClass,
   SearchableFunction,
+  SearchableInterface,
   SearchableLibrary,
   SearchableMethod,
 } from "../../model/search";
@@ -74,6 +75,12 @@ function ResultItem(props: { item: Searchable }): JSX.Element {
       const item = props.item as SearchableLibrary;
       name = item.name;
       from = item.ref.path.join(".");
+      break;
+    }
+    case "interface": {
+      const item = props.item as SearchableInterface;
+      name = item.name;
+      from = item.ref.libraryRef.path.join(".");
       break;
     }
     case "class": {

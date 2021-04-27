@@ -65,7 +65,11 @@ export interface ToitModule {
   object_type: typeof OBJECT_TYPE_MODULE;
   name: string;
   classes: ToitClass[];
+  // TODO(florian): interfaces (and export_interfaces) should not be optional.
+  // They currently are, as they were added at a later point in time.
+  interfaces?: ToitClass[];
   export_classes: ToitClass[];
+  export_interfaces?: ToitClass[];
   globals: ToitGlobal[];
   export_globals: ToitGlobal[];
   functions: ToitFunction[];
@@ -95,6 +99,9 @@ export interface ToitFunction {
 export interface ToitClass {
   object_type: typeof OBJECT_TYPE_CLASS;
   name: string;
+  // TODO(florian): is_interface should not be optional.
+  // It is marked as such as the field was added at a later point in time.
+  is_interface?: boolean;
   toitdoc: ToitDoc;
   structure: ToitStructure;
   extends: ToitReference;

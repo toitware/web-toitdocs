@@ -40,7 +40,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     return (
       <>
         <Typography variant="h2" component="h2">
-          Class {classInfo.name}
+          {classInfo.isInterface ? "Interface" : "Class"} {classInfo.name}
         </Typography>
         {(classInfo.extends || classInfo.interfaces.length !== 0) && (
           <div>
