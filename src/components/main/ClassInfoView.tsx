@@ -24,6 +24,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     const hashId = this.props.location.hash.substring(1);
     const element = document.getElementById(hashId);
     element?.scrollIntoView(true);
+    analytics.page(this.props.location.pathname);
   }
 
   render(): React.ReactNode {

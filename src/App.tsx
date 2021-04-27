@@ -10,10 +10,10 @@ import {
   WithStyles,
 } from "@material-ui/core/styles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import CookieConsent from "@toitware/cookie-consent";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route, RouteComponentProps } from "react-router-dom";
-import CookieConsent from "@toitware/cookie-consent";
 import "./assets/global_theme.css";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
@@ -153,8 +153,8 @@ class App extends Component<AppProps> {
         </BrowserRouter>
         <CookieConsent
           segmentKey={segmentAPIKey}
-          callback={(): void => {}}
-          show={false}
+          changeConsent={false}
+          show={true}
         />
       </ThemeProvider>
     );

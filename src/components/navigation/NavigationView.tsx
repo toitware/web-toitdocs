@@ -36,6 +36,7 @@ export interface NavigationProps
 
 class NavigationView extends Component<NavigationProps> {
   render(): JSX.Element {
+    analytics.page(this.props.location.pathname);
     return (
       <>
         <div className={this.props.classes.heading}>
