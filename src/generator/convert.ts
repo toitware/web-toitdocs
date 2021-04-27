@@ -137,10 +137,9 @@ function classFrom(
     ? referenceFrom(toitClass.extends)
     : undefined;
 
-  const interfaces: Array<TopLevelItemRef> = [];
-  toitClass.interfaces.forEach((inter, index) => {
-    interfaces.push(referenceFrom(inter));
-  });
+  const interfaces = toitClass.interfaces.map((inter, index) =>
+    referenceFrom(inter)
+  );
   const fields = toitClass.structure.fields.map((field, index) =>
     fieldFrom(field, classId, index)
   );

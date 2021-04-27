@@ -42,7 +42,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
         <Typography variant="h2" component="h2">
           Class {classInfo.name}
         </Typography>
-        {(classInfo.extends || classInfo.interfaces.length != 0) && (
+        {(classInfo.extends || classInfo.interfaces.length !== 0) && (
           <div>
             {classInfo.extends && (
               <>
@@ -52,7 +52,6 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
             {classInfo.interfaces.length != 0 && " implements "}
             {classInfo.interfaces.map((ref) => {
               const key = classUrlFromRef(ref);
-              console.log(key);
               return (
                 <span key={key}>
                   <TypeReference reference={ref} />{" "}
