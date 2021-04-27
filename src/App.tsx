@@ -154,7 +154,7 @@ class App extends Component<AppProps> {
         <CookieConsent
           segmentKey={segmentAPIKey}
           changeConsent={false}
-          show={true}
+          show={false}
         />
       </ThemeProvider>
     );
