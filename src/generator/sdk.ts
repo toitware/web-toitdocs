@@ -128,7 +128,6 @@ export interface ToitShape {
   arity: number;
   total_block_count: number;
   named_block_count: number;
-  is_setter: boolean;
   names: string[];
 }
 

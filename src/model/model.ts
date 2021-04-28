@@ -86,7 +86,6 @@ export interface Shape {
   arity: number;
   totalBlockCount: number;
   namedBlockCount: number;
-  isSetter: boolean;
   names: string[];
 }
 

@@ -70,7 +70,6 @@ function shapeFrom(toitShape: ToitShape): Shape {
     arity: toitShape.arity,
     totalBlockCount: toitShape.total_block_count,
     namedBlockCount: toitShape.named_block_count,
-    isSetter: toitShape.is_setter,
     names: toitShape.names,
   };
 }
