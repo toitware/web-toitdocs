@@ -13,6 +13,7 @@ interface DetailsListProps {
     key: string;
     id: string;
     toitdoc?: Doc;
+    toitdocHeaderOnly?: boolean;
     link?: string;
   }[];
 }
@@ -62,7 +63,10 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
                 </div>
                 {element.toitdoc && (
                   <div className={classes.toitdoc}>
-                    <Toitdocs value={element.toitdoc} />
+                    <Toitdocs
+                      value={element.toitdoc}
+                      headerOnly={element.toitdocHeaderOnly}
+                    />
                   </div>
                 )}
               </div>

@@ -14,6 +14,7 @@ export const OBJECT_TYPE_MODULE = "module";
 export const OBJECT_TYPE_GLOBAL = "global";
 export const OBJECT_TYPE_LIBRARY = "library";
 export const OBJECT_TYPE_EXPRESSION = "expression";
+export const OBJECT_TYPE_SHAPE = "shape";
 
 export type ObjectTypeExpression =
   | typeof OBJECT_TYPE_EXPRESSION_CODE
@@ -64,11 +65,16 @@ export interface ToitModule {
   object_type: typeof OBJECT_TYPE_MODULE;
   name: string;
   classes: ToitClass[];
+  // TODO(florian): interfaces (and export_interfaces) should not be optional.
+  // They currently are, as they were added at a later point in time.
+  interfaces?: ToitClass[];
   export_classes: ToitClass[];
+  export_interfaces?: ToitClass[];
   globals: ToitGlobal[];
   export_globals: ToitGlobal[];
   functions: ToitFunction[];
   export_functions: ToitFunction[];
+  toitdoc?: ToitDoc;
 }
 
 export interface ToitModules {
@@ -78,7 +84,7 @@ export interface ToitModules {
 export interface ToitGlobal {
   object_type: typeof OBJECT_TYPE_GLOBAL;
   name: string;
-  toitdoc: ToitDoc;
+  toitdoc: ToitDoc | null;
 }
 
 export interface ToitFunction {
@@ -86,15 +92,20 @@ export interface ToitFunction {
   name: string;
   parameters: ToitParameter[];
   return_type: ToitType;
-  toitdoc: ToitDoc;
+  toitdoc: ToitDoc | null;
+  shape?: ToitShape;
 }
 
 export interface ToitClass {
   object_type: typeof OBJECT_TYPE_CLASS;
   name: string;
-  toitdoc: ToitDoc;
+  // TODO(florian): is_interface should not be optional.
+  // It is marked as such as the field was added at a later point in time.
+  is_interface?: boolean;
+  toitdoc: ToitDoc | null;
   structure: ToitStructure;
   extends: ToitReference;
+  interfaces: ToitReference[];
 }
 
 export interface ToitStructure {
@@ -109,7 +120,15 @@ export interface ToitField {
   object_type: typeof OBJECT_TYPE_FIELD;
   name: string;
   type: ToitType;
-  toitdoc: ToitDoc;
+  toitdoc: ToitDoc | null;
+}
+
+export interface ToitShape {
+  object_type: typeof OBJECT_TYPE_SHAPE;
+  arity: number;
+  total_block_count: number;
+  named_block_count: number;
+  names: string[];
 }
 
 // ToitDoc related
@@ -162,7 +181,24 @@ export interface ToitExpressionText {
   text: string;
 }
 
+export type ToitDocRefKind =
+  | "other"
+  | "class"
+  | "global"
+  | "global-method"
+  | "static-method"
+  | "constructor"
+  | "factory"
+  | "method"
+  | "field"
+  | "";
+
 export interface ToitDocRef {
   object_type: typeof OBJECT_TYPE_TOITDOCREF;
+  kind: ToitDocRefKind;
   text: string;
+  path: string[] | null;
+  holder: string | null;
+  name: string;
+  shape: ToitShape | null;
 }

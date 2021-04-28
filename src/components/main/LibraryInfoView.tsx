@@ -16,6 +16,7 @@ import CodeBlock from "../general/CodeBlock";
 import Classes from "../sdk/Classes";
 import Functions from "../sdk/Functions";
 import Globals from "../sdk/Globals";
+import Toitdocs from "../sdk/Toitdocs";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -70,6 +71,19 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
           <Typography>To use this library in your code:</Typography>
           <CodeBlock code={"import " + importPath} />
         </div>
+        {library.toitdoc && <Toitdocs value={library.toitdoc} />}
+        {Object.keys(library.interfaces).length > 0 && (
+          <Classes
+            classes={Object.values(library.interfaces)}
+            title="Interfaces"
+          />
+        )}
+        {Object.keys(library.exportedInterfaces).length > 0 && (
+          <Classes
+            classes={Object.values(library.exportedInterfaces)}
+            title="Exported interfaces"
+          />
+        )}
         {Object.keys(library.classes).length > 0 && (
           <Classes classes={Object.values(library.classes)} title="Classes" />
         )}

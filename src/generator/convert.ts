@@ -1,6 +1,17 @@
 import {
   Class,
   Classes,
+  Doc,
+  DocExpression,
+  DocSection,
+  DocStatement,
+  DOC_DOCREF,
+  DOC_EXPRESSION_CODE,
+  DOC_EXPRESSION_TEXT,
+  DOC_STATEMENT_CODE_SECTION,
+  DOC_STATEMENT_ITEM,
+  DOC_STATEMENT_ITEMIZED,
+  DOC_STATEMENT_PARAGRAPH,
   Field,
   Function,
   Global,
@@ -8,16 +19,29 @@ import {
   Library,
   Method,
   Parameter,
+  Shape,
   Type,
 } from "../model/model";
 import {
   ClassMemberType,
+  LinkRef,
+  LinkRefKind,
   TopLevelItemRef,
   TopLevelItemType,
   TopLevelRef,
 } from "../model/reference";
 import {
+  OBJECT_TYPE_EXPRESSION_CODE,
+  OBJECT_TYPE_EXPRESSION_TEXT,
+  OBJECT_TYPE_STATEMENT_CODE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_STATEMENT_PARAGRAPH,
+  OBJECT_TYPE_TOITDOCREF,
   ToitClass,
+  ToitDoc,
+  ToitDocRef,
+  ToitDocRefKind,
+  ToitExpression,
   ToitField,
   ToitFunction,
   ToitGlobal,
@@ -25,6 +49,9 @@ import {
   ToitModule,
   ToitParameter,
   ToitReference,
+  ToitSection,
+  ToitShape,
+  ToitStatement,
   ToitType,
 } from "./sdk";
 
@@ -32,13 +59,130 @@ function libraryName(name: string): string {
   return name.endsWith(".toit") ? name.substring(0, name.length - 5) : name;
 }
 
-function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
-  const path = toitReference.path.map((s) => libraryName(s));
-  path.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
+function pathFrom(path: string[]): string[] {
+  const newPath = path.map((s) => libraryName(s));
+  newPath.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
+  return newPath;
+}
+
+function shapeFrom(toitShape: ToitShape): Shape {
+  return {
+    arity: toitShape.arity,
+    totalBlockCount: toitShape.total_block_count,
+    namedBlockCount: toitShape.named_block_count,
+    names: toitShape.names,
+  };
+}
+
+function linkRefKindFrom(toitDocRefKind: ToitDocRefKind): LinkRefKind {
+  switch (toitDocRefKind) {
+    case "other":
+      return "other";
+    case "class":
+      return "class";
+    case "global":
+      return "global";
+    case "global-method":
+      return "global-method";
+    case "static-method":
+      return "static-method";
+    case "constructor":
+      return "constructor";
+    case "factory":
+      return "factory";
+    case "method":
+      return "method";
+    case "field":
+      return "field";
+    default:
+      console.error("Unknown ToitDocRefKind", toitDocRefKind);
+      return "unknown";
+  }
+}
+
+function linkRefFrom(toitDocRef: ToitDocRef): LinkRef {
+  let path = [] as string[];
+  if (toitDocRef.path) {
+    path = pathFrom(toitDocRef.path);
+  }
 
   return {
+    kind: linkRefKindFrom(toitDocRef.kind),
+    path: path,
+    holder: toitDocRef.holder || "",
+    name: toitDocRef.name,
+    shape: toitDocRef.shape ? shapeFrom(toitDocRef.shape) : undefined,
+  };
+}
+
+function docExpressionFrom(toitExpression: ToitExpression): DocExpression {
+  switch (toitExpression.object_type) {
+    case OBJECT_TYPE_EXPRESSION_CODE:
+      return {
+        type: DOC_EXPRESSION_CODE,
+        text: toitExpression.text,
+      };
+    case OBJECT_TYPE_EXPRESSION_TEXT:
+      return {
+        type: DOC_EXPRESSION_TEXT,
+        text: toitExpression.text,
+      };
+    case OBJECT_TYPE_TOITDOCREF:
+      return {
+        type: DOC_DOCREF,
+        text: toitExpression.text,
+        reference: linkRefFrom(toitExpression),
+      };
+  }
+}
+
+function docStatementFrom(toitStatement: ToitStatement): DocStatement {
+  switch (toitStatement.object_type) {
+    case OBJECT_TYPE_STATEMENT_PARAGRAPH:
+      return {
+        type: DOC_STATEMENT_PARAGRAPH,
+        expressions: toitStatement.expressions.map((toitExpression) =>
+          docExpressionFrom(toitExpression)
+        ),
+      };
+    case OBJECT_TYPE_STATEMENT_ITEMIZED:
+      return {
+        type: DOC_STATEMENT_ITEMIZED,
+        items: toitStatement.items.map((toitItem) => {
+          return {
+            type: DOC_STATEMENT_ITEM,
+            statements: toitItem.statements.map((s) => docStatementFrom(s)),
+          };
+        }),
+      };
+    case OBJECT_TYPE_STATEMENT_CODE_SECTION:
+      return {
+        type: DOC_STATEMENT_CODE_SECTION,
+        text: toitStatement.text,
+      };
+  }
+}
+
+function docSectionFrom(toitSection: ToitSection): DocSection {
+  return {
+    title: toitSection.title,
+    statements: toitSection.statements.map((toitStatement) =>
+      docStatementFrom(toitStatement)
+    ),
+  };
+}
+
+function docFrom(toitDoc: ToitDoc): Doc {
+  return toitDoc.map((toitSection) => docSectionFrom(toitSection));
+}
+
+function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
+  return {
     name: toitReference.name,
-    libraryRef: { name: toitReference.name, path: path },
+    libraryRef: {
+      name: toitReference.name,
+      path: pathFrom(toitReference.path),
+    },
   };
 }
 
@@ -79,7 +223,7 @@ function fieldFrom(
       offset: offset,
     },
     type: typeFrom(toitField.type),
-    toitdoc: toitField.toitdoc,
+    toitdoc: toitField.toitdoc ? docFrom(toitField.toitdoc) : undefined,
   };
 }
 
@@ -103,7 +247,8 @@ function methodFrom(
     },
     parameters: parameters,
     returnType: typeFrom(toitMethod.return_type),
-    toitdoc: toitMethod.toitdoc,
+    toitdoc: toitMethod.toitdoc ? docFrom(toitMethod.toitdoc) : undefined,
+    shape: toitMethod.shape ? shapeFrom(toitMethod.shape) : undefined,
   };
 }
 
@@ -124,6 +269,9 @@ function classFrom(
     ? referenceFrom(toitClass.extends)
     : undefined;
 
+  const interfaces = toitClass.interfaces.map((inter, index) =>
+    referenceFrom(inter)
+  );
   const fields = toitClass.structure.fields.map((field, index) =>
     fieldFrom(field, classId, index)
   );
@@ -142,12 +290,14 @@ function classFrom(
   return {
     name: toitClass.name,
     id: classId,
+    isInterface: toitClass.is_interface || false,
     extends: extend,
+    interfaces: interfaces,
     fields: fields,
     constructors: constructors,
     statics: statics,
     methods: methods,
-    toitdoc: toitClass.toitdoc,
+    toitdoc: toitClass.toitdoc ? docFrom(toitClass.toitdoc) : undefined,
   };
 }
 
@@ -165,7 +315,7 @@ function globalFrom(
       type: type,
       offset: offset,
     },
-    toitdoc: toitGlobal.toitdoc,
+    toitdoc: toitGlobal.toitdoc ? docFrom(toitGlobal.toitdoc) : undefined,
   };
 }
 
@@ -189,7 +339,8 @@ function functionFrom(
     },
     parameters: parameters,
     returnType: typeFrom(toitFunction.return_type),
-    toitdoc: toitFunction.toitdoc,
+    toitdoc: toitFunction.toitdoc ? docFrom(toitFunction.toitdoc) : undefined,
+    shape: toitFunction.shape ? shapeFrom(toitFunction.shape) : undefined,
   };
 }
 
@@ -198,12 +349,20 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
   const libraryId = { name: name, path: [...path, name] };
 
   let classes = {} as Classes;
+  let interfaces = {} as Classes;
   let exportedClasses = {} as Classes;
+  let exportedInterfaces = {} as Classes;
 
   toitModule.classes.forEach((klass, index) => {
     classes = {
       ...classes,
       [klass.name]: classFrom(klass, libraryId, "class", index),
+    };
+  });
+  toitModule.interfaces?.forEach((inter, index) => {
+    interfaces = {
+      ...interfaces,
+      [inter.name]: classFrom(inter, libraryId, "class", index),
     };
   });
   toitModule.export_classes.forEach((klass, index) => {
@@ -212,6 +371,13 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
       [klass.name]: classFrom(klass, libraryId, "exported_class", index),
     };
   });
+  toitModule.export_interfaces &&
+    toitModule.export_interfaces.forEach((inter, index) => {
+      exportedInterfaces = {
+        ...exportedInterfaces,
+        [inter.name]: classFrom(inter, libraryId, "exported_class", index),
+      };
+    });
   const globals = toitModule.globals.map((global, index) =>
     globalFrom(global, libraryId, "global", index)
   );
@@ -230,11 +396,14 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     id: libraryId,
     libraries: {},
     classes: classes,
+    interfaces: interfaces,
     exportedClasses: exportedClasses,
+    exportedInterfaces: exportedInterfaces,
     globals: globals,
     exportedGlobals: exportedGlobals,
     functions: functions,
     exportedFunctions: exportedFunctions,
+    toitdoc: toitModule.toitdoc ? docFrom(toitModule.toitdoc) : undefined,
   };
 }
 
@@ -250,9 +419,14 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
     id: library.id,
     libraries: { ...library.libraries, ...otherLibrary.libraries },
     classes: { ...library.classes, ...otherLibrary.classes },
+    interfaces: { ...library.interfaces, ...otherLibrary.interfaces },
     exportedClasses: {
       ...library.exportedClasses,
       ...otherLibrary.exportedClasses,
+    },
+    exportedInterfaces: {
+      ...library.exportedInterfaces,
+      ...otherLibrary.exportedInterfaces,
     },
     globals: { ...library.globals, ...otherLibrary.globals },
     exportedGlobals: {
@@ -264,6 +438,9 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
       ...library.exportedFunctions,
       ...otherLibrary.exportedFunctions,
     },
+    // TODO(florian): we currently just pick the toitdoc of the first
+    // library.
+    toitdoc: library.toitdoc || otherLibrary.toitdoc,
   };
 }
 
@@ -318,11 +495,14 @@ function libraryFromLibrary(
     id: { name: name, path: libraryPath },
     libraries: libraries,
     classes: libraryContent ? libraryContent.classes : {},
+    interfaces: libraryContent ? libraryContent.interfaces : {},
     exportedClasses: libraryContent ? libraryContent.exportedClasses : {},
+    exportedInterfaces: libraryContent ? libraryContent.exportedInterfaces : {},
     globals: libraryContent ? libraryContent.globals : [],
     exportedGlobals: libraryContent ? libraryContent.exportedGlobals : [],
     functions: libraryContent ? libraryContent.functions : [],
     exportedFunctions: libraryContent ? libraryContent.exportedFunctions : [],
+    toitdoc: libraryContent ? libraryContent.toitdoc : undefined,
   };
 }
 

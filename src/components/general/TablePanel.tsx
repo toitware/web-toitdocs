@@ -13,8 +13,10 @@ import {
 } from "@material-ui/core";
 import React, { Component } from "react";
 import { HashLink } from "react-router-hash-link";
+import { getFunctionId } from "../../misc/util";
 import { Field, Function, Method } from "../../model/model";
-import { getDescription, getId } from "../sdk/Functions";
+import { getDescription } from "../sdk/Functions";
+import Toitdocs from "../sdk/Toitdocs";
 import { TypeView } from "../sdk/Type";
 
 const styles = (theme: Theme): StyleRules =>
@@ -81,6 +83,9 @@ class TablePanel extends Component<TablePanelProps> {
                         </HashLink>{" "}
                         <TypeView type={field.type} />
                       </TableCell>
+                      <TableCell component="th" scope="row">
+                        <Toitdocs value={field.toitdoc} headerOnly={true} />
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
@@ -103,7 +108,9 @@ class TablePanel extends Component<TablePanelProps> {
                     <TableRow key={method.name + index}>
                       <TableCell component="th" scope="row">
                         <HashLink
-                          to={{ hash: getId(method.name, method.parameters) }}
+                          to={{
+                            hash: getFunctionId(method.name, method.shape),
+                          }}
                         >
                           {method.name}
                         </HashLink>{" "}
@@ -112,6 +119,9 @@ class TablePanel extends Component<TablePanelProps> {
                           method.returnType,
                           this.props.hideReturnTypes
                         )}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <Toitdocs value={method.toitdoc} headerOnly={true} />
                       </TableCell>
                     </TableRow>
                   ))}

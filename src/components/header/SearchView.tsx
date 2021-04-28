@@ -9,6 +9,7 @@ import React from "react";
 import {
   SearchableClass,
   SearchableFunction,
+  SearchableInterface,
   SearchableLibrary,
   SearchableMethod,
   SearchableModel,
@@ -34,6 +35,7 @@ interface SearchState {
   searchBy: string;
   libraries: SearchableLibrary[];
   classes: SearchableClass[];
+  interfaces: SearchableInterface[];
   functions: SearchableFunction[];
   methods: SearchableMethod[];
   hideResults: boolean;
@@ -46,6 +48,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
     searchBy: "",
     libraries: [],
     classes: [],
+    interfaces: [],
     functions: [],
     methods: [],
     hideResults: false,
@@ -71,6 +74,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
       () => {
         let libraries = [] as SearchableLibrary[];
         let classes = [] as SearchableClass[];
+        let interfaces = [] as SearchableInterface[];
         let functions = [] as SearchableFunction[];
         let methods = [] as SearchableMethod[];
 
@@ -78,6 +82,10 @@ class SearchView extends React.Component<SearchProps, SearchState> {
           libraries = this.search(this.props.model.libraries, searchString).map(
             (m) => m.item
           );
+          interfaces = this.search(
+            this.props.model.interfaces,
+            searchString
+          ).map((inter) => inter.item);
           classes = this.search(this.props.model.classes, searchString).map(
             (c) => c.item
           );
@@ -92,6 +100,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
         this.setState({
           searchBy: searchString,
           libraries: libraries,
+          interfaces: interfaces,
           classes: classes,
           functions: functions,
           methods: methods,
@@ -121,6 +130,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
           <SearchResults
             results={[
               ...this.state.classes,
+              ...this.state.interfaces,
               ...this.state.functions,
               ...this.state.methods,
               ...this.state.libraries,

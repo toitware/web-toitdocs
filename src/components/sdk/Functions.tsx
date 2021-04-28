@@ -1,6 +1,7 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React from "react";
+import { getFunctionId } from "../../misc/util";
 import { Function, Method, Parameter, Type } from "../../model/model";
 import DetailsList from "../general/DetailsList";
 import { TypeView } from "./Type";
@@ -9,25 +10,6 @@ interface FunctionsProps {
   functions: (Function | Method)[];
   title: string;
   hideReturnTypes?: boolean;
-}
-
-export function getId(functionName: string, parameters: Parameter[]): string {
-  const argsString = parameters
-    .map((p) => {
-      if (p.type.isAny) {
-        return "any";
-      } else if (p.type.isNone) {
-        return "none";
-      } else if (p.type.isBlock) {
-        return "block";
-      } else if (p.type) {
-        return p.type.reference?.name || "unknown";
-      } else {
-        return "unknown";
-      }
-    })
-    .join(",");
-  return encodeURIComponent(functionName + "(" + argsString + ")");
 }
 
 export function getDescription(
@@ -43,14 +25,14 @@ export function getDescription(
           param = "--" + param;
         }
         if (parameter.isBlock) {
-          param = "[" + param + "]";
+          param = "[" + param + "] ";
           return param;
         }
-
         return (
           <span key={i}>
             {param + "/"}
-            <TypeView type={parameter.type} />{" "}
+            <TypeView type={parameter.type} />
+            {parameter.isRequired ? " " : "= "}
           </span>
         );
       })}
@@ -69,7 +51,7 @@ export default function Functions(props: FunctionsProps): JSX.Element {
     <DetailsList
       title={props.title}
       elements={props.functions.map((fn, i) => {
-        const id = getId(fn.name, fn.parameters);
+        const id = getFunctionId(fn.name, fn.shape);
         return {
           name: fn.name,
           description: getDescription(
