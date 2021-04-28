@@ -70,7 +70,9 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
     return (
       <div className={classes.root}>
         <div className={classes.title}>
-          <Typography variant="h4">Class summary</Typography>
+          <Typography variant="h4">
+            {klass.isInterface ? "Interface" : "Class"} summary
+          </Typography>
         </div>
         <Divider />
         <AppBar position="static" elevation={0}>

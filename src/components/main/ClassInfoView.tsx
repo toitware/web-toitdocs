@@ -3,7 +3,7 @@
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { classFrom } from "../../misc/util";
+import { classFrom, classUrlFromRef } from "../../misc/util";
 import { Libraries } from "../../model/model";
 import Fields from "../sdk/Fields";
 import Functions from "../sdk/Functions";
@@ -40,11 +40,24 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     return (
       <>
         <Typography variant="h2" component="h2">
-          Class {classInfo.name}
+          {classInfo.isInterface ? "Interface" : "Class"} {classInfo.name}
         </Typography>
-        {classInfo.extends && (
+        {(classInfo.extends || classInfo.interfaces.length !== 0) && (
           <div>
-            extends <TypeReference reference={classInfo.extends} />
+            {classInfo.extends && (
+              <>
+                extends <TypeReference reference={classInfo.extends} />
+              </>
+            )}
+            {classInfo.interfaces.length !== 0 && " implements "}
+            {classInfo.interfaces.map((ref) => {
+              const key = classUrlFromRef(ref);
+              return (
+                <span key={key}>
+                  <TypeReference reference={ref} />{" "}
+                </span>
+              );
+            })}
           </div>
         )}
         {classInfo.toitdoc && <Toitdocs value={classInfo.toitdoc} />}

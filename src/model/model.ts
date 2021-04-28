@@ -13,7 +13,9 @@ export interface Library {
   id: TopLevelRef;
   libraries: Libraries;
   classes: Classes;
+  interfaces: Classes;
   exportedClasses: Classes;
+  exportedInterfaces: Classes;
   globals: Global[];
   exportedGlobals: Global[];
   functions: Function[];
@@ -24,7 +26,9 @@ export interface Library {
 export interface Class {
   name: string;
   id: TopLevelItemRef;
+  isInterface: boolean;
   extends?: TopLevelItemRef;
+  interfaces: TopLevelItemRef[];
   fields: Field[];
   constructors: Method[];
   statics: Method[];

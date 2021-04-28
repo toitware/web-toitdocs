@@ -7,6 +7,7 @@ const mapStateToProps = (state: RootState): Pick<SearchProps, "model"> => {
     model: state.sdk.searchableModel || {
       libraries: [],
       classes: [],
+      interfaces: [],
       functions: [],
       methods: [],
     },

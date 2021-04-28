@@ -37,7 +37,12 @@ export function classFrom(
   rootLibraries: Libraries
 ): Class | undefined {
   const library = libraryFrom(libraryName, rootLibraries);
-  return library?.classes[className] || library?.exportedClasses[className];
+  return (
+    library?.classes[className] ||
+    library?.exportedClasses[className] ||
+    library?.interfaces[className] ||
+    library?.exportedInterfaces[className]
+  );
 }
 
 export function libraryFromRef(
@@ -58,7 +63,9 @@ export function classFromRef(
 
   return (
     Object.values(library.classes)[ref.offset] ||
-    Object.values(library.exportedClasses)[ref.offset]
+    Object.values(library.exportedClasses)[ref.offset] ||
+    Object.values(library.interfaces)[ref.offset] ||
+    Object.values(library.exportedInterfaces)[ref.offset]
   );
 }
 
