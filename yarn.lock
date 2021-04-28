@@ -1596,8 +1596,10 @@
   dependencies:
     "@babel/runtime" "^7.10.2"
 
-"@toitware/cookie-consent@../npm-packages/packages/cookie-consent":
+"@toitware/cookie-consent@^0.1.0":
   version "0.1.0"
+  resolved "https://npm.pkg.github.com/download/@toitware/cookie-consent/0.1.0/2fe3cc8adae4884b0a14f6f07c764d4f97797b81c825d4ed26eb082dfa811fcf#fd6174f689db6392252993dbed6f6172ad8b85c9"
+  integrity sha512-01TXWopxjVKyCfjCoEOUI/2y5ZTZNyUX5PGYKqKW8y8owsXoJ5u/kvfcHRhsZqCLcav9iMDhghX3oF6CqH1Glw==
   dependencies:
     js-cookie "^2.2.1"
     react-icons "^4.1.0"
