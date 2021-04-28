@@ -98,9 +98,6 @@ export function getFunctionId(functionName: string, shape?: Shape): string {
   if (!shape) {
     return "";
   }
-  if (shape.isSetter) {
-    return encodeURIComponent(functionName + "=");
-  }
   const shapeString = `${shape.arity},${shape.totalBlockCount},${
     shape.namedBlockCount
   },${shape.names.join(",")}`;
