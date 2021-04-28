@@ -1,7 +1,8 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import React from "react";
-import { Function, Method, Parameter, Shape, Type } from "../../model/model";
+import { getFunctionId } from "../../misc/util";
+import { Function, Method, Parameter, Type } from "../../model/model";
 import DetailsList from "../general/DetailsList";
 import { TypeView } from "./Type";
 
@@ -9,19 +10,6 @@ interface FunctionsProps {
   functions: (Function | Method)[];
   title: string;
   hideReturnTypes?: boolean;
-}
-
-export function getId(functionName: string, shape?: Shape): string {
-  if (!shape) {
-    return "";
-  }
-  if (shape.isSetter) {
-    return encodeURIComponent(functionName + "=");
-  }
-  const shapeString = `${shape.arity},${shape.totalBlockCount},${
-    shape.namedBlockCount
-  },${shape.names.join(",")}`;
-  return encodeURIComponent(functionName + "(" + shapeString + ")");
 }
 
 export function getDescription(
@@ -63,7 +51,7 @@ export default function Functions(props: FunctionsProps): JSX.Element {
     <DetailsList
       title={props.title}
       elements={props.functions.map((fn, i) => {
-        const id = getId(fn.name, fn.shape);
+        const id = getFunctionId(fn.name, fn.shape);
         return {
           name: fn.name,
           description: getDescription(

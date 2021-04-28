@@ -2,14 +2,8 @@
 
 import { makeStyles, Typography } from "@material-ui/core";
 import React from "react";
-import {
-  OBJECT_TYPE_EXPRESSION_CODE,
-  OBJECT_TYPE_EXPRESSION_TEXT,
-  OBJECT_TYPE_STATEMENT_CODE_SECTION,
-  OBJECT_TYPE_STATEMENT_ITEMIZED,
-  OBJECT_TYPE_STATEMENT_PARAGRAPH,
-  OBJECT_TYPE_TOITDOCREF,
-} from "../../generator/sdk";
+import { HashLink } from "react-router-hash-link";
+import { urlFromLinkRef } from "../../misc/util";
 import {
   Doc,
   DocExpression,
@@ -22,6 +16,12 @@ import {
   DocStatementItem,
   DocStatementItemized,
   DocStatementParagraph,
+  DOC_DOCREF,
+  DOC_EXPRESSION_CODE,
+  DOC_EXPRESSION_TEXT,
+  DOC_STATEMENT_CODE_SECTION,
+  DOC_STATEMENT_ITEMIZED,
+  DOC_STATEMENT_PARAGRAPH,
 } from "../../model/model";
 import CodeBlock from "../general/CodeBlock";
 
@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
   sectionTitle: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(1),
+  },
+  otherDocRef: {
+    fontWeight: 590,
   },
 }));
 
@@ -80,18 +83,22 @@ function StatementParagraph(props: {
 }
 
 function ToitdocRef(props: { reference: DocRef }): JSX.Element {
-  // TODO: Handle references to other objects.
-  return <span>{props.reference.text}</span>;
+  const classes = useStyles();
+  const url = urlFromLinkRef(props.reference.reference);
+  if (!url) {
+    return <span className={classes.otherDocRef}>{props.reference.text}</span>;
+  }
+  return <HashLink to={url}>{props.reference.text}</HashLink>;
 }
 
 function Expression(props: { expression: DocExpression }): JSX.Element {
   const expression = props.expression;
-  switch (expression.object_type) {
-    case OBJECT_TYPE_EXPRESSION_CODE:
+  switch (expression.type) {
+    case DOC_EXPRESSION_CODE:
       return <ExpressionCode code={expression} />;
-    case OBJECT_TYPE_EXPRESSION_TEXT:
+    case DOC_EXPRESSION_TEXT:
       return <ExpressionText text={expression} />;
-    case OBJECT_TYPE_TOITDOCREF:
+    case DOC_DOCREF:
       return <ToitdocRef reference={expression} />;
     default:
       throw Error("unhandled expression: " + expression);
@@ -103,14 +110,14 @@ function Statement(props: {
   isHeader?: boolean;
 }): JSX.Element {
   const statement = props.statement;
-  switch (statement.object_type) {
-    case OBJECT_TYPE_STATEMENT_PARAGRAPH:
+  switch (statement.type) {
+    case DOC_STATEMENT_PARAGRAPH:
       return (
         <StatementParagraph isHeader={props.isHeader} statement={statement} />
       );
-    case OBJECT_TYPE_STATEMENT_CODE_SECTION:
+    case DOC_STATEMENT_CODE_SECTION:
       return <StatementCodeSection code={statement} />;
-    case OBJECT_TYPE_STATEMENT_ITEMIZED:
+    case DOC_STATEMENT_ITEMIZED:
       return <StatementItemized itemized={statement} />;
     default:
       throw Error("unhandled statement: " + statement);

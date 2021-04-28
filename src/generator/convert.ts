@@ -1,6 +1,17 @@
 import {
   Class,
   Classes,
+  Doc,
+  DocExpression,
+  DocSection,
+  DocStatement,
+  DOC_DOCREF,
+  DOC_EXPRESSION_CODE,
+  DOC_EXPRESSION_TEXT,
+  DOC_STATEMENT_CODE_SECTION,
+  DOC_STATEMENT_ITEM,
+  DOC_STATEMENT_ITEMIZED,
+  DOC_STATEMENT_PARAGRAPH,
   Field,
   Function,
   Global,
@@ -13,12 +24,24 @@ import {
 } from "../model/model";
 import {
   ClassMemberType,
+  LinkRef,
+  LinkRefKind,
   TopLevelItemRef,
   TopLevelItemType,
   TopLevelRef,
 } from "../model/reference";
 import {
+  OBJECT_TYPE_EXPRESSION_CODE,
+  OBJECT_TYPE_EXPRESSION_TEXT,
+  OBJECT_TYPE_STATEMENT_CODE_SECTION,
+  OBJECT_TYPE_STATEMENT_ITEMIZED,
+  OBJECT_TYPE_STATEMENT_PARAGRAPH,
+  OBJECT_TYPE_TOITDOCREF,
   ToitClass,
+  ToitDoc,
+  ToitDocRef,
+  ToitDocRefKind,
+  ToitExpression,
   ToitField,
   ToitFunction,
   ToitGlobal,
@@ -26,7 +49,9 @@ import {
   ToitModule,
   ToitParameter,
   ToitReference,
+  ToitSection,
   ToitShape,
+  ToitStatement,
   ToitType,
 } from "./sdk";
 
@@ -34,13 +59,131 @@ function libraryName(name: string): string {
   return name.endsWith(".toit") ? name.substring(0, name.length - 5) : name;
 }
 
-function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
-  const path = toitReference.path.map((s) => libraryName(s));
-  path.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
+function pathFrom(path: string[]): string[] {
+  const newPath = path.map((s) => libraryName(s));
+  newPath.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
+  return newPath;
+}
+
+function shapeFrom(toitShape: ToitShape): Shape {
+  return {
+    arity: toitShape.arity,
+    totalBlockCount: toitShape.total_block_count,
+    namedBlockCount: toitShape.named_block_count,
+    isSetter: toitShape.is_setter,
+    names: toitShape.names,
+  };
+}
+
+function linkRefKindFrom(toitDocRefKind: ToitDocRefKind): LinkRefKind {
+  switch (toitDocRefKind) {
+    case "other":
+      return "other";
+    case "class":
+      return "class";
+    case "global":
+      return "global";
+    case "global-method":
+      return "global-method";
+    case "static-method":
+      return "static-method";
+    case "constructor":
+      return "constructor";
+    case "factory":
+      return "factory";
+    case "method":
+      return "method";
+    case "field":
+      return "field";
+    default:
+      console.error("Unknown ToitDocRefKind", toitDocRefKind);
+      return "unknown";
+  }
+}
+
+function linkRefFrom(toitDocRef: ToitDocRef): LinkRef {
+  let path = [] as string[];
+  if (toitDocRef.path) {
+    path = pathFrom(toitDocRef.path);
+  }
 
   return {
+    kind: linkRefKindFrom(toitDocRef.kind),
+    path: path,
+    holder: toitDocRef.holder || "",
+    name: toitDocRef.name,
+    shape: toitDocRef.shape ? shapeFrom(toitDocRef.shape) : undefined,
+  };
+}
+
+function docExpressionFrom(toitExpression: ToitExpression): DocExpression {
+  switch (toitExpression.object_type) {
+    case OBJECT_TYPE_EXPRESSION_CODE:
+      return {
+        type: DOC_EXPRESSION_CODE,
+        text: toitExpression.text,
+      };
+    case OBJECT_TYPE_EXPRESSION_TEXT:
+      return {
+        type: DOC_EXPRESSION_TEXT,
+        text: toitExpression.text,
+      };
+    case OBJECT_TYPE_TOITDOCREF:
+      return {
+        type: DOC_DOCREF,
+        text: toitExpression.text,
+        reference: linkRefFrom(toitExpression),
+      };
+  }
+}
+
+function docStatementFrom(toitStatement: ToitStatement): DocStatement {
+  switch (toitStatement.object_type) {
+    case OBJECT_TYPE_STATEMENT_PARAGRAPH:
+      return {
+        type: DOC_STATEMENT_PARAGRAPH,
+        expressions: toitStatement.expressions.map((toitExpression) =>
+          docExpressionFrom(toitExpression)
+        ),
+      };
+    case OBJECT_TYPE_STATEMENT_ITEMIZED:
+      return {
+        type: DOC_STATEMENT_ITEMIZED,
+        items: toitStatement.items.map((toitItem) => {
+          return {
+            type: DOC_STATEMENT_ITEM,
+            statements: toitItem.statements.map((s) => docStatementFrom(s)),
+          };
+        }),
+      };
+    case OBJECT_TYPE_STATEMENT_CODE_SECTION:
+      return {
+        type: DOC_STATEMENT_CODE_SECTION,
+        text: toitStatement.text,
+      };
+  }
+}
+
+function docSectionFrom(toitSection: ToitSection): DocSection {
+  return {
+    title: toitSection.title,
+    statements: toitSection.statements.map((toitStatement) =>
+      docStatementFrom(toitStatement)
+    ),
+  };
+}
+
+function docFrom(toitDoc: ToitDoc): Doc {
+  return toitDoc.map((toitSection) => docSectionFrom(toitSection));
+}
+
+function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
+  return {
     name: toitReference.name,
-    libraryRef: { name: toitReference.name, path: path },
+    libraryRef: {
+      name: toitReference.name,
+      path: pathFrom(toitReference.path),
+    },
   };
 }
 
@@ -54,16 +197,6 @@ function typeFrom(toitType: ToitType): Type {
     isAny: toitType.is_any,
     isBlock: toitType.is_block,
     reference: reference,
-  };
-}
-
-function shapeFrom(toitShape: ToitShape): Shape {
-  return {
-    arity: toitShape.arity,
-    totalBlockCount: toitShape.total_block_count,
-    namedBlockCount: toitShape.named_block_count,
-    isSetter: toitShape.is_setter,
-    names: toitShape.names,
   };
 }
 
@@ -91,7 +224,7 @@ function fieldFrom(
       offset: offset,
     },
     type: typeFrom(toitField.type),
-    toitdoc: toitField.toitdoc,
+    toitdoc: toitField.toitdoc ? docFrom(toitField.toitdoc) : undefined,
   };
 }
 
@@ -115,7 +248,7 @@ function methodFrom(
     },
     parameters: parameters,
     returnType: typeFrom(toitMethod.return_type),
-    toitdoc: toitMethod.toitdoc,
+    toitdoc: toitMethod.toitdoc ? docFrom(toitMethod.toitdoc) : undefined,
     shape: toitMethod.shape ? shapeFrom(toitMethod.shape) : undefined,
   };
 }
@@ -165,7 +298,7 @@ function classFrom(
     constructors: constructors,
     statics: statics,
     methods: methods,
-    toitdoc: toitClass.toitdoc,
+    toitdoc: toitClass.toitdoc ? docFrom(toitClass.toitdoc) : undefined,
   };
 }
 
@@ -183,7 +316,7 @@ function globalFrom(
       type: type,
       offset: offset,
     },
-    toitdoc: toitGlobal.toitdoc,
+    toitdoc: toitGlobal.toitdoc ? docFrom(toitGlobal.toitdoc) : undefined,
   };
 }
 
@@ -207,7 +340,7 @@ function functionFrom(
     },
     parameters: parameters,
     returnType: typeFrom(toitFunction.return_type),
-    toitdoc: toitFunction.toitdoc,
+    toitdoc: toitFunction.toitdoc ? docFrom(toitFunction.toitdoc) : undefined,
     shape: toitFunction.shape ? shapeFrom(toitFunction.shape) : undefined,
   };
 }
@@ -271,7 +404,7 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     exportedGlobals: exportedGlobals,
     functions: functions,
     exportedFunctions: exportedFunctions,
-    toitdoc: toitModule.toitdoc,
+    toitdoc: toitModule.toitdoc ? docFrom(toitModule.toitdoc) : undefined,
   };
 }
 

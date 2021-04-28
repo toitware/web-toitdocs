@@ -1,7 +1,14 @@
-import { getId } from "../components/sdk/Functions";
-import { Class, Function, Libraries, Library, Method } from "../model/model";
+import {
+  Class,
+  Function,
+  Libraries,
+  Library,
+  Method,
+  Shape,
+} from "../model/model";
 import {
   ClassMemberRef,
+  LinkRef,
   TopLevelItemRef,
   TopLevelRef,
 } from "../model/reference";
@@ -85,16 +92,51 @@ export function methodFromRef(
   return klass.methods[ref.offset] || klass.statics[ref.offset];
 }
 
+// URL related functions
+
+export function getFunctionId(functionName: string, shape?: Shape): string {
+  if (!shape) {
+    return "";
+  }
+  if (shape.isSetter) {
+    return encodeURIComponent(functionName + "=");
+  }
+  const shapeString = `${shape.arity},${shape.totalBlockCount},${
+    shape.namedBlockCount
+  },${shape.names.join(",")}`;
+  return encodeURIComponent(functionName + "(" + shapeString + ")");
+}
+
+export function getFieldId(fieldName: string): string {
+  return fieldName;
+}
+
+function libraryUrl(path: string[]): string {
+  return "/" + path.join("/") + "/library-summary";
+}
+
+function classUrl(path: string[], name: string): string {
+  return "/" + path.join("/") + "/class-" + name;
+}
+
+function memberUrl(classUrl: string, id: string): string {
+  return classUrl + "#" + id;
+}
+
+function globalUrl(libraryUrl: string, id: string): string {
+  return libraryUrl + "#" + id;
+}
+
 export function topLevelRefToId(ref: TopLevelRef): string {
   return ref.name + "-" + ref.path.join("/");
 }
 
 export function classUrlFromRef(ref: TopLevelItemRef): string {
-  return "/" + ref.libraryRef.path.join("/") + "/class-" + ref.name;
+  return classUrl(ref.libraryRef.path, ref.name);
 }
 
 export function libraryUrlFromRef(ref: TopLevelRef): string {
-  return "/" + ref.path.join("/") + "/library-summary";
+  return libraryUrl(ref.path);
 }
 
 export function functionUrlFromRef(
@@ -105,10 +147,9 @@ export function functionUrlFromRef(
   if (!fhunction) {
     return "/";
   }
-  return (
-    libraryUrlFromRef(ref.libraryRef) +
-    "#" +
-    getId(fhunction.name, fhunction.shape)
+  return globalUrl(
+    libraryUrlFromRef(ref.libraryRef),
+    getFunctionId(fhunction.name, fhunction.shape)
   );
 }
 
@@ -120,5 +161,34 @@ export function methodUrlFromRef(
   if (!method) {
     return "/";
   }
-  return classUrlFromRef(ref.classRef) + "#" + getId(method.name, method.shape);
+  return memberUrl(
+    classUrlFromRef(ref.classRef),
+    getFunctionId(method.name, method.shape)
+  );
+}
+
+export function urlFromLinkRef(ref: LinkRef): string {
+  switch (ref.kind) {
+    case "class":
+      return classUrl(ref.path, ref.name);
+    case "constructor":
+    case "factory":
+    case "method":
+    case "static-method":
+      return memberUrl(
+        classUrl(ref.path, ref.holder),
+        getFunctionId(ref.name, ref.shape)
+      );
+    case "field":
+      return memberUrl(classUrl(ref.path, ref.holder), getFieldId(ref.name));
+    case "global":
+      return globalUrl(libraryUrl(ref.path), ref.name);
+    case "global-method":
+      return globalUrl(
+        libraryUrl(ref.path),
+        getFunctionId(ref.name, ref.shape)
+      );
+    default:
+      return "";
+  }
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { getFieldId } from "../../misc/util";
 import { Field } from "../../model/model";
 import DetailsList from "../general/DetailsList";
 import { TypeView } from "./Type";
@@ -16,7 +17,7 @@ export default function Fields(props: FieldsProps): JSX.Element {
           name: field.name,
           description: <TypeView type={field.type} />,
           key: "field_" + i,
-          id: field.name,
+          id: getFieldId(field.name),
           toitdoc: field.toitdoc,
         };
       })}
