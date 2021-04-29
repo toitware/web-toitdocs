@@ -62,7 +62,7 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
     if (isCoreExported && unexported.exec(libName)) {
       isCoreExported = false;
     }
-    const isCore = libName == "core";
+    const isCore = libName === "core";
     const noImport = isCoreExported || isCore;
 
     const inCoreString = isCoreExported ? "exported from" : "";
