@@ -94,6 +94,7 @@ export interface ToitFunction {
   return_type: ToitType;
   toitdoc: ToitDoc | null;
   shape?: ToitShape;
+  is_inherited: boolean;
 }
 
 export interface ToitClass {
@@ -121,6 +122,7 @@ export interface ToitField {
   name: string;
   type: ToitType;
   toitdoc: ToitDoc | null;
+  is_inherited: boolean;
 }
 
 export interface ToitShape {

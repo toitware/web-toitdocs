@@ -49,6 +49,7 @@ export interface Function {
   returnType: Type;
   toitdoc?: Doc;
   shape?: Shape;
+  isInherited: boolean;
 }
 
 export interface Method {
@@ -58,6 +59,7 @@ export interface Method {
   returnType: Type;
   toitdoc?: Doc;
   shape?: Shape;
+  isInherited: boolean;
 }
 
 export interface Parameter {
@@ -73,6 +75,7 @@ export interface Field {
   id: ClassMemberRef;
   type: Type;
   toitdoc?: Doc;
+  isInherited: boolean;
 }
 
 export interface Type {
