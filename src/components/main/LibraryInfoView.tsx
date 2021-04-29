@@ -50,15 +50,19 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
   }
 
   render(): JSX.Element {
+    const libName = this.props.match.params.libraryName
     const library = libraryFrom(
-      this.props.match.params.libraryName,
+      libName,
       this.props.libraries
     );
     if (!library) {
-      return this.notFound(this.props.match.params.libraryName);
+      return this.notFound(libName);
     }
 
-    const importPath = this.props.match.params.libraryName.replace(/\//g, ".");
+    const importPath = libName.replace(/\//g, ".");
+    const isInCore = libName.startsWith("core/");
+    const inCoreString = isInCore ? "in" : ""
+    const noImport = isInCore || libName == "core"
 
     return (
       <>
@@ -67,10 +71,17 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
             Library {library.name}
           </Typography>
         </div>
-        <div className={this.props.classes.importingText}>
-          <Typography>To use this library in your code:</Typography>
-          <CodeBlock code={"import " + importPath} />
-        </div>
+        { noImport ?
+          <div className={this.props.classes.importingText}>
+              <Typography>This is {inCoreString} the core library, which means
+                you don&#39;t need to import it.</Typography>
+          </div>
+          :
+          <div className={this.props.classes.importingText}>
+              <Typography>To use this library in your code:</Typography>
+              <CodeBlock code={"import " + importPath} />
+          </div>
+        }
         {library.toitdoc && <Toitdocs value={library.toitdoc} />}
         {Object.keys(library.interfaces).length > 0 && (
           <Classes
