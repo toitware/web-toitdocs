@@ -57,9 +57,18 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
     }
 
     const importPath = libName.replace(/\//g, ".");
-    const isInCore = libName.startsWith("core/");
-    const inCoreString = isInCore ? "in" : "";
-    const noImport = isInCore || libName == "core";
+    let isCoreExported = false;
+    const exported = /^core\/(assert_|collections|entry|events|exceptions|message|monitor_impl|numbers|objects|print|process|string|task|time|timer|utils)$/;
+    if (libName.startsWith("core/")) {
+      if (exported.exec(libName)) {
+        isCoreExported = true;
+      }
+    }
+    const isCore = libName == "core";
+    const noImport = isCoreExported || isCore;
+
+    const inCoreString = isCoreExported ? "exported from" : "";
+    const usuallyString = isCore ? "usually" : "";
 
     return (
       <>
@@ -71,8 +80,8 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
         <div className={this.props.classes.importingText}>
           {noImport ? (
             <Typography>
-              This is {inCoreString} the core library, which means you don&#39;t
-              need to import it.
+              This is {inCoreString} the core library, which means you{" "}
+              {usuallyString} don&#39;t need to import it.
             </Typography>
           ) : (
             <div>
