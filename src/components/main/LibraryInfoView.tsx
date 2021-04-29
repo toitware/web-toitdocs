@@ -50,15 +50,23 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
   }
 
   render(): JSX.Element {
-    const library = libraryFrom(
-      this.props.match.params.libraryName,
-      this.props.libraries
-    );
+    const libName = this.props.match.params.libraryName;
+    const library = libraryFrom(libName, this.props.libraries);
     if (!library) {
-      return this.notFound(this.props.match.params.libraryName);
+      return this.notFound(libName);
     }
 
-    const importPath = this.props.match.params.libraryName.replace(/\//g, ".");
+    const importPath = libName.replace(/\//g, ".");
+    let isCoreExported = libName.startsWith("core/");
+    const unexported = /^core\/.*_impl$/;
+    if (isCoreExported && unexported.exec(libName)) {
+      isCoreExported = false;
+    }
+    const isCore = libName === "core";
+    const noImport = isCoreExported || isCore;
+
+    const inCoreString = isCoreExported ? "exported from" : "";
+    const usuallyString = isCore ? "usually" : "";
 
     return (
       <>
@@ -68,8 +76,17 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
           </Typography>
         </div>
         <div className={this.props.classes.importingText}>
-          <Typography>To use this library in your code:</Typography>
-          <CodeBlock code={"import " + importPath} />
+          {noImport ? (
+            <Typography>
+              This is {inCoreString} the core library, which means you{" "}
+              {usuallyString} don&#39;t need to import it.
+            </Typography>
+          ) : (
+            <div>
+              <Typography>To use this library in your code:</Typography>
+              <CodeBlock code={"import " + importPath} />
+            </div>
+          )}
         </div>
         {library.toitdoc && <Toitdocs value={library.toitdoc} />}
         {Object.keys(library.interfaces).length > 0 && (
