@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         BUILD_VERSION = sh(returnStdout: true, script: 'gitversion').trim()
+        GITHUB_TOKEN = credentials('leon-github-npm')
     }
 
     options {
@@ -17,6 +18,7 @@ pipeline {
     stages {
         stage("install") {
             steps {
+                sh 'npm config set //npm.pkg.github.com/:_authToken=$GITHUB_TOKEN'
                 sh "yarn install"
             }
         }

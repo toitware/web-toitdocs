@@ -10,6 +10,7 @@ import {
   WithStyles,
 } from "@material-ui/core/styles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import CookieConsent from "@toitware/cookie-consent";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route, RouteComponentProps } from "react-router-dom";
@@ -75,6 +76,15 @@ class App extends Component<AppProps> {
   }
 
   render(): JSX.Element {
+    let segmentAPIKey = "";
+    if (typeof document !== `undefined`) {
+      // Check if the meta segment-key is set.
+      const segmentKeyDOM = document.querySelector('meta[name="segment-key"]');
+      if (segmentKeyDOM) {
+        segmentAPIKey = segmentKeyDOM.getAttribute("content") || segmentAPIKey;
+      }
+    }
+
     return (
       <ThemeProvider theme={theme}>
         <BrowserRouter>
@@ -141,6 +151,11 @@ class App extends Component<AppProps> {
             <CircularProgress disableShrink />
           )}
         </BrowserRouter>
+        <CookieConsent
+          segmentKey={segmentAPIKey}
+          changeConsent={false}
+          show={false}
+        />
       </ThemeProvider>
     );
   }
