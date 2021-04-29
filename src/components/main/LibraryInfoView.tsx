@@ -57,12 +57,10 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
     }
 
     const importPath = libName.replace(/\//g, ".");
-    let isCoreExported = false;
-    const exported = /^core\/(assert_|collections|entry|events|exceptions|message|monitor_impl|numbers|objects|print|process|string|task|time|timer|utils)$/;
-    if (libName.startsWith("core/")) {
-      if (exported.exec(libName)) {
-        isCoreExported = true;
-      }
+    let isCoreExported = libName.startsWith("core/");
+    const unexported = /^core\/.*_impl$/;
+    if (isCoreExported && unexported.exec(libName)) {
+      isCoreExported = false;
     }
     const isCore = libName == "core";
     const noImport = isCoreExported || isCore;
