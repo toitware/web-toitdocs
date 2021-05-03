@@ -224,6 +224,7 @@ function fieldFrom(
     },
     type: typeFrom(toitField.type),
     toitdoc: toitField.toitdoc ? docFrom(toitField.toitdoc) : undefined,
+    isInherited: toitField.is_inherited,
   };
 }
 
@@ -249,6 +250,7 @@ function methodFrom(
     returnType: typeFrom(toitMethod.return_type),
     toitdoc: toitMethod.toitdoc ? docFrom(toitMethod.toitdoc) : undefined,
     shape: toitMethod.shape ? shapeFrom(toitMethod.shape) : undefined,
+    isInherited: toitMethod.is_inherited,
   };
 }
 
@@ -341,6 +343,7 @@ function functionFrom(
     returnType: typeFrom(toitFunction.return_type),
     toitdoc: toitFunction.toitdoc ? docFrom(toitFunction.toitdoc) : undefined,
     shape: toitFunction.shape ? shapeFrom(toitFunction.shape) : undefined,
+    isInherited: false,
   };
 }
 

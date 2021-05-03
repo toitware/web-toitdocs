@@ -21,6 +21,7 @@ export default function Classes(props: ClassesProps): JSX.Element {
           link: classUrlFromRef(klass.id),
           toitdoc: klass.toitdoc,
           toitdocHeaderOnly: true,
+          isInherited: false,
         };
       })}
     />
