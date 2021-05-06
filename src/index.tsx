@@ -16,8 +16,8 @@ const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 const searchParams = new URLSearchParams(window.location.search);
 let sdkVersion = "latest";
-if (searchParams.has("version")) {
-  sdkVersion = searchParams.get("version") || "Unknown version";
+if (searchParams.has("sdk_version")) {
+  sdkVersion = searchParams.get("sdk_version") || "Unknown version";
 }
 
 render(
