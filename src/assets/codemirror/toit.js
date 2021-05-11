@@ -2,8 +2,13 @@
 // Code copied from toitware/toit. DO NOT EDIT.
 // CodeMirror, copyright (c) by Toitware ApS.
 // Distributed under an MIT license: https://codemirror.net/LICENSE
+
 (function (mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof window === "undefined" || typeof window.navigator == 'undefined')
+    import("codemirror").then(mod);
+  else if ( typeof module == "object" && module.hot)
+    import("codemirror").then(mod);
+  else if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("codemirror"));
   else if (typeof define == "function" && define.amd) // AMD
     define(["codemirror"], mod);
@@ -127,8 +132,7 @@
           return "error";
         }
         else if (next == ',') {
-          if (closing == ")")
-            return "error";
+          if (closing == ")") return "error";
           return "separator";
         }
         else {
@@ -505,8 +509,7 @@
     }
     function tokenizeExport(stream, state) {
       var comment_result = tryComments(stream, state);
-      if (comment_result)
-        return comment_result;
+      if (comment_result) return comment_result;
       switch (subState(state)) {
         case EXPORT_AFTER_EXPORT:
           if (stream.match("*")) {
@@ -546,8 +549,7 @@
     }
     function tokenizeClass(stream, state) {
       var comment_result = tryComments(stream, state);
-      if (comment_result)
-        return comment_result;
+      if (comment_result) return comment_result;
       function signatureError() {
         setSubState(state, CLASS_BODY);  // Once the error function is popped.
         // Eat everything until we are back to 2-indentation.
@@ -557,8 +559,7 @@
       }
       switch (subState(state)) {
         case CLASS_SIGNATURE_AFTER_CLASS:
-          if (!stream.match(IDENTIFIER))
-            return signatureError();
+          if (!stream.match(IDENTIFIER)) return signatureError();
           setSubState(state, CLASS_SIGNATURE_AFTER_NAME);
           return "class_name";
         case CLASS_SIGNATURE_AFTER_NAME:
@@ -578,14 +579,12 @@
           }
           return signatureError();
         case CLASS_SIGNATURE_AFTER_EXTENDS:
-          if (!stream.match(TYPE, false))
-            return signatureError();
+          if (!stream.match(TYPE, false)) return signatureError();
           setSubState(state, CLASS_SIGNATURE_AFTER_EXTENDS_TYPE);
           return tokenizeType(stream, state, false);
         case CLASS_SIGNATURE_AFTER_IMPLEMENTS:
           // The first *requires* an type.
-          if (!stream.match(TYPE, false))
-            return signatureError();
+          if (!stream.match(TYPE, false)) return signatureError();
           setSubState(state, CLASS_SIGNATURE_AFTER_FIRST_IMPLEMENTS_NAME);
           return tokenizeType(stream, state, false);
         case CLASS_SIGNATURE_AFTER_FIRST_IMPLEMENTS_NAME:
@@ -679,8 +678,7 @@
     }
     function tokenizeFunctionBody(stream, state) {
       var matched_result = tryExpression(stream, state);
-      if (matched_result)
-        return matched_result;
+      if (matched_result) return matched_result;
       stream.eatWhile(/[^ ]/);
       return "unformatted";
     }
@@ -689,8 +687,7 @@
         tryString(stream, state) ||
         tryChar(stream, state) ||
         tryDelimited(stream, state);
-      if (expression_result)
-        return expression_result;
+      if (expression_result) return expression_result;
       var identifier_result = tryIdentifier(stream, state);
       if (identifier_result) {
         var lastIndentation = last(state.context)[1];
@@ -732,8 +729,7 @@
     var SIGNATURE_AFTER_BRACKET_BLOCK = 2;
     function tokenizeFunctionSignature(stream, state) {
       var comment_result = tryComments(stream, state);
-      if (comment_result)
-        return comment_result;
+      if (comment_result) return comment_result;
       function error(kind) {
         if (!result) {
           stream.eatWhile(/[^ ]/);  // Skip to the next whitespace.
@@ -755,13 +751,11 @@
           setSubState(state, null);  // For when the sub-expression returns.
           // TODO: tokenize default values.
           var result = tryDefaultValue(stream, state);
-          if (!result)
-            return error("default_value_error");
+          if (!result) return error("default_value_error");
           return result;
         case SIGNATURE_EXPECTING_TYPE:
           setSubState(state, null);
-          if (!stream.match(TYPE, false))
-            return error();
+          if (!stream.match(TYPE, false)) return error();
           return tokenizeType(stream, state, true);
         default:
         // Continue after the `switch`.
@@ -796,16 +790,14 @@
         isSetting = true;
       }
       var prefix = stream.current();
-      if (!stream.match(IDENTIFIER))
-        return error();
+      if (!stream.match(IDENTIFIER)) return error();
       var name = stream.current().slice(prefix.length);
       if (name == "this") {
         if (isSetting || !stream.match(".") || !stream.match(IDENTIFIER)) {
           return error();
         }
         name = stream.current().slice((name + ".").length);
-        if (isReserved(name))
-          return error();
+        if (isReserved(name)) return error();
         return "parameter";
       }
       if (isReserved(stream.current().slice(prefix.length))) {
