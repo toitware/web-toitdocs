@@ -9,6 +9,7 @@ import {
   WithStyles,
 } from "@material-ui/core";
 import React from "react";
+import Summary from "../../containers/main/Summary";
 import CodeBlock from "../general/CodeBlock";
 
 const styles = (theme: Theme): StyleRules =>
@@ -48,6 +49,7 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
             "import pixel_display show TwoColorPixelDisplay"
           }
         />
+        <Summary />
       </>
     );
   }

@@ -1,4 +1,9 @@
 import {
+  Category,
+  CATEGORY_FUNDAMENTAL,
+  CATEGORY_JUST_THERE,
+  CATEGORY_MISC,
+  CATEGORY_SUB,
   Class,
   Classes,
   Doc,
@@ -37,6 +42,7 @@ import {
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_STATEMENT_PARAGRAPH,
   OBJECT_TYPE_TOITDOCREF,
+  ToitCategory,
   ToitClass,
   ToitDoc,
   ToitDocRef,
@@ -53,6 +59,10 @@ import {
   ToitShape,
   ToitStatement,
   ToitType,
+  TOIT_CATEGORY_FUNDAMENTAL,
+  TOIT_CATEGORY_JUST_THERE,
+  TOIT_CATEGORY_MISC,
+  TOIT_CATEGORY_SUB,
 } from "./sdk";
 
 function libraryName(name: string): string {
@@ -347,6 +357,19 @@ function functionFrom(
   };
 }
 
+function categoryFrom(category: ToitCategory): Category {
+  switch (category) {
+    case TOIT_CATEGORY_FUNDAMENTAL:
+      return CATEGORY_FUNDAMENTAL;
+    case TOIT_CATEGORY_JUST_THERE:
+      return CATEGORY_JUST_THERE;
+    case TOIT_CATEGORY_MISC:
+      return CATEGORY_MISC;
+    case TOIT_CATEGORY_SUB:
+      return CATEGORY_SUB;
+  }
+}
+
 function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
   const name = libraryName(toitModule.name);
   const libraryId = { name: name, path: [...path, name] };
@@ -407,6 +430,7 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     functions: functions,
     exportedFunctions: exportedFunctions,
     toitdoc: toitModule.toitdoc ? docFrom(toitModule.toitdoc) : undefined,
+    category: categoryFrom(toitModule.category),
   };
 }
 
@@ -444,6 +468,9 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
     // TODO(florian): we currently just pick the toitdoc of the first
     // library.
     toitdoc: library.toitdoc || otherLibrary.toitdoc,
+    // TODO(florian): we currently just pick the category of the first
+    // library.
+    category: library.category,
   };
 }
 
@@ -506,6 +533,7 @@ function libraryFromLibrary(
     functions: libraryContent ? libraryContent.functions : [],
     exportedFunctions: libraryContent ? libraryContent.exportedFunctions : [],
     toitdoc: libraryContent ? libraryContent.toitdoc : undefined,
+    category: categoryFrom(toitLibrary.category),
   };
 }
 
