@@ -24,10 +24,10 @@ const styles = (theme: Theme): StyleRules =>
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(0.5),
     },
-    lib_list: {
+    libList: {
       "column-count": 3,
       "column-gap": theme.spacing(2),
-    }
+    },
   });
 
 export interface SummaryViewProps extends WithStyles<typeof styles> {
@@ -65,12 +65,12 @@ class SummaryView extends React.PureComponent<SummaryViewProps> {
               {name}
             </Typography>
           )}
-          <div className={this.props.classes.lib_list}>
-          {array.map((lib) => (
-            <div key={lib.name}>
-              <Link to={libraryUrlFromRef(lib.id)}>{lib.name}</Link>
-            </div>
-          ))}
+          <div className={this.props.classes.libList}>
+            {array.map((lib) => (
+              <div key={lib.name}>
+                <Link to={libraryUrlFromRef(lib.id)}>{lib.name}</Link>
+              </div>
+            ))}
           </div>
         </div>
       );
