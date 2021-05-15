@@ -20,6 +20,7 @@ export default function Fields(props: FieldsProps): JSX.Element {
           id: getFieldId(field.name),
           toitdoc: field.toitdoc,
           isInherited: field.isInherited,
+          isAbstract: false,
         };
       })}
     />

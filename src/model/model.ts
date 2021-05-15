@@ -27,6 +27,7 @@ export interface Class {
   name: string;
   id: TopLevelItemRef;
   isInterface: boolean;
+  isAbstract: boolean;
   extends?: TopLevelItemRef;
   interfaces: TopLevelItemRef[];
   fields: Field[];
@@ -50,6 +51,7 @@ export interface Function {
   toitdoc?: Doc;
   shape?: Shape;
   isInherited: boolean;
+  isAbstract: boolean;
 }
 
 export interface Method {
@@ -60,6 +62,7 @@ export interface Method {
   toitdoc?: Doc;
   shape?: Shape;
   isInherited: boolean;
+  isAbstract: boolean;
 }
 
 export interface Parameter {

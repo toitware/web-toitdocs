@@ -16,6 +16,7 @@ interface DetailsListProps {
     toitdocHeaderOnly?: boolean;
     link?: string;
     isInherited: boolean;
+    isAbstract: boolean;
   }[];
 }
 
@@ -62,7 +63,16 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
                   {name(element.name, element.id, element.link)}{" "}
                   {element.description}
                 </div>
-                {element.isInherited && <em>inherited</em>}
+                {element.isAbstract && (
+                  <>
+                    <em>abstract</em>{" "}
+                  </>
+                )}
+                {element.isInherited && (
+                  <>
+                    <em>inherited</em>{" "}
+                  </>
+                )}
                 {element.toitdoc && (
                   <div className={classes.toitdoc}>
                     <Toitdocs

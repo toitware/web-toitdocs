@@ -95,13 +95,17 @@ export interface ToitFunction {
   toitdoc: ToitDoc | null;
   shape?: ToitShape;
   is_inherited: boolean;
+  // TODO(florian): is_abstract should not be optional.
+  // It is marked as such as the field was added at a later point in time.
+  is_abstract?: boolean;
 }
 
 export interface ToitClass {
   object_type: typeof OBJECT_TYPE_CLASS;
   name: string;
-  // TODO(florian): is_interface should not be optional.
-  // It is marked as such as the field was added at a later point in time.
+  // TODO(florian): is_abstract and is_interface should not be optional.
+  // They are marked as such as the fields were added at a later point in time.
+  is_abstract?: boolean;
   is_interface?: boolean;
   toitdoc: ToitDoc | null;
   structure: ToitStructure;

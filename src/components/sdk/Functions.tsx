@@ -63,6 +63,7 @@ export default function Functions(props: FunctionsProps): JSX.Element {
           id: id,
           toitdoc: fn.toitdoc,
           isInherited: fn.isInherited,
+          isAbstract: fn.isAbstract,
         };
       })}
     />

@@ -22,6 +22,7 @@ export default function Classes(props: ClassesProps): JSX.Element {
           toitdoc: klass.toitdoc,
           toitdocHeaderOnly: true,
           isInherited: false,
+          isAbstract: klass.isAbstract,
         };
       })}
     />

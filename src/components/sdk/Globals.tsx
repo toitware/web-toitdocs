@@ -19,6 +19,7 @@ export default function Globals(props: GlobalsProps): JSX.Element {
           id: global.name,
           toitdoc: global.toitdoc,
           isInherited: false,
+          isAbstract: false,
         };
       })}
     />

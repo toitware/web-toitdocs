@@ -251,6 +251,8 @@ function methodFrom(
     toitdoc: toitMethod.toitdoc ? docFrom(toitMethod.toitdoc) : undefined,
     shape: toitMethod.shape ? shapeFrom(toitMethod.shape) : undefined,
     isInherited: toitMethod.is_inherited,
+    // TODO(florian): we shouldn't need to deal with undefined here.
+    isAbstract: toitMethod.is_abstract || false,
   };
 }
 
@@ -292,7 +294,9 @@ function classFrom(
   return {
     name: toitClass.name,
     id: classId,
+    // TODO(florian): we shouldn't need to deal with undefined here.
     isInterface: toitClass.is_interface || false,
+    isAbstract: toitClass.is_abstract || false,
     extends: extend,
     interfaces: interfaces,
     fields: fields,
@@ -344,6 +348,7 @@ function functionFrom(
     toitdoc: toitFunction.toitdoc ? docFrom(toitFunction.toitdoc) : undefined,
     shape: toitFunction.shape ? shapeFrom(toitFunction.shape) : undefined,
     isInherited: false,
+    isAbstract: false,
   };
 }
 
