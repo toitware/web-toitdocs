@@ -26,12 +26,24 @@ export interface ToitObject {
   libraries: ToitLibraries;
 }
 
+export const TOIT_CATEGORY_FUNDAMENTAL = "fundamental";
+export const TOIT_CATEGORY_JUST_THERE = "just_there";
+export const TOIT_CATEGORY_MISC = "misc";
+export const TOIT_CATEGORY_SUB = "sub";
+
+export type ToitCategory =
+  | typeof TOIT_CATEGORY_FUNDAMENTAL
+  | typeof TOIT_CATEGORY_JUST_THERE
+  | typeof TOIT_CATEGORY_MISC
+  | typeof TOIT_CATEGORY_SUB;
+
 export interface ToitLibrary {
   object_type: typeof OBJECT_TYPE_LIBRARY;
   modules: ToitModules;
   path: string[];
   libraries: ToitLibraries;
   name: string;
+  category: ToitCategory;
 }
 
 export interface ToitLibraries {
@@ -75,6 +87,7 @@ export interface ToitModule {
   functions: ToitFunction[];
   export_functions: ToitFunction[];
   toitdoc?: ToitDoc;
+  category: ToitCategory;
 }
 
 export interface ToitModules {

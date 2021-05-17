@@ -37,16 +37,16 @@ export interface NavigationProps
 class NavigationView extends Component<NavigationProps> {
   render(): JSX.Element {
     analytics.page(this.props.location.pathname);
+    if (!this.props.match.params.libraryName) return <></>;
+    const rootLibrary = this.props.match.params.libraryName.split("/")[0];
+    const library = this.props.libraries[rootLibrary];
+    if (!library) return <></>;
     return (
       <>
         <div className={this.props.classes.heading}>
           <Typography variant="h5">Libraries</Typography>
         </div>
-        {Object.values(this.props.libraries)
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((library) =>
-            this.showLibrary(library, this.props.match.params.libraryName)
-          )}
+        {this.showLibrary(library, this.props.match.params.libraryName)}
       </>
     );
   }

@@ -8,6 +8,17 @@ import {
 export type Libraries = { [libraryName: string]: Library };
 export type Classes = { [className: string]: Class };
 
+export const CATEGORY_FUNDAMENTAL = "fundamental";
+export const CATEGORY_JUST_THERE = "just_there";
+export const CATEGORY_MISC = "misc";
+export const CATEGORY_SUB = "sub";
+
+export type Category =
+  | typeof CATEGORY_FUNDAMENTAL
+  | typeof CATEGORY_JUST_THERE
+  | typeof CATEGORY_MISC
+  | typeof CATEGORY_SUB;
+
 export interface Library {
   name: string;
   id: TopLevelRef;
@@ -21,6 +32,7 @@ export interface Library {
   functions: Function[];
   exportedFunctions: Function[];
   toitdoc?: Doc;
+  category: Category;
 }
 
 export interface Class {
