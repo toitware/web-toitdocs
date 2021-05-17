@@ -17,6 +17,7 @@ import {
   Libraries,
   Library,
 } from "../../model/model";
+import Toitdocs from "../sdk/Toitdocs";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -25,8 +26,16 @@ const styles = (theme: Theme): StyleRules =>
       paddingBottom: theme.spacing(0.5),
     },
     libList: {
-      "column-count": 3,
+      "column-count": 2,
       "column-gap": theme.spacing(2),
+    },
+    libEntry: {
+      paddingBottom: theme.spacing(1),
+      "break-inside": "avoid-column",
+    },
+    toitdoc: {
+      paddingTop: theme.spacing(0.3),
+      paddingLeft: theme.spacing(1),
     },
   });
 
@@ -54,6 +63,8 @@ class SummaryView extends React.PureComponent<SummaryViewProps> {
       }
     });
 
+    const classes = this.props.classes;
+
     const renderSection = (
       array: Array<Library>,
       name?: string
@@ -61,14 +72,19 @@ class SummaryView extends React.PureComponent<SummaryViewProps> {
       return (
         <div key={name}>
           {name && (
-            <Typography variant="h4" className={this.props.classes.section}>
+            <Typography variant="h4" className={classes.section}>
               {name}
             </Typography>
           )}
-          <div className={this.props.classes.libList}>
+          <div className={classes.libList}>
             {array.map((lib) => (
-              <div key={lib.name}>
+              <div key={lib.name} className={classes.libEntry}>
                 <Link to={libraryUrlFromRef(lib.id)}>{lib.name}</Link>
+                {lib.toitdoc && (
+                  <div className={classes.toitdoc}>
+                    <Toitdocs value={lib.toitdoc} headerOnly={true} />
+                  </div>
+                )}
               </div>
             ))}
           </div>
