@@ -40,7 +40,6 @@ class SummaryView extends React.PureComponent<SummaryViewProps> {
     const justThere: Array<Library> = [];
     const misc: Array<Library> = [];
     Object.values(this.props.libraries).forEach((lib) => {
-      console.log(lib, lib.category);
       switch (lib.category) {
         case CATEGORY_FUNDAMENTAL:
           fundamentals.push(lib);
