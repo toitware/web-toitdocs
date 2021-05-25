@@ -498,7 +498,20 @@ function libraryFromLibrary(
 
   Object.values(toitLibrary.modules).forEach((module) => {
     const subLibraryName = libraryName(module.name);
-    if (subLibraryName === name) {
+    if (subLibraryName === "_") {
+      if (libraryContent) {
+        // In addition to the '_' library there exists also a sub-library
+        // with the same name as the directory.
+        // Add it to the libraries, since we are using '_' now.
+        libraries = {
+          ...libraries,
+          [name]: libraryContent,
+        };
+      }
+      libraryContent = libraryFromModule(module, path);
+      return;
+    }
+    if (subLibraryName === name && libraryContent === undefined) {
       libraryContent = libraryFromModule(module, path);
       return;
     }
