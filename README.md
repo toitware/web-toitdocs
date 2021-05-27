@@ -3,8 +3,7 @@
 This project takes the generated JSON language description and builds the
 documentation for it.
 
-To be able to build/run the project locally, get the `latest.json` from a
-coworker and put it in `public/sdk/`.
+To be able to build/run the project locally, get the `latest.json` from [toitdocs.infra.toit.io](https://toitdocs.infra.toit.io/sdk/latest.json) and put it in `public/sdk/`.
 
 ## yarn
 
