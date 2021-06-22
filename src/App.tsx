@@ -70,19 +70,19 @@ interface AppProps extends WithStyles<typeof styles> {
   fetchSdk: (version: string) => void;
 }
 
+const setupCrispChat = (): void => {
+  window.$crisp = [];
+  window.CRISP_WEBSITE_ID = "d7358065-35d6-43ee-bcd9-608d223d7aab";
+  const s = document.createElement("script");
+  s.src = "https://client.crisp.chat/l.js";
+  s.async = true;
+  document.getElementsByTagName("head")[0].appendChild(s);
+};
+
 class App extends Component<AppProps> {
   componentDidMount(): void {
     this.props.fetchSdk(this.props.sdkVersionFromParams);
   }
-
-  setupCrispChat = () => {
-    window.$crisp = [];
-    window.CRISP_WEBSITE_ID = "d7358065-35d6-43ee-bcd9-608d223d7aab";
-    const s = document.createElement("script");
-    s.src = "https://client.crisp.chat/l.js";
-    s.async = true;
-    document.getElementsByTagName("head")[0].appendChild(s);
-  };
 
   render(): JSX.Element {
     let segmentAPIKey = "";
@@ -164,9 +164,7 @@ class App extends Component<AppProps> {
           segmentKey={segmentAPIKey}
           changeConsent={false}
           show={true}
-          onAnalyticsReady={() => {
-            this.setupCrispChat();
-          }}
+          onAnalyticsReady={(): void => setupCrispChat()}
         />
       </ThemeProvider>
     );
