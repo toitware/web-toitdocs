@@ -82,6 +82,7 @@ const setupCrispChat = (): void => {
 class App extends Component<AppProps> {
   componentDidMount(): void {
     this.props.fetchSdk(this.props.sdkVersionFromParams);
+    setupCrispChat();
   }
 
   render(): JSX.Element {
@@ -164,7 +165,6 @@ class App extends Component<AppProps> {
           segmentKey={segmentAPIKey}
           changeConsent={false}
           show={true}
-          onAnalyticsReady={(): void => setupCrispChat()}
         />
       </ThemeProvider>
     );
