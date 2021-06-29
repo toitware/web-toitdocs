@@ -6,7 +6,7 @@ import {
   Theme,
   Typography,
   withStyles,
-  WithStyles
+  WithStyles,
 } from "@material-ui/core";
 import React from "react";
 import Summary from "../../containers/main/Summary";
@@ -32,10 +32,10 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
           Toit standard libraries
         </Typography>
         <Typography className={this.props.classes.section}>
-          Welcome to the standard libraries for the Toit programming language. The Toit SDK contains a vast amount of
-          libraries, ready-to use classes and functionalities that allow a fast
-          and easy use of Toit. This documentation contains the structure of
-          the Toit libraries.
+          Welcome to the standard libraries for the Toit programming language.
+          The Toit SDK contains a vast amount of libraries, ready-to use classes
+          and functionalities that allow a fast and easy use of Toit. This
+          documentation contains the structure of the Toit libraries.
         </Typography>
         <Typography className={this.props.classes.section}>
           Except for the <b>core</b> library, you must import a library before
