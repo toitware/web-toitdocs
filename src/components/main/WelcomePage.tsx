@@ -29,13 +29,13 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
     return (
       <>
         <Typography variant="h3" className={this.props.classes.header}>
-          ᴛᴏɪᴛ SDK Reference
+          Toit standard libraries
         </Typography>
         <Typography className={this.props.classes.section}>
-          Welcome to the ᴛᴏɪᴛ SDK reference. ᴛᴏɪᴛ SDK contains a vast amount of
-          libraries, ready-to use classes and functionalities that allow a fast
-          and easy use of Toit. This documentation contains the structure of
-          ᴛᴏɪᴛ libraries.
+          Welcome to the standard libraries for the Toit programming language.
+          The Toit SDK contains a vast amount of libraries, ready-to use classes
+          and functionalities that allow a fast and easy use of Toit. This
+          documentation contains the structure of the Toit libraries.
         </Typography>
         <Typography className={this.props.classes.section}>
           Except for the <b>core</b> library, you must import a library before
@@ -46,7 +46,7 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
             "import metrics\n" +
             "import encoding.json as json\n" +
             "import peripherals show *\n" +
-            "import pixel_display show TwoColorPixelDisplay"
+            "import fixed_point show FixedPoint"
           }
         />
         <Summary />
