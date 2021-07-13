@@ -79,20 +79,26 @@ const setupCrispChat = (): void => {
   document.getElementsByTagName("head")[0].appendChild(s);
 };
 
+function getMetaValue(key: string, def = ""): string {
+  if (typeof document === "undefined") {
+    return def;
+  }
+
+  // Check if the meta `key` is set.
+  const obj = document.querySelector('meta[name="' + key + '"]');
+  if (obj) {
+    return obj.getAttribute("content") || def;
+  }
+  return def;
+}
+
 class App extends Component<AppProps> {
   componentDidMount(): void {
     this.props.fetchSdk(this.props.sdkVersionFromParams);
   }
 
   render(): JSX.Element {
-    let segmentAPIKey = "";
-    if (typeof document !== `undefined`) {
-      // Check if the meta segment-key is set.
-      const segmentKeyDOM = document.querySelector('meta[name="segment-key"]');
-      if (segmentKeyDOM) {
-        segmentAPIKey = segmentKeyDOM.getAttribute("content") || segmentAPIKey;
-      }
-    }
+    const segmentAPIKey = getMetaValue("segment-key");
 
     return (
       <ThemeProvider theme={theme}>
