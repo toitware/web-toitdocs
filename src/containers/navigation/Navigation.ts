@@ -2,11 +2,11 @@ import { connect } from "react-redux";
 import NavigationView, {
   NavigationProps,
 } from "../../components/navigation/NavigationView";
-import { RootState } from "../../redux/sdk";
+import { RootState } from "../../redux/doc";
 
 function mapStateToProps(state: RootState): Pick<NavigationProps, "libraries"> {
   return {
-    libraries: state.sdk.libraries || {},
+    libraries: state.doc.libraries || {},
   };
 }
 

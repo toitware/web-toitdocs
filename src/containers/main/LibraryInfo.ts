@@ -2,13 +2,13 @@ import { connect } from "react-redux";
 import LibraryInfoView, {
   LibraryInfoProps,
 } from "../../components/main/LibraryInfoView";
-import { RootState } from "../../redux/sdk";
+import { RootState } from "../../redux/doc";
 
 function mapStateToProps(
   state: RootState
 ): Pick<LibraryInfoProps, "libraries"> {
   return {
-    libraries: state.sdk.libraries || {},
+    libraries: state.doc.libraries || {},
   };
 }
 

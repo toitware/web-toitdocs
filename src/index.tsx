@@ -5,24 +5,24 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunkMiddleware from "redux-thunk";
 import App from "./App";
 import "./assets/index.css";
-import { sdk } from "./redux/sdk";
+import { doc } from "./redux/doc";
 import * as serviceWorker from "./serviceWorker";
 
 const rootReducer = combineReducers({
-  sdk: sdk.reducer,
+  doc: doc.reducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
 const searchParams = new URLSearchParams(window.location.search);
-let sdkVersion = "latest";
-if (searchParams.has("sdk_version")) {
-  sdkVersion = searchParams.get("sdk_version") || "Unknown version";
+let version = "latest";
+if (searchParams.has("version")) {
+  version = searchParams.get("version") || version;
 }
 
 render(
   <Provider store={store}>
-    <App sdkVersionFromParams={sdkVersion} />
+    <App versionFromParams={version} />
   </Provider>,
   document.getElementById("root")
 );
