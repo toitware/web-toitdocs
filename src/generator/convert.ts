@@ -63,7 +63,7 @@ import {
   TOIT_CATEGORY_JUST_THERE,
   TOIT_CATEGORY_MISC,
   TOIT_CATEGORY_SUB,
-} from "./sdk";
+} from "./doc";
 
 function libraryName(name: string): string {
   return name.endsWith(".toit") ? name.substring(0, name.length - 5) : name;

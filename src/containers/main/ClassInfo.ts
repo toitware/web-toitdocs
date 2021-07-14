@@ -2,13 +2,13 @@ import { connect } from "react-redux";
 import ClassInfoView, {
   ClassInfoProps,
 } from "../../components/main/ClassInfoView";
-import { RootState } from "../../redux/sdk";
+import { RootState } from "../../redux/doc";
 
 const mapStateToProps = (
   state: RootState
 ): Pick<ClassInfoProps, "libraries"> => {
   return {
-    libraries: state.sdk.libraries || {},
+    libraries: state.doc.libraries || {},
   };
 };
 

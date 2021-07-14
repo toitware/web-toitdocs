@@ -5,10 +5,10 @@ import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { classFrom, classUrlFromRef } from "../../misc/util";
 import { Libraries } from "../../model/model";
-import Fields from "../sdk/Fields";
-import Functions from "../sdk/Functions";
-import Toitdocs from "../sdk/Toitdocs";
-import { TypeReference } from "../sdk/Type";
+import Fields from "../doc/Fields";
+import Functions from "../doc/Functions";
+import Toitdocs from "../doc/Toitdocs";
+import { TypeReference } from "../doc/Type";
 import ClassOverview from "./ClassOverview";
 
 export interface ClassInfoParams {

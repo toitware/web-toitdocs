@@ -1,53 +1,56 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { modelFrom } from "../generator/convert";
-import { ToitObject } from "../generator/sdk";
+import { ToitObject } from "../generator/doc";
 import { Libraries } from "../model/model";
 import { flatten, SearchableModel } from "../model/search";
 
 export interface RootState {
-  sdk: SdkState;
+  doc: DocState;
 }
 
-export const fetchSDK = createAsyncThunk(
-  "sdk/fetch",
+export const rootPath = "lib";
+export const docPath = "/sdk/";
+
+export const fetchDoc = createAsyncThunk(
+  "docdata/fetch",
   async (version: string) => {
-    const response = await fetch("/sdk/" + version + ".json");
+    const response = await fetch(docPath + version + ".json");
     return (await response.json()) as ToitObject;
   }
 );
 
-export interface SdkState {
-  sdkVersion: string | undefined;
-  libraries: Libraries | undefined;
-  searchableModel: SearchableModel | undefined;
-  error: string | undefined;
+export interface DocState {
+  sdkVersion?: string;
+  version?: string;
+  libraries?: Libraries;
+  searchableModel?: SearchableModel;
+  error?: string;
 }
 
-const initialState: SdkState = {
+const initialState: DocState = {
   sdkVersion: undefined,
   libraries: undefined,
+  version: undefined,
   searchableModel: undefined,
   error: undefined,
 };
 
-export const sdk = createSlice({
-  name: "sdk",
+export const doc = createSlice({
+  name: "doc",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchSDK.pending, (state, action) => {
+      .addCase(fetchDoc.pending, (state, action) => {
         state = initialState;
       })
-      .addCase(fetchSDK.fulfilled, (state, action) => {
+      .addCase(fetchDoc.fulfilled, (state, action) => {
         state.sdkVersion = action.payload.sdk_version;
-        state.libraries = modelFrom(action.payload.libraries["lib"]);
+        state.libraries = modelFrom(action.payload.libraries[rootPath]);
         state.searchableModel = flatten(state.libraries);
       })
-      .addCase(fetchSDK.rejected, (state, action) => {
+      .addCase(fetchDoc.rejected, (state, action) => {
         state.error = action.error.message;
       });
   },
 });
-
-export const rootLibrary = "lib";

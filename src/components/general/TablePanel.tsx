@@ -15,9 +15,9 @@ import React, { Component } from "react";
 import { HashLink } from "react-router-hash-link";
 import { getFunctionId } from "../../misc/util";
 import { Field, Function, Method } from "../../model/model";
-import { getDescription } from "../sdk/Functions";
-import Toitdocs from "../sdk/Toitdocs";
-import { TypeView } from "../sdk/Type";
+import { getDescription } from "../doc/Functions";
+import Toitdocs from "../doc/Toitdocs";
+import { TypeView } from "../doc/Type";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

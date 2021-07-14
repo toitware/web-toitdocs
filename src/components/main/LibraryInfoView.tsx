@@ -13,10 +13,10 @@ import { RouteComponentProps } from "react-router-dom";
 import { libraryFrom } from "../../misc/util";
 import { Libraries } from "../../model/model";
 import CodeBlock from "../general/CodeBlock";
-import Classes from "../sdk/Classes";
-import Functions from "../sdk/Functions";
-import Globals from "../sdk/Globals";
-import Toitdocs from "../sdk/Toitdocs";
+import Classes from "../doc/Classes";
+import Functions from "../doc/Functions";
+import Globals from "../doc/Globals";
+import Toitdocs from "../doc/Toitdocs";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
