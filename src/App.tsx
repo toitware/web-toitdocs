@@ -13,7 +13,7 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import CookieConsent from "@toitware/cookie-consent";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { HashRouter, Route, RouteComponentProps } from "react-router-dom";
+import { BrowserRouter, Route, RouteComponentProps } from "react-router-dom";
 import "./assets/global_theme.css";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
@@ -105,7 +105,7 @@ class App extends Component<AppProps> {
 
     return (
       <ThemeProvider theme={theme}>
-        <HashRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
           <ScrollToTop />
           {this.props.ready ? (
             <>
@@ -168,7 +168,7 @@ class App extends Component<AppProps> {
           ) : (
             <CircularProgress disableShrink />
           )}
-        </HashRouter>
+        </BrowserRouter>
         <CookieConsent
           segmentKey={segmentAPIKey}
           changeConsent={false}
