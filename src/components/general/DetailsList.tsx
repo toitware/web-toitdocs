@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { Doc } from "../../model/model";
-import Toitdocs from "../sdk/Toitdocs";
+import Toitdocs from "../doc/Toitdocs";
 
 interface DetailsListProps {
   title: string;

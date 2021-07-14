@@ -17,7 +17,7 @@ import {
   Libraries,
   Library,
 } from "../../model/model";
-import Toitdocs from "../sdk/Toitdocs";
+import Toitdocs from "../doc/Toitdocs";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

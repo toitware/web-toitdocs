@@ -4,13 +4,13 @@ import { connect } from "react-redux";
 import SummaryView, {
   SummaryViewProps,
 } from "../../components/main/SummaryView";
-import { RootState } from "../../redux/sdk";
+import { RootState } from "../../redux/doc";
 
 const mapStateToProps = (
   state: RootState
 ): Pick<SummaryViewProps, "libraries"> => {
   return {
-    libraries: state.sdk.libraries || {},
+    libraries: state.doc.libraries || {},
   };
 };
 

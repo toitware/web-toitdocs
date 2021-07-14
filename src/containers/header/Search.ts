@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
 import SearchView, { SearchProps } from "../../components/header/SearchView";
-import { RootState } from "../../redux/sdk";
+import { RootState } from "../../redux/doc";
 
 const mapStateToProps = (state: RootState): Pick<SearchProps, "model"> => {
   return {
-    model: state.sdk.searchableModel || {
+    model: state.doc.searchableModel || {
       libraries: [],
       classes: [],
       interfaces: [],

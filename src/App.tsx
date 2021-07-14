@@ -28,23 +28,24 @@ import { NavigationParams } from "./components/navigation/NavigationView";
 import ClassInfo from "./containers/main/ClassInfo";
 import LibraryInfo from "./containers/main/LibraryInfo";
 import Navigation from "./containers/navigation/Navigation";
-import { fetchSDK, RootState } from "./redux/sdk";
+import { fetchDoc, RootState } from "./redux/doc";
 
 const mapStateToProps = (
   state: RootState
-): Pick<AppProps, "ready" | "sdkVersion"> => {
+): Pick<AppProps, "ready" | "version" | "sdkVersion"> => {
   return {
-    ready: state.sdk.libraries !== undefined,
-    sdkVersion: state.sdk.sdkVersion,
+    ready: state.doc.libraries !== undefined,
+    version: state.doc.version,
+    sdkVersion: state.doc.sdkVersion,
   };
 };
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<RootState, void, AnyAction>
-): Pick<AppProps, "fetchSdk"> => {
+): Pick<AppProps, "fetchDoc"> => {
   return {
-    fetchSdk: (version: string): void => {
-      void dispatch(fetchSDK(version));
+    fetchDoc: (version: string): void => {
+      void dispatch(fetchDoc(version));
     },
   };
 };
@@ -64,10 +65,11 @@ const styles = (theme: Theme): StyleRules =>
   });
 
 interface AppProps extends WithStyles<typeof styles> {
-  sdkVersionFromParams: string;
+  versionFromParams: string;
   ready: boolean;
-  sdkVersion: string | undefined;
-  fetchSdk: (version: string) => void;
+  sdkVersion?: string;
+  version?: string;
+  fetchDoc: (version: string) => void;
 }
 
 const setupCrispChat = (): void => {
@@ -94,7 +96,8 @@ function getMetaValue(key: string, def = ""): string {
 
 class App extends Component<AppProps> {
   componentDidMount(): void {
-    this.props.fetchSdk(this.props.sdkVersionFromParams);
+    this.props.fetchDoc(this.props.versionFromParams);
+    setupCrispChat();
   }
 
   render(): JSX.Element {
@@ -170,7 +173,6 @@ class App extends Component<AppProps> {
           segmentKey={segmentAPIKey}
           changeConsent={false}
           show={true}
-          onAnalyticsReady={(): void => setupCrispChat()}
         />
       </ThemeProvider>
     );
