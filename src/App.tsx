@@ -100,7 +100,6 @@ function getBaseURL(): string {
   return obj?.getAttribute("href") || def;
 }
 export const baseURL = getBaseURL();
-console.log("BaseURL", baseURL);
 
 class App extends Component<AppProps> {
   componentDidMount(): void {
