@@ -3,13 +3,14 @@ import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
 import { Libraries } from "../model/model";
 import { flatten, SearchableModel } from "../model/search";
+import { baseURL } from "../App";
 
 export interface RootState {
   doc: DocState;
 }
 
 export const rootPath = "lib";
-export const docPath = "/sdk/";
+export const docPath = process.env.PUBLIC_URL + "/sdk/";
 
 export const fetchDoc = createAsyncThunk(
   "docdata/fetch",

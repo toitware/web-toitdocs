@@ -94,6 +94,14 @@ function getMetaValue(key: string, def = ""): string {
   return def;
 }
 
+function getBaseURL(): string {
+  const def = process.env.PUBLIC_URL;
+  const obj = document.querySelector("base[href]");
+  return obj?.getAttribute("href") || def;
+}
+export const baseURL = getBaseURL();
+console.log("BaseURL", baseURL);
+
 class App extends Component<AppProps> {
   componentDidMount(): void {
     this.props.fetchDoc(this.props.versionFromParams);
@@ -105,7 +113,7 @@ class App extends Component<AppProps> {
 
     return (
       <ThemeProvider theme={theme}>
-        <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <BrowserRouter basename={baseURL}>
           <ScrollToTop />
           {this.props.ready ? (
             <>
