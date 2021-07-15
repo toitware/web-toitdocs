@@ -31,7 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --max-warnings=0",
-    "build": "PUBLIC_URL=__PUBLIC_URL__ react-scripts build",
+    "build": "PUBLIC_URL=./ react-scripts build",
     "test": "react-scripts test",
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject"

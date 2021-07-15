@@ -9,7 +9,7 @@ export interface RootState {
 }
 
 export const rootPath = "lib";
-export const docPath = "/sdk/";
+export const docPath = process.env.PUBLIC_URL + "/sdk/";
 
 export const fetchDoc = createAsyncThunk(
   "docdata/fetch",
