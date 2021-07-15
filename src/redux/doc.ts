@@ -3,7 +3,6 @@ import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
 import { Libraries } from "../model/model";
 import { flatten, SearchableModel } from "../model/search";
-import { baseURL } from "../App";
 
 export interface RootState {
   doc: DocState;
