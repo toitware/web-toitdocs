@@ -108,7 +108,7 @@ function ResultItem(props: { item: Searchable }): JSX.Element {
     <ListItem
       button
       component="a"
-      href={props.item.url}
+      href={"." + props.item.url}
       className={classes.listItem}
     >
       <div>
