@@ -81,7 +81,7 @@ const setupCrispChat = (): void => {
   document.getElementsByTagName("head")[0].appendChild(s);
 };
 
-function getMetaValue(key: string, def = ""): string {
+export function getMetaValue(key: string, def = ""): string {
   if (typeof document === "undefined") {
     return def;
   }

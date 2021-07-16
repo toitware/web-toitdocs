@@ -3,17 +3,17 @@ import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
 import { Libraries } from "../model/model";
 import { flatten, SearchableModel } from "../model/search";
+import { getMetaValue } from "../App";
 
 export interface RootState {
   doc: DocState;
 }
 
-export const rootPath = "lib";
-export const docPath = process.env.PUBLIC_URL + "/sdk/";
-
 export const fetchDoc = createAsyncThunk(
   "docdata/fetch",
   async (version: string) => {
+    const docPath =
+      process.env.PUBLIC_URL + getMetaValue("toitdoc-path", "/sdk/");
     const response = await fetch(docPath + version + ".json");
     return (await response.json()) as ToitObject;
   }
@@ -40,6 +40,7 @@ export const doc = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    const rootPath = getMetaValue("toitdoc-root-library", "libs");
     builder
       .addCase(fetchDoc.pending, (state, action) => {
         state = initialState;
