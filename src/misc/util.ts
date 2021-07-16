@@ -109,11 +109,11 @@ export function getFieldId(fieldName: string): string {
 }
 
 function libraryUrl(path: string[]): string {
-  return "/" + path.join("/") + "/library-summary";
+  return "./" + path.join("/") + "/library-summary";
 }
 
 function classUrl(path: string[], name: string): string {
-  return "/" + path.join("/") + "/class-" + name;
+  return "./" + path.join("/") + "/class-" + name;
 }
 
 function memberUrl(classUrl: string, id: string): string {

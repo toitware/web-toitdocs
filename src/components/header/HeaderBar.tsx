@@ -26,7 +26,7 @@ class HeaderBar extends Component<HeaderBarProps> {
         <Grid item xs={12}>
           <AppBar position="fixed" elevation={0}>
             <Toolbar>
-              <Link to={"/"}>
+              <Link to={"./"}>
                 <img alt="Toit" src={logo} height="32px"></img>
               </Link>
               <Search />
