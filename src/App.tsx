@@ -135,13 +135,6 @@ class App extends Component<AppProps> {
         packageURL = `/${packageName}/library-summary`;
       }
     }
-    console.log(
-      "viewMode",
-      viewMode,
-      unstructeredPackage,
-      viewMode === ViewMode.Package,
-      packageURL
-    );
     return (
       <ThemeProvider theme={theme}>
         <BrowserRouter basename={baseURL}>
@@ -190,7 +183,6 @@ class App extends Component<AppProps> {
                       <ErrorBoundary>
                         {viewMode === ViewMode.Package ? (
                           <Route exact path="/">
-                            redirecting
                             <Redirect to={packageURL} />
                           </Route>
                         ) : (
