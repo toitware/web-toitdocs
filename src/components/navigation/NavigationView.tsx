@@ -32,29 +32,40 @@ export interface NavigationProps
   extends WithStyles<typeof styles>,
     RouteComponentProps<NavigationParams> {
   libraries: Libraries;
+  unstructuredPackage: boolean;
 }
 
 class NavigationView extends Component<NavigationProps> {
   render(): JSX.Element {
     analytics.page(this.props.location.pathname);
     if (!this.props.match.params.libraryName) return <></>;
-    const rootLibrary = this.props.match.params.libraryName.split("/")[0];
-    const library = this.props.libraries[rootLibrary];
-    if (!library) return <></>;
     return (
       <>
         <div className={this.props.classes.heading}>
           <Typography variant="h5">Libraries</Typography>
         </div>
-        {this.showLibrary(library, this.props.match.params.libraryName)}
+        {this.showLibrariesMenu(this.props.match.params.libraryName)}
       </>
     );
   }
 
-  showLibrary(library: Library, openLibrary?: string): JSX.Element {
+  showLibrariesMenu(openLibrary: string): JSX.Element | JSX.Element[] {
+    if (this.props.unstructuredPackage) {
+      return Object.values(this.props.libraries)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((subLibrary) => this.showLibrary(subLibrary, openLibrary));
+    }
+
+    // In SDK mode only show one element.
+    const rootLibrary = this.props.match.params.libraryName.split("/")[0];
+    const library = this.props.libraries[rootLibrary];
+    if (!library) return <></>;
+    return this.showLibrary(library, this.props.match.params.libraryName);
+  }
+
+  showLibrary(library: Library, openLibrary: string): JSX.Element {
     const showSubLibraries = openLibrary?.split("/")[0] === library.name;
     const openSubLibrary = openLibrary?.split("/").slice(1).join("/");
-
     return (
       <div key={topLevelRefToId(library.id)}>
         <Link

@@ -13,7 +13,12 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import CookieConsent from "@toitware/cookie-consent";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter, Route, RouteComponentProps } from "react-router-dom";
+import {
+  BrowserRouter,
+  Redirect,
+  Route,
+  RouteComponentProps,
+} from "react-router-dom";
 import "./assets/global_theme.css";
 import "./assets/index.css";
 import { theme } from "./assets/theme";
@@ -28,15 +33,16 @@ import { NavigationParams } from "./components/navigation/NavigationView";
 import ClassInfo from "./containers/main/ClassInfo";
 import LibraryInfo from "./containers/main/LibraryInfo";
 import Navigation from "./containers/navigation/Navigation";
+import { Libraries } from "./model/model";
 import { fetchDoc, RootState } from "./redux/doc";
 
 const mapStateToProps = (
   state: RootState
-): Pick<AppProps, "ready" | "version" | "sdkVersion"> => {
+): Pick<AppProps, "libraries" | "version" | "sdkVersion"> => {
   return {
-    ready: state.doc.libraries !== undefined,
     version: state.doc.version,
     sdkVersion: state.doc.sdkVersion,
+    libraries: state.doc.libraries,
   };
 };
 
@@ -66,7 +72,7 @@ const styles = (theme: Theme): StyleRules =>
 
 interface AppProps extends WithStyles<typeof styles> {
   versionFromParams: string;
-  ready: boolean;
+  libraries?: Libraries;
   sdkVersion?: string;
   version?: string;
   fetchDoc: (version: string) => void;
@@ -101,6 +107,14 @@ function getBaseURL(): string {
 }
 export const baseURL = getBaseURL();
 
+enum ViewMode {
+  Package = "package",
+  SDK = "sdk",
+}
+
+export const viewMode = getMetaValue("toitdoc-mode", "sdk") as ViewMode;
+export const packageName = getMetaValue("toitdoc-package-name");
+
 class App extends Component<AppProps> {
   componentDidMount(): void {
     this.props.fetchDoc(this.props.versionFromParams);
@@ -110,11 +124,29 @@ class App extends Component<AppProps> {
   render(): JSX.Element {
     const segmentAPIKey = getMetaValue("segment-key");
 
+    const unstructeredPackage =
+      this.props.libraries !== undefined &&
+      this.props.libraries[packageName] === undefined;
+    let packageURL = "";
+    if (this.props.libraries !== undefined) {
+      if (unstructeredPackage) {
+        packageURL = `/${Object.keys(this.props.libraries)[0]}/library-summary`;
+      } else {
+        packageURL = `/${packageName}/library-summary`;
+      }
+    }
+    console.log(
+      "viewMode",
+      viewMode,
+      unstructeredPackage,
+      viewMode === ViewMode.Package,
+      packageURL
+    );
     return (
       <ThemeProvider theme={theme}>
         <BrowserRouter basename={baseURL}>
           <ScrollToTop />
-          {this.props.ready ? (
+          {this.props.libraries !== undefined ? (
             <>
               <ErrorBoundary>
                 <HeaderBar />
@@ -133,20 +165,37 @@ class App extends Component<AppProps> {
                         path="/"
                         render={(
                           routeProps: RouteComponentProps<NavigationParams>
-                        ): React.ReactNode => <Navigation {...routeProps} />}
+                        ): React.ReactNode => (
+                          <Navigation
+                            unstructuredPackage={unstructeredPackage}
+                            {...routeProps}
+                          />
+                        )}
                       />
                       <Route
                         exact
                         path="/:libraryName*/:rest"
                         render={(
                           routeProps: RouteComponentProps<NavigationParams>
-                        ): React.ReactNode => <Navigation {...routeProps} />}
+                        ): React.ReactNode => (
+                          <Navigation
+                            unstructuredPackage={unstructeredPackage}
+                            {...routeProps}
+                          />
+                        )}
                       />
                     </Grid>
 
                     <Grid item xs={12} sm={10}>
                       <ErrorBoundary>
-                        <Route exact path="/" component={WelcomePage} />
+                        {viewMode === ViewMode.Package ? (
+                          <Route exact path="/">
+                            redirecting
+                            <Redirect to={packageURL} />
+                          </Route>
+                        ) : (
+                          <Route exact path="/" component={WelcomePage} />
+                        )}
                         <Route
                           exact
                           path="/:libraryName+/library-summary"
