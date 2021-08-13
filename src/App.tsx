@@ -107,7 +107,7 @@ function getBaseURL(): string {
 }
 export const baseURL = getBaseURL();
 
-enum ViewMode {
+export enum ViewMode {
   Package = "package",
   SDK = "sdk",
 }

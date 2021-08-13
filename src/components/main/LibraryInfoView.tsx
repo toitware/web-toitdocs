@@ -17,6 +17,7 @@ import Classes from "../doc/Classes";
 import Functions from "../doc/Functions";
 import Globals from "../doc/Globals";
 import Toitdocs from "../doc/Toitdocs";
+import { packageName, viewMode, ViewMode } from "../../App";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -56,17 +57,24 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
       return this.notFound(libName);
     }
 
-    const importPath = libName.replace(/\//g, ".");
-    let isCoreExported = libName.startsWith("core/");
-    const unexported = /^core\/.*_impl$/;
-    if (isCoreExported && unexported.exec(libName)) {
-      isCoreExported = false;
-    }
-    const isCore = libName === "core";
-    const noImport = isCoreExported || isCore;
+    let importPath = libName.replace(/\//g, ".");
+    let isCoreExported = false;
+    let noImport = false;
+    let isCore = false;
 
-    const inCoreString = isCoreExported ? "exported from" : "";
-    const usuallyString = isCore ? "usually" : "";
+    if (viewMode === ViewMode.Package) {
+      if (importPath !== packageName) {
+        importPath = packageName + "." + importPath;
+      }
+    } else {
+      isCoreExported = libName.startsWith("core/");
+      const unexported = /^core\/.*_impl$/;
+      if (isCoreExported && unexported.exec(libName)) {
+        isCoreExported = false;
+      }
+      isCore = libName === "core";
+      noImport = isCoreExported || isCore;
+    }
 
     return (
       <>
@@ -78,8 +86,9 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
         <div className={this.props.classes.importingText}>
           {noImport ? (
             <Typography>
-              This is {inCoreString} the core library, which means you{" "}
-              {usuallyString} don&#39;t need to import it.
+              This is {isCoreExported ? "exported from" : ""} the core library,
+              which means you {isCore ? "usually" : ""} don&#39;t need to import
+              it.
             </Typography>
           ) : (
             <div>
