@@ -40,7 +40,7 @@ export const doc = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    const rootPath = getMetaValue("toitdoc-root-library", "libs");
+    const rootPath = getMetaValue("toitdoc-root-library", "lib");
     builder
       .addCase(fetchDoc.pending, (state, action) => {
         state = initialState;
