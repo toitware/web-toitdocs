@@ -564,7 +564,7 @@ export function modelFrom(
   let model = libraryFromLibrary(rootLibrary, [], true).libraries;
 
   // In package mode if we have more libraries top level, we will re-order the libraries.
-  // Such that the libray named the same as the package will be the top-level library.
+  // Such that the library named the same as the package will be the top-level library.
   if (viewMode === ViewMode.Package) {
     // @TODO(jesper): Changing the toitdoc generator to know of package names would make it
     //                possible to change it there instead.
