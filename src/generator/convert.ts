@@ -1,3 +1,4 @@
+import { ViewMode } from "../App";
 import {
   Category,
   CATEGORY_FUNDAMENTAL,
@@ -537,7 +538,68 @@ function libraryFromLibrary(
   };
 }
 
-export function modelFrom(rootLibrary: ToitLibrary): Libraries {
-  const model = libraryFromLibrary(rootLibrary, [], true).libraries;
+function appendToIDPath(lib: Library, prefix: string): void {
+  lib.id.path.unshift(prefix);
+  for (const name in lib.libraries) {
+    appendToIDPath(lib.libraries[name], prefix);
+  }
+}
+
+function foldLibrary(topLibrary: Library, subLibrary: Library): void {
+  if (topLibrary.libraries[subLibrary.name]) {
+    console.log(
+      "name clash when re-order libraries in package mode",
+      subLibrary.name
+    );
+  }
+  topLibrary.libraries[subLibrary.name] = subLibrary;
+  appendToIDPath(subLibrary, topLibrary.name);
+}
+
+export function modelFrom(
+  rootLibrary: ToitLibrary,
+  viewMode: ViewMode,
+  packageName: string
+): Libraries {
+  let model = libraryFromLibrary(rootLibrary, [], true).libraries;
+
+  // In package mode if we have more libraries top level, we will re-order the libraries.
+  // Such that the libray named the same as the package will be the top-level library.
+  if (viewMode === ViewMode.Package) {
+    // @TODO(jesper): Changing the toitdoc generator to know of package names would make it
+    //                possible to change it there instead.
+    //                That way import/module logic would be encapsuled in the compiler.
+    let rootLibrary = model[packageName];
+    if (rootLibrary === undefined) {
+      // This is the case of unstructure mode. here we make a fake rootLibrary and fold all
+      // top-libraries under that rootLibrary.
+      rootLibrary = {
+        name: packageName,
+        id: { name: packageName, path: [packageName] },
+        libraries: {},
+        classes: {},
+        interfaces: {},
+        exportedClasses: {},
+        exportedInterfaces: {},
+        globals: [],
+        exportedGlobals: [],
+        functions: [],
+        exportedFunctions: [],
+        toitdoc: [],
+        category: "misc",
+      };
+    }
+    const topLibraries = Object.keys(model);
+    topLibraries.forEach((name) => {
+      if (name === packageName) {
+        return;
+      }
+      foldLibrary(rootLibrary, model[name]);
+      if (rootLibrary.libraries[name]) {
+        console.log("name clash when re-order libraries in package mode", name);
+      }
+    });
+    model = { [packageName]: rootLibrary };
+  }
   return model;
 }

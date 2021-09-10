@@ -124,16 +124,9 @@ class App extends Component<AppProps> {
   render(): JSX.Element {
     const segmentAPIKey = getMetaValue("segment-key");
 
-    const unstructeredPackage =
-      this.props.libraries !== undefined &&
-      this.props.libraries[packageName] === undefined;
     let packageURL = "";
     if (this.props.libraries !== undefined) {
-      if (unstructeredPackage) {
-        packageURL = `/${Object.keys(this.props.libraries)[0]}/library-summary`;
-      } else {
-        packageURL = `/${packageName}/library-summary`;
-      }
+      packageURL = `/${packageName}/library-summary`;
     }
     return (
       <ThemeProvider theme={theme}>
@@ -158,24 +151,14 @@ class App extends Component<AppProps> {
                         path="/"
                         render={(
                           routeProps: RouteComponentProps<NavigationParams>
-                        ): React.ReactNode => (
-                          <Navigation
-                            unstructuredPackage={unstructeredPackage}
-                            {...routeProps}
-                          />
-                        )}
+                        ): React.ReactNode => <Navigation {...routeProps} />}
                       />
                       <Route
                         exact
                         path="/:libraryName*/:rest"
                         render={(
                           routeProps: RouteComponentProps<NavigationParams>
-                        ): React.ReactNode => (
-                          <Navigation
-                            unstructuredPackage={unstructeredPackage}
-                            {...routeProps}
-                          />
-                        )}
+                        ): React.ReactNode => <Navigation {...routeProps} />}
                       />
                     </Grid>
 
