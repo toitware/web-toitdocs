@@ -17,7 +17,7 @@ import Classes from "../doc/Classes";
 import Functions from "../doc/Functions";
 import Globals from "../doc/Globals";
 import Toitdocs from "../doc/Toitdocs";
-import { packageName, viewMode, ViewMode } from "../../App";
+import { viewMode, ViewMode } from "../../App";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
