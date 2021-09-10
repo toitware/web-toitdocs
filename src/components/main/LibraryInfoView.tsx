@@ -17,7 +17,7 @@ import Classes from "../doc/Classes";
 import Functions from "../doc/Functions";
 import Globals from "../doc/Globals";
 import Toitdocs from "../doc/Toitdocs";
-import { packageName, viewMode, ViewMode } from "../../App";
+import { viewMode, ViewMode } from "../../App";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -57,16 +57,12 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
       return this.notFound(libName);
     }
 
-    let importPath = libName.replace(/\//g, ".");
+    const importPath = libName.replace(/\//g, ".");
     let isCoreExported = false;
     let noImport = false;
     let isCore = false;
 
-    if (viewMode === ViewMode.Package) {
-      if (importPath !== packageName) {
-        importPath = packageName + "." + importPath;
-      }
-    } else {
+    if (viewMode === ViewMode.SDK) {
       isCoreExported = libName.startsWith("core/");
       const unexported = /^core\/.*_impl$/;
       if (isCoreExported && unexported.exec(libName)) {

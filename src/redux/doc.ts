@@ -3,7 +3,7 @@ import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
 import { Libraries } from "../model/model";
 import { flatten, SearchableModel } from "../model/search";
-import { getMetaValue } from "../App";
+import { getMetaValue, packageName, viewMode } from "../App";
 
 export interface RootState {
   doc: DocState;
@@ -47,7 +47,11 @@ export const doc = createSlice({
       })
       .addCase(fetchDoc.fulfilled, (state, action) => {
         state.sdkVersion = action.payload.sdk_version;
-        state.libraries = modelFrom(action.payload.libraries[rootPath]);
+        state.libraries = modelFrom(
+          action.payload.libraries[rootPath],
+          viewMode,
+          packageName
+        );
         state.searchableModel = flatten(state.libraries);
       })
       .addCase(fetchDoc.rejected, (state, action) => {

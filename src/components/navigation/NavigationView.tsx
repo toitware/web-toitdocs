@@ -32,7 +32,6 @@ export interface NavigationProps
   extends WithStyles<typeof styles>,
     RouteComponentProps<NavigationParams> {
   libraries: Libraries;
-  unstructuredPackage: boolean;
 }
 
 class NavigationView extends Component<NavigationProps> {
@@ -50,13 +49,6 @@ class NavigationView extends Component<NavigationProps> {
   }
 
   showLibrariesMenu(openLibrary: string): JSX.Element | JSX.Element[] {
-    if (this.props.unstructuredPackage) {
-      return Object.values(this.props.libraries)
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((subLibrary) => this.showLibrary(subLibrary, openLibrary));
-    }
-
-    // In SDK mode only show one element.
     const rootLibrary = this.props.match.params.libraryName.split("/")[0];
     const library = this.props.libraries[rootLibrary];
     if (!library) return <></>;
