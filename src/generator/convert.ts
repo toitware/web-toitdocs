@@ -71,9 +71,19 @@ function libraryName(name: string): string {
 }
 
 function pathFrom(path: string[]): string[] {
-  const newPath = path.map((s) => libraryName(s));
-  newPath.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
-  return newPath;
+  const result = path.slice();
+  result.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
+  const len = result.length;
+  if (len == 0) return result;
+  result[len - 1] = libraryName(result[len - 1]);
+  if (len == 1) return result;
+  if (result[len - 1] == result[len - 2]) {
+    // Something like lib/net/net.toit.
+    // In that case the net.toit is presented as 'lib.net' (as this is how it would
+    // be imported).
+    result.length--;
+  }
+  return result;
 }
 
 function shapeFrom(toitShape: ToitShape): Shape {
