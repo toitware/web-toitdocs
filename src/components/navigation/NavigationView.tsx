@@ -53,8 +53,8 @@ class NavigationView extends Component<NavigationProps> {
     // For SDK mode show all libraries.
     if (viewMode === ViewMode.SDK) {
       return Object.values(this.props.libraries)
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((subLibrary) => this.showLibrary(subLibrary, openLibrary));
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((subLibrary) => this.showLibrary(subLibrary, openLibrary));
     }
 
     const rootLibrary = this.props.match.params.libraryName.split("/")[0];
