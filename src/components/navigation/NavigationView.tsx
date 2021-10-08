@@ -10,6 +10,7 @@ import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { libraryUrlFromRef, topLevelRefToId } from "../../misc/util";
 import { Libraries, Library } from "../../model/model";
+import { ViewMode, viewMode } from "../../App";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -49,6 +50,13 @@ class NavigationView extends Component<NavigationProps> {
   }
 
   showLibrariesMenu(openLibrary: string): JSX.Element | JSX.Element[] {
+    // For SDK mode show all libraries.
+    if (viewMode === ViewMode.SDK) {
+      return Object.values(this.props.libraries)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((subLibrary) => this.showLibrary(subLibrary, openLibrary));
+    }
+
     const rootLibrary = this.props.match.params.libraryName.split("/")[0];
     const library = this.props.libraries[rootLibrary];
     if (!library) return <></>;
