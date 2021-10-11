@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import { render, hydrate } from "react-dom";
 import { Provider } from "react-redux";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunkMiddleware from "redux-thunk";
@@ -20,12 +20,22 @@ if (searchParams.has("version")) {
   version = searchParams.get("version") || version;
 }
 
-render(
-  <Provider store={store}>
-    <App versionFromParams={version} />
-  </Provider>,
-  document.getElementById("root")
-);
+const rootElement = document.getElementById("root");
+if (rootElement && rootElement.hasChildNodes()) {
+  hydrate(
+    <Provider store={store}>
+      <App versionFromParams={version} />
+    </Provider>,
+    rootElement
+  );
+} else {
+  render(
+    <Provider store={store}>
+      <App versionFromParams={version} />
+    </Provider>,
+    rootElement
+  );
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

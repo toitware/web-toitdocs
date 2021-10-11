@@ -32,9 +32,13 @@
     "start": "react-scripts start",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --max-warnings=0",
     "build": "PUBLIC_URL=./ react-scripts build",
+    "postbuild": "react-snap",
     "test": "react-scripts test",
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject"
+  },
+  "reactSnap": {
+    "asyncScriptTags": true
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -60,7 +64,8 @@
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.1.0",
     "jest-junit": "^12.0.0",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "react-snap": "^1.23.0"
   },
   "resolutions": {
     "**/react": "17.0.2",
