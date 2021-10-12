@@ -21,11 +21,12 @@ import {
 } from "react-router-dom";
 import "./assets/global_theme.css";
 import "./assets/index.css";
-import { theme } from "./assets/theme";
+import "./assets/typography.css";
+import { lengthToString, theme } from "./assets/theme";
 import ErrorBoundary from "./components/ErrorPage";
 import ScrollableContainer from "./components/general/ScrollableContainer";
 import ScrollToTop from "./components/general/ScrollToTop";
-import HeaderBar, { HEADER_BAR_HEIGHT } from "./components/header/HeaderBar";
+import HeaderBar from "./components/header/HeaderBar";
 import { ClassInfoParams } from "./components/main/ClassInfoView";
 import { LibraryInfoParams } from "./components/main/LibraryInfoView";
 import WelcomePage from "./components/main/WelcomePage";
@@ -59,7 +60,7 @@ const mapDispatchToProps = (
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     outer: {
-      height: `calc(100vh - ${HEADER_BAR_HEIGHT}px)`,
+      height: `calc(100vh - ${lengthToString(theme.layout.headerHeight)})`,
     },
     mainContent: {
       padding: theme.spacing(2),

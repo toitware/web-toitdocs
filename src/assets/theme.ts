@@ -1,6 +1,10 @@
 import { createMuiTheme } from "@material-ui/core";
 
 const theme = createMuiTheme({
+  layout: {
+    sidebarWidth: "10rem",
+    headerHeight: 64,
+  },
   palette: {
     type: "light",
     primary: {
@@ -36,5 +40,16 @@ const theme = createMuiTheme({
     },
   },
 });
+
+/**
+ * Since material-ui lengths can be defined as numbers (pixels) we need to
+ * convert them sometimes.
+ *
+ * I've searched in the material-ui code for about an hour, since there must be
+ * a util there, but I couldn't find it.
+ */
+export function lengthToString(length: number | string): string {
+  return typeof length === "string" ? length : `${length}px`;
+}
 
 export { theme };
