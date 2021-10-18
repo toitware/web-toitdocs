@@ -31,7 +31,10 @@ const useStyles = makeStyles((theme) => ({
   },
   toitdoc: {
     paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
+  },
+  divider: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -48,9 +51,8 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
   return (
     <div className={classes.details}>
       <div className={classes.title}>
-        <Typography variant="h4">{props.title}</Typography>
+        <Typography variant="h3">{props.title}</Typography>
       </div>
-      <Divider />
       {props.elements
         .concat([])
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -72,7 +74,7 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
                   </div>
                 )}
               </div>
-              <Divider />
+              <Divider className={classes.divider} />
             </div>
           );
         })}

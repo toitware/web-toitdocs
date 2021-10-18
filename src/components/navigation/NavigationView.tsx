@@ -1,83 +1,68 @@
-import {
-  createStyles,
-  StyleRules,
-  Theme,
-  Typography,
-  withStyles,
-  WithStyles,
-} from "@material-ui/core";
-import React, { Component } from "react";
+import styled from "@emotion/styled";
+import { Typography } from "@material-ui/core";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { libraryUrlFromRef, topLevelRefToId } from "../../misc/util";
-import { Libraries, Library } from "../../model/model";
+import logo from "../../assets/images/logo.svg";
+import { Libraries } from "../../model/model";
+import { RootState } from "../../redux/doc";
+import LibraryNavigation from "./LibraryNavigation";
 
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    heading: {
-      marginBottom: theme.spacing(3),
-    },
-    subLibraries: {
-      paddingLeft: theme.spacing(2),
-    },
-    openLibrary: {
-      fontWeight: "bold",
-    },
-  });
+const Wrapper = styled.div`
+  background: ${(props): string => props.theme.palette.background.default};
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  padding: 3rem;
+  a {
+    color: ${(props): string => props.theme.palette.text.primary};
+    text-decoration: none;
+    display: block;
+    margin: 0.5rem 0;
+  }
+`;
 
-export interface NavigationParams {
+const Title = styled.div`
+  margin-bottom: 3rem;
+`;
+
+export type NavigationParams = {
   libraryName: string;
-}
+};
 
-export interface NavigationProps
-  extends WithStyles<typeof styles>,
-    RouteComponentProps<NavigationParams> {
-  libraries: Libraries;
-}
+export type NavigationProps = {
+  className?: string;
+} & RouteComponentProps<NavigationParams>;
 
-class NavigationView extends Component<NavigationProps> {
-  render(): JSX.Element {
-    analytics.page(this.props.location.pathname);
-    if (!this.props.match.params.libraryName) return <></>;
-    return (
-      <>
-        <div className={this.props.classes.heading}>
-          <Typography variant="h5">Libraries</Typography>
-        </div>
-        {this.showLibrariesMenu(this.props.match.params.libraryName)}
-      </>
-    );
-  }
+const NavigationView: React.FC<NavigationProps> = ({
+  location,
+  match,
+  className,
+}: NavigationProps) => {
+  analytics.page(location.pathname);
 
-  showLibrariesMenu(openLibrary: string): JSX.Element | JSX.Element[] {
-    const rootLibrary = this.props.match.params.libraryName.split("/")[0];
-    const library = this.props.libraries[rootLibrary];
-    if (!library) return <></>;
-    return this.showLibrary(library, this.props.match.params.libraryName);
-  }
+  const libraries = useSelector<RootState, Libraries>(
+    (state) => state.doc.libraries || {}
+  );
 
-  showLibrary(library: Library, openLibrary: string): JSX.Element {
-    const showSubLibraries = openLibrary?.split("/")[0] === library.name;
-    const openSubLibrary = openLibrary?.split("/").slice(1).join("/");
-    return (
-      <div key={topLevelRefToId(library.id)}>
-        <Link
-          to={libraryUrlFromRef(library.id)}
-          className={showSubLibraries ? this.props.classes.openLibrary : ""}
-        >
-          {library.name}
-        </Link>
-        {showSubLibraries && (
-          <div className={this.props.classes.subLibraries}>
-            {Object.values(library.libraries)
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((subLibrary) =>
-                this.showLibrary(subLibrary, openSubLibrary)
-              )}
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+  if (!match.params.libraryName) return <></>;
 
-export default withStyles(styles)(NavigationView);
+  const rootLibrary = match.params.libraryName.split("/")[0];
+  const library = libraries[rootLibrary];
+
+  return (
+    <Wrapper className={className}>
+      <Link to="/">
+        <img alt="Toit" src={logo} height="32px"></img>
+      </Link>
+      <Title>
+        <Typography variant="h5">Libraries</Typography>
+      </Title>
+      {library && (
+        <LibraryNavigation library={library} navigationParams={match.params} />
+      )}
+    </Wrapper>
+  );
+};
+
+export default NavigationView;

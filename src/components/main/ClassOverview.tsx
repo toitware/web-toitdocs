@@ -1,7 +1,6 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import {
-  AppBar,
   createStyles,
   Divider,
   StyleRules,
@@ -29,9 +28,6 @@ const styles = (theme: Theme): StyleRules =>
     },
     hiddenTab: {
       display: "none",
-    },
-    tabs: {
-      backgroundColor: theme.palette.background.paper,
     },
   });
 
@@ -75,38 +71,37 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
           </Typography>
         </div>
         <Divider />
-        <AppBar position="static" elevation={0}>
-          <Tabs
-            value={this.state.tab}
-            aria-label="Class overview"
-            className={classes.tabs}
-          >
-            <Tab
-              label="Constructors"
-              {...a11yProps(0)}
-              onClick={(): void => this.setState({ tab: 0 })}
-              className={klass.constructors.length > 0 ? "" : classes.hiddenTab}
-            />
-            <Tab
-              label="Statics"
-              {...a11yProps(1)}
-              onClick={(): void => this.setState({ tab: 1 })}
-              className={klass.statics.length > 0 ? "" : classes.hiddenTab}
-            />
-            <Tab
-              label="Methods"
-              {...a11yProps(2)}
-              onClick={(): void => this.setState({ tab: 2 })}
-              className={klass.methods.length > 0 ? "" : classes.hiddenTab}
-            />
-            <Tab
-              label="Fields"
-              {...a11yProps(3)}
-              onClick={(): void => this.setState({ tab: 3 })}
-              className={klass.fields.length > 0 ? "" : classes.hiddenTab}
-            />
-          </Tabs>
-        </AppBar>
+        <Tabs
+          value={this.state.tab}
+          aria-label="Class overview"
+          textColor="primary"
+          indicatorColor="primary"
+        >
+          <Tab
+            label="Constructors"
+            {...a11yProps(0)}
+            onClick={(): void => this.setState({ tab: 0 })}
+            className={klass.constructors.length > 0 ? "" : classes.hiddenTab}
+          />
+          <Tab
+            label="Statics"
+            {...a11yProps(1)}
+            onClick={(): void => this.setState({ tab: 1 })}
+            className={klass.statics.length > 0 ? "" : classes.hiddenTab}
+          />
+          <Tab
+            label="Methods"
+            {...a11yProps(2)}
+            onClick={(): void => this.setState({ tab: 2 })}
+            className={klass.methods.length > 0 ? "" : classes.hiddenTab}
+          />
+          <Tab
+            label="Fields"
+            {...a11yProps(3)}
+            onClick={(): void => this.setState({ tab: 3 })}
+            className={klass.fields.length > 0 ? "" : classes.hiddenTab}
+          />
+        </Tabs>
         <TablePanel
           tab={0}
           active={this.state.tab}

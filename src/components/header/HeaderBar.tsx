@@ -1,40 +1,30 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
-import { AppBar, Grid, StyleRules, Theme } from "@material-ui/core";
-import { createStyles, withStyles, WithStyles } from "@material-ui/core/styles";
+import styled from "@emotion/styled";
+import { AppBar } from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import logo from "../../assets/images/logo-simple.png";
+import React from "react";
+import { length } from "../../assets/theme";
 import Search from "../../containers/header/Search";
 
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    root: {
-      height: theme.layout.headerHeight,
-    },
-  });
+const StyledAppBar = styled(AppBar)`
+  height: ${({ theme }) => theme.layout.headerHeight};
+  left: ${({ theme }) => theme.layout.sidebarWidth};
+  width: calc(100% - ${({ theme }) => length(theme.layout.sidebarWidth)});
+  border-bottom: 1px solid black;
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+`;
 
-type HeaderBarProps = WithStyles<typeof styles>;
-
-class HeaderBar extends Component<HeaderBarProps> {
-  render(): JSX.Element {
-    const classes = this.props.classes;
-    return (
-      <Grid container item xs={12} className={classes.root}>
-        <Grid item xs={12}>
-          <AppBar position="fixed" elevation={0}>
-            <Toolbar>
-              <Link to={"./"}>
-                <img alt="Toit" src={logo} height="32px"></img>
-              </Link>
-              <Search />
-            </Toolbar>
-          </AppBar>
-        </Grid>
-      </Grid>
-    );
-  }
+export function HeaderBar(): JSX.Element {
+  return (
+    <StyledAppBar color="default" position="fixed" elevation={0}>
+      <Toolbar>
+        <Search />
+      </Toolbar>
+    </StyledAppBar>
+  );
 }
 
-export default withStyles(styles)(HeaderBar);
+export default HeaderBar;

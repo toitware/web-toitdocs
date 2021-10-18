@@ -3,6 +3,7 @@ export declare module "@material-ui/core/styles" {
     layout: {
       sidebarWidth: string | number;
       headerHeight: string | number;
+      footerHeight: string | number;
     };
   }
   // allow configuration using `createTheme`
@@ -10,6 +11,7 @@ export declare module "@material-ui/core/styles" {
     layout?: {
       sidebarWidth?: string | number;
       headerHeight?: string | number;
+      footerHeight?: string | number;
     };
   }
 }
