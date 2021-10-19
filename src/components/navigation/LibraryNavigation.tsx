@@ -4,7 +4,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { libraryUrlFromRef, topLevelRefToId } from "../../misc/util";
 import { Library } from "../../model/model";
-import { NavigationParams } from "./NavigationView";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
