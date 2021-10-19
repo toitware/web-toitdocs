@@ -1,7 +1,7 @@
 pipeline {
     agent {
       kubernetes {
-        defaultContainer 'webtoitdocs'
+        defaultContainer 'cypress'
         yamlFile 'Jenkins.pod.yaml'
       }
     }
