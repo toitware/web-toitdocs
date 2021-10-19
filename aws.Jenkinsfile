@@ -23,6 +23,12 @@ pipeline {
             }
         }
 
+        stage("cypress") {
+            steps {
+                sh "$(npm bin)/cypress run"
+            }
+        }
+
         stage("lint") {
             steps {
                 sh "yarn lint"
