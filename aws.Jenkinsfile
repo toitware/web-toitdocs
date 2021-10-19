@@ -25,7 +25,7 @@ pipeline {
 
         stage("cypress") {
             steps {
-                sh "$(npm bin)/cypress run"
+                sh "yarn run cypress run"
             }
         }
 
