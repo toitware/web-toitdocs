@@ -3,8 +3,9 @@ import { Typography } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
+import { ViewMode, viewMode } from "../../App";
 import logo from "../../assets/images/logo.svg";
-import { Libraries } from "../../model/model";
+import { Libraries, Library } from "../../model/model";
 import { RootState } from "../../redux/doc";
 import LibraryNavigation from "./LibraryNavigation";
 
@@ -45,10 +46,11 @@ const NavigationView: React.FC<NavigationProps> = ({
     (state) => state.doc.libraries || {}
   );
 
-  if (!match.params.libraryName) return <></>;
-
-  const rootLibrary = match.params.libraryName.split("/")[0];
-  const library = libraries[rootLibrary];
+  let library: Library | undefined;
+  if (match.params.libraryName) {
+    const rootLibrary = match.params.libraryName.split("/")[0];
+    library = libraries[rootLibrary];
+  }
 
   return (
     <Wrapper className={className}>
@@ -58,9 +60,22 @@ const NavigationView: React.FC<NavigationProps> = ({
       <Title>
         <Typography variant="h5">Libraries</Typography>
       </Title>
-      {library && (
-        <LibraryNavigation library={library} navigationParams={match.params} />
+      {viewMode !== ViewMode.SDK && library && (
+        <LibraryNavigation
+          library={library}
+          openLibrary={match.params.libraryName}
+        />
       )}
+      {viewMode === ViewMode.SDK &&
+        Object.values(libraries)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((subLibrary) => (
+            <LibraryNavigation
+              library={subLibrary}
+              openLibrary={match.params.libraryName}
+              key={subLibrary.name}
+            />
+          ))}
     </Wrapper>
   );
 };

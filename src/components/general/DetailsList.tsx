@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { Divider, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -38,6 +39,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Signature = styled.div`
+  font-family: "Roboto mono", monospace;
+  font-size: 1.125em;
+`;
+const SignatureName = styled.span`
+  font-weight: bold;
+`;
+
 function name(name: string, id: string, link?: string): JSX.Element {
   if (link) {
     return <Link to={link}>{name}</Link>;
@@ -60,10 +69,12 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
           return (
             <div key={element.key} id={element.id}>
               <div className={classes.element}>
-                <div>
-                  {name(element.name, element.id, element.link)}{" "}
+                <Signature>
+                  <SignatureName>
+                    {name(element.name, element.id, element.link)}
+                  </SignatureName>{" "}
                   {element.description}
-                </div>
+                </Signature>
                 {element.isInherited && <em>inherited</em>}
                 {element.toitdoc && (
                   <div className={classes.toitdoc}>

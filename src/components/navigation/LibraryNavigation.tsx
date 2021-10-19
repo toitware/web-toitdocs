@@ -19,17 +19,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export type LibraryNavigationProps = {
   library: Library;
-  navigationParams: NavigationParams;
+  openLibrary: string;
 };
 
 const LibraryNavigation: React.FC<LibraryNavigationProps> = ({
   library,
-  navigationParams,
+  openLibrary,
 }: LibraryNavigationProps) => {
   const classes = useStyles();
-  const openLibrary = navigationParams.libraryName;
   const showSubLibraries = openLibrary?.split("/")[0] === library.name;
-  // const openSubLibrary = openLibrary?.split("/").slice(1).join("/");
+  const openSubLibrary = openLibrary?.split("/").slice(1).join("/");
   return (
     <div key={topLevelRefToId(library.id)}>
       <Link
@@ -46,7 +45,7 @@ const LibraryNavigation: React.FC<LibraryNavigationProps> = ({
               <LibraryNavigation
                 key={subLibrary.id.name}
                 library={subLibrary}
-                navigationParams={navigationParams}
+                openLibrary={openSubLibrary}
               />
             ))}
         </div>
