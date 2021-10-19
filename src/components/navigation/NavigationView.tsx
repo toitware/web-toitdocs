@@ -9,13 +9,13 @@ import { RootState } from "../../redux/doc";
 import LibraryNavigation from "./LibraryNavigation";
 
 const Wrapper = styled.div`
-  background: ${(props): string => props.theme.palette.background.default};
+  background: ${({ theme }) => theme.palette.background.default};
   width: 100%;
   height: 100%;
   overflow-y: scroll;
   padding: 3rem;
   a {
-    color: ${(props): string => props.theme.palette.text.primary};
+    color: ${({ theme }) => theme.palette.text.primary};
     text-decoration: none;
     display: block;
     margin: 0.5rem 0;
