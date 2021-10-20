@@ -81,9 +81,6 @@ const useStyles = makeStyles((theme: Theme) =>
     appContainer: {
       position: "relative",
     },
-    mainContent: {
-      padding: theme.spacing(2),
-    },
   })
 );
 
@@ -93,6 +90,11 @@ const Content = styled.div`
   padding-left: 3rem;
   padding-right: 3rem;
   min-height: calc(100vh - ${({ theme }) => length(theme.layout.footerHeight)});
+
+  *[id] {
+    /* Make sure that anchor links aren't hidden behind the header */
+    scroll-margin-top: ${({ theme }) => length(theme.layout.headerHeight)};
+  }
 `;
 
 const Footer = styled.footer`
