@@ -23,15 +23,20 @@ pipeline {
             }
         }
 
-        stage("cypress") {
-            steps {
-                sh "yarn run cypress run"
-            }
-        }
-
         stage("lint") {
             steps {
                 sh "yarn lint"
+            }
+        }
+
+        stage("cypress") {
+            steps {
+                sh "yarn cypress:jenkins"
+            }
+            post {
+                always {
+                    junit "test-results.xml"
+                }
             }
         }
 

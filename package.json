@@ -36,6 +36,8 @@
     "build": "PUBLIC_URL=./ react-scripts build",
     "test": "react-scripts test",
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
+    "cypress": "cypress run",
+    "cypress:jenkins": "cypress run --reporter junit",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
