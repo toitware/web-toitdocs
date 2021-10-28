@@ -29,6 +29,17 @@ pipeline {
             }
         }
 
+        stage("cypress") {
+            steps {
+                sh "yarn cypress:jenkins"
+            }
+            post {
+                always {
+                    junit "test-results.xml"
+                }
+            }
+        }
+
         stage("build") {
             steps {
                 sh "yarn run build"
