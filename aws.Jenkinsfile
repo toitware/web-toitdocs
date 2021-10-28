@@ -31,7 +31,7 @@ pipeline {
 
         stage("cypress") {
             steps {
-                sh "yarn cypress:jenkins"
+                sh "yarn cypress:jenkins-with-server"
             }
             post {
                 always {

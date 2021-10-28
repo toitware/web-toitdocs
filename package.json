@@ -38,6 +38,7 @@
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
     "cypress": "cypress run",
     "cypress:jenkins": "cypress run --reporter junit",
+    "cypress:jenkins-with-server": "start-server-and-test 'yarn start' 3000 'yarn cypress:jenkins'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -65,7 +66,8 @@
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.1.0",
     "jest-junit": "^12.0.0",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "start-server-and-test": "^1.14.0"
   },
   "resolutions": {
     "**/react": "17.0.2",
