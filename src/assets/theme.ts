@@ -43,10 +43,12 @@ export const theme = createMuiTheme({
       fontSize: "2.0rem",
     },
     h4: {
+      fontFamily: "ClashDisplay",
       fontSize: "1.5rem",
     },
     h5: {
-      fontSize: "1.25rem",
+      fontFamily: "ClashDisplay",
+      fontSize: "1.125rem",
     },
     h6: {
       fontSize: "1rem",
