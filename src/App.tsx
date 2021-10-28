@@ -84,12 +84,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Content = styled.div`
+const ContentWrapper = styled.div`
   padding-top: calc(3rem + ${({ theme }) => length(theme.layout.headerHeight)});
   margin-left: ${({ theme }) => length(theme.layout.sidebarWidth)};
+`;
+
+const Content = styled.div`
   padding-left: 3rem;
   padding-right: 3rem;
   min-height: calc(100vh - ${({ theme }) => length(theme.layout.footerHeight)});
+  /* max-width: 44rem; The width I'd actually like to use once the sidebar is implemented */
+  max-width: 55rem;
+  margin: 0 auto;
 
   *[id] {
     /* Make sure that anchor links aren't hidden behind the header */
@@ -225,31 +231,33 @@ function AppContent(props: AppProps): JSX.Element {
               />
             </ThemeProvider>
 
-            <Content>
-              <ErrorBoundary>
-                {viewMode === ViewMode.Package ? (
-                  <Route exact path="/">
-                    <Redirect to={packageURL} />
-                  </Route>
-                ) : (
-                  <Route exact path="/" component={WelcomePage} />
-                )}
-                <Route
-                  exact
-                  path="/:libraryName+/library-summary"
-                  render={(
-                    routeProps: RouteComponentProps<LibraryInfoParams>
-                  ): React.ReactNode => <LibraryInfo {...routeProps} />}
-                />
-                <Route
-                  exact
-                  path="/:libraryName+/class-:className"
-                  render={(
-                    routeProps: RouteComponentProps<ClassInfoParams>
-                  ): React.ReactNode => <ClassInfo {...routeProps} />}
-                />
-              </ErrorBoundary>
-            </Content>
+            <ContentWrapper>
+              <Content>
+                <ErrorBoundary>
+                  {viewMode === ViewMode.Package ? (
+                    <Route exact path="/">
+                      <Redirect to={packageURL} />
+                    </Route>
+                  ) : (
+                    <Route exact path="/" component={WelcomePage} />
+                  )}
+                  <Route
+                    exact
+                    path="/:libraryName+/library-summary"
+                    render={(
+                      routeProps: RouteComponentProps<LibraryInfoParams>
+                    ): React.ReactNode => <LibraryInfo {...routeProps} />}
+                  />
+                  <Route
+                    exact
+                    path="/:libraryName+/class-:className"
+                    render={(
+                      routeProps: RouteComponentProps<ClassInfoParams>
+                    ): React.ReactNode => <ClassInfo {...routeProps} />}
+                  />
+                </ErrorBoundary>
+              </Content>
+            </ContentWrapper>
             <Footer>SDK version: {props.sdkVersion}</Footer>
           </div>
         </>
