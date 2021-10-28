@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { makeStyles, Paper } from "@material-ui/core";
 import "codemirror/lib/codemirror.css";
 import React from "react";
 import { UnControlled as CodeMirror } from "react-codemirror2";
