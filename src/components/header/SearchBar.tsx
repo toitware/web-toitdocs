@@ -57,9 +57,8 @@ function SearchBar(props: SearchBarProps): JSX.Element {
         borderLeft={0}
         borderTop={0}
         borderRight={0}
-        borderColor="secondary.main"
       >
-        <SearchIcon color="secondary" />
+        <SearchIcon />
         <InputBase
           className={classes.input}
           placeholder="Search"
@@ -75,7 +74,6 @@ function SearchBar(props: SearchBarProps): JSX.Element {
         <ClearIcon
           fontSize="small"
           className={classes.clearIcon}
-          color={props.searchBy ? "inherit" : "secondary"}
           onClick={resetSearchString}
         />
       </Box>

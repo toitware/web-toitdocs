@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { Divider, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -31,9 +32,20 @@ const useStyles = makeStyles((theme) => ({
   },
   toitdoc: {
     paddingTop: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
+  },
+  divider: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
 }));
+
+const Signature = styled.div`
+  font-family: "Roboto mono", monospace;
+  font-size: 1.125em;
+`;
+const SignatureName = styled.span`
+  font-weight: bold;
+`;
 
 function name(name: string, id: string, link?: string): JSX.Element {
   if (link) {
@@ -48,9 +60,8 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
   return (
     <div className={classes.details}>
       <div className={classes.title}>
-        <Typography variant="h4">{props.title}</Typography>
+        <Typography variant="h3">{props.title}</Typography>
       </div>
-      <Divider />
       {props.elements
         .concat([])
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -58,10 +69,12 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
           return (
             <div key={element.key} id={element.id}>
               <div className={classes.element}>
-                <div>
-                  {name(element.name, element.id, element.link)}{" "}
+                <Signature>
+                  <SignatureName>
+                    {name(element.name, element.id, element.link)}
+                  </SignatureName>{" "}
                   {element.description}
-                </div>
+                </Signature>
                 {element.isInherited && <em>inherited</em>}
                 {element.toitdoc && (
                   <div className={classes.toitdoc}>
@@ -72,7 +85,7 @@ export default function DetailsList(props: DetailsListProps): JSX.Element {
                   </div>
                 )}
               </div>
-              <Divider />
+              <Divider className={classes.divider} />
             </div>
           );
         })}

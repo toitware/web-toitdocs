@@ -35,7 +35,6 @@ const styles = (theme: Theme): StyleRules =>
     },
     toitdoc: {
       paddingTop: theme.spacing(0.3),
-      paddingLeft: theme.spacing(1),
     },
   });
 

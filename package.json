@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@reduxjs/toolkit": "^1.4.0",
@@ -34,6 +36,8 @@
     "build": "PUBLIC_URL=./ react-scripts build",
     "test": "react-scripts test",
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
+    "cypress": "cypress run",
+    "cypress:jenkins": "start-server-and-test 'yarn start' 3000 'yarn cypress --reporter junit'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -52,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^8.6.0",
     "eslint": "6",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-react-app": "^5.2.1",
@@ -60,7 +65,8 @@
     "eslint-plugin-react-app": "^6.2.2",
     "eslint-plugin-react-hooks": "^4.1.0",
     "jest-junit": "^12.0.0",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "start-server-and-test": "^1.14.0"
   },
   "resolutions": {
     "**/react": "17.0.2",
