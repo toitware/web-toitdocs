@@ -4,7 +4,7 @@ metadata:
 spec:
   containers:
     - name: webtoitdocs
-      image: 465068080952.dkr.ecr.eu-west-1.amazonaws.com/jenkins-web-toolchain:20211021164030
+      image: 465068080952.dkr.ecr.eu-west-1.amazonaws.com/jenkins-web-toolchain:20211108135245
       command:
         - cat
       tty: true
