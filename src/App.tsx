@@ -200,7 +200,7 @@ function AppContent(props: AppProps): JSX.Element {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    document.body.scrollTo(0, 0);
+    window.scrollTo(0, 0);
   }, [pathname]);
 
   const packageURL =
