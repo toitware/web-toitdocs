@@ -6,7 +6,6 @@ import "../../assets/codemirror/codemirror.css";
 import "../../assets/codemirror/toit";
 
 const Wrapper = styled.div`
-  max-height: 400px;
   .CodeMirror {
     background: #b0b8ed20;
     padding: 1rem;
