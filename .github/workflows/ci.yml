@@ -29,20 +29,10 @@ jobs:
         run: |
           yarn lint
 
-      - name: Update can-i-use
-        run: |
-          npx browserslist --update-db
-
       - name: Test
         if: env.RUN_TESTS == 'true'
         run: |
           yarn test:ci
-
-      - name: Publish test report
-        if: env.RUN_TESTS == 'true' && always()
-        uses: mikepenz/action-junit-report@v2
-        with:
-          report_paths: 'junit.xml'
 
       - name: Build
         run: |
