@@ -9,6 +9,7 @@ env:
   BUCKET: toit-web
   BUCKET_PATH: toitdocs.toit.io
   BUILD_DIR: build
+  HAS_PROTOBUF: false
   RUN_TESTS: true
 
 jobs:
@@ -24,6 +25,13 @@ jobs:
         run: |
           npm config set //npm.pkg.github.com/:_authToken=$GITHUB_NPM_TOKEN
           yarn install
+
+      - name: Protobuf
+        if: env.HAS_PROTOBUF == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install protobuf-compiler
+          make protobuf
 
       - name: Lint
         run: |
