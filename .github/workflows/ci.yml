@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+  release:
+    types: [published]
+
+env:
+  BUCKET: toit-web
+  BUCKET_PATH: toitdocs.toit.io
+  BUILD_DIR: build
+  RUN_TESTS: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install
+        env:
+          GITHUB_NPM_TOKEN: ${{ secrets.LEON_GITHUB_NPM_PAT }}
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken=$GITHUB_NPM_TOKEN
+          yarn install
+
+      - name: Lint
+        run: |
+          yarn lint
+
+      - name: Update can-i-use
+        run: |
+          npx browserslist --update-db
+
+      - name: Test
+        if: env.RUN_TESTS == 'true'
+        run: |
+          yarn test:ci
+
+      - name: Publish test report
+        if: env.RUN_TESTS == 'true' && always()
+        uses: mikepenz/action-junit-report@v2
+        with:
+          report_paths: 'junit.xml'
+
+      - name: Build
+        run: |
+          yarn build
+
+      - name: Generate version
+        id: version
+        run: |
+          VERSION=$(tools/gitversion)
+          echo $VERSION
+          echo $VERSION > VERSION
+          echo VERSION=$VERSION >> $GITHUB_ENV
+          echo "::set-output name=version::$VERSION"
+
+      - name: Prepare artifacts
+        run: |
+          tar c -zf $VERSION.tgz -C $BUILD_DIR/ .
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          retention-days: 2
+          if-no-files-found: error
+          path: |
+            ${{ env.VERSION }}.tgz
+            VERSION
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: [ ci ]
+    if: |
+      github.event_name == 'release' ||
+      github.event_name == 'push' && github.ref_name == 'master' ||
+      github.event_name == 'push' && startsWith(github.ref_name, 'release-v')
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+
+      - name: Set up env
+        run: |
+          # Just for debugging and better understanding list all files we have now.
+          find .
+          VERSION=$(cat VERSION)
+          ARTIFACT=$VERSION.tgz
+          echo BUILD_VERSION=$VERSION >> $GITHUB_ENV
+          echo ARTIFACT=$ARTIFACT >> $GITHUB_ENV
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.INFRASTRUCTURE_SERVICE_ACCOUNT_JSON_KEY }}
+          service_account: github-action@infrastructure-220307.iam.gserviceaccount.com
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: infrastructure-220307
+
+      - name: Upload to Google Cloud
+        run: |
+          echo -n $BUILD_VERSION > LATEST.tmp
+
+          gsutil cp $ARTIFACT  gs://$BUCKET/$BUCKET_PATH/$BUILD_VERSION.tgz
+          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/LATEST
+
+      - name: Update RELEASED in Google Cloud
+        if: |
+          github.event_name == 'release' && !github.event.release.prerelease
+        run: |
+          echo -n $BUILD_VERSION > LATEST.tmp
+
+          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED
+          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED.$TOIT_VERSION
