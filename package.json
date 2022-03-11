@@ -37,7 +37,7 @@
     "test": "react-scripts test",
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
     "cypress": "cypress run",
-    "test:ci": "start-server-and-test 'yarn start' 3000 'yarn cypress",
+    "test:ci": "start-server-and-test 'yarn start' 3000 'yarn cypress'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
