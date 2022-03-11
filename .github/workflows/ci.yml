@@ -50,8 +50,12 @@ jobs:
 
       - name: Generate version
         id: version
+        shell: bash
         run: |
-          VERSION=$(tools/gitversion)
+          GIT_VERSION=$(tools/gitversion)
+          echo $GIT_VERSION
+          # Replace any '/' with '-'.
+          VERSION=${GIT_VERSION/\//-}
           echo $VERSION
           echo $VERSION > VERSION
           echo VERSION=$VERSION >> $GITHUB_ENV
