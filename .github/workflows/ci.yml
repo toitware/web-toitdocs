@@ -11,6 +11,7 @@ env:
   BUILD_DIR: build
   HAS_PROTOBUF: false
   RUN_TESTS: true
+  ARTIFACT_EXTENSION: tgz
 
 jobs:
   ci:
@@ -63,7 +64,7 @@ jobs:
 
       - name: Prepare artifacts
         run: |
-          tar c -zf $VERSION.tgz -C $BUILD_DIR/ .
+          tar c -zf $VERSION.$ARTIFACT_EXTENSION -C $BUILD_DIR/ .
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -72,7 +73,7 @@ jobs:
           retention-days: 2
           if-no-files-found: error
           path: |
-            ${{ env.VERSION }}.tgz
+            ${{ env.VERSION }}.${{ env.ARTIFACT_EXTENSION }}
             VERSION
 
   upload:
@@ -94,7 +95,7 @@ jobs:
           # Just for debugging and better understanding list all files we have now.
           find .
           VERSION=$(cat VERSION)
-          ARTIFACT=$VERSION.tgz
+          ARTIFACT=$VERSION.$ARTIFACT_EXTENSION
           echo BUILD_VERSION=$VERSION >> $GITHUB_ENV
           echo ARTIFACT=$ARTIFACT >> $GITHUB_ENV
 
@@ -113,7 +114,7 @@ jobs:
         run: |
           echo -n $BUILD_VERSION > LATEST.tmp
 
-          gsutil cp $ARTIFACT  gs://$BUCKET/$BUCKET_PATH/$BUILD_VERSION.tgz
+          gsutil cp $ARTIFACT  gs://$BUCKET/$BUCKET_PATH/$BUILD_VERSION.$ARTIFACT_EXTENSION
           gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/LATEST
 
       - name: Update RELEASED in Google Cloud
