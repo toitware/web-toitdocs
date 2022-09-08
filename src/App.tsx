@@ -129,15 +129,6 @@ interface AppProps {
   fetchDoc: (version: string) => void;
 }
 
-const setupCrispChat = (): void => {
-  window.$crisp = [];
-  window.CRISP_WEBSITE_ID = "d7358065-35d6-43ee-bcd9-608d223d7aab";
-  const s = document.createElement("script");
-  s.src = "https://client.crisp.chat/l.js";
-  s.async = true;
-  document.getElementsByTagName("head")[0].appendChild(s);
-};
-
 export function getMetaValue(key: string, def = ""): string {
   if (typeof document === "undefined") {
     return def;
@@ -169,7 +160,6 @@ export const packageName = getMetaValue("toitdoc-package-name");
 class App extends Component<AppProps> {
   componentDidMount(): void {
     this.props.fetchDoc(this.props.versionFromParams);
-    setupCrispChat();
   }
 
   render(): JSX.Element {
