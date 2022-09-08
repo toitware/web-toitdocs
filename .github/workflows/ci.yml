@@ -124,4 +124,4 @@ jobs:
           echo -n $BUILD_VERSION > LATEST.tmp
 
           gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED
-          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED.$VERSION
+          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED.$BUILD_VERSION
