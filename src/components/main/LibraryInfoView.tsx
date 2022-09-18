@@ -47,7 +47,7 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
     const hashId = this.props.location.hash.substring(1);
     const element = document.getElementById(hashId);
     element?.scrollIntoView(true);
-    analytics.page(this.props.location.pathname);
+    analytics.page("toitdocs");
   }
 
   render(): JSX.Element {
