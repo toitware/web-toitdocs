@@ -22,6 +22,11 @@ jobs:
         with:
           submodules: recursive
 
+      # We are using deprecated functionality. Downgrade Node so we still compile.
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: Install
         env:
           GITHUB_NPM_TOKEN: ${{ secrets.LEON_GITHUB_NPM_PAT }}
