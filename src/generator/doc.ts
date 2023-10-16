@@ -37,6 +37,15 @@ export type ToitCategory =
   | typeof TOIT_CATEGORY_MISC
   | typeof TOIT_CATEGORY_SUB;
 
+export const TOIT_CLASS_KIND_CLASS = "class";
+export const TOIT_CLASS_KIND_INTERFACE = "interface";
+export const TOIT_CLASS_KIND_MIXIN = "mixin";
+
+export type ToitClassKind =
+  | typeof TOIT_CLASS_KIND_CLASS
+  | typeof TOIT_CLASS_KIND_INTERFACE
+  | typeof TOIT_CLASS_KIND_MIXIN;
+
 export interface ToitLibrary {
   object_type: typeof OBJECT_TYPE_LIBRARY;
   modules: ToitModules;
@@ -77,11 +86,11 @@ export interface ToitModule {
   object_type: typeof OBJECT_TYPE_MODULE;
   name: string;
   classes: ToitClass[];
-  // TODO(florian): interfaces (and export_interfaces) should not be optional.
-  // They currently are, as they were added at a later point in time.
-  interfaces?: ToitClass[];
+  interfaces: ToitClass[];
+  mixins: ToitClass[];
   export_classes: ToitClass[];
-  export_interfaces?: ToitClass[];
+  export_interfaces: ToitClass[];
+  export_mixins: ToitClass[];
   globals: ToitGlobal[];
   export_globals: ToitGlobal[];
   functions: ToitFunction[];
@@ -113,13 +122,12 @@ export interface ToitFunction {
 export interface ToitClass {
   object_type: typeof OBJECT_TYPE_CLASS;
   name: string;
-  // TODO(florian): is_interface should not be optional.
-  // It is marked as such as the field was added at a later point in time.
-  is_interface?: boolean;
+  kind: ToitClassKind;
   toitdoc: ToitDoc | null;
   structure: ToitStructure;
   extends: ToitReference;
   interfaces: ToitReference[];
+  mixins: ToitReference[];
 }
 
 export interface ToitStructure {

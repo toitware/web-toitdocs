@@ -106,6 +106,18 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
             title="Exported interfaces"
           />
         )}
+        {Object.keys(library.mixins).length > 0 && (
+          <Classes
+            classes={Object.values(library.mixins)}
+            title="Mixins"
+          />
+        )}
+        {Object.keys(library.exportedMixins).length > 0 && (
+          <Classes
+            classes={Object.values(library.exportedMixins)}
+            title="Exported mixins"
+          />
+        )}
         {Object.keys(library.classes).length > 0 && (
           <Classes classes={Object.values(library.classes)} title="Classes" />
         )}

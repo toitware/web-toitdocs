@@ -83,6 +83,12 @@ function ResultItem(props: { item: Searchable }): JSX.Element {
       from = item.ref.libraryRef.path.join(".");
       break;
     }
+    case "mixin": {
+      const item = props.item as SearchableInterface;
+      name = item.name;
+      from = item.ref.libraryRef.path.join(".");
+      break;
+    }
     case "class": {
       const item = props.item as SearchableClass;
       name = item.name;

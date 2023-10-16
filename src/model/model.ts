@@ -19,14 +19,25 @@ export type Category =
   | typeof CATEGORY_MISC
   | typeof CATEGORY_SUB;
 
+export const CLASS_KIND_CLASS = "class";
+export const CLASS_KIND_INTERFACE = "interface";
+export const CLASS_KIND_MIXIN = "mixin";
+
+export type ClassKind =
+  | typeof CLASS_KIND_CLASS
+  | typeof CLASS_KIND_INTERFACE
+  | typeof CLASS_KIND_MIXIN;
+
 export interface Library {
   name: string;
   id: TopLevelRef;
   libraries: Libraries;
   classes: Classes;
   interfaces: Classes;
+  mixins: Classes;
   exportedClasses: Classes;
   exportedInterfaces: Classes;
+  exportedMixins: Classes
   globals: Global[];
   exportedGlobals: Global[];
   functions: Function[];
@@ -38,9 +49,10 @@ export interface Library {
 export interface Class {
   name: string;
   id: TopLevelItemRef;
-  isInterface: boolean;
+  kind: ClassKind;
   extends?: TopLevelItemRef;
   interfaces: TopLevelItemRef[];
+  mixins: TopLevelItemRef[];
   fields: Field[];
   constructors: Method[];
   statics: Method[];

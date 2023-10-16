@@ -41,7 +41,9 @@ export function classFrom(
     library?.classes[className] ||
     library?.exportedClasses[className] ||
     library?.interfaces[className] ||
-    library?.exportedInterfaces[className]
+    library?.exportedInterfaces[className] ||
+    library?.mixins[className] ||
+    library?.exportedMixins[className]
   );
 }
 
@@ -65,7 +67,9 @@ export function classFromRef(
     Object.values(library.classes)[ref.offset] ||
     Object.values(library.exportedClasses)[ref.offset] ||
     Object.values(library.interfaces)[ref.offset] ||
-    Object.values(library.exportedInterfaces)[ref.offset]
+    Object.values(library.exportedInterfaces)[ref.offset] ||
+    Object.values(library.mixins)[ref.offset] ||
+    Object.values(library.exportedMixins)[ref.offset]
   );
 }
 

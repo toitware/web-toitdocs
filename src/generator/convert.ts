@@ -5,6 +5,10 @@ import {
   CATEGORY_JUST_THERE,
   CATEGORY_MISC,
   CATEGORY_SUB,
+  CLASS_KIND_CLASS,
+  CLASS_KIND_INTERFACE,
+  CLASS_KIND_MIXIN,
+  ClassKind,
   Class,
   Classes,
   Doc,
@@ -44,6 +48,10 @@ import {
   OBJECT_TYPE_STATEMENT_PARAGRAPH,
   OBJECT_TYPE_TOITDOCREF,
   ToitCategory,
+  TOIT_CLASS_KIND_CLASS,
+  TOIT_CLASS_KIND_INTERFACE,
+  TOIT_CLASS_KIND_MIXIN,
+  ToitClassKind,
   ToitClass,
   ToitDoc,
   ToitDocRef,
@@ -275,6 +283,17 @@ function methodFrom(
   };
 }
 
+function classKindFrom(kind: ToitClassKind): ClassKind {
+  switch (kind) {
+    case TOIT_CLASS_KIND_CLASS:
+      return CLASS_KIND_CLASS;
+    case TOIT_CLASS_KIND_INTERFACE:
+      return CLASS_KIND_INTERFACE;
+    case TOIT_CLASS_KIND_MIXIN:
+      return CLASS_KIND_MIXIN;
+  }
+}
+
 function classFrom(
   toitClass: ToitClass,
   libraryRef: TopLevelRef,
@@ -295,6 +314,10 @@ function classFrom(
   const interfaces = toitClass.interfaces.map((inter, index) =>
     referenceFrom(inter)
   );
+  const mixins = toitClass.mixins.map((mixin, index) =>
+    referenceFrom(mixin)
+  );
+
   const fields = toitClass.structure.fields.map((field, index) =>
     fieldFrom(field, classId, index)
   );
@@ -313,9 +336,10 @@ function classFrom(
   return {
     name: toitClass.name,
     id: classId,
-    isInterface: toitClass.is_interface || false,
+    kind: classKindFrom(toitClass.kind),
     extends: extend,
     interfaces: interfaces,
+    mixins: mixins,
     fields: fields,
     constructors: constructors,
     statics: statics,
@@ -387,8 +411,10 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
 
   let classes = {} as Classes;
   let interfaces = {} as Classes;
+  let mixins = {} as Classes;
   let exportedClasses = {} as Classes;
   let exportedInterfaces = {} as Classes;
+  let exportedMixins = {} as Classes;
 
   toitModule.classes.forEach((klass, index) => {
     classes = {
@@ -396,10 +422,16 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
       [klass.name]: classFrom(klass, libraryId, "class", index),
     };
   });
-  toitModule.interfaces?.forEach((inter, index) => {
+  toitModule.interfaces.forEach((inter, index) => {
     interfaces = {
       ...interfaces,
       [inter.name]: classFrom(inter, libraryId, "class", index),
+    };
+  });
+  toitModule.mixins.forEach((mixin, index) => {
+    mixins = {
+      ...mixins,
+      [mixin.name]: classFrom(mixin, libraryId, "class", index),
     };
   });
   toitModule.export_classes.forEach((klass, index) => {
@@ -408,13 +440,18 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
       [klass.name]: classFrom(klass, libraryId, "exported_class", index),
     };
   });
-  toitModule.export_interfaces &&
-    toitModule.export_interfaces.forEach((inter, index) => {
-      exportedInterfaces = {
-        ...exportedInterfaces,
-        [inter.name]: classFrom(inter, libraryId, "exported_class", index),
-      };
-    });
+  toitModule.export_interfaces.forEach((inter, index) => {
+    exportedInterfaces = {
+      ...exportedInterfaces,
+      [inter.name]: classFrom(inter, libraryId, "exported_class", index),
+    };
+  });
+  toitModule.export_mixins.forEach((mixin, index) => {
+    exportedMixins = {
+      ...exportedMixins,
+      [mixin.name]: classFrom(mixin, libraryId, "exported_class", index),
+    };
+  });
   const globals = toitModule.globals.map((global, index) =>
     globalFrom(global, libraryId, "global", index)
   );
@@ -434,8 +471,10 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     libraries: {},
     classes: classes,
     interfaces: interfaces,
+    mixins: mixins,
     exportedClasses: exportedClasses,
     exportedInterfaces: exportedInterfaces,
+    exportedMixins: exportedMixins,
     globals: globals,
     exportedGlobals: exportedGlobals,
     functions: functions,
@@ -458,6 +497,7 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
     libraries: { ...library.libraries, ...otherLibrary.libraries },
     classes: { ...library.classes, ...otherLibrary.classes },
     interfaces: { ...library.interfaces, ...otherLibrary.interfaces },
+    mixins: { ...library.mixins, ...otherLibrary.mixins },
     exportedClasses: {
       ...library.exportedClasses,
       ...otherLibrary.exportedClasses,
@@ -465,6 +505,10 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
     exportedInterfaces: {
       ...library.exportedInterfaces,
       ...otherLibrary.exportedInterfaces,
+    },
+    exportedMixins: {
+      ...library.exportedMixins,
+      ...otherLibrary.exportedMixins
     },
     globals: { ...library.globals, ...otherLibrary.globals },
     exportedGlobals: {
@@ -537,8 +581,10 @@ function libraryFromLibrary(
     libraries: libraries,
     classes: libraryContent ? libraryContent.classes : {},
     interfaces: libraryContent ? libraryContent.interfaces : {},
+    mixins: libraryContent ? libraryContent.mixins : {},
     exportedClasses: libraryContent ? libraryContent.exportedClasses : {},
     exportedInterfaces: libraryContent ? libraryContent.exportedInterfaces : {},
+    exportedMixins: libraryContent ? libraryContent.exportedMixins : {},
     globals: libraryContent ? libraryContent.globals : [],
     exportedGlobals: libraryContent ? libraryContent.exportedGlobals : [],
     functions: libraryContent ? libraryContent.functions : [],
@@ -589,8 +635,10 @@ export function modelFrom(
         libraries: {},
         classes: {},
         interfaces: {},
+        mixins: {},
         exportedClasses: {},
         exportedInterfaces: {},
+        exportedMixins: {},
         globals: [],
         exportedGlobals: [],
         functions: [],
