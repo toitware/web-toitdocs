@@ -172,7 +172,13 @@ export function flatten(libraries: Libraries | undefined): SearchableModel {
   return result;
 }
 
-type SearchableType = "library" | "class" | "interface" | "mixin" | "function" | "method";
+type SearchableType =
+  | "library"
+  | "class"
+  | "interface"
+  | "mixin"
+  | "function"
+  | "method";
 
 export interface Searchable {
   type: SearchableType;

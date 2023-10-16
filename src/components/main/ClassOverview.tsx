@@ -12,7 +12,12 @@ import {
   WithStyles,
 } from "@material-ui/core";
 import React, { Component } from "react";
-import { Class, CLASS_KIND_CLASS, CLASS_KIND_INTERFACE, CLASS_KIND_MIXIN } from "../../model/model";
+import {
+  Class,
+  CLASS_KIND_CLASS,
+  CLASS_KIND_INTERFACE,
+  CLASS_KIND_MIXIN,
+} from "../../model/model";
 import TablePanel from "../general/TablePanel";
 
 const styles = (theme: Theme): StyleRules =>
@@ -63,7 +68,7 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
   render(): JSX.Element {
     const classes = this.props.classes;
     const klass = this.props.klass;
-    let kind = ""
+    let kind = "";
     if (klass.kind === CLASS_KIND_CLASS) {
       kind = "Class";
     } else if (klass.kind === CLASS_KIND_INTERFACE) {
@@ -76,9 +81,7 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
     return (
       <div className={classes.root}>
         <div className={classes.title}>
-          <Typography variant="h4">
-            {kind} summary
-          </Typography>
+          <Typography variant="h4">{kind} summary</Typography>
         </div>
         <Divider />
         <Tabs

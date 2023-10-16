@@ -107,10 +107,7 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
           />
         )}
         {Object.keys(library.mixins).length > 0 && (
-          <Classes
-            classes={Object.values(library.mixins)}
-            title="Mixins"
-          />
+          <Classes classes={Object.values(library.mixins)} title="Mixins" />
         )}
         {Object.keys(library.exportedMixins).length > 0 && (
           <Classes

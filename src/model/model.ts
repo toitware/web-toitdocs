@@ -37,7 +37,7 @@ export interface Library {
   mixins: Classes;
   exportedClasses: Classes;
   exportedInterfaces: Classes;
-  exportedMixins: Classes
+  exportedMixins: Classes;
   globals: Global[];
   exportedGlobals: Global[];
   functions: Function[];

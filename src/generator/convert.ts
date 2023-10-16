@@ -314,9 +314,7 @@ function classFrom(
   const interfaces = toitClass.interfaces.map((inter, index) =>
     referenceFrom(inter)
   );
-  const mixins = toitClass.mixins.map((mixin, index) =>
-    referenceFrom(mixin)
-  );
+  const mixins = toitClass.mixins.map((mixin, index) => referenceFrom(mixin));
 
   const fields = toitClass.structure.fields.map((field, index) =>
     fieldFrom(field, classId, index)
@@ -508,7 +506,7 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
     },
     exportedMixins: {
       ...library.exportedMixins,
-      ...otherLibrary.exportedMixins
+      ...otherLibrary.exportedMixins,
     },
     globals: { ...library.globals, ...otherLibrary.globals },
     exportedGlobals: {

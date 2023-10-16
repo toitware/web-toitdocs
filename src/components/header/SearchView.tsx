@@ -90,10 +90,9 @@ class SearchView extends React.Component<SearchProps, SearchState> {
             this.props.model.interfaces,
             searchString
           ).map((inter) => inter.item);
-          mixins = this.search(
-            this.props.model.mixins,
-            searchString
-          ).map((mixin) => mixin.item);
+          mixins = this.search(this.props.model.mixins, searchString).map(
+            (mixin) => mixin.item
+          );
           classes = this.search(this.props.model.classes, searchString).map(
             (c) => c.item
           );

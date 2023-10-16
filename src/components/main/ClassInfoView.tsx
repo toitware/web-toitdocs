@@ -4,7 +4,12 @@ import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { classFrom, classUrlFromRef } from "../../misc/util";
-import { CLASS_KIND_CLASS, CLASS_KIND_INTERFACE, CLASS_KIND_MIXIN, Libraries } from "../../model/model";
+import {
+  CLASS_KIND_CLASS,
+  CLASS_KIND_INTERFACE,
+  CLASS_KIND_MIXIN,
+  Libraries,
+} from "../../model/model";
 import Fields from "../doc/Fields";
 import Functions from "../doc/Functions";
 import Toitdocs from "../doc/Toitdocs";
@@ -37,7 +42,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     if (!classInfo) {
       return this.notFound(this.props.match.params.className);
     }
-    let kind : string = "";
+    let kind = "";
     if (classInfo.kind === CLASS_KIND_CLASS) {
       kind = "Class";
     } else if (classInfo.kind === CLASS_KIND_INTERFACE) {
@@ -53,7 +58,9 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
         <Typography variant="h2" component="h2">
           {kind} {classInfo.name}
         </Typography>
-        {(classInfo.extends || classInfo.interfaces.length !== 0 || classInfo.mixins.length !== 0) && (
+        {(classInfo.extends ||
+          classInfo.interfaces.length !== 0 ||
+          classInfo.mixins.length !== 0) && (
           <div>
             {classInfo.extends && (
               <>
