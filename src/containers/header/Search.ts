@@ -8,6 +8,7 @@ const mapStateToProps = (state: RootState): Pick<SearchProps, "model"> => {
       libraries: [],
       classes: [],
       interfaces: [],
+      mixins: [],
       functions: [],
       methods: [],
     },

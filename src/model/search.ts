@@ -109,6 +109,23 @@ function flattenInterface(
     .forEach((m) => flattenMethod(libraries, m, result));
 }
 
+function flattenMixin(
+  libraries: Libraries,
+  mixin: Class,
+  result: SearchableModel
+): void {
+  result.mixins.push({
+    name: mixin.name,
+    ref: mixin.id,
+    url: classUrlFromRef(mixin.id),
+    type: "mixin",
+  });
+
+  mixin.statics
+    .concat(mixin.methods)
+    .forEach((m) => flattenMethod(libraries, m, result));
+}
+
 function flattenLibrary(
   libraries: Libraries,
   library: Library,
@@ -127,6 +144,9 @@ function flattenLibrary(
   Object.values(library.interfaces).forEach((inter) =>
     flattenInterface(libraries, inter, result)
   );
+  Object.values(library.mixins).forEach((mixin) =>
+    flattenMixin(libraries, mixin, result)
+  );
   Object.values(library.classes).forEach((c) =>
     flattenClass(libraries, c, result)
   );
@@ -140,6 +160,7 @@ export function flatten(libraries: Libraries | undefined): SearchableModel {
     libraries: [],
     classes: [],
     interfaces: [],
+    mixins: [],
     functions: [],
     methods: [],
   };
@@ -151,7 +172,13 @@ export function flatten(libraries: Libraries | undefined): SearchableModel {
   return result;
 }
 
-type SearchableType = "library" | "class" | "interface" | "function" | "method";
+type SearchableType =
+  | "library"
+  | "class"
+  | "interface"
+  | "mixin"
+  | "function"
+  | "method";
 
 export interface Searchable {
   type: SearchableType;
@@ -163,6 +190,7 @@ export interface SearchableModel {
   libraries: SearchableLibrary[];
   classes: SearchableClass[];
   interfaces: SearchableInterface[];
+  mixins: SearchableMixin[];
   functions: SearchableFunction[];
   methods: SearchableMethod[];
 }
@@ -186,6 +214,13 @@ export interface SearchableInterface extends Searchable {
   ref: TopLevelItemRef;
   url: string;
   type: "interface";
+}
+
+export interface SearchableMixin extends Searchable {
+  name: string;
+  ref: TopLevelItemRef;
+  url: string;
+  type: "mixin";
 }
 
 export interface SearchableFunction extends Searchable {

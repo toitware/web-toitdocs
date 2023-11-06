@@ -4,7 +4,12 @@ import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { classFrom, classUrlFromRef } from "../../misc/util";
-import { Libraries } from "../../model/model";
+import {
+  CLASS_KIND_CLASS,
+  CLASS_KIND_INTERFACE,
+  CLASS_KIND_MIXIN,
+  Libraries,
+} from "../../model/model";
 import Fields from "../doc/Fields";
 import Functions from "../doc/Functions";
 import Toitdocs from "../doc/Toitdocs";
@@ -37,19 +42,40 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     if (!classInfo) {
       return this.notFound(this.props.match.params.className);
     }
+    let kind = "";
+    if (classInfo.kind === CLASS_KIND_CLASS) {
+      kind = "Class";
+    } else if (classInfo.kind === CLASS_KIND_INTERFACE) {
+      kind = "Interface";
+    } else if (classInfo.kind === CLASS_KIND_MIXIN) {
+      kind = "Mixin";
+    } else {
+      throw new Error("Unknown class kind: " + classInfo.kind);
+    }
 
     return (
       <>
         <Typography variant="h2" component="h2">
-          {classInfo.isInterface ? "Interface" : "Class"} {classInfo.name}
+          {kind} {classInfo.name}
         </Typography>
-        {(classInfo.extends || classInfo.interfaces.length !== 0) && (
+        {(classInfo.extends ||
+          classInfo.interfaces.length !== 0 ||
+          classInfo.mixins.length !== 0) && (
           <div>
             {classInfo.extends && (
               <>
                 extends <TypeReference reference={classInfo.extends} />
               </>
             )}
+            {classInfo.mixins.length !== 0 && " with "}
+            {classInfo.mixins.map((ref) => {
+              const key = classUrlFromRef(ref);
+              return (
+                <span key={key}>
+                  <TypeReference reference={ref} />{" "}
+                </span>
+              );
+            })}
             {classInfo.interfaces.length !== 0 && " implements "}
             {classInfo.interfaces.map((ref) => {
               const key = classUrlFromRef(ref);

@@ -12,6 +12,7 @@ import {
   SearchableInterface,
   SearchableLibrary,
   SearchableMethod,
+  SearchableMixin,
   SearchableModel,
 } from "../../model/search";
 import SearchBar from "./SearchBar";
@@ -36,6 +37,7 @@ interface SearchState {
   libraries: SearchableLibrary[];
   classes: SearchableClass[];
   interfaces: SearchableInterface[];
+  mixins: SearchableMixin[];
   functions: SearchableFunction[];
   methods: SearchableMethod[];
   hideResults: boolean;
@@ -49,6 +51,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
     libraries: [],
     classes: [],
     interfaces: [],
+    mixins: [],
     functions: [],
     methods: [],
     hideResults: false,
@@ -75,6 +78,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
         let libraries = [] as SearchableLibrary[];
         let classes = [] as SearchableClass[];
         let interfaces = [] as SearchableInterface[];
+        let mixins = [] as SearchableMixin[];
         let functions = [] as SearchableFunction[];
         let methods = [] as SearchableMethod[];
 
@@ -86,6 +90,9 @@ class SearchView extends React.Component<SearchProps, SearchState> {
             this.props.model.interfaces,
             searchString
           ).map((inter) => inter.item);
+          mixins = this.search(this.props.model.mixins, searchString).map(
+            (mixin) => mixin.item
+          );
           classes = this.search(this.props.model.classes, searchString).map(
             (c) => c.item
           );
@@ -102,6 +109,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
           libraries: libraries,
           interfaces: interfaces,
           classes: classes,
+          mixins: mixins,
           functions: functions,
           methods: methods,
         });
