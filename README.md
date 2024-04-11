@@ -5,6 +5,21 @@ documentation for it.
 
 To be able to build/run the project locally, get the `latest.json` from [toitdocs.infra.toit.io](https://toitdocs.infra.toit.io/sdk/latest.json) and put it in `public/sdk/`.
 
+## Node version
+
+This project doesn't compile anymore with recent node versions. Use,
+for example, `nvm` to install an older version of node. The repository
+contains a `.nvmrc` file that specifies the node version that works.
+
+If you have nvm installed, but not automatically activated in your
+.bashrc, you will need to do
+
+```bash
+source /usr/share/nvm/init-nvm.sh
+```
+
+Then run `nvm install` to install the correct version of node.
+
 ## yarn
 
 `yarn` is used in web projects. To install `yarn`, follow the guide [here](https://yarnpkg.com/lang/en/docs/install/#debian-stable).
@@ -13,7 +28,8 @@ Note! You don't need to setup your `PATH` env.var. as described in the guide.
 
 If you haven't installed `node` yet, install `node` from [nodejs.org](https://nodejs.org/en/). Add the node bin directory to your `PATH` in `$HOME/.profile`
 
-The version of `node` must be >= v12.16.1, i.e. the version of node that comes with yarn is not the latest.
+The version of `node` must be >= v12.16.1, but see above for how to use
+nvm to get the right version.
 
 **⚠️ In order to be able to install packages from this repository on your machine,
 you need to [authenticate with the GitHub
