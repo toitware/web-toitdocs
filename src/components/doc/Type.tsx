@@ -36,7 +36,7 @@ export class TypeReference extends Component<TypeReferenceProps> {
     const url = classUrlFromRef(this.props.reference);
     const name = this.props.reference.name;
     if (this.props.reference.libraryRef.baseUrl !== "") {
-      return (<a href={url}>{name}</a>);
+      return <a href={url}>{name}</a>;
     }
     return (
       <Link to={classUrlFromRef(this.props.reference)}>

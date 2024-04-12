@@ -87,7 +87,7 @@ function libraryName(name: string): string {
 type UrlAndPath = {
   url: string;
   path: string[];
-}
+};
 
 function isSdkPath(path: string[]): boolean {
   if (sdkPath === undefined) {
@@ -105,13 +105,13 @@ function isSdkPath(path: string[]): boolean {
 }
 
 function urlAndPathFrom(path: string[]): UrlAndPath {
-  path = path.slice();  // Make a copy.
+  path = path.slice(); // Make a copy.
   let url = "";
   if (viewMode === ViewMode.Package) {
     if (path.length > 0) {
       if (isSdkPath(path)) {
         url = SDK_LIBS_URL;
-        path = path.slice(sdkPath!.length + 1);  // Also drop the 'lib'.
+        path = path.slice(sdkPath!.length + 1); // Also drop the 'lib'.
       } else {
         // Replace the 'src' with the package name.
         path[0] = packageName;
@@ -122,15 +122,19 @@ function urlAndPathFrom(path: string[]): UrlAndPath {
     path.shift();
   }
   const len = path.length;
-  if (len === 0) return {
-    url: url,
-    path: path,
-  };
+  if (len === 0) {
+    return {
+      url: url,
+      path: path,
+    };
+  }
   path[len - 1] = libraryName(path[len - 1]);
-  if (len === 1) return {
-    url: url,
-    path: path,
-  };
+  if (len === 1) {
+    return {
+      url: url,
+      path: path,
+    };
+  }
   if (path[len - 1] === path[len - 2]) {
     // Something like lib/net/net.toit.
     // In that case the net.toit is presented as 'lib.net' (as this is how it would
@@ -669,7 +673,7 @@ export function modelFrom(
   rootLibrary: ToitLibrary,
   viewMode: ViewMode,
   packageName: string,
-  generatorSdkPath: string[] | undefined,
+  generatorSdkPath: string[] | undefined
 ): Libraries {
   sdkPath = generatorSdkPath;
   let model = libraryFromLibrary(rootLibrary, [], true).libraries;

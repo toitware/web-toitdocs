@@ -181,7 +181,10 @@ export function urlFromLinkRef(ref: LinkRef): string {
         getFunctionId(ref.name, ref.shape)
       );
     case "field":
-      return memberUrl(classUrl(ref.baseUrl, ref.path, ref.holder), getFieldId(ref.name));
+      return memberUrl(
+        classUrl(ref.baseUrl, ref.path, ref.holder),
+        getFieldId(ref.name)
+      );
     case "global":
       return globalUrl(libraryUrl(ref.baseUrl, ref.path), ref.name);
     case "global-method":

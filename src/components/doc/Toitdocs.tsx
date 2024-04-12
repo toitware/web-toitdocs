@@ -89,7 +89,7 @@ function ToitdocRef(props: { reference: DocRef }): JSX.Element {
     return <span className={classes.otherDocRef}>{props.reference.text}</span>;
   }
   if (props.reference.reference.baseUrl !== "") {
-    return <a href={url}>{props.reference.text}</a>
+    return <a href={url}>{props.reference.text}</a>;
   }
   return <HashLink to={url}>{props.reference.text}</HashLink>;
 }

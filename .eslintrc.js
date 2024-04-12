@@ -33,5 +33,6 @@ module.exports = {
     "@typescript-eslint/unbound-method": "off", // Reconsider
     "@typescript-eslint/no-var-requires": "off", // KEEP
     "@typescript-eslint/await-thenable": "off", // KEEP
+    "@typescript-eslint/no-non-null-assertion": "off", // KEEP
   },
 };
