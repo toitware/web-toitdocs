@@ -5,7 +5,7 @@ import {
   packageName,
   setPackageName,
   setViewMode,
-  viewMode
+  viewMode,
 } from "../App";
 import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
