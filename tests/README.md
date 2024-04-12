@@ -2,7 +2,10 @@
 
 Some non-automated tests.
 
-For each test create the json and then view it with the Toitdoc viewer.
+Things to check:
+- make sure all links work.
+
+Create the json and then view it with the Toitdoc viewer.
 
 ## Creating the JSON
 

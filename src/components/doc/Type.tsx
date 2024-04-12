@@ -33,6 +33,11 @@ interface TypeReferenceProps {
 
 export class TypeReference extends Component<TypeReferenceProps> {
   render(): JSX.Element {
+    const url = classUrlFromRef(this.props.reference);
+    const name = this.props.reference.name;
+    if (this.props.reference.libraryRef.baseUrl !== "") {
+      return (<a href={url}>{name}</a>);
+    }
     return (
       <Link to={classUrlFromRef(this.props.reference)}>
         {this.props.reference.name}

@@ -112,12 +112,12 @@ export function getFieldId(fieldName: string): string {
   return fieldName;
 }
 
-function libraryUrl(path: string[]): string {
-  return "/" + path.join("/") + "/library-summary";
+function libraryUrl(baseUrl: string, path: string[]): string {
+  return baseUrl + "/" + path.join("/") + "/library-summary";
 }
 
-function classUrl(path: string[], name: string): string {
-  return "/" + path.join("/") + "/class-" + name;
+function classUrl(baseUrl: string, path: string[], name: string): string {
+  return baseUrl + "/" + path.join("/") + "/class-" + name;
 }
 
 function memberUrl(classUrl: string, id: string): string {
@@ -133,11 +133,11 @@ export function topLevelRefToId(ref: TopLevelRef): string {
 }
 
 export function classUrlFromRef(ref: TopLevelItemRef): string {
-  return classUrl(ref.libraryRef.path, ref.name);
+  return classUrl(ref.libraryRef.baseUrl, ref.libraryRef.path, ref.name);
 }
 
 export function libraryUrlFromRef(ref: TopLevelRef): string {
-  return libraryUrl(ref.path);
+  return libraryUrl(ref.baseUrl, ref.path);
 }
 
 export function functionUrlFromRef(
@@ -171,22 +171,22 @@ export function methodUrlFromRef(
 export function urlFromLinkRef(ref: LinkRef): string {
   switch (ref.kind) {
     case "class":
-      return classUrl(ref.path, ref.name);
+      return classUrl(ref.baseUrl, ref.path, ref.name);
     case "constructor":
     case "factory":
     case "method":
     case "static-method":
       return memberUrl(
-        classUrl(ref.path, ref.holder),
+        classUrl(ref.baseUrl, ref.path, ref.holder),
         getFunctionId(ref.name, ref.shape)
       );
     case "field":
-      return memberUrl(classUrl(ref.path, ref.holder), getFieldId(ref.name));
+      return memberUrl(classUrl(ref.baseUrl, ref.path, ref.holder), getFieldId(ref.name));
     case "global":
-      return globalUrl(libraryUrl(ref.path), ref.name);
+      return globalUrl(libraryUrl(ref.baseUrl, ref.path), ref.name);
     case "global-method":
       return globalUrl(
-        libraryUrl(ref.path),
+        libraryUrl(ref.baseUrl, ref.path),
         getFunctionId(ref.name, ref.shape)
       );
     default:

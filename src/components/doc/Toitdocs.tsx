@@ -6,6 +6,12 @@ import { HashLink } from "react-router-hash-link";
 import { urlFromLinkRef } from "../../misc/util";
 import {
   Doc,
+  DOC_DOCREF,
+  DOC_EXPRESSION_CODE,
+  DOC_EXPRESSION_TEXT,
+  DOC_STATEMENT_CODE_SECTION,
+  DOC_STATEMENT_ITEMIZED,
+  DOC_STATEMENT_PARAGRAPH,
   DocExpression,
   DocExpressionCode,
   DocExpressionText,
@@ -16,12 +22,6 @@ import {
   DocStatementItem,
   DocStatementItemized,
   DocStatementParagraph,
-  DOC_DOCREF,
-  DOC_EXPRESSION_CODE,
-  DOC_EXPRESSION_TEXT,
-  DOC_STATEMENT_CODE_SECTION,
-  DOC_STATEMENT_ITEMIZED,
-  DOC_STATEMENT_PARAGRAPH,
 } from "../../model/model";
 import CodeBlock from "../general/CodeBlock";
 
@@ -87,6 +87,9 @@ function ToitdocRef(props: { reference: DocRef }): JSX.Element {
   const url = urlFromLinkRef(props.reference.reference);
   if (!url) {
     return <span className={classes.otherDocRef}>{props.reference.text}</span>;
+  }
+  if (props.reference.reference.baseUrl !== "") {
+    return <a href={url}>{props.reference.text}</a>
   }
   return <HashLink to={url}>{props.reference.text}</HashLink>;
 }
