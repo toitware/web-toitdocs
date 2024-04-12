@@ -1,5 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ViewMode, getMetaValue, packageName, setPackageName, setViewMode, viewMode } from "../App";
+import {
+  ViewMode,
+  getMetaValue,
+  packageName,
+  setPackageName,
+  setViewMode,
+  viewMode
+} from "../App";
 import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
 import { Libraries } from "../model/model";
@@ -49,7 +56,7 @@ export const doc = createSlice({
         state.sdkVersion = action.payload.sdk_version;
         // Instead of getting the root-path, package-name and view-mode through a header,
         // get/deduce it from the json file.
-        const pkgName = action.payload.pkg_name
+        const pkgName = action.payload.pkg_name;
         if (pkgName) {
           setPackageName(pkgName);
           setViewMode(ViewMode.Package);

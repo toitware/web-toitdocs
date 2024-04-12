@@ -154,8 +154,8 @@ export enum ViewMode {
   SDK = "sdk",
 }
 
-export var viewMode = getMetaValue("toitdoc-mode", "sdk") as ViewMode;
-export var packageName = getMetaValue("toitdoc-package-name");
+export let viewMode = getMetaValue("toitdoc-mode", "sdk") as ViewMode;
+export let packageName = getMetaValue("toitdoc-package-name");
 
 export function setViewMode(newMode: ViewMode): void {
   viewMode = newMode;
