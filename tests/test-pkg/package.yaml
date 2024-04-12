@@ -1,2 +1,9 @@
 name: pkg
 description: some package description
+dependencies:
+  host:
+    url: github.com/toitlang/pkg-host
+    version: ^1.15.1
+  morse:
+    url: github.com/toitware/toit-morse
+    version: ^1.0.6

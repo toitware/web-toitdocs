@@ -55,6 +55,8 @@ export const doc = createSlice({
       .addCase(fetchDoc.fulfilled, (state, action) => {
         const sdkVersion = action.payload.sdk_version;
         const sdkPath = action.payload.sdk_path;
+        const packagesPath = action.payload.packages_path;
+        const packageNames = action.payload.package_names;
         state.sdkVersion = sdkVersion;
         // Instead of getting the root-path, package-name and view-mode through a header,
         // get/deduce it from the json file.
@@ -68,7 +70,9 @@ export const doc = createSlice({
           action.payload.libraries[rootPath],
           viewMode,
           packageName,
-          sdkPath
+          sdkPath,
+          packagesPath,
+          packageNames
         );
         state.searchableModel = flatten(state.libraries);
       })

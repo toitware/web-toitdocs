@@ -26,6 +26,7 @@ export interface ToitObject {
   pkg_name?: string;
   sdk_path?: string[];
   packages_path?: string[];
+  package_names?: { [key: string]: string };
   libraries: ToitLibraries;
 }
 
