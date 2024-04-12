@@ -23,6 +23,9 @@ export type ObjectTypeExpression =
 
 export interface ToitObject {
   sdk_version: string;
+  pkg_name?: string;
+  sdk_path?: string[];
+  packages_path?: string[];
   libraries: ToitLibraries;
 }
 
