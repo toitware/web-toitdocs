@@ -1,6 +1,5 @@
-import { ViewMode } from "../App";
+import { ViewMode, packageName, viewMode } from "../App";
 import {
-  Category,
   CATEGORY_FUNDAMENTAL,
   CATEGORY_JUST_THERE,
   CATEGORY_MISC,
@@ -8,13 +7,10 @@ import {
   CLASS_KIND_CLASS,
   CLASS_KIND_INTERFACE,
   CLASS_KIND_MIXIN,
-  ClassKind,
+  Category,
   Class,
+  ClassKind,
   Classes,
-  Doc,
-  DocExpression,
-  DocSection,
-  DocStatement,
   DOC_DOCREF,
   DOC_EXPRESSION_CODE,
   DOC_EXPRESSION_TEXT,
@@ -22,6 +18,10 @@ import {
   DOC_STATEMENT_ITEM,
   DOC_STATEMENT_ITEMIZED,
   DOC_STATEMENT_PARAGRAPH,
+  Doc,
+  DocExpression,
+  DocSection,
+  DocStatement,
   Field,
   Function,
   Global,
@@ -47,12 +47,16 @@ import {
   OBJECT_TYPE_STATEMENT_ITEMIZED,
   OBJECT_TYPE_STATEMENT_PARAGRAPH,
   OBJECT_TYPE_TOITDOCREF,
-  ToitCategory,
+  TOIT_CATEGORY_FUNDAMENTAL,
+  TOIT_CATEGORY_JUST_THERE,
+  TOIT_CATEGORY_MISC,
+  TOIT_CATEGORY_SUB,
   TOIT_CLASS_KIND_CLASS,
   TOIT_CLASS_KIND_INTERFACE,
   TOIT_CLASS_KIND_MIXIN,
-  ToitClassKind,
+  ToitCategory,
   ToitClass,
+  ToitClassKind,
   ToitDoc,
   ToitDocRef,
   ToitDocRefKind,
@@ -68,10 +72,6 @@ import {
   ToitShape,
   ToitStatement,
   ToitType,
-  TOIT_CATEGORY_FUNDAMENTAL,
-  TOIT_CATEGORY_JUST_THERE,
-  TOIT_CATEGORY_MISC,
-  TOIT_CATEGORY_SUB,
 } from "./doc";
 
 function libraryName(name: string): string {
@@ -80,7 +80,15 @@ function libraryName(name: string): string {
 
 function pathFrom(path: string[]): string[] {
   const result = path.slice();
-  result.shift(); // Get rid of first "lib" entry. TODO (rikke): Find a more general rule.
+  if (viewMode === ViewMode.Package) {
+    // Replace the 'src' with the package name.
+    if (result.length > 0) {
+      result[0] = packageName;
+    }
+  } else if (result.length > 0 && result[0] === "lib") {
+    // Get rid of the first "lib" entry.
+    result.shift();
+  }
   const len = result.length;
   if (len === 0) return result;
   result[len - 1] = libraryName(result[len - 1]);

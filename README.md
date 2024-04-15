@@ -68,3 +68,38 @@ Here's a short summary of what you need to do:
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+## JSON files
+
+The page loads the toitdoc information from `public/sdk/latest.json`. This is true for non-sdk packages as well.
+
+You can create new json files by running the following command:
+
+### Core libraries
+
+```bash
+  toit.lsp \
+    toitdoc \
+    --toitc "$PATH_TO_TOIT_COMPILE" \
+    --sdk "$PATH_TO_SDK" \
+    --out "$OUTFILE" \
+    --version "$PACKAGE_VERSION" \
+    "./lib"
+```
+
+### Package
+
+```bash
+  toit.lsp \
+    toitdoc \
+    --toitc "$PATH_TO_TOIT_COMPILE" \
+    --sdk "$PATH_TO_SDK" \
+    --exclude-sdk \
+    --out "$OUTFILE" \
+    --version "$PACKAGE_VERSION" \
+    "./src"
+```
+
+The viewer also uses a view headers to correctly show packages.
+The easiest is to copy the [public/pkg.html] over [public/index.html].
+Just make sure not to check it in.

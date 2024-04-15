@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getMetaValue, packageName, viewMode } from "../App";
 import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
 import { Libraries } from "../model/model";
-import { flatten, SearchableModel } from "../model/search";
-import { getMetaValue, packageName, viewMode } from "../App";
+import { SearchableModel, flatten } from "../model/search";
 
 export interface RootState {
   doc: DocState;
