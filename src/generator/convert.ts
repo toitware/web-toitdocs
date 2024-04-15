@@ -74,32 +74,77 @@ import {
   ToitType,
 } from "./doc";
 
+// Slightly hackish: we keep a few global variables, so we don't need to
+// pass them around everywhere.
+// TODO(florian): move all the conversion functions into a class and store the state there.
+let sdkPath: string[] | undefined = undefined;
+const SDK_LIBS_URL = "https://libs.toit.io";
+
 function libraryName(name: string): string {
   return name.endsWith(".toit") ? name.substring(0, name.length - 5) : name;
 }
 
-function pathFrom(path: string[]): string[] {
-  const result = path.slice();
-  if (viewMode === ViewMode.Package) {
-    // Replace the 'src' with the package name.
-    if (result.length > 0) {
-      result[0] = packageName;
-    }
-  } else if (result.length > 0 && result[0] === "lib") {
-    // Get rid of the first "lib" entry.
-    result.shift();
+type UrlAndPath = {
+  url: string;
+  path: string[];
+};
+
+function isSdkPath(path: string[]): boolean {
+  if (sdkPath === undefined) {
+    return false;
   }
-  const len = result.length;
-  if (len === 0) return result;
-  result[len - 1] = libraryName(result[len - 1]);
-  if (len === 1) return result;
-  if (result[len - 1] === result[len - 2]) {
+  if (path.length < sdkPath.length) {
+    return false;
+  }
+  for (let i = 0; i < sdkPath.length; i++) {
+    if (path[i] !== sdkPath[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function urlAndPathFrom(path: string[]): UrlAndPath {
+  path = path.slice(); // Make a copy.
+  let url = "";
+  if (viewMode === ViewMode.Package) {
+    if (path.length > 0) {
+      if (isSdkPath(path)) {
+        url = SDK_LIBS_URL;
+        path = path.slice(sdkPath!.length + 1); // Also drop the 'lib'.
+      } else {
+        // Replace the 'src' with the package name.
+        path[0] = packageName;
+      }
+    }
+  } else if (path.length > 0 && path[0] === "lib") {
+    // Get rid of the first "lib" entry.
+    path.shift();
+  }
+  const len = path.length;
+  if (len === 0) {
+    return {
+      url: url,
+      path: path,
+    };
+  }
+  path[len - 1] = libraryName(path[len - 1]);
+  if (len === 1) {
+    return {
+      url: url,
+      path: path,
+    };
+  }
+  if (path[len - 1] === path[len - 2]) {
     // Something like lib/net/net.toit.
     // In that case the net.toit is presented as 'lib.net' (as this is how it would
     // be imported).
-    result.length--;
+    path.length--;
   }
-  return result;
+  return {
+    url: url,
+    path: path,
+  };
 }
 
 function shapeFrom(toitShape: ToitShape): Shape {
@@ -138,13 +183,17 @@ function linkRefKindFrom(toitDocRefKind: ToitDocRefKind): LinkRefKind {
 }
 
 function linkRefFrom(toitDocRef: ToitDocRef): LinkRef {
+  let url = "";
   let path = [] as string[];
   if (toitDocRef.path) {
-    path = pathFrom(toitDocRef.path);
+    const urlPath = urlAndPathFrom(toitDocRef.path);
+    url = urlPath.url;
+    path = urlPath.path;
   }
 
   return {
     kind: linkRefKindFrom(toitDocRef.kind),
+    baseUrl: url,
     path: path,
     holder: toitDocRef.holder || "",
     name: toitDocRef.name,
@@ -214,11 +263,13 @@ function docFrom(toitDoc: ToitDoc): Doc {
 }
 
 function referenceFrom(toitReference: ToitReference): TopLevelItemRef {
+  const urlPath = urlAndPathFrom(toitReference.path);
   return {
     name: toitReference.name,
     libraryRef: {
       name: toitReference.name,
-      path: pathFrom(toitReference.path),
+      baseUrl: urlPath.url,
+      path: urlPath.path,
     },
   };
 }
@@ -413,7 +464,7 @@ function categoryFrom(category: ToitCategory): Category {
 
 function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
   const name = libraryName(toitModule.name);
-  const libraryId = { name: name, path: [...path, name] };
+  const libraryId = { name: name, baseUrl: "", path: [...path, name] };
 
   let classes = {} as Classes;
   let interfaces = {} as Classes;
@@ -583,7 +634,7 @@ function libraryFromLibrary(
 
   return {
     name: name,
-    id: { name: name, path: libraryPath },
+    id: { name: name, baseUrl: "", path: libraryPath },
     libraries: libraries,
     classes: libraryContent ? libraryContent.classes : {},
     interfaces: libraryContent ? libraryContent.interfaces : {},
@@ -621,8 +672,10 @@ function foldLibrary(topLibrary: Library, subLibrary: Library): void {
 export function modelFrom(
   rootLibrary: ToitLibrary,
   viewMode: ViewMode,
-  packageName: string
+  packageName: string,
+  generatorSdkPath: string[] | undefined
 ): Libraries {
+  sdkPath = generatorSdkPath;
   let model = libraryFromLibrary(rootLibrary, [], true).libraries;
 
   // In package mode if we have more libraries top level, we will re-order the libraries.
@@ -637,7 +690,7 @@ export function modelFrom(
       // top-libraries under that rootLibrary.
       rootLibrary = {
         name: packageName,
-        id: { name: packageName, path: [packageName] },
+        id: { name: packageName, baseUrl: "", path: [packageName] },
         libraries: {},
         classes: {},
         interfaces: {},

@@ -3,6 +3,7 @@ import { Shape } from "./model";
 // Used for referencing libraries
 export interface TopLevelRef {
   name: string;
+  baseUrl: string;
   path: string[];
 }
 
@@ -47,6 +48,7 @@ export type LinkRefKind =
 // Contains all the information needed to be able to create a link for something.
 export interface LinkRef {
   kind: LinkRefKind;
+  baseUrl: string;
   path: string[];
   holder: string;
   name: string;
