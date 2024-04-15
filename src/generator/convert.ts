@@ -78,7 +78,11 @@ import {
 // pass them around everywhere.
 // TODO(florian): move all the conversion functions into a class and store the state there.
 let sdkPath: string[] | undefined = undefined;
+let packagesPath: string[] | undefined = undefined;
+let packageNames: { [name: string]: string } | undefined = undefined;
+
 const SDK_LIBS_URL = "https://libs.toit.io";
+const PACKAGES_URL = "https://pkg.toit.io";
 
 function libraryName(name: string): string {
   return name.endsWith(".toit") ? name.substring(0, name.length - 5) : name;
@@ -104,6 +108,70 @@ function isSdkPath(path: string[]): boolean {
   return true;
 }
 
+function isPackagePath(path: string[]): boolean {
+  if (packagesPath === undefined) {
+    return false;
+  }
+  if (path.length < packagesPath.length) {
+    return false;
+  }
+  for (let i = 0; i < packagesPath.length; i++) {
+    if (path[i] !== packagesPath[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function buildPackageUrlAndPath(path: string[]): UrlAndPath {
+  // Example path:
+  // [".packages", "github.com", "toitware", "toit-morse", "1.0.6", "src", "morse.toit"]
+  // We need to drop the ".packages" (done by the slice below).
+  // The ID of the package is everything before the version number.
+  // The version number is always prefixed by "src".
+  // Note: a valid source can't have dots in the name. This means that anything of the form
+  // X.Y.Z can't be part of the source path.
+  let srcIndex = packagesPath!.length;
+  while (true) {
+    srcIndex = path.indexOf("src", srcIndex);
+    if (srcIndex === -1) {
+      break;
+    }
+    if (srcIndex >= 1 && /^\d+\.\d+\.\d+$/.exec(path[srcIndex - 1])) {
+      break;
+    }
+    srcIndex++;
+  }
+  if (srcIndex === -1) {
+    // No "src" in the path.
+    return {
+      url: "",
+      path: path,
+    };
+  }
+  const versionNumber = path[srcIndex - 1];
+  const packageIdSegments = path.slice(packagesPath!.length, srcIndex - 1);
+  const packageId = packageIdSegments.join("/");
+  const packageName = packageNames![packageId];
+  const nestedPath = path.slice(srcIndex + 1);
+  nestedPath.unshift(packageName);
+
+  if (packageName === undefined) {
+    // Not a package we know about.
+    return {
+      url: "",
+      path: path,
+    };
+  }
+
+  const url = PACKAGES_URL + "/" + packageId + "@" + versionNumber + "/docs";
+
+  return {
+    url: url,
+    path: nestedPath,
+  };
+}
+
 function urlAndPathFrom(path: string[]): UrlAndPath {
   path = path.slice(); // Make a copy.
   let url = "";
@@ -112,6 +180,11 @@ function urlAndPathFrom(path: string[]): UrlAndPath {
       if (isSdkPath(path)) {
         url = SDK_LIBS_URL;
         path = path.slice(sdkPath!.length + 1); // Also drop the 'lib'.
+      } else if (isPackagePath(path)) {
+        const urlPath = buildPackageUrlAndPath(path);
+        url = urlPath.url;
+        // We don't return immediately so we can manipulate the path below.
+        path = urlPath.path;
       } else {
         // Replace the 'src' with the package name.
         path[0] = packageName;
@@ -673,9 +746,14 @@ export function modelFrom(
   rootLibrary: ToitLibrary,
   viewMode: ViewMode,
   packageName: string,
-  generatorSdkPath: string[] | undefined
+  generatorSdkPath: string[] | undefined,
+  generatorPackagesPath: string[] | undefined,
+  generatorPackageNames: { [name: string]: string } | undefined
 ): Libraries {
   sdkPath = generatorSdkPath;
+  packagesPath = generatorPackagesPath;
+  packageNames = generatorPackageNames;
+
   let model = libraryFromLibrary(rootLibrary, [], true).libraries;
 
   // In package mode if we have more libraries top level, we will re-order the libraries.
