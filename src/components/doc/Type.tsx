@@ -38,10 +38,6 @@ export class TypeReference extends Component<TypeReferenceProps> {
     if (this.props.reference.libraryRef.baseUrl !== "") {
       return <a href={url}>{name}</a>;
     }
-    return (
-      <Link to={url}>
-        {name}
-      </Link>
-    );
+    return <Link to={url}>{name}</Link>;
   }
 }
