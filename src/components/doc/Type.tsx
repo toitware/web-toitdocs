@@ -39,8 +39,8 @@ export class TypeReference extends Component<TypeReferenceProps> {
       return <a href={url}>{name}</a>;
     }
     return (
-      <Link to={classUrlFromRef(this.props.reference)}>
-        {this.props.reference.name}
+      <Link to={url}>
+        {name}
       </Link>
     );
   }
