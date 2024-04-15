@@ -154,8 +154,15 @@ export enum ViewMode {
   SDK = "sdk",
 }
 
-export const viewMode = getMetaValue("toitdoc-mode", "sdk") as ViewMode;
-export const packageName = getMetaValue("toitdoc-package-name");
+export let viewMode = getMetaValue("toitdoc-mode", "sdk") as ViewMode;
+export let packageName = getMetaValue("toitdoc-package-name");
+
+export function setViewMode(newMode: ViewMode): void {
+  viewMode = newMode;
+}
+export function setPackageName(newName: string): void {
+  packageName = newName;
+}
 
 class App extends Component<AppProps> {
   componentDidMount(): void {

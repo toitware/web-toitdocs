@@ -83,7 +83,6 @@ You can create new json files by running the following command:
     --toitc "$PATH_TO_TOIT_COMPILE" \
     --sdk "$PATH_TO_SDK" \
     --out "$OUTFILE" \
-    --version "$PACKAGE_VERSION" \
     "./lib"
 ```
 
@@ -96,10 +95,7 @@ You can create new json files by running the following command:
     --sdk "$PATH_TO_SDK" \
     --exclude-sdk \
     --out "$OUTFILE" \
+    --pkg-name "$PACKAGE_NAME" \
     --version "$PACKAGE_VERSION" \
     "./src"
 ```
-
-The viewer also uses a view headers to correctly show packages.
-The easiest is to copy the [public/pkg.html] over [public/index.html].
-Just make sure not to check it in.
