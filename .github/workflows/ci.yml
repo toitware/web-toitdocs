@@ -4,6 +4,13 @@ on:
   push:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy the website'
+        required: false
+        default: false
+        type: boolean
 
 env:
   BUCKET: toit-web
@@ -130,3 +137,43 @@ jobs:
 
           gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED
           gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED.$BUILD_VERSION
+
+  deploy:
+    if: |
+      github.event.inputs.deploy == 'true' ||
+      github.event_name == 'release' && !github.event.release.prerelease
+
+    # Only deploy if all tests passed.
+    needs: [ci]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # No need to checkout the project, since all we need is to download the
+      # build artifact from the build step.
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: build
+
+      - name: Disable Jekyll
+        run: |
+          touch build/.nojekyll
+
+      - name: Untar
+        run: |
+          cd build
+          VERSION=$(cat VERSION)
+          tar x -zf $VERSION.$ARTIFACT_EXTENSION
+          rm $VERSION.$ARTIFACT_EXTENSION
+
+      # This seems to be the simplest way to publish to a separate branch.
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./build
+          # Optional. This will create a CNAME file so GitHub Pages serves it
+          # under this domain.
+          # cname: libs.toit.io
