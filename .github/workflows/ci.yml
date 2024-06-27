@@ -79,7 +79,7 @@ jobs:
           tar c -zf $VERSION.$ARTIFACT_EXTENSION -C $BUILD_DIR/ .
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           retention-days: 2
@@ -108,7 +108,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build
 
