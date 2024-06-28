@@ -11,6 +11,10 @@ on:
         required: false
         default: false
         type: boolean
+      toitdoc-version:
+        description: 'The version of the Toit documentation to fetch'
+        required: false
+        type: string
 
 env:
   BUCKET: toit-web
@@ -176,6 +180,19 @@ jobs:
           VERSION=$(cat VERSION)
           tar x -zf $VERSION.$ARTIFACT_EXTENSION
           rm $VERSION.$ARTIFACT_EXTENSION
+
+      - name: Fetch Toit documentation
+        run: |
+          # Fetch the Toit documentation from the GitHub release page.
+          VERSION=${{ github.event.inputs.toitdoc-version }}
+          if [[ -z "$VERSION" || "$VERSION" == "latest" ]]; then
+            URL=https://github.com/toitlang/toit/releases/latest/download/toitdoc.json
+          else
+            URL=https://github.com/toitlang/toit/releases/download/$VERSION/toitdoc.json
+          fi
+          echo "Fetching Toit documentation from $URL"
+          mkdir -p build/sdk
+          curl -L $URL -o build/sdk/latest.json
 
       # This seems to be the simplest way to publish to a separate branch.
       - name: Deploy
