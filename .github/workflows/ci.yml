@@ -204,4 +204,4 @@ jobs:
           publish_dir: ./build
           # Optional. This will create a CNAME file so GitHub Pages serves it
           # under this domain.
-          # cname: libs.toit.io
+          cname: libs.toit.io
