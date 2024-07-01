@@ -29,6 +29,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Show inputs
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "${{ toJSON(github.event.inputs) }}"
+
       - uses: actions/checkout@v4
         with:
           submodules: recursive
