@@ -34,7 +34,7 @@ jobs:
           submodules: recursive
 
       # We are using deprecated functionality. Downgrade Node so we still compile.
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
 
