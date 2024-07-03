@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { CircularProgress } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
-import React, { Component, useEffect, useMemo } from "react";
+import React, { Component, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   BrowserRouter,
