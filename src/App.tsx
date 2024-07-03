@@ -191,7 +191,6 @@ const FixedNavigationView = styled(NavigationView)`
 
 function AppContent(props: AppProps): JSX.Element {
   const classes = useStyles(props);
-  const segmentAPIKey = useMemo(() => getMetaValue("segment-key"), []);
 
   const { pathname } = useLocation();
 
