@@ -154,7 +154,7 @@ export enum ViewMode {
 }
 
 export let viewMode = "sdk" as ViewMode;
-export let packageName : string | undefined = undefined;
+export let packageName: string | undefined = undefined;
 export let containsPkgs = false;
 export let containsSdk = false;
 
@@ -209,7 +209,9 @@ function AppContent(props: AppProps): JSX.Element {
 
   // Use the first entry of the libraries as default.
   const defaultURL =
-    props.libraries !== undefined ? `/${Object.keys(props.libraries)[0]}/library-summary` : "";
+    props.libraries !== undefined
+      ? `/${Object.keys(props.libraries)[0]}/library-summary`
+      : "";
 
   return (
     <>

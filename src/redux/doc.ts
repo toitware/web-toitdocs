@@ -16,15 +16,12 @@ export interface RootState {
   doc: DocState;
 }
 
-export const fetchDoc = createAsyncThunk(
-  "docdata/fetch",
-  async () => {
-    const docPath =
-        process.env.PUBLIC_URL + getMetaValue("toitdoc-path", "/toitdoc.json");
-    const response = await fetch(docPath);
-    return (await response.json()) as ToitObject;
-  }
-);
+export const fetchDoc = createAsyncThunk("docdata/fetch", async () => {
+  const docPath =
+    process.env.PUBLIC_URL + getMetaValue("toitdoc-path", "/toitdoc.json");
+  const response = await fetch(docPath);
+  return (await response.json()) as ToitObject;
+});
 
 export interface DocState {
   sdkVersion?: string;
