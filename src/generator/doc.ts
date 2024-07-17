@@ -21,12 +21,17 @@ export type ObjectTypeExpression =
   | typeof OBJECT_TYPE_EXPRESSION_TEXT
   | typeof OBJECT_TYPE_TOITDOCREF;
 
+export type ToitMode = "sdk" | "package";
+
 export interface ToitObject {
   sdk_version: string;
   pkg_name?: string;
   sdk_path?: string[];
   packages_path?: string[];
   package_names?: { [key: string]: string };
+  contains_pkgs?: boolean;
+  contains_sdk?: boolean;
+  mode?: ToitMode;
   libraries: ToitLibraries;
 }
 

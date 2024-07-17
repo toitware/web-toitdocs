@@ -44,8 +44,8 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<RootState, void, AnyAction>
 ): Pick<AppProps, "fetchDoc"> => {
   return {
-    fetchDoc: (version: string): void => {
-      void dispatch(fetchDoc(version));
+    fetchDoc: (): void => {
+      void dispatch(fetchDoc());
     },
   };
 };
@@ -122,11 +122,10 @@ const StyledCircularProgress = styled(CircularProgress)`
 `;
 
 interface AppProps {
-  versionFromParams: string;
   libraries?: Libraries;
   sdkVersion?: string;
   version?: string;
-  fetchDoc: (version: string) => void;
+  fetchDoc: () => void;
 }
 
 export function getMetaValue(key: string, def = ""): string {
@@ -154,8 +153,10 @@ export enum ViewMode {
   SDK = "sdk",
 }
 
-export let viewMode = getMetaValue("toitdoc-mode", "sdk") as ViewMode;
-export let packageName = getMetaValue("toitdoc-package-name");
+export let viewMode = "sdk" as ViewMode;
+export let packageName : string | undefined = undefined;
+export let containsPkgs = false;
+export let containsSdk = false;
 
 export function setViewMode(newMode: ViewMode): void {
   viewMode = newMode;
@@ -163,10 +164,16 @@ export function setViewMode(newMode: ViewMode): void {
 export function setPackageName(newName: string): void {
   packageName = newName;
 }
+export function setContainsPkgs(newContainsPkgs: boolean): void {
+  containsPkgs = newContainsPkgs;
+}
+export function setContainsSdk(newContainsSdk: boolean): void {
+  containsSdk = newContainsSdk;
+}
 
 class App extends Component<AppProps> {
   componentDidMount(): void {
-    this.props.fetchDoc(this.props.versionFromParams);
+    this.props.fetchDoc();
   }
 
   render(): JSX.Element {
@@ -200,8 +207,9 @@ function AppContent(props: AppProps): JSX.Element {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const packageURL =
-    props.libraries !== undefined ? `/${packageName}/library-summary` : "";
+  // Use the first entry of the libraries as default.
+  const defaultURL =
+    props.libraries !== undefined ? `/${Object.keys(props.libraries)[0]}/library-summary` : "";
 
   return (
     <>
@@ -233,7 +241,7 @@ function AppContent(props: AppProps): JSX.Element {
                 <ErrorBoundary>
                   {viewMode === ViewMode.Package ? (
                     <Route exact path="/">
-                      <Redirect to={packageURL} />
+                      <Redirect to={defaultURL} />
                     </Route>
                   ) : (
                     <Route exact path="/" component={WelcomePage} />

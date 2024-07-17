@@ -13,15 +13,9 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
-const searchParams = new URLSearchParams(window.location.search);
-let version = "latest";
-if (searchParams.has("version")) {
-  version = searchParams.get("version") || version;
-}
-
 render(
   <Provider store={store}>
-    <App versionFromParams={version} />
+    <App />
   </Provider>,
   document.getElementById("root")
 );

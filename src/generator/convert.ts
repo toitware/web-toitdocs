@@ -1,4 +1,4 @@
-import { ViewMode, packageName, viewMode } from "../App";
+import { ViewMode, containsPkgs, containsSdk, viewMode } from "../App";
 import {
   CATEGORY_FUNDAMENTAL,
   CATEGORY_JUST_THERE,
@@ -64,6 +64,7 @@ import {
   ToitField,
   ToitFunction,
   ToitGlobal,
+  ToitLibraries,
   ToitLibrary,
   ToitModule,
   ToitParameter,
@@ -175,24 +176,20 @@ function buildPackageUrlAndPath(path: string[]): UrlAndPath {
 function urlAndPathFrom(path: string[]): UrlAndPath {
   path = path.slice(); // Make a copy.
   let url = "";
-  if (viewMode === ViewMode.Package) {
+  if (viewMode !== ViewMode.SDK) {
     if (path.length > 0) {
-      if (isSdkPath(path)) {
+      if (!containsSdk && isSdkPath(path)) {
         url = SDK_LIBS_URL;
         path = path.slice(sdkPath!.length + 1); // Also drop the 'lib'.
-      } else if (isPackagePath(path)) {
+      } else if (!containsPkgs && isPackagePath(path)) {
         const urlPath = buildPackageUrlAndPath(path);
         url = urlPath.url;
         // We don't return immediately so we can manipulate the path below.
         path = urlPath.path;
       } else {
-        // Replace the 'src' with the package name.
-        path[0] = packageName;
+        // Nothing to do.
       }
     }
-  } else if (path.length > 0 && path[0] === "lib") {
-    // Get rid of the first "lib" entry.
-    path.shift();
   }
   const len = path.length;
   if (len === 0) {
@@ -664,21 +661,10 @@ function libraryFromLibrary(
   path: string[],
   root?: boolean
 ): Library {
-  let libraries = {} as Libraries;
-
   const name = toitLibrary.name;
   const libraryPath = root ? [] : [...path, name];
 
-  Object.values(toitLibrary.libraries).forEach((lib) => {
-    if (libraries[lib.name]) {
-      console.log("Name clash", lib.name);
-    }
-    libraries = {
-      ...libraries,
-      [lib.name]: libraryFromLibrary(lib, libraryPath),
-    };
-  });
-
+  let libraries = librariesFromLibraries(toitLibrary.libraries, libraryPath);
   let libraryContent = undefined as Library | undefined;
 
   Object.values(toitLibrary.modules).forEach((module) => {
@@ -724,28 +710,27 @@ function libraryFromLibrary(
   };
 }
 
-function appendToIDPath(lib: Library, prefix: string): void {
-  lib.id.path.unshift(prefix);
-  for (const name in lib.libraries) {
-    appendToIDPath(lib.libraries[name], prefix);
-  }
-}
+function librariesFromLibraries(
+  toitLibraries: ToitLibraries,
+  path: string[]
+): Libraries {
+  let libraries = {} as Libraries;
 
-function foldLibrary(topLibrary: Library, subLibrary: Library): void {
-  if (topLibrary.libraries[subLibrary.name]) {
-    console.log(
-      "name clash when re-order libraries in package mode",
-      subLibrary.name
-    );
-  }
-  topLibrary.libraries[subLibrary.name] = subLibrary;
-  appendToIDPath(subLibrary, topLibrary.name);
+  Object.values(toitLibraries).forEach((toitLibrary) => {
+    if (libraries[toitLibrary.name]) {
+      console.log("Name clash", toitLibrary.name);
+    }
+    libraries = {
+      ...libraries,
+      [toitLibrary.name]: libraryFromLibrary(toitLibrary, path),
+    };
+  });
+
+  return libraries;
 }
 
 export function modelFrom(
-  rootLibrary: ToitLibrary,
-  viewMode: ViewMode,
-  packageName: string,
+  libraries: ToitLibraries,
   generatorSdkPath: string[] | undefined,
   generatorPackagesPath: string[] | undefined,
   generatorPackageNames: { [name: string]: string } | undefined
@@ -754,47 +739,5 @@ export function modelFrom(
   packagesPath = generatorPackagesPath;
   packageNames = generatorPackageNames;
 
-  let model = libraryFromLibrary(rootLibrary, [], true).libraries;
-
-  // In package mode if we have more libraries top level, we will re-order the libraries.
-  // Such that the library named the same as the package will be the top-level library.
-  if (viewMode === ViewMode.Package) {
-    // @TODO(jesper): Changing the toitdoc generator to know of package names would make it
-    //                possible to change it there instead.
-    //                That way import/module logic would be encapsuled in the compiler.
-    let rootLibrary = model[packageName];
-    if (rootLibrary === undefined) {
-      // This is the case of unstructure mode. here we make a fake rootLibrary and fold all
-      // top-libraries under that rootLibrary.
-      rootLibrary = {
-        name: packageName,
-        id: { name: packageName, baseUrl: "", path: [packageName] },
-        libraries: {},
-        classes: {},
-        interfaces: {},
-        mixins: {},
-        exportedClasses: {},
-        exportedInterfaces: {},
-        exportedMixins: {},
-        globals: [],
-        exportedGlobals: [],
-        functions: [],
-        exportedFunctions: [],
-        toitdoc: [],
-        category: "misc",
-      };
-    }
-    const topLibraries = Object.keys(model);
-    topLibraries.forEach((name) => {
-      if (name === packageName) {
-        return;
-      }
-      foldLibrary(rootLibrary, model[name]);
-      if (rootLibrary.libraries[name]) {
-        console.log("name clash when re-order libraries in package mode", name);
-      }
-    });
-    model = { [packageName]: rootLibrary };
-  }
-  return model;
+  return librariesFromLibraries(libraries, []);
 }
