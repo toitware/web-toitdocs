@@ -43,6 +43,7 @@ export type LinkRefKind =
   | "factory"
   | "method"
   | "field"
+  | "parameter"
   | "unknown";
 
 // Contains all the information needed to be able to create a link for something.

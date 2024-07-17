@@ -192,6 +192,8 @@ export function urlFromLinkRef(ref: LinkRef): string {
         libraryUrl(ref.baseUrl, ref.path),
         getFunctionId(ref.name, ref.shape)
       );
+    case "parameter":
+      return "";
     default:
       return "";
   }
