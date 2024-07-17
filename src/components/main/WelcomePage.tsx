@@ -46,7 +46,7 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
             "import metrics\n" +
             "import encoding.json as json\n" +
             "import peripherals show *\n" +
-            "import fixed_point show FixedPoint"
+            "import fixed-point show FixedPoint"
           }
         />
         <Summary />
