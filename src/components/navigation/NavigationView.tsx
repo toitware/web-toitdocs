@@ -4,7 +4,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
-import { Libraries, Library } from "../../model/model";
+import { Libraries } from "../../model/model";
 import { RootState } from "../../redux/doc";
 import LibraryNavigation from "./LibraryNavigation";
 
@@ -44,12 +44,6 @@ const NavigationView: React.FC<NavigationProps> = ({
   const libraries = useSelector<RootState, Libraries>(
     (state) => state.doc.libraries || {}
   );
-
-  let library: Library | undefined;
-  if (match.params.libraryName) {
-    const rootLibrary = match.params.libraryName.split("/")[0];
-    library = libraries[rootLibrary];
-  }
 
   return (
     <Wrapper className={className}>
