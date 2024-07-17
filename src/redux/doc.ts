@@ -2,12 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   ViewMode,
   getMetaValue,
-  packageName,
   setContainsPkgs,
   setContainsSdk,
   setPackageName,
   setViewMode,
-  viewMode,
 } from "../App";
 import { modelFrom } from "../generator/convert";
 import { ToitObject } from "../generator/doc";
