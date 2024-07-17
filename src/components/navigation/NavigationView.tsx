@@ -3,7 +3,6 @@ import { Typography } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { ViewMode, viewMode } from "../../App";
 import logo from "../../assets/images/logo.svg";
 import { Libraries, Library } from "../../model/model";
 import { RootState } from "../../redux/doc";
@@ -60,13 +59,7 @@ const NavigationView: React.FC<NavigationProps> = ({
       <Title>
         <Typography variant="h5">Libraries</Typography>
       </Title>
-      {viewMode !== ViewMode.SDK && library && (
-        <LibraryNavigation
-          library={library}
-          openLibrary={match.params.libraryName}
-        />
-      )}
-      {viewMode === ViewMode.SDK &&
+      {
         Object.values(libraries)
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((subLibrary) => (
@@ -75,7 +68,8 @@ const NavigationView: React.FC<NavigationProps> = ({
               openLibrary={match.params.libraryName}
               key={subLibrary.name}
             />
-          ))}
+          ))
+      }
     </Wrapper>
   );
 };

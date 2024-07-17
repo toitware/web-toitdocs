@@ -10,14 +10,14 @@ import {
 import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { viewMode, ViewMode } from "../../App";
 import { libraryFrom } from "../../misc/util";
 import { Libraries } from "../../model/model";
-import CodeBlock from "../general/CodeBlock";
 import Classes from "../doc/Classes";
 import Functions from "../doc/Functions";
 import Globals from "../doc/Globals";
 import Toitdocs from "../doc/Toitdocs";
-import { viewMode, ViewMode } from "../../App";
+import CodeBlock from "../general/CodeBlock";
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -61,15 +61,24 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
     let isCoreExported = false;
     let noImport = false;
     let isCore = false;
+    let showImportHelp = true;
 
-    if (viewMode === ViewMode.SDK) {
-      isCoreExported = libName.startsWith("core/");
-      const unexported = /^core\/.*_impl$/;
-      if (isCoreExported && unexported.exec(libName)) {
-        isCoreExported = false;
-      }
-      isCore = libName === "core";
-      noImport = isCoreExported || isCore;
+    switch (viewMode) {
+      case ViewMode.SDK:
+        isCoreExported = libName.startsWith("core/");
+        const unexported = /^core\/.*_impl$/;
+        if (isCoreExported && unexported.exec(libName)) {
+          isCoreExported = false;
+        }
+        isCore = libName === "core";
+        noImport = isCoreExported || isCore;
+      break
+      case ViewMode.Package:
+        // Do nothing.
+        break
+      case ViewMode.Folder:
+        showImportHelp = false;
+        break;
     }
 
     return (
@@ -79,20 +88,22 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
             Library {library.name}
           </Typography>
         </div>
-        <div className={this.props.classes.importingText}>
-          {noImport ? (
-            <Typography>
-              This is {isCoreExported ? "exported from" : ""} the core library,
-              which means you {isCore ? "usually" : ""} don&#39;t need to import
-              it.
-            </Typography>
-          ) : (
-            <div>
-              <Typography>To use this library in your code:</Typography>
-              <CodeBlock code={"import " + importPath} />
-            </div>
-          )}
-        </div>
+        {showImportHelp && (
+          <div className={this.props.classes.importingText}>
+            {noImport ? (
+              <Typography>
+                This is {isCoreExported ? "exported from" : ""} the core library,
+                which means you {isCore ? "usually" : ""} don&#39;t need to import
+                it.
+              </Typography>
+            ) : (
+              <div>
+                <Typography>To use this library in your code:</Typography>
+                <CodeBlock code={"import " + importPath} />
+              </div>
+            )}
+          </div>
+        )}
         {library.toitdoc && <Toitdocs value={library.toitdoc} />}
         {Object.keys(library.interfaces).length > 0 && (
           <Classes
