@@ -4,6 +4,7 @@ export const OBJECT_TYPE_STATEMENT_ITEMIZED = "statement_itemized";
 export const OBJECT_TYPE_STATEMENT_ITEM = "statement_item";
 export const OBJECT_TYPE_STATEMENT_PARAGRAPH = "statement_paragraph";
 export const OBJECT_TYPE_EXPRESSION_CODE = "expression_code";
+export const OBJECT_TYPE_EXPRESSION_LINK = "expression_link";
 export const OBJECT_TYPE_EXPRESSION_TEXT = "expression_text";
 export const OBJECT_TYPE_TOITDOCREF = "toitdocref";
 export const OBJECT_TYPE_FUNCTION = "function";
@@ -201,6 +202,7 @@ export interface ToitStatementParagraph {
 
 export type ToitExpression =
   | ToitExpressionCode
+  | ToitExpressionLink
   | ToitExpressionText
   | ToitDocRef;
 
@@ -212,6 +214,12 @@ export interface ToitExpressionCode {
 export interface ToitExpressionText {
   object_type: typeof OBJECT_TYPE_EXPRESSION_TEXT;
   text: string;
+}
+
+export interface ToitExpressionLink {
+  object_type: typeof OBJECT_TYPE_EXPRESSION_LINK;
+  text: string;
+  url: string;
 }
 
 export type ToitDocRefKind =
