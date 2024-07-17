@@ -53,17 +53,15 @@ const NavigationView: React.FC<NavigationProps> = ({
       <Title>
         <Typography variant="h5">Libraries</Typography>
       </Title>
-      {
-        Object.values(libraries)
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((subLibrary) => (
-            <LibraryNavigation
-              library={subLibrary}
-              openLibrary={match.params.libraryName}
-              key={subLibrary.name}
-            />
-          ))
-      }
+      {Object.values(libraries)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((subLibrary) => (
+          <LibraryNavigation
+            library={subLibrary}
+            openLibrary={match.params.libraryName}
+            key={subLibrary.name}
+          />
+        ))}
     </Wrapper>
   );
 };

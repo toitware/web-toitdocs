@@ -72,10 +72,10 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
         }
         isCore = libName === "core";
         noImport = isCoreExported || isCore;
-      break
+        break;
       case ViewMode.Package:
         // Do nothing.
-        break
+        break;
       case ViewMode.Folder:
         showImportHelp = false;
         break;
@@ -92,9 +92,9 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
           <div className={this.props.classes.importingText}>
             {noImport ? (
               <Typography>
-                This is {isCoreExported ? "exported from" : ""} the core library,
-                which means you {isCore ? "usually" : ""} don&#39;t need to import
-                it.
+                This is {isCoreExported ? "exported from" : ""} the core
+                library, which means you {isCore ? "usually" : ""} don&#39;t
+                need to import it.
               </Typography>
             ) : (
               <div>

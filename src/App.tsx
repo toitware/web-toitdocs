@@ -243,7 +243,7 @@ function AppContent(props: AppProps): JSX.Element {
             <ContentWrapper>
               <Content>
                 <ErrorBoundary>
-                  {(()  => {
+                  {(() => {
                     switch (viewMode) {
                       case ViewMode.Package:
                         return (
@@ -252,9 +252,11 @@ function AppContent(props: AppProps): JSX.Element {
                           </Route>
                         );
                       case ViewMode.SDK:
-                        return <Route exact path="/" component={WelcomePage} />
+                        return <Route exact path="/" component={WelcomePage} />;
                       case ViewMode.Folder:
-                        return <Route exact path="/" component={WelcomeFolderPage} />
+                        return (
+                          <Route exact path="/" component={WelcomeFolderPage} />
+                        );
                     }
                   })()}
                   <Route
@@ -275,14 +277,12 @@ function AppContent(props: AppProps): JSX.Element {
               </Content>
             </ContentWrapper>
             <Footer>
-              {
-                props.version && (
-                  <>
-                    Version: {props.version}
-                    <br />
-                  </>
-                )
-              }
+              {props.version && (
+                <>
+                  Version: {props.version}
+                  <br />
+                </>
+              )}
               SDK version: {props.sdkVersion}
             </Footer>
           </div>
