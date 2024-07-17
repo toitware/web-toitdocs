@@ -654,6 +654,7 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
   };
 }
 
+/* eslint @typescript-eslint/no-use-before-define: "off" */
 function libraryFromLibrary(
   toitLibrary: ToitLibrary,
   path: string[],

@@ -33,6 +33,7 @@
   "scripts": {
     "start": "react-scripts start",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --max-warnings=0",
+    "fix-lint": "eslint --fix '*/**/*.{js,ts,tsx}' --max-warnings=0",
     "build": "PUBLIC_URL=./ react-scripts build",
     "test": "react-scripts test",
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
