@@ -215,6 +215,19 @@ function AppContent(props: AppProps): JSX.Element {
       ? `/${Object.keys(props.libraries)[0]}/library-summary`
       : "";
 
+  // Set the title of the window.
+  switch (viewMode) {
+    case ViewMode.Package:
+      document.title = `${packageName}`;
+      break;
+    case ViewMode.SDK:
+      document.title = "Standard libraries";
+      break;
+    case ViewMode.Folder:
+      document.title = `Toitdocs`;
+      break;
+  }
+
   return (
     <>
       {props.libraries !== undefined ? (
