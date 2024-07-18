@@ -246,6 +246,8 @@ function linkRefKindFrom(toitDocRefKind: ToitDocRefKind): LinkRefKind {
       return "method";
     case "field":
       return "field";
+    case "parameter":
+      return "parameter";
     default:
       console.error("Unknown ToitDocRefKind", toitDocRefKind);
       return "unknown";
