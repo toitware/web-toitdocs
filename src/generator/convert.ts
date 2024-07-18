@@ -328,6 +328,7 @@ function docStatementFrom(toitStatement: ToitStatement): DocStatement {
 function docSectionFrom(toitSection: ToitSection): DocSection {
   return {
     title: toitSection.title,
+    level: toitSection.level,
     statements: toitSection.statements.map((toitStatement) =>
       docStatementFrom(toitStatement)
     ),

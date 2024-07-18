@@ -172,6 +172,7 @@ export type ToitDoc = ToitSection[];
 export interface ToitSection {
   object_type: typeof OBJECT_TYPE_SECTION;
   title: string | null;
+  level: number;
   statements: ToitStatement[];
 }
 

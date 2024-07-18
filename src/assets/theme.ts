@@ -51,8 +51,8 @@ export const theme = createMuiTheme({
       fontSize: "1.125rem",
     },
     h6: {
-      fontSize: "1rem",
-      fontWeight: "bold",
+      fontFamily: "ClashDisplay",
+      fontSize: "1.07rem",
     },
   },
 });
