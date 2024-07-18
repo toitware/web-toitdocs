@@ -159,7 +159,11 @@ export interface DocStatementParagraph {
   expressions: DocExpression[];
 }
 
-export type DocExpression = DocExpressionCode | DocExpressionText | DocExpressionLink | DocRef;
+export type DocExpression =
+  | DocExpressionCode
+  | DocExpressionText
+  | DocExpressionLink
+  | DocRef;
 
 export interface DocExpressionCode {
   type: typeof DOC_EXPRESSION_CODE;
