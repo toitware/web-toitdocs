@@ -103,6 +103,7 @@ function ToitdocRef(props: { reference: DocRef }): JSX.Element {
     switch (props.reference.reference.kind) {
       case "parameter":
         className = classes.parameterDocRef;
+        break;
       default:
         className = classes.otherDocRef;
     }

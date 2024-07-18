@@ -232,6 +232,7 @@ export type ToitDocRefKind =
   | "factory"
   | "method"
   | "field"
+  | "parameter"
   | "";
 
 export interface ToitDocRef {
