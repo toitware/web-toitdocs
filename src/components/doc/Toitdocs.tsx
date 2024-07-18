@@ -154,7 +154,7 @@ function Statement(props: {
 function Section(props: { section: DocSection }): JSX.Element {
   const classes = useStyles();
   let level = props.section.level;
-  if (level > 2 ) level = 2;
+  if (level > 2) level = 2;
   const variant = ("h" + (props.section.level + 5)) as Variant;
   return (
     <>
