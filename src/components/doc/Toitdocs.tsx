@@ -155,7 +155,7 @@ function Section(props: { section: DocSection }): JSX.Element {
   const classes = useStyles();
   let level = props.section.level;
   if (level > 2) level = 2;
-  const variant = ("h" + (props.section.level + 5)) as Variant;
+  const variant = ("h" + (props.section.level + 4)) as Variant;
   return (
     <>
       <Typography variant={variant} className={classes.sectionTitle}>
