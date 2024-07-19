@@ -9,7 +9,7 @@ import DetailsList from "../general/DetailsList";
 import { TypeView } from "./Type";
 
 const useStyles = makeStyles((theme) => ({
-  defaultValue: { fontSize: "0.875em" }
+  defaultValue: { fontSize: "0.875em" },
 }));
 
 interface FunctionsProps {
@@ -44,7 +44,9 @@ export function getDescription(
               <>
                 {"="}
                 {includeDefaultValues && (
-                  <span className={classes!.defaultValue}>{parameter.defaultValue}</span>
+                  <span className={classes!.defaultValue}>
+                    {parameter.defaultValue}
+                  </span>
                 )}{" "}
               </>
             )}{" "}
