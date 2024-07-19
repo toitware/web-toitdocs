@@ -372,6 +372,7 @@ function parameterFrom(toitParameter: ToitParameter): Parameter {
     isBlock: toitParameter.is_block,
     isNamed: toitParameter.is_named,
     isRequired: toitParameter.is_required,
+    defaultValue: toitParameter.default_value,
     type: typeFrom(toitParameter.type),
   };
 }
