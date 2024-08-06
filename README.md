@@ -58,31 +58,33 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## JSON files
 
-The page loads the toitdoc information from `public/sdk/latest.json`. This is true for non-sdk packages as well.
+The page loads the toitdoc information from `public/toitdoc.json`.
 
 You can create new json files by running the following command:
 
 ### Core libraries
 
 ```bash
-  toit.lsp \
-    toitdoc \
-    --toitc "$PATH_TO_TOIT_COMPILE" \
-    --sdk "$PATH_TO_SDK" \
-    --out "$OUTFILE" \
-    "./lib"
+toit doc build --sdk --out "$OUTFILE"
 ```
 
 ### Package
 
 ```bash
-  toit.lsp \
-    toitdoc \
-    --toitc "$PATH_TO_TOIT_COMPILE" \
-    --sdk "$PATH_TO_SDK" \
-    --exclude-sdk \
-    --out "$OUTFILE" \
-    --pkg-name "$PACKAGE_NAME" \
-    --version "$PACKAGE_VERSION" \
-    "./src"
+toit doc build --package --out "$OUTFILE" $PATH_TO_PACKAGE
+```
+
+You might want to exclude the sdk and/or packages from the generated documentation:
+
+```bash
+toit doc build --package --exclude-sdk --out "$OUTFILE" $PATH_TO_PACKAGE
+toit doc build --package --exclude-pkgs --out "$OUTFILE" $PATH_TO_PACKAGE
+```
+
+### Folder
+
+You can also just build the toitdoc of a folder:
+
+```bash
+toit doc build --out "$OUTFILE" $PATH_TO_FOLDER
 ```
