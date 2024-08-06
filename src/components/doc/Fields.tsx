@@ -15,7 +15,11 @@ export default function Fields(props: FieldsProps): JSX.Element {
       elements={props.fields.map((field, i) => {
         return {
           name: field.name,
-          description: <TypeView type={field.type} />,
+          description: (
+            <>
+              / <TypeView type={field.type} />
+            </>
+          ),
           key: "field_" + i,
           id: getFieldId(field.name),
           toitdoc: field.toitdoc,

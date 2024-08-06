@@ -81,7 +81,7 @@ class TablePanel extends Component<TablePanelProps> {
                         <HashLink to={{ hash: field.name }}>
                           {field.name}
                         </HashLink>{" "}
-                        <TypeView type={field.type} />
+                        / <TypeView type={field.type} />
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Toitdocs value={field.toitdoc} headerOnly={true} />
