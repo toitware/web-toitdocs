@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   otherDocRef: {
     fontWeight: 590,
   },
+  parameterDocRef: {
+    fontWeight: 590,
+  },
 }));
 
 function StatementCodeSection(props: {
@@ -96,7 +99,15 @@ function ToitdocRef(props: { reference: DocRef }): JSX.Element {
   const classes = useStyles();
   const url = urlFromLinkRef(props.reference.reference);
   if (!url) {
-    return <span className={classes.otherDocRef}>{props.reference.text}</span>;
+    let className: string;
+    switch (props.reference.reference.kind) {
+      case "parameter":
+        className = classes.parameterDocRef;
+        break;
+      default:
+        className = classes.otherDocRef;
+    }
+    return <span className={className}>{props.reference.text}</span>;
   }
   if (props.reference.reference.baseUrl !== "") {
     return <a href={url}>{props.reference.text}</a>;
