@@ -160,8 +160,8 @@ jobs:
             URL=https://github.com/toitlang/toit/releases/download/$VERSION/toitdoc.json
           fi
           echo "Fetching Toit documentation from $URL"
-          mkdir -p build/sdk
-          curl -L $URL -o build/sdk/latest.json
+          mkdir -p build
+          curl -L $URL -o build/toitdoc.json
 
       - name: Disable Jekyll
         run: |
