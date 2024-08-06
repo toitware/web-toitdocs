@@ -17,8 +17,6 @@ on:
         type: string
 
 env:
-  BUCKET: toit-web
-  BUCKET_PATH: toitdocs.toit.io
   BUILD_DIR: build
   HAS_PROTOBUF: false
   RUN_TESTS: true
@@ -29,6 +27,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Show inputs
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "${{ toJSON(github.event.inputs) }}"
+
       - uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -103,56 +105,6 @@ jobs:
           tag: ${{ github.event.release.tag_name }}
           overwrite: true
 
-  upload:
-    runs-on: ubuntu-latest
-    needs: [ ci ]
-    if: |
-      github.event_name == 'release' ||
-      github.event_name == 'push' && github.ref_name == 'master' ||
-      github.event_name == 'push' && startsWith(github.ref_name, 'release-v')
-
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-
-      - name: Set up env
-        run: |
-          # Just for debugging and better understanding list all files we have now.
-          find .
-          VERSION=$(cat VERSION)
-          ARTIFACT=$VERSION.$ARTIFACT_EXTENSION
-          echo BUILD_VERSION=$VERSION >> $GITHUB_ENV
-          echo ARTIFACT=$ARTIFACT >> $GITHUB_ENV
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.INFRASTRUCTURE_SERVICE_ACCOUNT_JSON_KEY }}
-          service_account: github-action@infrastructure-220307.iam.gserviceaccount.com
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: infrastructure-220307
-
-      - name: Upload to Google Cloud
-        run: |
-          echo -n $BUILD_VERSION > LATEST.tmp
-
-          gsutil cp $ARTIFACT  gs://$BUCKET/$BUCKET_PATH/$BUILD_VERSION.$ARTIFACT_EXTENSION
-          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/LATEST
-
-      - name: Update RELEASED in Google Cloud
-        if: |
-          github.event_name == 'release' && !github.event.release.prerelease
-        run: |
-          echo -n $BUILD_VERSION > LATEST.tmp
-
-          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED
-          gsutil cp LATEST.tmp gs://$BUCKET/$BUCKET_PATH/RELEASED.$BUILD_VERSION
-
   deploy:
     if: |
       github.event.inputs.deploy == 'true' ||
@@ -170,10 +122,6 @@ jobs:
         with:
           name: build
           path: build
-
-      - name: Disable Jekyll
-        run: |
-          touch build/.nojekyll
 
       - name: Untar
         run: |
@@ -194,6 +142,10 @@ jobs:
           echo "Fetching Toit documentation from $URL"
           mkdir -p build/sdk
           curl -L $URL -o build/sdk/latest.json
+
+      - name: Disable Jekyll
+        run: |
+          touch build/.nojekyll
 
       # This seems to be the simplest way to publish to a separate branch.
       - name: Deploy
