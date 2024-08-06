@@ -175,10 +175,6 @@ jobs:
           name: build
           path: build
 
-      - name: Disable Jekyll
-        run: |
-          touch build/.nojekyll
-
       - name: Untar
         run: |
           cd build
@@ -198,6 +194,10 @@ jobs:
           echo "Fetching Toit documentation from $URL"
           mkdir -p build/sdk
           curl -L $URL -o build/sdk/latest.json
+
+      - name: Disable Jekyll
+        run: |
+          touch build/.nojekyll
 
       # This seems to be the simplest way to publish to a separate branch.
       - name: Deploy
