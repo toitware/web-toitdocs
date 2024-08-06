@@ -1,10 +1,16 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
+import { makeStyles } from "@material-ui/core";
+import { ClassNameMap } from "@material-ui/core/styles/withStyles";
 import React from "react";
 import { getFunctionId } from "../../misc/util";
 import { Function, Method, Parameter, Type } from "../../model/model";
 import DetailsList from "../general/DetailsList";
 import { TypeView } from "./Type";
+
+const useStyles = makeStyles((theme) => ({
+  defaultValue: { fontSize: "0.875em" },
+}));
 
 interface FunctionsProps {
   functions: (Function | Method)[];
@@ -15,7 +21,9 @@ interface FunctionsProps {
 export function getDescription(
   parameters: Parameter[],
   returnType?: Type,
-  hideReturnTypes?: boolean
+  hideReturnTypes?: boolean,
+  includeDefaultValues?: boolean,
+  classes?: ClassNameMap<"defaultValue">
 ): JSX.Element {
   return (
     <>
@@ -32,7 +40,16 @@ export function getDescription(
           <span key={i}>
             {param + "/"}
             <TypeView type={parameter.type} />
-            {parameter.isRequired ? " " : "= "}
+            {!parameter.isRequired && (
+              <>
+                {"="}
+                {includeDefaultValues && (
+                  <span className={classes!.defaultValue}>
+                    {parameter.defaultValue}
+                  </span>
+                )}{" "}
+              </>
+            )}{" "}
           </span>
         );
       })}
@@ -47,6 +64,7 @@ export function getDescription(
 }
 
 export default function Functions(props: FunctionsProps): JSX.Element {
+  const classes = useStyles();
   return (
     <DetailsList
       title={props.title}
@@ -57,7 +75,9 @@ export default function Functions(props: FunctionsProps): JSX.Element {
           description: getDescription(
             fn.parameters,
             fn.returnType,
-            props.hideReturnTypes
+            props.hideReturnTypes,
+            true,
+            classes
           ),
           key: "function" + i,
           id: id,

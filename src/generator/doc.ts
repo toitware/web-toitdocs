@@ -84,6 +84,7 @@ export interface ToitParameter {
   is_block: boolean;
   is_named: boolean;
   is_required: boolean;
+  default_value?: string;
   type: ToitType;
 }
 

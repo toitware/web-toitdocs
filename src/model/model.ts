@@ -91,6 +91,7 @@ export interface Parameter {
   isBlock: boolean;
   isNamed: boolean;
   isRequired: boolean;
+  defaultValue?: string;
   type: Type;
 }
 
