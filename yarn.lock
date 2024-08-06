@@ -1913,13 +1913,6 @@
   dependencies:
     "@babel/runtime" "^7.10.2"
 
-"@toitware/cookie-consent@^0.1.3":
-  version "0.1.3"
-  resolved "https://npm.pkg.github.com/download/@toitware/cookie-consent/0.1.3/fefc78b64609000479f9ef1714b7694c62103b51bf0ba6dff2dda535d516a6b3#d91c1b68ba7cf9e00a2a735811b5b26c42a78d91"
-  integrity sha512-qNBV+7OBRbdwhCqKrYzXrmXnfAI96PX44jM0DKUUpE4Yro4NpRqVgBZQiJHoQGmEUZcORmZrr/OgNWfV7EOA9Q==
-  dependencies:
-    js-cookie "^2.2.1"
-
 "@types/aria-query@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.0.tgz#14264692a9d6e2fa4db3df5e56e94b5e25647ac0"
@@ -2115,11 +2108,6 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
-
-"@types/segment-analytics@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@types/segment-analytics/-/segment-analytics-0.0.33.tgz#7580723d3978993126636e2f293d5831c8e9585b"
-  integrity sha512-8OB3OhKGuIkItHeQxgQpzldyaL1dVKzJQF9ujfVLmO0MJyIhXZTiOIZtkSHF6jhptEQZqm8EyTuceIAR36OS3A==
 
 "@types/sinonjs__fake-timers@^6.0.2":
   version "6.0.4"
@@ -7394,11 +7382,6 @@ joi@^17.4.0:
     "@sideway/address" "^4.1.0"
     "@sideway/formula" "^3.0.0"
     "@sideway/pinpoint" "^2.0.0"
-
-js-cookie@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.2.1.tgz#69e106dc5d5806894562902aa5baec3744e9b2b8"
-  integrity sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
