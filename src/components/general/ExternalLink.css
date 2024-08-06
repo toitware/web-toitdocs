@@ -1,0 +1,40 @@
+.external-container {
+  display: inline-flex;
+  align-items: baseline;
+  position: relative;
+  padding-right: 0;
+  transition: padding-right 0.3s ease-in-out;
+}
+
+.external-container:hover {
+  padding-right: 0.6em;
+}
+
+.external {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.external-link-icon {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #7BB928;
+  font-size: 0.7em;
+  width: 0.6em;
+  overflow: hidden;
+  transition: opacity 0.3s ease-in-out;
+  top: -0.3em;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.external-container:hover .external-link-icon {
+  opacity: 1;
+}
+
+.external-link-icon::before {
+  content: "↗";
+}

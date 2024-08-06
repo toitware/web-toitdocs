@@ -27,6 +27,7 @@ import {
   DocStatementParagraph,
 } from "../../model/model";
 import CodeBlock from "../general/CodeBlock";
+import ExternalLink from "../general/ExternalLink";
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
 
@@ -111,7 +112,7 @@ function ToitdocRef(props: { reference: DocRef }): JSX.Element {
     return <span className={className}>{props.reference.text}</span>;
   }
   if (props.reference.reference.baseUrl !== "") {
-    return <a href={url}>{props.reference.text}</a>;
+    return <ExternalLink to={url} text={props.reference.text}></ExternalLink>;
   }
   return <HashLink to={url}>{props.reference.text}</HashLink>;
 }

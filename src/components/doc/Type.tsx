@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { classUrlFromRef } from "../../misc/util";
 import { Type } from "../../model/model";
 import { TopLevelItemRef } from "../../model/reference";
+import ExternalLink from "../general/ExternalLink";
 
 interface TypeProps {
   type: Type;
@@ -36,7 +37,7 @@ export class TypeReference extends Component<TypeReferenceProps> {
     const url = classUrlFromRef(this.props.reference);
     const name = this.props.reference.name;
     if (this.props.reference.libraryRef.baseUrl !== "") {
-      return <a href={url}>{name}</a>;
+      return <ExternalLink to={url} text={name}></ExternalLink>;
     }
     return <Link to={url}>{name}</Link>;
   }
