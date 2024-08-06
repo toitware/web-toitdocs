@@ -131,6 +131,7 @@ export type Doc = DocSection[];
 
 export interface DocSection {
   title: string | null;
+  level: number;
   statements: DocStatement[];
 }
 

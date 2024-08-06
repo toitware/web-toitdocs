@@ -1,6 +1,7 @@
 // Copyright (C) 2020 Toitware ApS. All rights reserved.
 
 import { makeStyles, Typography } from "@material-ui/core";
+import { Variant } from "@material-ui/core/styles/createTypography";
 import React from "react";
 import { HashLink } from "react-router-hash-link";
 import { urlFromLinkRef } from "../../misc/util";
@@ -152,9 +153,12 @@ function Statement(props: {
 
 function Section(props: { section: DocSection }): JSX.Element {
   const classes = useStyles();
+  let level = props.section.level;
+  if (level > 2) level = 2;
+  const variant = ("h" + (props.section.level + 4)) as Variant;
   return (
     <>
-      <Typography variant="h5" className={classes.sectionTitle}>
+      <Typography variant={variant} className={classes.sectionTitle}>
         {props.section.title}
       </Typography>
       {props.section.statements.map((statement, index) => (
