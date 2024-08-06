@@ -21,6 +21,9 @@ env:
   HAS_PROTOBUF: false
   RUN_TESTS: true
   ARTIFACT_EXTENSION: tar.gz
+  DEV_DEPLOYMENT_OWNER: toitware
+  DEV_DEPLOYMENT_REPO: web-toitdocs-dev
+  DEV_DEPLOYMENT_WORKFLOW: ci.yml
 
 jobs:
   ci:
@@ -87,12 +90,29 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build
+          name: build  # This artifact name is used by the dev-deployment.
           retention-days: 2
           if-no-files-found: error
           path: |
             ${{ env.VERSION }}.${{ env.ARTIFACT_EXTENSION }}
             VERSION
+
+      - name: Dispatch dev-deployment
+        if: github.ref == 'refs/heads/master'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.LEON_REPOSITORY_DISPATCH }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: '${{ env.DEV_DEPLOYMENT_OWNER }}',
+              repo: '${{ env.DEV_DEPLOYMENT_REPO }}',
+              workflow_id: '${{ env.DEV_DEPLOYMENT_WORKFLOW }}',
+              ref: 'main',
+              inputs: {
+                'toit-version': 'latest',
+                'run-id': '${{ github.run_id }}',
+              },
+            });
 
       - name: Upload release artifacts
         if: |
