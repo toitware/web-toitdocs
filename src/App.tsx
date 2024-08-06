@@ -4,8 +4,7 @@ import styled from "@emotion/styled";
 import { CircularProgress } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
-import CookieConsent from "@toitware/cookie-consent";
-import React, { Component, useEffect, useMemo } from "react";
+import React, { Component, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   BrowserRouter,
@@ -201,7 +200,6 @@ const FixedNavigationView = styled(NavigationView)`
 
 function AppContent(props: AppProps): JSX.Element {
   const classes = useStyles(props);
-  const segmentAPIKey = useMemo(() => getMetaValue("segment-key"), []);
 
   const { pathname } = useLocation();
 
@@ -290,11 +288,6 @@ function AppContent(props: AppProps): JSX.Element {
       ) : (
         <StyledCircularProgress disableShrink />
       )}
-      <CookieConsent
-        segmentKey={segmentAPIKey}
-        changeConsent={false}
-        show={true}
-      />
     </>
   );
 }
