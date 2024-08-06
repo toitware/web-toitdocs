@@ -40,8 +40,6 @@ const NavigationView: React.FC<NavigationProps> = ({
   match,
   className,
 }: NavigationProps) => {
-  analytics.page("toitdocs");
-
   const libraries = useSelector<RootState, Libraries>(
     (state) => state.doc.libraries || {}
   );
