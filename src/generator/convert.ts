@@ -1,4 +1,4 @@
-import { ViewMode, containsPkgs, containsSdk, viewMode } from "../App";
+import { containsPkgs, containsSdk } from "../App";
 import {
   CATEGORY_FUNDAMENTAL,
   CATEGORY_JUST_THERE,
@@ -176,19 +176,17 @@ function buildPackageUrlAndPath(path: string[]): UrlAndPath {
 function urlAndPathFrom(path: string[]): UrlAndPath {
   path = path.slice(); // Make a copy.
   let url = "";
-  if (viewMode !== ViewMode.SDK) {
-    if (path.length > 0) {
-      if (!containsSdk && isSdkPath(path)) {
-        url = SDK_LIBS_URL;
-        path = path.slice(sdkPath!.length + 1); // Also drop the 'lib'.
-      } else if (!containsPkgs && isPackagePath(path)) {
-        const urlPath = buildPackageUrlAndPath(path);
-        url = urlPath.url;
-        // We don't return immediately so we can manipulate the path below.
-        path = urlPath.path;
-      } else {
-        // Nothing to do.
-      }
+  if (path.length > 0) {
+    if (!containsSdk && isSdkPath(path)) {
+      url = SDK_LIBS_URL;
+      path = path.slice(sdkPath!.length + 1); // Also drop the 'lib'.
+    } else if (!containsPkgs && isPackagePath(path)) {
+      const urlPath = buildPackageUrlAndPath(path);
+      url = urlPath.url;
+      // We don't return immediately so we can manipulate the path below.
+      path = urlPath.path;
+    } else {
+      // Nothing to do.
     }
   }
   const len = path.length;

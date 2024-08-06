@@ -25,6 +25,7 @@ export type ToitMode = "sdk" | "package";
 
 export interface ToitObject {
   sdk_version: string;
+  version?: string;
   pkg_name?: string;
   sdk_path?: string[];
   packages_path?: string[];

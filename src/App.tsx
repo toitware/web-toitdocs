@@ -19,6 +19,7 @@ import ErrorBoundary from "./components/ErrorPage";
 import HeaderBar from "./components/header/HeaderBar";
 import { ClassInfoParams } from "./components/main/ClassInfoView";
 import { LibraryInfoParams } from "./components/main/LibraryInfoView";
+import WelcomeFolderPage from "./components/main/WelcomeFolderPage";
 import WelcomePage from "./components/main/WelcomePage";
 import NavigationView, {
   NavigationParams,
@@ -150,6 +151,7 @@ export const baseURL = getBaseURL();
 export enum ViewMode {
   Package = "package",
   SDK = "sdk",
+  Folder = "folder",
 }
 
 export let viewMode = "sdk" as ViewMode;
@@ -239,13 +241,22 @@ function AppContent(props: AppProps): JSX.Element {
             <ContentWrapper>
               <Content>
                 <ErrorBoundary>
-                  {viewMode === ViewMode.Package ? (
-                    <Route exact path="/">
-                      <Redirect to={defaultURL} />
-                    </Route>
-                  ) : (
-                    <Route exact path="/" component={WelcomePage} />
-                  )}
+                  {(() => {
+                    switch (viewMode) {
+                      case ViewMode.Package:
+                        return (
+                          <Route exact path="/">
+                            <Redirect to={defaultURL} />
+                          </Route>
+                        );
+                      case ViewMode.SDK:
+                        return <Route exact path="/" component={WelcomePage} />;
+                      case ViewMode.Folder:
+                        return (
+                          <Route exact path="/" component={WelcomeFolderPage} />
+                        );
+                    }
+                  })()}
                   <Route
                     exact
                     path="/:libraryName+/library-summary"
@@ -263,7 +274,15 @@ function AppContent(props: AppProps): JSX.Element {
                 </ErrorBoundary>
               </Content>
             </ContentWrapper>
-            <Footer>SDK version: {props.sdkVersion}</Footer>
+            <Footer>
+              {props.version && (
+                <>
+                  Version: {props.version}
+                  <br />
+                </>
+              )}
+              SDK version: {props.sdkVersion}
+            </Footer>
           </div>
         </>
       ) : (

@@ -50,6 +50,7 @@ export const doc = createSlice({
       })
       .addCase(fetchDoc.fulfilled, (state, action) => {
         const sdkVersion = action.payload.sdk_version;
+        const version = action.payload.version;
         const sdkPath = action.payload.sdk_path;
         const packagesPath = action.payload.packages_path;
         const packageNames = action.payload.package_names;
@@ -57,6 +58,7 @@ export const doc = createSlice({
         const containsSdk = action.payload.contains_sdk === true;
         const mode = action.payload.mode;
         state.sdkVersion = sdkVersion;
+        state.version = version;
         // Instead of getting the root-path, package-name and view-mode through a header,
         // get/deduce it from the json file.
         const pkgName = action.payload.pkg_name;
@@ -69,8 +71,7 @@ export const doc = createSlice({
             setViewMode(ViewMode.Package);
             break;
           case undefined:
-            // TODO(florian): implement a generic "Folder" mode.
-            setViewMode(ViewMode.SDK);
+            setViewMode(ViewMode.Folder);
             break;
           default:
             throw new Error("Unknown mode: " + mode);
