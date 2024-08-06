@@ -123,6 +123,7 @@ export const DOC_STATEMENT_ITEMIZED = "DOC_STATEMENT_ITEMIZED";
 export const DOC_STATEMENT_ITEM = "DOC_STATEMENT_ITEM";
 export const DOC_STATEMENT_CODE_SECTION = "DOC_STATEMENT_CODE_SECTION";
 export const DOC_EXPRESSION_CODE = "DOC_EXPRESSION_CODE";
+export const DOC_EXPRESSION_LINK = "DOC_EXPRESSION_LINK";
 export const DOC_EXPRESSION_TEXT = "DOC_EXPRESSION_TEXT";
 export const DOC_DOCREF = "DOC_DOCREF";
 
@@ -158,7 +159,11 @@ export interface DocStatementParagraph {
   expressions: DocExpression[];
 }
 
-export type DocExpression = DocExpressionCode | DocExpressionText | DocRef;
+export type DocExpression =
+  | DocExpressionCode
+  | DocExpressionText
+  | DocExpressionLink
+  | DocRef;
 
 export interface DocExpressionCode {
   type: typeof DOC_EXPRESSION_CODE;
@@ -168,6 +173,12 @@ export interface DocExpressionCode {
 export interface DocExpressionText {
   type: typeof DOC_EXPRESSION_TEXT;
   text: string;
+}
+
+export interface DocExpressionLink {
+  type: typeof DOC_EXPRESSION_LINK;
+  text: string;
+  url: string;
 }
 
 export interface DocRef {

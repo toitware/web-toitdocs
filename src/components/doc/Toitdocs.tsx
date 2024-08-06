@@ -8,12 +8,14 @@ import {
   Doc,
   DOC_DOCREF,
   DOC_EXPRESSION_CODE,
+  DOC_EXPRESSION_LINK,
   DOC_EXPRESSION_TEXT,
   DOC_STATEMENT_CODE_SECTION,
   DOC_STATEMENT_ITEMIZED,
   DOC_STATEMENT_PARAGRAPH,
   DocExpression,
   DocExpressionCode,
+  DocExpressionLink,
   DocExpressionText,
   DocRef,
   DocSection,
@@ -50,6 +52,14 @@ function ExpressionCode(props: { code: DocExpressionCode }): JSX.Element {
 
 function ExpressionText(props: { text: DocExpressionText }): JSX.Element {
   return <span>{props.text.text}</span>;
+}
+
+function ExpressionLink(props: { link: DocExpressionLink }): JSX.Element {
+  return (
+    <a href={props.link.url} target="_blank" rel="noopener noreferrer">
+      {props.link.text}
+    </a>
+  );
 }
 
 function StatementItemized(props: {
@@ -101,6 +111,8 @@ function Expression(props: { expression: DocExpression }): JSX.Element {
       return <ExpressionCode code={expression} />;
     case DOC_EXPRESSION_TEXT:
       return <ExpressionText text={expression} />;
+    case DOC_EXPRESSION_LINK:
+      return <ExpressionLink link={expression} />;
     case DOC_DOCREF:
       return <ToitdocRef reference={expression} />;
     default:

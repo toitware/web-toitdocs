@@ -13,6 +13,7 @@ import {
   Classes,
   DOC_DOCREF,
   DOC_EXPRESSION_CODE,
+  DOC_EXPRESSION_LINK,
   DOC_EXPRESSION_TEXT,
   DOC_STATEMENT_CODE_SECTION,
   DOC_STATEMENT_ITEM,
@@ -42,6 +43,7 @@ import {
 } from "../model/reference";
 import {
   OBJECT_TYPE_EXPRESSION_CODE,
+  OBJECT_TYPE_EXPRESSION_LINK,
   OBJECT_TYPE_EXPRESSION_TEXT,
   OBJECT_TYPE_STATEMENT_CODE_SECTION,
   OBJECT_TYPE_STATEMENT_ITEMIZED,
@@ -275,6 +277,12 @@ function docExpressionFrom(toitExpression: ToitExpression): DocExpression {
       return {
         type: DOC_EXPRESSION_CODE,
         text: toitExpression.text,
+      };
+    case OBJECT_TYPE_EXPRESSION_LINK:
+      return {
+        type: DOC_EXPRESSION_LINK,
+        text: toitExpression.text,
+        url: toitExpression.url,
       };
     case OBJECT_TYPE_EXPRESSION_TEXT:
       return {
