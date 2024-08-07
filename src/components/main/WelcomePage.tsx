@@ -20,6 +20,9 @@ const styles = (theme: Theme): StyleRules =>
     section: {
       paddingBottom: theme.spacing(2),
     },
+    packages: {
+      paddingBottom: theme.spacing(1),
+    },
   });
 
 type WelcomePageProps = WithStyles<typeof styles>;
@@ -43,13 +46,23 @@ class WelcomePage extends React.PureComponent<WelcomePageProps> {
         </Typography>
         <CodeBlock
           code={
-            "import metrics\n" +
-            "import encoding.json as json\n" +
-            "import peripherals show *\n" +
+            "import io\n" +
+            "import encoding.json\n" +
+            "import net.tcp as net\n" +
+            "import uuid show *\n" +
             "import fixed-point show FixedPoint"
           }
         />
         <Summary />
+        <div>
+          <Typography variant="h4" className={this.props.classes.packages}>
+            Packages
+          </Typography>
+          <Typography className={this.props.classes.section}>
+            Additional libraries are distributed as packages. You can find them
+            at <a href="https://pkg.toit.io/">pkg.toit.io</a>.
+          </Typography>
+        </div>
       </>
     );
   }
