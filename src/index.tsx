@@ -6,6 +6,9 @@ import thunkMiddleware from "redux-thunk";
 import App from "./App";
 import { doc } from "./redux/doc";
 import * as serviceWorker from "./serviceWorker";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
 
 const rootReducer = combineReducers({
   doc: doc.reducer,
