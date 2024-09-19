@@ -1,4 +1,6 @@
-// Copyright (C) 2021 Toitware ApS. All rights reserved.
+// Copyright (C) 2021 Toitware ApS.
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file.
 
 import { Theme, Typography } from "@material-ui/core";
 import {
