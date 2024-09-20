@@ -11,15 +11,24 @@ on:
         required: false
         default: false
         type: boolean
-      toitdoc-version:
+      toit-version:
         description: 'The version of the Toit documentation to fetch'
         required: false
         type: string
+        default:
+      toitlang-run-id:
+        description: 'The run ID of the Toit documentation to fetch'
+        required: false
+        type: string
+        default:
+      run-tests:
+        description: 'Run tests'
+        required: false
+        type: boolean
 
 env:
   BUILD_DIR: build
   HAS_PROTOBUF: false
-  RUN_TESTS: true
   ARTIFACT_EXTENSION: tar.gz
   DEV_DEPLOYMENT_OWNER: toitware
   DEV_DEPLOYMENT_REPO: web-toitdocs-dev
@@ -28,6 +37,11 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
+    env:
+      TOITLANG_RUN_ID:
+      # Will be set in a step.
+      VERSION:
 
     steps:
       - name: Show inputs
@@ -55,11 +69,12 @@ jobs:
           make protobuf
 
       - name: Lint
+        if: ${{ github.event.inputs.run-tests != 'false' }}
         run: |
           yarn lint
 
       - name: Test
-        if: env.RUN_TESTS == 'true'
+        if: ${{ github.event.inputs.run-tests != 'false' }}
         run: |
           yarn test:ci
 
@@ -94,8 +109,13 @@ jobs:
             ${{ env.VERSION }}.${{ env.ARTIFACT_EXTENSION }}
             VERSION
 
+      - name: Set toitlang run-id environment variable
+        if: github.event.inputs.toitlang-run-id
+        run: |
+          echo "TOITLANG_RUN_ID=${{ github.event.inputs.toitlang-run-id }}" >> $GITHUB_ENV
+
       - name: Dispatch dev-deployment
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.LEON_REPOSITORY_DISPATCH }}
@@ -106,8 +126,9 @@ jobs:
               workflow_id: '${{ env.DEV_DEPLOYMENT_WORKFLOW }}',
               ref: 'main',
               inputs: {
-                'toit-version': 'latest',
                 'run-id': '${{ github.run_id }}',
+                'toit-version': 'latest',
+                'toitlang-run-id': '${{ env.TOITLANG_RUN_ID }}',
               },
             });
 
@@ -150,7 +171,7 @@ jobs:
       - name: Fetch Toit documentation
         run: |
           # Fetch the Toit documentation from the GitHub release page.
-          VERSION=${{ github.event.inputs.toitdoc-version }}
+          VERSION=${{ github.event.inputs.toit-version }}
           if [[ -z "$VERSION" || "$VERSION" == "latest" ]]; then
             URL=https://github.com/toitlang/toit/releases/latest/download/toitdoc.json
           else
