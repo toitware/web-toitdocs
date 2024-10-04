@@ -67,7 +67,6 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
 
     isAbsoluteSDK = libName === "@" || libName.startsWith("@");
     isPackage = libName === ".packages" || libName.startsWith(".packages/");
-    console.log("libName", libName);
 
     switch (viewMode) {
       case ViewMode.SDK:
