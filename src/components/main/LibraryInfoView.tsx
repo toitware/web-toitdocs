@@ -60,9 +60,13 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
 
     const importPath = libName.replace(/\//g, ".");
     let isCoreExported = false;
-    let noImport = false;
     let isCore = false;
     let showImportHelp = true;
+    let isAbsoluteSDK = false;
+    let isPackage = false;
+
+    isAbsoluteSDK = libName === "@" || libName.startsWith("@");
+    isPackage = libName === ".packages" || libName.startsWith(".packages/");
 
     switch (viewMode) {
       case ViewMode.SDK:
@@ -72,7 +76,6 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
           isCoreExported = false;
         }
         isCore = libName === "core";
-        noImport = isCoreExported || isCore;
         break;
       case ViewMode.Package:
         // Do nothing.
@@ -91,12 +94,16 @@ class LibraryInfoView extends Component<LibraryInfoProps> {
         </div>
         {showImportHelp && (
           <div className={this.props.classes.importingText}>
-            {noImport ? (
+            {isCore || isCoreExported ? (
               <Typography>
                 This is {isCoreExported ? "exported from" : ""} the core
                 library, which means you {isCore ? "usually" : ""} don&#39;t
                 need to import it.
               </Typography>
+            ) : isAbsoluteSDK ? (
+              <Typography>This is the SDK branch.</Typography>
+            ) : isPackage ? (
+              <Typography>This is an imported packages branch.</Typography>
             ) : (
               <div>
                 <Typography>To use this library in your code:</Typography>
