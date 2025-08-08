@@ -51,7 +51,7 @@ function parametersString(parameters: Parameter[]): string {
 function flattenMethod(
   libraries: Libraries,
   method: Method,
-  result: SearchableModel
+  result: SearchableModel,
 ): void {
   result.methods.push({
     name: method.name,
@@ -66,7 +66,7 @@ function flattenMethod(
 function flattenFunction(
   libraries: Libraries,
   fhunction: Function,
-  result: SearchableModel
+  result: SearchableModel,
 ): void {
   result.functions.push({
     name: fhunction.name,
@@ -80,7 +80,7 @@ function flattenFunction(
 function flattenClass(
   libraries: Libraries,
   klass: Class,
-  result: SearchableModel
+  result: SearchableModel,
 ): void {
   result.classes.push({
     name: klass.name,
@@ -97,7 +97,7 @@ function flattenClass(
 function flattenInterface(
   libraries: Libraries,
   inter: Class,
-  result: SearchableModel
+  result: SearchableModel,
 ): void {
   result.interfaces.push({
     name: inter.name,
@@ -114,7 +114,7 @@ function flattenInterface(
 function flattenMixin(
   libraries: Libraries,
   mixin: Class,
-  result: SearchableModel
+  result: SearchableModel,
 ): void {
   result.mixins.push({
     name: mixin.name,
@@ -131,7 +131,7 @@ function flattenMixin(
 function flattenLibrary(
   libraries: Libraries,
   library: Library,
-  result: SearchableModel
+  result: SearchableModel,
 ): void {
   result.libraries.push({
     name: library.name,
@@ -141,19 +141,19 @@ function flattenLibrary(
   });
 
   Object.values(library.libraries).forEach((m) =>
-    flattenLibrary(libraries, m, result)
+    flattenLibrary(libraries, m, result),
   );
   Object.values(library.interfaces).forEach((inter) =>
-    flattenInterface(libraries, inter, result)
+    flattenInterface(libraries, inter, result),
   );
   Object.values(library.mixins).forEach((mixin) =>
-    flattenMixin(libraries, mixin, result)
+    flattenMixin(libraries, mixin, result),
   );
   Object.values(library.classes).forEach((c) =>
-    flattenClass(libraries, c, result)
+    flattenClass(libraries, c, result),
   );
   Object.values(library.functions).forEach((f) =>
-    flattenFunction(libraries, f, result)
+    flattenFunction(libraries, f, result),
   );
 }
 

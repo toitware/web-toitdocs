@@ -67,7 +67,7 @@ class SummaryView extends React.PureComponent<SummaryViewProps> {
 
     const renderSection = (
       array: Array<Library>,
-      name?: string
+      name?: string,
     ): JSX.Element => {
       return (
         <div key={name}>

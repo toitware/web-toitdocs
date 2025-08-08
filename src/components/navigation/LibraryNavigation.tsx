@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
     openLibrary: {
       color: `${theme.palette.primary.main} !important`,
     },
-  })
+  }),
 );
 
 export type LibraryNavigationProps = {

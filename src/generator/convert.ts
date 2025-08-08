@@ -310,7 +310,7 @@ function docStatementFrom(toitStatement: ToitStatement): DocStatement {
       return {
         type: DOC_STATEMENT_PARAGRAPH,
         expressions: toitStatement.expressions.map((toitExpression) =>
-          docExpressionFrom(toitExpression)
+          docExpressionFrom(toitExpression),
         ),
       };
     case OBJECT_TYPE_STATEMENT_ITEMIZED:
@@ -336,7 +336,7 @@ function docSectionFrom(toitSection: ToitSection): DocSection {
     title: toitSection.title,
     level: toitSection.level,
     statements: toitSection.statements.map((toitStatement) =>
-      docStatementFrom(toitStatement)
+      docStatementFrom(toitStatement),
     ),
   };
 }
@@ -384,7 +384,7 @@ function parameterFrom(toitParameter: ToitParameter): Parameter {
 function fieldFrom(
   toitField: ToitField,
   classRef: TopLevelItemRef,
-  offset: number
+  offset: number,
 ): Field {
   return {
     name: toitField.name,
@@ -404,10 +404,10 @@ function methodFrom(
   toitMethod: ToitFunction,
   classRef: TopLevelItemRef,
   type: ClassMemberType,
-  offset: number
+  offset: number,
 ): Method {
   const parameters = toitMethod.parameters.map((parameter) =>
-    parameterFrom(parameter)
+    parameterFrom(parameter),
   );
 
   return {
@@ -441,7 +441,7 @@ function classFrom(
   toitClass: ToitClass,
   libraryRef: TopLevelRef,
   type: TopLevelItemType,
-  offset: number
+  offset: number,
 ): Class {
   const classId = {
     name: toitClass.name,
@@ -455,23 +455,23 @@ function classFrom(
     : undefined;
 
   const interfaces = toitClass.interfaces.map((inter, index) =>
-    referenceFrom(inter)
+    referenceFrom(inter),
   );
   const mixins = toitClass.mixins.map((mixin, index) => referenceFrom(mixin));
 
   const fields = toitClass.structure.fields.map((field, index) =>
-    fieldFrom(field, classId, index)
+    fieldFrom(field, classId, index),
   );
   const constructors = toitClass.structure.constructors
     .concat(toitClass.structure.factories)
     .map((constructor, index) =>
-      methodFrom(constructor, classId, "constructor", index)
+      methodFrom(constructor, classId, "constructor", index),
     );
   const statics = toitClass.structure.statics.map((statik, index) =>
-    methodFrom(statik, classId, "static", index)
+    methodFrom(statik, classId, "static", index),
   );
   const methods = toitClass.structure.methods.map((method, index) =>
-    methodFrom(method, classId, "method", index)
+    methodFrom(method, classId, "method", index),
   );
 
   return {
@@ -493,7 +493,7 @@ function globalFrom(
   toitGlobal: ToitGlobal,
   libraryRef: TopLevelRef,
   type: TopLevelItemType,
-  offset: number
+  offset: number,
 ): Global {
   return {
     name: toitGlobal.name,
@@ -511,10 +511,10 @@ function functionFrom(
   toitFunction: ToitFunction,
   libraryRef: TopLevelRef,
   type: TopLevelItemType,
-  offset: number
+  offset: number,
 ): Function {
   const parameters = toitFunction.parameters.map((parameter) =>
-    parameterFrom(parameter)
+    parameterFrom(parameter),
   );
 
   return {
@@ -594,16 +594,16 @@ function libraryFromModule(toitModule: ToitModule, path: string[]): Library {
     };
   });
   const globals = toitModule.globals.map((global, index) =>
-    globalFrom(global, libraryId, "global", index)
+    globalFrom(global, libraryId, "global", index),
   );
   const exportedGlobals = toitModule.export_globals.map((global, index) =>
-    globalFrom(global, libraryId, "exported_global", index)
+    globalFrom(global, libraryId, "exported_global", index),
   );
   const functions = toitModule.functions.map((f, index) =>
-    functionFrom(f, libraryId, "function", index)
+    functionFrom(f, libraryId, "function", index),
   );
   const exportedFunctions = toitModule.export_functions.map((f, index) =>
-    functionFrom(f, libraryId, "exported_function", index)
+    functionFrom(f, libraryId, "exported_function", index),
   );
 
   return {
@@ -674,7 +674,7 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
 function libraryFromLibrary(
   toitLibrary: ToitLibrary,
   path: string[],
-  root?: boolean
+  root?: boolean,
 ): Library {
   const name = toitLibrary.name;
   const libraryPath = root ? [] : [...path, name];
@@ -695,7 +695,7 @@ function libraryFromLibrary(
         ...libraries,
         [subLibraryName]: mergeLibraries(
           libLibrary,
-          libraryFromModule(module, libraryPath)
+          libraryFromModule(module, libraryPath),
         ),
       };
       return;
@@ -727,7 +727,7 @@ function libraryFromLibrary(
 
 function librariesFromLibraries(
   toitLibraries: ToitLibraries,
-  path: string[]
+  path: string[],
 ): Libraries {
   let libraries = {} as Libraries;
 
@@ -748,7 +748,7 @@ export function modelFrom(
   libraries: ToitLibraries,
   generatorSdkPath: string[] | undefined,
   generatorPackagesPath: string[] | undefined,
-  generatorPackageNames: { [name: string]: string } | undefined
+  generatorPackageNames: { [name: string]: string } | undefined,
 ): Libraries {
   sdkPath = generatorSdkPath;
   packagesPath = generatorPackagesPath;

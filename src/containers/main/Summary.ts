@@ -9,7 +9,7 @@ import SummaryView, {
 import { RootState } from "../../redux/doc";
 
 const mapStateToProps = (
-  state: RootState
+  state: RootState,
 ): Pick<SummaryViewProps, "libraries"> => {
   return {
     libraries: state.doc.libraries || {},

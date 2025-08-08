@@ -19,7 +19,7 @@ import {
 
 export function libraryFrom(
   libraryName: string,
-  rootLibraries: Libraries
+  rootLibraries: Libraries,
 ): Library | undefined {
   const path = libraryName.split("/");
   let library = undefined;
@@ -38,7 +38,7 @@ export function libraryFrom(
 export function classFrom(
   libraryName: string,
   className: string,
-  rootLibraries: Libraries
+  rootLibraries: Libraries,
 ): Class | undefined {
   const library = libraryFrom(libraryName, rootLibraries);
   return (
@@ -53,14 +53,14 @@ export function classFrom(
 
 export function libraryFromRef(
   rootLibraries: Libraries,
-  ref: TopLevelRef
+  ref: TopLevelRef,
 ): Library | undefined {
   return libraryFrom(ref.path.join("/"), rootLibraries);
 }
 
 export function classFromRef(
   rootLibraries: Libraries,
-  ref: TopLevelItemRef
+  ref: TopLevelItemRef,
 ): Class | undefined {
   const library = libraryFromRef(rootLibraries, ref.libraryRef);
   if (!library || ref.offset === undefined) {
@@ -79,7 +79,7 @@ export function classFromRef(
 
 export function functionFromRef(
   rootLibraries: Libraries,
-  ref: TopLevelItemRef
+  ref: TopLevelItemRef,
 ): Function | undefined {
   const library = libraryFromRef(rootLibraries, ref.libraryRef);
   if (!library || ref.offset === undefined) {
@@ -91,7 +91,7 @@ export function functionFromRef(
 
 export function methodFromRef(
   rootLibraries: Libraries,
-  ref: ClassMemberRef
+  ref: ClassMemberRef,
 ): Method | undefined {
   const klass = classFromRef(rootLibraries, ref.classRef);
   if (!klass || ref.offset === undefined) {
@@ -146,7 +146,7 @@ export function libraryUrlFromRef(ref: TopLevelRef): string {
 
 export function functionUrlFromRef(
   rootLibraries: Libraries,
-  ref: TopLevelItemRef
+  ref: TopLevelItemRef,
 ): string {
   const fhunction = functionFromRef(rootLibraries, ref);
   if (!fhunction) {
@@ -154,13 +154,13 @@ export function functionUrlFromRef(
   }
   return globalUrl(
     libraryUrlFromRef(ref.libraryRef),
-    getFunctionId(fhunction.name, fhunction.shape)
+    getFunctionId(fhunction.name, fhunction.shape),
   );
 }
 
 export function methodUrlFromRef(
   rootLibraries: Libraries,
-  ref: ClassMemberRef
+  ref: ClassMemberRef,
 ): string {
   const method = methodFromRef(rootLibraries, ref);
   if (!method) {
@@ -168,7 +168,7 @@ export function methodUrlFromRef(
   }
   return memberUrl(
     classUrlFromRef(ref.classRef),
-    getFunctionId(method.name, method.shape)
+    getFunctionId(method.name, method.shape),
   );
 }
 
@@ -182,19 +182,19 @@ export function urlFromLinkRef(ref: LinkRef): string {
     case "static-method":
       return memberUrl(
         classUrl(ref.baseUrl, ref.path, ref.holder),
-        getFunctionId(ref.name, ref.shape)
+        getFunctionId(ref.name, ref.shape),
       );
     case "field":
       return memberUrl(
         classUrl(ref.baseUrl, ref.path, ref.holder),
-        getFieldId(ref.name)
+        getFieldId(ref.name),
       );
     case "global":
       return globalUrl(libraryUrl(ref.baseUrl, ref.path), ref.name);
     case "global-method":
       return globalUrl(
         libraryUrl(ref.baseUrl, ref.path),
-        getFunctionId(ref.name, ref.shape)
+        getFunctionId(ref.name, ref.shape),
       );
     case "parameter":
       return "";

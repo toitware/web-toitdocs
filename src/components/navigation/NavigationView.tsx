@@ -44,7 +44,7 @@ const NavigationView: React.FC<NavigationProps> = ({
   className,
 }: NavigationProps) => {
   const libraries = useSelector<RootState, Libraries>(
-    (state) => state.doc.libraries || {}
+    (state) => state.doc.libraries || {},
   );
 
   return (

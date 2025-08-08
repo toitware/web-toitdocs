@@ -25,7 +25,7 @@ export function getDescription(
   returnType?: Type,
   hideReturnTypes?: boolean,
   includeDefaultValues?: boolean,
-  classes?: ClassNameMap<"defaultValue">
+  classes?: ClassNameMap<"defaultValue">,
 ): JSX.Element {
   return (
     <>
@@ -79,7 +79,7 @@ export default function Functions(props: FunctionsProps): JSX.Element {
             fn.returnType,
             props.hideReturnTypes,
             true,
-            classes
+            classes,
           ),
           key: "function" + i,
           id: id,

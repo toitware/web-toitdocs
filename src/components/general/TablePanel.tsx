@@ -121,7 +121,7 @@ class TablePanel extends Component<TablePanelProps> {
                         {getDescription(
                           method.parameters,
                           method.returnType,
-                          this.props.hideReturnTypes
+                          this.props.hideReturnTypes,
                         )}
                       </TableCell>
                       <TableCell component="th" scope="row">

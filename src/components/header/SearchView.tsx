@@ -63,7 +63,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
 
   search<T extends { name: string }>(
     searchIn: T[],
-    searchBy: string
+    searchBy: string,
   ): Fuse.FuseResult<T>[] {
     const options = {
       keys: ["name"],
@@ -88,23 +88,23 @@ class SearchView extends React.Component<SearchProps, SearchState> {
 
         if (searchString && searchString.length > 1) {
           libraries = this.search(this.props.model.libraries, searchString).map(
-            (m) => m.item
+            (m) => m.item,
           );
           interfaces = this.search(
             this.props.model.interfaces,
-            searchString
+            searchString,
           ).map((inter) => inter.item);
           mixins = this.search(this.props.model.mixins, searchString).map(
-            (mixin) => mixin.item
+            (mixin) => mixin.item,
           );
           classes = this.search(this.props.model.classes, searchString).map(
-            (c) => c.item
+            (c) => c.item,
           );
           functions = this.search(this.props.model.functions, searchString).map(
-            (f) => f.item
+            (f) => f.item,
           );
           methods = this.search(this.props.model.methods, searchString).map(
-            (m) => m.item
+            (m) => m.item,
           );
         }
 
@@ -118,7 +118,7 @@ class SearchView extends React.Component<SearchProps, SearchState> {
           methods: methods,
         });
       },
-      searchString ? 200 : 0
+      searchString ? 200 : 0,
     );
   };
 

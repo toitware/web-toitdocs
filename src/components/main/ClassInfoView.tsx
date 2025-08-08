@@ -38,7 +38,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
     const classInfo = classFrom(
       this.props.match.params.libraryName,
       this.props.match.params.className,
-      this.props.libraries
+      this.props.libraries,
     );
     if (!classInfo) {
       return this.notFound(this.props.match.params.className);

@@ -9,7 +9,7 @@ import ClassInfoView, {
 import { RootState } from "../../redux/doc";
 
 const mapStateToProps = (
-  state: RootState
+  state: RootState,
 ): Pick<ClassInfoProps, "libraries"> => {
   return {
     libraries: state.doc.libraries || {},

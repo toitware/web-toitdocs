@@ -86,7 +86,7 @@ export const doc = createSlice({
           action.payload.libraries,
           sdkPath,
           packagesPath,
-          packageNames
+          packageNames,
         );
         state.searchableModel = flatten(state.libraries);
       })

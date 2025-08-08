@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(2),
       cursor: "pointer",
     },
-  })
+  }),
 );
 
 interface SearchBarProps {
@@ -40,7 +40,7 @@ interface SearchBarProps {
 
 function SearchBar(props: SearchBarProps): JSX.Element {
   const handleSearchStringChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
     props.onSearch(event.target.value);
   };

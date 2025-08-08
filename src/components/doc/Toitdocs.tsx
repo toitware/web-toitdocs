@@ -79,7 +79,7 @@ function StatementItemized(props: {
           <li key={index}>
             <Statement statement={statement} />
           </li>
-        ))
+        )),
       )}
     </ul>
   );

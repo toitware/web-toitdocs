@@ -33,7 +33,7 @@ import { Libraries } from "./model/model";
 import { fetchDoc, RootState } from "./redux/doc";
 
 const mapStateToProps = (
-  state: RootState
+  state: RootState,
 ): Pick<AppProps, "libraries" | "version" | "sdkVersion"> => {
   return {
     version: state.doc.version,
@@ -43,7 +43,7 @@ const mapStateToProps = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<RootState, void, AnyAction>
+  dispatch: ThunkDispatch<RootState, void, AnyAction>,
 ): Pick<AppProps, "fetchDoc"> => {
   return {
     fetchDoc: (): void => {
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
     appContainer: {
       position: "relative",
     },
-  })
+  }),
 );
 
 const ContentWrapper = styled.div`
@@ -241,14 +241,14 @@ function AppContent(props: AppProps): JSX.Element {
                 exact
                 path="/"
                 render={(
-                  routeProps: RouteComponentProps<NavigationParams>
+                  routeProps: RouteComponentProps<NavigationParams>,
                 ): React.ReactNode => <FixedNavigationView {...routeProps} />}
               />
               <Route
                 exact
                 path="/:libraryName*/:rest"
                 render={(
-                  routeProps: RouteComponentProps<NavigationParams>
+                  routeProps: RouteComponentProps<NavigationParams>,
                 ): React.ReactNode => <FixedNavigationView {...routeProps} />}
               />
             </ThemeProvider>
@@ -276,14 +276,14 @@ function AppContent(props: AppProps): JSX.Element {
                     exact
                     path="/:libraryName+/library-summary"
                     render={(
-                      routeProps: RouteComponentProps<LibraryInfoParams>
+                      routeProps: RouteComponentProps<LibraryInfoParams>,
                     ): React.ReactNode => <LibraryInfo {...routeProps} />}
                   />
                   <Route
                     exact
                     path="/:libraryName+/class-:className"
                     render={(
-                      routeProps: RouteComponentProps<ClassInfoParams>
+                      routeProps: RouteComponentProps<ClassInfoParams>,
                     ): React.ReactNode => <ClassInfo {...routeProps} />}
                   />
                 </ErrorBoundary>

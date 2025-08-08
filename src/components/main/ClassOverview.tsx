@@ -61,10 +61,10 @@ class ClassOverviewView extends Component<ClassOverviewProps, TabProps> {
         this.props.klass.constructors.length > 0
           ? 0
           : this.props.klass.statics.length > 0
-          ? 1
-          : this.props.klass.methods.length > 0
-          ? 2
-          : 3,
+            ? 1
+            : this.props.klass.methods.length > 0
+              ? 2
+              : 3,
     };
   }
   render(): JSX.Element {

@@ -9,7 +9,7 @@ import LibraryInfoView, {
 import { RootState } from "../../redux/doc";
 
 function mapStateToProps(
-  state: RootState
+  state: RootState,
 ): Pick<LibraryInfoProps, "libraries"> {
   return {
     libraries: state.doc.libraries || {},
