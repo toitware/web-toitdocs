@@ -156,7 +156,7 @@ jobs:
     steps:
       # No need to checkout the project, since all we need is to download the
       # build artifact from the build step.
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: build
           path: build
