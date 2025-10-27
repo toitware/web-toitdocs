@@ -100,7 +100,7 @@ jobs:
           tar c -zf $VERSION.$ARTIFACT_EXTENSION -C $BUILD_DIR/ .
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build  # This artifact name is used by the dev-deployment.
           retention-days: 2
