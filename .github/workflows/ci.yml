@@ -114,23 +114,14 @@ jobs:
         run: |
           echo "TOITLANG_RUN_ID=${{ github.event.inputs.toitlang-run-id }}" >> $GITHUB_ENV
 
-      - name: Dispatch dev-deployment
+      - name: Publish to Cloudflare Pages
         if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
-        uses: actions/github-script@v8
+        uses: cloudflare/pages-action@v1
         with:
-          github-token: ${{ secrets.LEON_REPOSITORY_DISPATCH }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: '${{ env.DEV_DEPLOYMENT_OWNER }}',
-              repo: '${{ env.DEV_DEPLOYMENT_REPO }}',
-              workflow_id: '${{ env.DEV_DEPLOYMENT_WORKFLOW }}',
-              ref: 'main',
-              inputs: {
-                'run-id': '${{ github.run_id }}',
-                'toit-version': 'latest',
-                'toitlang-run-id': '${{ env.TOITLANG_RUN_ID }}',
-              },
-            });
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: libs-dev
+          directory: ${{ env.BUILD_DIR }}
 
       - name: Upload release artifacts
         if: |
@@ -181,17 +172,10 @@ jobs:
           mkdir -p build
           curl -L $URL -o build/toitdoc.json
 
-      - name: Disable Jekyll
-        run: |
-          touch build/.nojekyll
-
-      # This seems to be the simplest way to publish to a separate branch.
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./build
-          # Optional. This will create a CNAME file so GitHub Pages serves it
-          # under this domain.
-          cname: libs.toit.io
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: libs
+          directory: build

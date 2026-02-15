@@ -90,3 +90,13 @@ You can also just build the toitdoc of a folder:
 ```bash
 toit doc build --out "$OUTFILE" $PATH_TO_FOLDER
 ```
+
+## Cloudflare
+
+As of 2026-02-15, we are using Cloudflare Pages to deploy the documentation.
+
+We can't use GitHub pages, because we need to have `_redirects` so that Google
+can properly index the documentation.
+
+The documentation is deployed to `libs.toit.io` and `libs-dev.toit.io`.
+
