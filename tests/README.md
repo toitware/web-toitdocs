@@ -7,15 +7,14 @@ Things to check:
 
 Create the json and then view it with the Toitdoc viewer.
 
+## Test package
+
+The test package in this folder has dependencies. Don't forget to run
+```
+toit pkg install --project-root=<path-to-test-pkg-folder>
+```
+
 ## Creating the JSON
 
-```bash
-/opt/toit-sdk/bin/toit.lsp toitdoc \
-    --toitc /opt/toit-sdk/bin/toit.compile \
-    --sdk /opt/toit-sdk \
-    --out ../../public/sdk/latest.json \
-    --exclude-sdk \
-    --pkg-name "pkg" \
-    --version "v0.0.1" \
-    ./src
-```
+See the README.md in the root directory for how to create the JSON.
+
