@@ -30,12 +30,12 @@
     "typescript": "^4.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --max-warnings=0",
     "fix-lint": "eslint --fix '*/**/*.{js,ts,tsx}' --max-warnings=0",
-    "build": "PUBLIC_URL=./ react-scripts build",
-    "test": "react-scripts test",
-    "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider PUBLIC_URL=./ react-scripts build",
+    "test": "NODE_OPTIONS=--openssl-legacy-provider react-scripts test",
+    "test:jenkins": "NODE_OPTIONS=--openssl-legacy-provider react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
     "cypress": "cypress run",
     "test:ci": "start-server-and-test 'yarn start' 3000 'yarn cypress'",
     "eject": "react-scripts eject"
