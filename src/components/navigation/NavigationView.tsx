@@ -31,7 +31,7 @@ const Title = styled.div`
 `;
 
 export type NavigationParams = {
-  libraryName: string;
+  libraryName?: string;
 };
 
 export type NavigationProps = {
