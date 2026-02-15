@@ -73,6 +73,17 @@ jobs:
         run: |
           yarn lint
 
+      - name: Setup Toit
+        if: ${{ github.event.inputs.run-tests != 'false' }}
+        uses: toitlang/action-setup@v1
+        with:
+          toit-version: v2.0.0-alpha.189
+
+      - name: Generate test data
+        if: ${{ github.event.inputs.run-tests != 'false' }}
+        run: |
+          tests/generate_test_data.sh
+
       - name: Test
         if: ${{ github.event.inputs.run-tests != 'false' }}
         run: |
