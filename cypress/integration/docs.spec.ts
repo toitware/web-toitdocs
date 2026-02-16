@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+export { };
 
 describe("Documentation Viewer", () => {
   beforeEach(() => {
