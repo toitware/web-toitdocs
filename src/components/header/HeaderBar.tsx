@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 
 import styled from "@emotion/styled";
-import { AppBar } from "@material-ui/core";
-import Toolbar from "@material-ui/core/Toolbar";
-import React from "react";
+import { AppBar } from "@mui/material";
+import Toolbar from "@mui/material/Toolbar";
 import { length } from "../../assets/theme";
 import Search from "../../containers/header/Search";
 

@@ -3,21 +3,19 @@
 // found in the LICENSE file.
 
 import {
-  ClickAwayListener,
-  createStyles,
-  withStyles,
-  WithStyles,
-} from "@material-ui/core";
+    ClickAwayListener,
+} from "@mui/material";
 import Fuse from "fuse.js";
 import React from "react";
+import { makeStyles } from "tss-react/mui";
 import {
-  SearchableClass,
-  SearchableFunction,
-  SearchableInterface,
-  SearchableLibrary,
-  SearchableMethod,
-  SearchableMixin,
-  SearchableModel,
+    SearchableClass,
+    SearchableFunction,
+    SearchableInterface,
+    SearchableLibrary,
+    SearchableMethod,
+    SearchableMixin,
+    SearchableModel,
 } from "../../model/search";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
@@ -25,14 +23,14 @@ import SearchResults from "./SearchResults";
 export const SEARCH_BAR_WIDTH = 300;
 export const SEARCH_RESULTS_WIDTH = 400;
 
-const styles = createStyles({
+const useStyles = makeStyles()(() => ({
   searchBar: {
     width: SEARCH_BAR_WIDTH,
     marginLeft: "auto",
   },
-});
+}));
 
-export interface SearchProps extends WithStyles<typeof styles> {
+export interface SearchProps {
   model: SearchableModel;
 }
 
@@ -49,8 +47,9 @@ interface SearchState {
 
 let delayTimer: number;
 
-class SearchView extends React.Component<SearchProps, SearchState> {
-  state = {
+function SearchViewInner(props: SearchProps): JSX.Element {
+  const { classes } = useStyles();
+  const [state, setState] = React.useState<SearchState>({
     searchBy: "",
     libraries: [],
     classes: [],
@@ -59,9 +58,9 @@ class SearchView extends React.Component<SearchProps, SearchState> {
     functions: [],
     methods: [],
     hideResults: false,
-  };
+  });
 
-  search<T extends { name: string }>(
+  function search<T extends { name: string }>(
     searchIn: T[],
     searchBy: string
   ): Fuse.FuseResult<T>[] {
@@ -73,8 +72,8 @@ class SearchView extends React.Component<SearchProps, SearchState> {
     return new Fuse(searchIn, options).search(searchBy);
   }
 
-  onSearch = (searchString: string): void => {
-    this.setState({ searchBy: searchString });
+  const onSearch = (searchString: string): void => {
+    setState((prev) => ({ ...prev, searchBy: searchString }));
 
     clearTimeout(delayTimer);
     delayTimer = window.setTimeout(
@@ -87,28 +86,28 @@ class SearchView extends React.Component<SearchProps, SearchState> {
         let methods = [] as SearchableMethod[];
 
         if (searchString && searchString.length > 1) {
-          libraries = this.search(this.props.model.libraries, searchString).map(
+          libraries = search(props.model.libraries, searchString).map(
             (m) => m.item
           );
-          interfaces = this.search(
-            this.props.model.interfaces,
+          interfaces = search(
+            props.model.interfaces,
             searchString
           ).map((inter) => inter.item);
-          mixins = this.search(this.props.model.mixins, searchString).map(
+          mixins = search(props.model.mixins, searchString).map(
             (mixin) => mixin.item
           );
-          classes = this.search(this.props.model.classes, searchString).map(
+          classes = search(props.model.classes, searchString).map(
             (c) => c.item
           );
-          functions = this.search(this.props.model.functions, searchString).map(
+          functions = search(props.model.functions, searchString).map(
             (f) => f.item
           );
-          methods = this.search(this.props.model.methods, searchString).map(
+          methods = search(props.model.methods, searchString).map(
             (m) => m.item
           );
         }
 
-        this.setState({
+        setState({
           searchBy: searchString,
           libraries: libraries,
           interfaces: interfaces,
@@ -116,43 +115,42 @@ class SearchView extends React.Component<SearchProps, SearchState> {
           mixins: mixins,
           functions: functions,
           methods: methods,
+          hideResults: false,
         });
       },
       searchString ? 200 : 0
     );
   };
 
-  onFocus = (): void => {
-    this.setState({ hideResults: false });
+  const onFocus = (): void => {
+    setState((prev) => ({ ...prev, hideResults: false }));
   };
 
-  onClickAway = (): void => {
-    this.setState({ hideResults: true });
+  const onClickAway = (): void => {
+    setState((prev) => ({ ...prev, hideResults: true }));
   };
 
-  render(): JSX.Element {
-    return (
-      <ClickAwayListener onClickAway={this.onClickAway}>
-        <div className={this.props.classes.searchBar}>
-          <SearchBar
-            searchBy={this.state.searchBy}
-            onSearch={this.onSearch}
-            onFocus={this.onFocus}
-          />
-          <SearchResults
-            results={[
-              ...this.state.classes,
-              ...this.state.interfaces,
-              ...this.state.functions,
-              ...this.state.methods,
-              ...this.state.libraries,
-            ]}
-            hideResults={this.state.hideResults}
-          />
-        </div>
-      </ClickAwayListener>
-    );
-  }
+  return (
+    <ClickAwayListener onClickAway={onClickAway}>
+      <div className={classes.searchBar}>
+        <SearchBar
+          searchBy={state.searchBy}
+          onSearch={onSearch}
+          onFocus={onFocus}
+        />
+        <SearchResults
+          results={[
+            ...state.classes,
+            ...state.interfaces,
+            ...state.functions,
+            ...state.methods,
+            ...state.libraries,
+          ]}
+          hideResults={state.hideResults}
+        />
+      </div>
+    </ClickAwayListener>
+  );
 }
 
-export default withStyles(styles)(SearchView);
+export default SearchViewInner;

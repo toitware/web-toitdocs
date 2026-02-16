@@ -4,9 +4,9 @@
 
 import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
 import {
-  Theme,
-  ThemeProvider as MaterialThemeProvider,
-} from "@material-ui/core/styles";
+    ThemeProvider as MaterialThemeProvider,
+    Theme,
+} from "@mui/material/styles";
 import React from "react";
 
 type ThemeProviderProps = React.PropsWithChildren<{

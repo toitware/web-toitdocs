@@ -2,35 +2,32 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
+import ClearIcon from "@mui/icons-material/Clear";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  Box,
-  createStyles,
-  InputBase,
-  makeStyles,
-  Theme,
-} from "@material-ui/core";
-import ClearIcon from "@material-ui/icons/Clear";
-import SearchIcon from "@material-ui/icons/Search";
+    Box,
+    InputBase,
+    Theme,
+} from "@mui/material";
 import React, { memo } from "react";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    search: {
-      padding: "2px 4px",
-      display: "flex",
-      alignItems: "center",
-      flex: 1,
-    },
-    input: {
-      marginLeft: theme.spacing(1),
-      flex: 1,
-    },
-    clearIcon: {
-      marginRight: theme.spacing(2),
-      cursor: "pointer",
-    },
-  })
-);
+const useStyles = makeStyles()((theme: Theme) => ({
+  search: {
+    padding: "2px 4px",
+    display: "flex",
+    alignItems: "center",
+    flex: 1,
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
+  clearIcon: {
+    marginRight: theme.spacing(2),
+    cursor: "pointer",
+  },
+}));
 
 interface SearchBarProps {
   searchBy: string;
@@ -51,16 +48,13 @@ function SearchBar(props: SearchBarProps): JSX.Element {
     }
   };
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <>
       <Box
         className={classes.search}
-        border={1}
-        borderLeft={0}
-        borderTop={0}
-        borderRight={0}
+        sx={{ border: 1, borderLeft: 0, borderTop: 0, borderRight: 0 }}
       >
         <SearchIcon />
         <InputBase

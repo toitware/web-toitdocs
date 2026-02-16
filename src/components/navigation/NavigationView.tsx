@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import styled from "@emotion/styled";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link, RouteComponentProps } from "react-router-dom";
@@ -18,6 +18,7 @@ const Wrapper = styled.div`
   height: 100%;
   overflow-y: scroll;
   padding: 3rem;
+  box-sizing: border-box;
   a {
     color: ${({ theme }) => theme.palette.text.primary};
     text-decoration: none;
@@ -48,7 +49,7 @@ const NavigationView: React.FC<NavigationProps> = ({
   );
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={className} data-testid="sidebar">
       <Link to="/">
         <img alt="Toit" src={logo} height="32px"></img>
       </Link>

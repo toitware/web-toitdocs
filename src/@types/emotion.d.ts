@@ -2,7 +2,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-import { Theme as MTheme } from "@material-ui/core/styles";
+import { Theme as MTheme } from "@mui/material/styles";
 
 declare module "@emotion/react" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

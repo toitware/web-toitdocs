@@ -3,25 +3,24 @@
 // found in the LICENSE file.
 
 import {
-  List,
-  ListItem,
-  makeStyles,
-  Paper,
-  Theme,
-  Typography,
-} from "@material-ui/core";
-import React from "react";
+    List,
+    ListItem,
+    Paper,
+    Theme,
+    Typography,
+} from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import {
-  Searchable,
-  SearchableClass,
-  SearchableFunction,
-  SearchableInterface,
-  SearchableLibrary,
-  SearchableMethod,
+    Searchable,
+    SearchableClass,
+    SearchableFunction,
+    SearchableInterface,
+    SearchableLibrary,
+    SearchableMethod,
 } from "../../model/search";
 import { SEARCH_BAR_WIDTH, SEARCH_RESULTS_WIDTH } from "./SearchView";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     position: "fixed",
     width: SEARCH_RESULTS_WIDTH,
@@ -51,7 +50,7 @@ interface SearchResultsProps {
 }
 
 export default function SearchResults(props: SearchResultsProps): JSX.Element {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const results = props.results.map((item, index) => (
     <ResultItem item={item} key={"resultItem" + index} />
@@ -69,7 +68,7 @@ export default function SearchResults(props: SearchResultsProps): JSX.Element {
 }
 
 function ResultItem(props: { item: Searchable }): JSX.Element {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   let name = "";
   let from = "";
@@ -116,7 +115,6 @@ function ResultItem(props: { item: Searchable }): JSX.Element {
 
   return (
     <ListItem
-      button
       component="a"
       href={"." + props.item.url}
       className={classes.listItem}
