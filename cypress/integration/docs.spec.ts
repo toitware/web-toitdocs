@@ -83,6 +83,103 @@ describe("Documentation Viewer", () => {
       cy.contains("stringify").should("be.visible");
       cy.contains(" -> string").should("be.visible");
     });
+
+    it("searches and shows results", () => {
+      // Type "foo" into the search bar
+      cy.get('input[placeholder="Search"]').type("foo");
+      // Wait for debounce (200ms) and results to render
+      cy.contains("function", { timeout: 5000 }).should("be.visible");
+
+      // Search results should show the foo function
+      cy.get(".MuiList-root").within(() => {
+        cy.contains("foo").should("be.visible");
+        cy.contains("function").should("be.visible");
+        cy.contains("from pkg").should("be.visible");
+      });
+
+      // Click the search result and verify navigation
+      cy.get(".MuiList-root").contains("foo").click();
+      cy.url().should("include", "library-summary");
+      cy.url().should("include", "foo");
+    });
+
+    it("clears search results", () => {
+      // Type into search
+      cy.get('input[placeholder="Search"]').type("foo");
+      cy.get(".MuiList-root", { timeout: 5000 }).should("exist");
+
+      // Click the clear icon (the X button next to search)
+      // The ClearIcon is a sibling of InputBase inside the Box container
+      cy.get('input[placeholder="Search"]')
+        .closest(".MuiBox-root")
+        .find("svg")
+        .last()
+        .click();
+
+      // Results should disappear
+      cy.get(".MuiList-root").should("not.exist");
+      cy.get('input[placeholder="Search"]').should("have.value", "");
+    });
+
+    it("has correct sidebar links", () => {
+      const expectedSidebarLinks = [
+        { text: ".packages", href: "/.packages/library-summary" },
+        { text: "@", href: "/@/library-summary" },
+        { text: "pkg", href: "/pkg/library-summary" },
+        { text: "other", href: "/pkg/other/library-summary" },
+      ];
+
+      cy.get('[data-testid="sidebar"]').within(() => {
+        // Logo links home
+        cy.get('a[href="/"]').should("exist");
+
+        expectedSidebarLinks.forEach(({ text, href }) => {
+          cy.contains("a", text).should("have.attr", "href", href);
+        });
+      });
+    });
+
+    it("has correct content links on library summary", () => {
+      // Navigate to pkg library summary
+      cy.contains("pkg").click();
+      cy.contains("Library pkg").should("be.visible");
+
+      // Type reference links in the toitdoc section
+      cy.contains("a", "other.B").should(
+        "have.attr",
+        "href",
+        "/pkg/other/class-B"
+      );
+      cy.contains("a", /^A$/)
+        .first()
+        .should("have.attr", "href", "/pkg/class-A");
+      cy.contains("a", "string")
+        .first()
+        .should("have.attr", "href")
+        .and("include", "class-string");
+      cy.contains("a", "BITS-PER-BYTE")
+        .should("have.attr", "href")
+        .and("include", "BITS-PER-BYTE");
+      cy.contains("a", "morse.DASH")
+        .should("have.attr", "href")
+        .and("include", "DASH");
+      cy.contains("a", "file.copy")
+        .should("have.attr", "href")
+        .and("include", "copy");
+
+      // Function anchor links
+      cy.contains("h3", "Functions")
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains("a", "bar")
+            .should("have.attr", "href")
+            .and("include", "bar");
+          cy.contains("a", "foo")
+            .should("have.attr", "href")
+            .and("include", "foo");
+        });
+    });
   });
 
   describe("Folder/SDK Mode", () => {
