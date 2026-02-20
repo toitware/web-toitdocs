@@ -21,6 +21,7 @@ describe("Documentation Viewer", () => {
       const sidebarRight = $sidebar[0].getBoundingClientRect().right;
       cy.get("header").then(($header) => {
         const headerLeft = $header[0].getBoundingClientRect().left;
+        // eslint-disable-next-line jest/valid-expect
         expect(headerLeft).to.be.at.least(
           sidebarRight - 1,
           "Header should not overlap sidebar"
