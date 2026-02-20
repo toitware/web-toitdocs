@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export type LibraryNavigationProps = {
   library: Library;
-  openLibrary: string;
+  openLibrary?: string;
 };
 
 const LibraryNavigation: React.FC<LibraryNavigationProps> = ({
