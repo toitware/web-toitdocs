@@ -2,29 +2,30 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-import {
-  createStyles,
-  Grid,
-  StyleRules,
-  Theme,
-  withStyles,
-  WithStyles,
-} from "@material-ui/core";
+import { Grid, Theme } from "@mui/material";
 import React, { ErrorInfo } from "react";
 import { Link } from "react-router-dom";
+import { makeStyles } from "tss-react/mui";
 
-const styles = (theme: Theme): StyleRules =>
-  createStyles({
-    grid: {
-      margin: theme.spacing(3),
-    },
-  });
+const useStyles = makeStyles()((theme: Theme) => ({
+  grid: {
+    margin: theme.spacing(3),
+  },
+}));
 
-interface ErrorBoundaryProps extends WithStyles<typeof styles> {
+interface ErrorBoundaryProps {
   children: React.ReactNode;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+// Error boundaries must be class components
+class ErrorBoundaryInner extends React.Component<
+  ErrorBoundaryProps & { classes: Record<string, string> },
+  ErrorBoundaryState
+> {
   state = {
     hasError: false,
   };
@@ -39,7 +40,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
       // You can render any custom fallback UI
       console.log("ERROR: In the object ");
       return (
-        <Grid item className={this.props.classes.grid}>
+        <Grid className={this.props.classes.grid}>
           <h1>Something went wrong.</h1>
           <Link to={`/#`}>Home Page</Link>
         </Grid>
@@ -50,4 +51,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
   }
 }
 
-export default withStyles(styles)(ErrorBoundary);
+// Wrapper to inject makeStyles into the class component
+export default function ErrorBoundary(props: ErrorBoundaryProps): JSX.Element {
+  const { classes } = useStyles();
+  return <ErrorBoundaryInner classes={classes} {...props} />;
+}

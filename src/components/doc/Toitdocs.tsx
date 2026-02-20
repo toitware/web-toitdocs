@@ -2,38 +2,38 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-import { makeStyles, Typography } from "@material-ui/core";
-import { Variant } from "@material-ui/core/styles/createTypography";
-import React from "react";
+import { Typography } from "@mui/material";
+import { Variant } from "@mui/material/styles/createTypography";
 import { HashLink } from "react-router-hash-link";
+import { makeStyles } from "tss-react/mui";
 import { urlFromLinkRef } from "../../misc/util";
 import {
-  Doc,
-  DOC_DOCREF,
-  DOC_EXPRESSION_CODE,
-  DOC_EXPRESSION_LINK,
-  DOC_EXPRESSION_TEXT,
-  DOC_STATEMENT_CODE_SECTION,
-  DOC_STATEMENT_ITEMIZED,
-  DOC_STATEMENT_PARAGRAPH,
-  DocExpression,
-  DocExpressionCode,
-  DocExpressionLink,
-  DocExpressionText,
-  DocRef,
-  DocSection,
-  DocStatement,
-  DocStatementCodeSection,
-  DocStatementItem,
-  DocStatementItemized,
-  DocStatementParagraph,
+    Doc,
+    DOC_DOCREF,
+    DOC_EXPRESSION_CODE,
+    DOC_EXPRESSION_LINK,
+    DOC_EXPRESSION_TEXT,
+    DOC_STATEMENT_CODE_SECTION,
+    DOC_STATEMENT_ITEMIZED,
+    DOC_STATEMENT_PARAGRAPH,
+    DocExpression,
+    DocExpressionCode,
+    DocExpressionLink,
+    DocExpressionText,
+    DocRef,
+    DocSection,
+    DocStatement,
+    DocStatementCodeSection,
+    DocStatementItem,
+    DocStatementItemized,
+    DocStatementParagraph,
 } from "../../model/model";
 import CodeBlock from "../general/CodeBlock";
 import ExternalLink from "../general/ExternalLink";
 
 // TODO: Pull all format and structure from old printStatements function (structure from old format: https://github.com/toitware/web-toitdocs/blob/e74e3d5478fb3fd350e28f7801d69b7f38a1d563/src/components/toitdoc_info.js#L26)
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   statementParagraph: { paddingBottom: theme.spacing(1) },
   sectionTitle: {
     paddingTop: theme.spacing(2),
@@ -89,7 +89,7 @@ function StatementParagraph(props: {
   statement: DocStatementParagraph;
   isHeader?: boolean;
 }): JSX.Element {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <div className={props.isHeader ? "" : classes.statementParagraph}>
       {props.statement.expressions.map((expr: DocExpression, index: number) => (
@@ -100,7 +100,7 @@ function StatementParagraph(props: {
 }
 
 function ToitdocRef(props: { reference: DocRef }): JSX.Element {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const url = urlFromLinkRef(props.reference.reference);
   if (!url) {
     let className: string;
@@ -155,7 +155,7 @@ function Statement(props: {
 }
 
 function Section(props: { section: DocSection }): JSX.Element {
-  const classes = useStyles();
+  const { classes } = useStyles();
   let level = props.section.level;
   if (level > 2) level = 2;
   const variant = ("h" + (props.section.level + 4)) as Variant;

@@ -2,15 +2,15 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { classFrom, classUrlFromRef } from "../../misc/util";
 import {
-  CLASS_KIND_CLASS,
-  CLASS_KIND_INTERFACE,
-  CLASS_KIND_MIXIN,
-  Libraries,
+    CLASS_KIND_CLASS,
+    CLASS_KIND_INTERFACE,
+    CLASS_KIND_MIXIN,
+    Libraries,
 } from "../../model/model";
 import Fields from "../doc/Fields";
 import Functions from "../doc/Functions";
