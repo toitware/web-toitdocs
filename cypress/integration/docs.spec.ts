@@ -19,6 +19,7 @@ describe("Documentation Viewer", () => {
         cy.intercept("GET", "/toitdoc.json", json).as("getDocs");
       });
       cy.visit("/");
+      // eslint-disable-next-line testing-library/await-async-utils
       cy.wait("@getDocs");
     });
 
@@ -70,6 +71,7 @@ describe("Documentation Viewer", () => {
       });
       Cypress.config("defaultCommandTimeout", 30000);
       cy.visit("/");
+      // eslint-disable-next-line testing-library/await-async-utils
       cy.wait("@getDocs");
       cy.get(".MuiCircularProgress-root").should("not.exist");
     });
@@ -93,6 +95,7 @@ describe("Documentation Viewer", () => {
         cy.intercept("GET", "/toitdoc.json", json).as("getDocs");
       });
       cy.visit("/");
+      // eslint-disable-next-line testing-library/await-async-utils
       cy.wait("@getDocs");
     });
 
