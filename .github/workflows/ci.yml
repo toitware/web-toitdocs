@@ -55,7 +55,7 @@ jobs:
       # We are using deprecated functionality. Downgrade Node so we still compile.
       - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install
         run: |
