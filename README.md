@@ -67,20 +67,20 @@ You can create new json files by running the following command:
 ### Core libraries
 
 ```bash
-toit doc build --sdk --out "$OUTFILE"
+toit doc build --sdk --output "$OUTFILE"
 ```
 
 ### Package
 
 ```bash
-toit doc build --package --out "$OUTFILE" $PATH_TO_PACKAGE
+toit doc build --package --output "$OUTFILE" $PATH_TO_PACKAGE
 ```
 
 You might want to exclude the sdk and/or packages from the generated documentation:
 
 ```bash
-toit doc build --package --exclude-sdk --out "$OUTFILE" $PATH_TO_PACKAGE
-toit doc build --package --exclude-pkgs --out "$OUTFILE" $PATH_TO_PACKAGE
+toit doc build --package --exclude-sdk --output "$OUTFILE" $PATH_TO_PACKAGE
+toit doc build --package --exclude-pkgs --output "$OUTFILE" $PATH_TO_PACKAGE
 ```
 
 ### Folder
@@ -88,7 +88,7 @@ toit doc build --package --exclude-pkgs --out "$OUTFILE" $PATH_TO_PACKAGE
 You can also just build the toitdoc of a folder:
 
 ```bash
-toit doc build --out "$OUTFILE" $PATH_TO_FOLDER
+toit doc build --output "$OUTFILE" $PATH_TO_FOLDER
 ```
 
 ## Cloudflare
