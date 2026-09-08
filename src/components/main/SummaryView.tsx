@@ -21,12 +21,12 @@ const useStyles = makeStyles()((theme: Theme) => ({
     paddingBottom: theme.spacing(0.5),
   },
   libList: {
-    "column-count": 2,
-    "column-gap": theme.spacing(2),
+    columnCount: 2,
+    columnGap: theme.spacing(2),
   },
   libEntry: {
     paddingBottom: theme.spacing(1),
-    "break-inside": "avoid-column",
+    breakInside: "avoid-column",
   },
   toitdoc: {
     paddingTop: theme.spacing(0.3),

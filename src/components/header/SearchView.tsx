@@ -107,7 +107,8 @@ function SearchViewInner(props: SearchProps): JSX.Element {
           );
         }
 
-        setState({
+        setState((prev) => ({
+          ...prev,
           searchBy: searchString,
           libraries: libraries,
           interfaces: interfaces,
@@ -115,8 +116,7 @@ function SearchViewInner(props: SearchProps): JSX.Element {
           mixins: mixins,
           functions: functions,
           methods: methods,
-          hideResults: false,
-        });
+        }));
       },
       searchString ? 200 : 0
     );

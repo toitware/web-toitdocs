@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import styled from "@emotion/styled";
-import { CircularProgress } from "@mui/material";
-import { Theme } from "@mui/material/styles";
+import { CircularProgress, GlobalStyles } from "@mui/material";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import React, { Component, useEffect } from "react";
 import { connect } from "react-redux";
@@ -53,8 +52,8 @@ const mapDispatchToProps = (
   };
 };
 
-const useStyles = makeStyles()((theme: Theme) => ({
-  "@global": {
+const globalStyles = (
+  <GlobalStyles styles={{
     body: {
       margin: 0,
       fontFamily: "Roboto",
@@ -79,7 +78,10 @@ const useStyles = makeStyles()((theme: Theme) => ({
     "a:hover": {
       textDecoration: "underline",
     },
-  },
+  }} />
+);
+
+const useStyles = makeStyles()(() => ({
   appContainer: {
     position: "relative",
   },
@@ -229,6 +231,7 @@ function AppContent(props: AppProps): JSX.Element {
 
   return (
     <>
+      {globalStyles}
       {props.libraries !== undefined ? (
         <>
           <div className={classes.appContainer}>
