@@ -77,7 +77,7 @@ jobs:
         if: ${{ github.event.inputs.run-tests != 'false' }}
         uses: toitlang/action-setup@v1
         with:
-          toit-version: v2.0.0-alpha.189
+          toit-version: v2.0.0-alpha.198
 
       - name: Generate test data
         if: ${{ github.event.inputs.run-tests != 'false' }}
@@ -88,6 +88,19 @@ jobs:
         if: ${{ github.event.inputs.run-tests != 'false' }}
         run: |
           yarn test:ci
+
+      - name: Fetch Toit documentation
+        env:
+          TOIT_VERSION: ${{ github.event.inputs.toit-version }}
+        run: |
+          # Replace the test fixture before building either deployment.
+          if [[ -z "$TOIT_VERSION" || "$TOIT_VERSION" == "latest" ]]; then
+            URL=https://github.com/toitlang/toit/releases/latest/download/toitdoc.json
+          else
+            URL="https://github.com/toitlang/toit/releases/download/$TOIT_VERSION/toitdoc.json"
+          fi
+          echo "Fetching Toit documentation from $URL"
+          curl --fail --location --retry 3 "$URL" -o public/toitdoc.json
 
       - name: Build
         run: |
@@ -169,19 +182,6 @@ jobs:
           VERSION=$(cat VERSION)
           tar x -zf $VERSION.$ARTIFACT_EXTENSION
           rm $VERSION.$ARTIFACT_EXTENSION
-
-      - name: Fetch Toit documentation
-        run: |
-          # Fetch the Toit documentation from the GitHub release page.
-          VERSION=${{ github.event.inputs.toit-version }}
-          if [[ -z "$VERSION" || "$VERSION" == "latest" ]]; then
-            URL=https://github.com/toitlang/toit/releases/latest/download/toitdoc.json
-          else
-            URL=https://github.com/toitlang/toit/releases/download/$VERSION/toitdoc.json
-          fi
-          echo "Fetching Toit documentation from $URL"
-          mkdir -p build
-          curl -L $URL -o build/toitdoc.json
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
