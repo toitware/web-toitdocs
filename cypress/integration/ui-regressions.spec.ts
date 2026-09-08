@@ -38,10 +38,12 @@ describe("UI migration regressions", { defaultCommandTimeout: 30000 }, () => {
   });
 
   it("keeps pending search results dismissed after clicking outside", () => {
-    // Activate MUI's click-away listener before starting the search debounce.
-    cy.tick(1);
     cy.get('input[placeholder="Search"]').type("print");
+    // Typing flushes React's mount effects. Activate MUI's click-away listener
+    // without completing the 200 ms search debounce.
+    cy.tick(1);
     cy.contains("Toit standard libraries").click();
+    cy.get(".MuiList-root").should("not.exist");
     cy.tick(201);
     cy.get(".MuiList-root").should("not.exist");
 
