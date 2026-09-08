@@ -13,6 +13,7 @@ describe("UI migration regressions", { defaultCommandTimeout: 30000 }, () => {
       json.mode = "sdk";
       cy.intercept("GET", "/toitdoc.json", json).as("getDocs");
     });
+    cy.clock();
     cy.visit("/");
     // eslint-disable-next-line testing-library/await-async-utils
     cy.wait("@getDocs");
@@ -37,7 +38,8 @@ describe("UI migration regressions", { defaultCommandTimeout: 30000 }, () => {
   });
 
   it("keeps pending search results dismissed after clicking outside", () => {
-    cy.clock();
+    // Activate MUI's click-away listener before starting the search debounce.
+    cy.tick(1);
     cy.get('input[placeholder="Search"]').type("print");
     cy.contains("Toit standard libraries").click();
     cy.tick(201);
