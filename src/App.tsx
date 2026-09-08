@@ -3,18 +3,18 @@
 // found in the LICENSE file.
 
 import styled from "@emotion/styled";
-import { CircularProgress } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { CircularProgress, GlobalStyles } from "@mui/material";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import React, { Component, useEffect } from "react";
 import { connect } from "react-redux";
 import {
-  BrowserRouter,
-  Redirect,
-  Route,
-  RouteComponentProps,
-  useLocation,
+    BrowserRouter,
+    Redirect,
+    Route,
+    RouteComponentProps,
+    useLocation,
 } from "react-router-dom";
+import { makeStyles } from "tss-react/mui";
 import { length, sideBarTheme, theme } from "./assets/theme";
 import "./assets/typography.css";
 import ErrorBoundary from "./components/ErrorPage";
@@ -24,7 +24,7 @@ import { LibraryInfoParams } from "./components/main/LibraryInfoView";
 import WelcomeFolderPage from "./components/main/WelcomeFolderPage";
 import WelcomePage from "./components/main/WelcomePage";
 import NavigationView, {
-  NavigationParams,
+    NavigationParams,
 } from "./components/navigation/NavigationView";
 import ThemeProvider from "./components/ThemeProvider";
 import ClassInfo from "./containers/main/ClassInfo";
@@ -52,39 +52,40 @@ const mapDispatchToProps = (
   };
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    "@global": {
-      body: {
-        margin: 0,
-        fontFamily: "Roboto",
-      },
-
-      code: {
-        fontFamily: "monospace",
-        fontSize: 14,
-      },
-
-      "*": {
-        boxSizing: "border-box",
-      },
-      "a:link": {
-        color: theme.palette.primary.main,
-        textDecoration: "none",
-      },
-      "a:visited": {
-        color: theme.palette.primary.main,
-        textDecoration: "none",
-      },
-      "a:hover": {
-        textDecoration: "underline",
-      },
+const globalStyles = (
+  <GlobalStyles styles={{
+    body: {
+      margin: 0,
+      fontFamily: "Roboto",
     },
-    appContainer: {
-      position: "relative",
+
+    code: {
+      fontFamily: "monospace",
+      fontSize: 14,
     },
-  })
+
+    "*": {
+      boxSizing: "border-box",
+    },
+    "a:link": {
+      color: theme.palette.primary.main,
+      textDecoration: "none",
+    },
+    "a:visited": {
+      color: theme.palette.primary.main,
+      textDecoration: "none",
+    },
+    "a:hover": {
+      textDecoration: "underline",
+    },
+  }} />
 );
+
+const useStyles = makeStyles()(() => ({
+  appContainer: {
+    position: "relative",
+  },
+}));
 
 const ContentWrapper = styled.div`
   padding-top: calc(3rem + ${({ theme }) => length(theme.layout.headerHeight)});
@@ -201,7 +202,7 @@ const FixedNavigationView = styled(NavigationView)`
 `;
 
 function AppContent(props: AppProps): JSX.Element {
-  const classes = useStyles(props);
+  const { classes } = useStyles();
 
   const { pathname } = useLocation();
 
@@ -230,6 +231,7 @@ function AppContent(props: AppProps): JSX.Element {
 
   return (
     <>
+      {globalStyles}
       {props.libraries !== undefined ? (
         <>
           <div className={classes.appContainer}>

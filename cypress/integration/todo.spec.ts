@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /// <reference types="cypress" />
+export { };
 
 // Welcome to Cypress!
 //

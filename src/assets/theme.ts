@@ -2,7 +2,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from "@mui/material/styles";
 
 const layout = {
   sidebarWidth: "18rem",
@@ -10,10 +10,10 @@ const layout = {
   footerHeight: "6rem",
 };
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   layout: layout,
   palette: {
-    type: "light",
+    mode: "light",
     background: {
       paper: "#fff",
       default: "#fff",
@@ -61,10 +61,10 @@ export const theme = createMuiTheme({
   },
 });
 
-export const sideBarTheme = createMuiTheme({
+export const sideBarTheme = createTheme({
   layout: layout,
   palette: {
-    type: "dark",
+    mode: "dark",
     background: {
       paper: "#000",
       default: "#000",

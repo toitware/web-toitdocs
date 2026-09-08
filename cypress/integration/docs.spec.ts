@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+export { };
 
 describe("Documentation Viewer", () => {
   beforeEach(() => {
@@ -9,6 +10,24 @@ describe("Documentation Viewer", () => {
   const checkSidebarGroup = (label: string) => {
     // The sidebar might use different structures. This is a generic check.
     cy.contains(label).should("be.visible");
+  };
+
+  /**
+   * Assert that the header bar does not overlap the sidebar.
+   * Catches CSS box-model regressions (e.g. content-box vs border-box).
+   */
+  const assertNoHeaderSidebarOverlap = () => {
+    cy.get('[data-testid="sidebar"]').then(($sidebar) => {
+      const sidebarRight = $sidebar[0].getBoundingClientRect().right;
+      cy.get("header").then(($header) => {
+        const headerLeft = $header[0].getBoundingClientRect().left;
+        // eslint-disable-next-line jest/valid-expect
+        expect(headerLeft).to.be.at.least(
+          sidebarRight - 1,
+          "Header should not overlap sidebar"
+        );
+      });
+    });
   };
 
   describe("Package Mode", () => {
@@ -36,6 +55,9 @@ describe("Documentation Viewer", () => {
       cy.contains(" -> string").should("be.visible");
       cy.contains("bar a/A").should("be.visible");
       cy.contains(" -> A").should("be.visible");
+
+      // Layout: header blur must not overlap the sidebar
+      assertNoHeaderSidebarOverlap();
     });
 
     it("navigates to class A", () => {
@@ -44,11 +66,12 @@ describe("Documentation Viewer", () => {
       cy.contains("bar").should("be.visible");
 
       // Click on 'A' explicitly within the Classes section.
+      // scrollIntoView first since the sidebar can overlap the link
       cy.contains("h3", "Classes")
         .parent()
         .parent()
         .within(() => {
-          cy.contains("a", /^A$/).click();
+          cy.contains("a", /^A$/).scrollIntoView().click({ force: true });
         });
       cy.contains("Class A").should("be.visible");
 

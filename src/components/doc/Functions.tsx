@@ -2,15 +2,13 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file.
 
-import { makeStyles } from "@material-ui/core";
-import { ClassNameMap } from "@material-ui/core/styles/withStyles";
-import React from "react";
+import { makeStyles } from "tss-react/mui";
 import { getFunctionId } from "../../misc/util";
 import { Function, Method, Parameter, Type } from "../../model/model";
 import DetailsList from "../general/DetailsList";
 import { TypeView } from "./Type";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()(() => ({
   defaultValue: { fontSize: "0.875em" },
 }));
 
@@ -25,7 +23,7 @@ export function getDescription(
   returnType?: Type,
   hideReturnTypes?: boolean,
   includeDefaultValues?: boolean,
-  classes?: ClassNameMap<"defaultValue">
+  classes?: Record<"defaultValue", string>
 ): JSX.Element {
   return (
     <>
@@ -66,7 +64,7 @@ export function getDescription(
 }
 
 export default function Functions(props: FunctionsProps): JSX.Element {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <DetailsList
       title={props.title}

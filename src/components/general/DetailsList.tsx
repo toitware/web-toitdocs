@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import styled from "@emotion/styled";
-import { Divider, makeStyles, Typography } from "@material-ui/core";
-import React from "react";
+import { Divider, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
+import { makeStyles } from "tss-react/mui";
 import { Doc } from "../../model/model";
 import Toitdocs from "../doc/Toitdocs";
 
@@ -24,7 +24,7 @@ interface DetailsListProps {
   }[];
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   details: { paddingBottom: theme.spacing(3) },
   title: {
     paddingTop: theme.spacing(2),
@@ -60,7 +60,7 @@ function name(name: string, id: string, link?: string): JSX.Element {
 }
 
 export default function DetailsList(props: DetailsListProps): JSX.Element {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <div className={classes.details}>
       <div className={classes.title}>
