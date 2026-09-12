@@ -33,6 +33,8 @@ export type ClassKind =
   | typeof CLASS_KIND_MIXIN;
 
 export interface Library {
+  // Whether foo/foo.toit supplies the content of library foo.
+  hasSameNameModule?: boolean;
   name: string;
   id: TopLevelRef;
   libraries: Libraries;

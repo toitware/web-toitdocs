@@ -4,7 +4,9 @@
 
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { classUrlFromRef } from "../../misc/util";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/doc";
+import { classFrom, classUrlFromRef } from "../../misc/util";
 import { Type } from "../../model/model";
 import { TopLevelItemRef } from "../../model/reference";
 import ExternalLink from "../general/ExternalLink";
@@ -36,13 +38,15 @@ interface TypeReferenceProps {
   reference: TopLevelItemRef;
 }
 
-export class TypeReference extends Component<TypeReferenceProps> {
-  render(): JSX.Element {
-    const url = classUrlFromRef(this.props.reference);
-    const name = this.props.reference.name;
-    if (this.props.reference.libraryRef.baseUrl !== "") {
-      return <ExternalLink to={url} text={name}></ExternalLink>;
-    }
-    return <Link to={url}>{name}</Link>;
+export function TypeReference(props: TypeReferenceProps): JSX.Element {
+  const libraries = useSelector((state: RootState) => state.doc.libraries || {});
+  const ref = props.reference;
+  const name = ref.name;
+  if (name.endsWith("_") && (ref.libraryRef.baseUrl !== "" ||
+      !classFrom(ref.libraryRef.path.join("/"), name, libraries))) {
+    return <span title="Private class documentation is not included.">{name}</span>;
   }
+  const url = classUrlFromRef(ref);
+  if (ref.libraryRef.baseUrl !== "") return <ExternalLink to={url} text={name} />;
+  return <Link to={url}>{name}</Link>;
 }

@@ -14,6 +14,7 @@ import Functions from "../doc/Functions";
 import Globals from "../doc/Globals";
 import Toitdocs from "../doc/Toitdocs";
 import CodeBlock from "../general/CodeBlock";
+import MissingPage from "./MissingPage";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -49,14 +50,10 @@ export default function LibraryInfoView(props: LibraryInfoProps): JSX.Element {
   const libName = props.match.params.libraryName;
   const library = libraryFrom(libName, props.libraries);
   if (!library) {
-    return (
-      <Typography variant="h4">
-        {"Error: Library " + libName + " not found"}
-      </Typography>
-    );
+    return <MissingPage />;
   }
 
-  const importPath = libName.replace(/\//g, ".");
+  const importPath = library.id.path.join(".");
   let isCoreExported = false;
   let isCore = false;
   let showImportHelp = true;

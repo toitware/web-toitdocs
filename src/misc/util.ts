@@ -25,11 +25,16 @@ export function libraryFrom(
   let library = undefined;
   let libraries = rootLibraries;
 
-  for (const p of path) {
-    library = libraries[p];
-    if (!library) {
-      break;
+  for (let i = 0; i < path.length; i++) {
+    const next = libraries[path[i]];
+    if (!next) {
+      // Accept the explicit module spelling only when that module was merged
+      // into its directory. A real child library always takes precedence.
+      if (i === path.length - 1 && library?.hasSameNameModule &&
+          path[i] === library.name) return library;
+      return undefined;
     }
+    library = next;
     libraries = library.libraries;
   }
   return library;
