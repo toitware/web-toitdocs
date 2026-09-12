@@ -5,9 +5,13 @@
 import styled from "@emotion/styled";
 import "codemirror/lib/codemirror.css";
 import React from "react";
-import { UnControlled as CodeMirror } from "react-codemirror2";
 import "../../assets/codemirror/codemirror.css";
-import "../../assets/codemirror/toit";
+// The editor and its mode require a browser. Static pages keep code readable.
+let CodeMirror: typeof import("react-codemirror2").UnControlled;
+if (typeof window !== "undefined") {
+  CodeMirror = require("react-codemirror2").UnControlled;
+  require("../../assets/codemirror/toit");
+}
 
 const Wrapper = styled.div`
   .CodeMirror {
@@ -25,6 +29,9 @@ interface CodeBlockProps {
 }
 
 export default function CodeBlock(props: CodeBlockProps): JSX.Element {
+  if (typeof window === "undefined") {
+    return <Wrapper><pre className="CodeMirror"><code>{props.code}</code></pre></Wrapper>;
+  }
   return (
     <Wrapper>
       <CodeMirror

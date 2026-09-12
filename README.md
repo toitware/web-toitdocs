@@ -100,3 +100,50 @@ can properly index the documentation.
 
 The documentation is deployed to `libs.toit.io` and `libs-dev.toit.io`.
 
+
+## Static documentation and indexing
+
+`yarn build` produces the portable JavaScript viewer, as before. For a specific
+documentation dataset, follow it with:
+
+```sh
+yarn prerender build https://libs.toit.io/
+```
+
+This reads `build/toitdoc.json` and renders the existing React components into
+one HTML file per library and class. The pages contain documentation, code,
+navigation, styles, distinct titles, and absolute canonical links before
+JavaScript runs. The viewer becomes interactive after its data loads; if that
+fetch fails, the static documentation remains readable.
+
+The static build also creates `sitemap.xml`, adds it to `robots.txt`, and replaces
+the blanket SPA rewrite in `_redirects` with explicit 301 redirects for merged
+directory/module aliases (`foo/foo` to `foo`). A real same-name child library is
+kept separate. Legacy SDK URLs under `/toit/lib/` redirect when the corresponding
+current page exists. `404.html` disables Cloudflare Pages' default SPA fallback, so
+unknown URLs return HTTP 404. The live viewer marks missing pages `noindex` and
+explains when private class documentation is omitted. References to omitted
+private classes are rendered as text; builds that include those classes retain
+their links.
+
+Always start from a fresh `yarn build` when prerendering. The canonical base URL
+identifies the preferred public deployment, including any package/version prefix.
+For example:
+
+```sh
+yarn prerender build https://pkg.toit.io/github.com/example/package@1.0.0/docs/
+```
+
+For that example, serve the output directory at the specified `/.../docs/` prefix.
+The hosting server must serve matching `.html` files, honor the generated
+redirects, and return `404.html` with status 404 for missing routes. The current
+package server needs that integration before it can use static output; the
+portable viewer alone still depends on its server for HTTP status codes.
+
+CI preserves the portable viewer in the existing `build`/release artifacts for
+package hosting and `toit doc serve`. It uploads the prerendered SDK separately
+as `static-site` and deploys that to Cloudflare Pages. Both `libs-dev.toit.io`
+and production use `libs.toit.io` canonical URLs.
+
+Run `yarn test --watchAll=false --runInBand` for static-rendering regressions and
+`yarn test:ci` for browser tests. No browser process is needed to prerender pages.

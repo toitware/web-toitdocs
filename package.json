@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@fontsource/roboto": "^5.0.15",
@@ -35,6 +36,7 @@
     "lint": "eslint '*/**/*.{js,ts,tsx}' --max-warnings=0",
     "fix-lint": "eslint --fix '*/**/*.{js,ts,tsx}' --max-warnings=0",
     "build": "PUBLIC_URL=./ react-scripts build",
+    "prerender": "node tools/prerender.cjs",
     "test": "react-scripts test",
     "test:jenkins": "react-scripts test --ci ---coverage --reporters=default --reporters=jest-junit",
     "cypress": "cypress run",

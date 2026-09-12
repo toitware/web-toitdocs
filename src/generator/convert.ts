@@ -635,6 +635,7 @@ function mergeLibraries(library: Library, otherLibrary: Library): Library {
   return {
     name: library.name,
     id: library.id,
+    hasSameNameModule: library.hasSameNameModule || otherLibrary.hasSameNameModule,
     libraries: { ...library.libraries, ...otherLibrary.libraries },
     classes: { ...library.classes, ...otherLibrary.classes },
     interfaces: { ...library.interfaces, ...otherLibrary.interfaces },
@@ -709,6 +710,7 @@ function libraryFromLibrary(
   return {
     name: name,
     id: { name: name, baseUrl: "", path: libraryPath },
+    hasSameNameModule: libraryContent !== undefined,
     libraries: libraries,
     classes: libraryContent ? libraryContent.classes : {},
     interfaces: libraryContent ? libraryContent.interfaces : {},

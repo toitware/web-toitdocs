@@ -84,6 +84,10 @@ jobs:
         run: |
           tests/generate_test_data.sh
 
+      - name: Test static rendering
+        if: ${{ github.event.inputs.run-tests != 'false' }}
+        run: yarn test --watchAll=false --runInBand
+
       - name: Test
         if: ${{ github.event.inputs.run-tests != 'false' }}
         run: |
@@ -132,6 +136,19 @@ jobs:
           path: |
             ${{ env.VERSION }}.${{ env.ARTIFACT_EXTENSION }}
             VERSION
+
+      - name: Render static documentation
+        run: |
+          yarn prerender "$BUILD_DIR" https://libs.toit.io/
+          tar c -zf static-site.tar.gz -C "$BUILD_DIR" .
+
+      - name: Upload static site
+        uses: actions/upload-artifact@v7
+        with:
+          name: static-site
+          retention-days: 2
+          if-no-files-found: error
+          path: static-site.tar.gz
 
       - name: Set toitlang run-id environment variable
         if: github.event.inputs.toitlang-run-id
@@ -190,19 +207,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # No need to checkout the project, since all we need is to download the
-      # build artifact from the build step.
+      # The reusable viewer artifact stays separate from the rendered SDK site.
       - uses: actions/download-artifact@v8
         with:
-          name: build
+          name: static-site
           path: build
 
       - name: Untar
         run: |
           cd build
-          VERSION=$(cat VERSION)
-          tar x -zf $VERSION.$ARTIFACT_EXTENSION
-          rm $VERSION.$ARTIFACT_EXTENSION
+          tar x -zf static-site.tar.gz
+          rm static-site.tar.gz
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1

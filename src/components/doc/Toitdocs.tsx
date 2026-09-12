@@ -4,9 +4,11 @@
 
 import { Typography } from "@mui/material";
 import { Variant } from "@mui/material/styles/createTypography";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/doc";
 import { HashLink } from "react-router-hash-link";
 import { makeStyles } from "tss-react/mui";
-import { urlFromLinkRef } from "../../misc/util";
+import { classFrom, urlFromLinkRef } from "../../misc/util";
 import {
     Doc,
     DOC_DOCREF,
@@ -101,7 +103,12 @@ function StatementParagraph(props: {
 
 function ToitdocRef(props: { reference: DocRef }): JSX.Element {
   const { classes } = useStyles();
-  const url = urlFromLinkRef(props.reference.reference);
+  const libraries = useSelector((state: RootState) => state.doc.libraries || {});
+  const ref = props.reference.reference;
+  const className = ref.kind === "class" ? ref.name : ref.holder;
+  const omitted = className?.endsWith("_") && (ref.baseUrl !== "" ||
+    !classFrom(ref.path.join("/"), className, libraries));
+  const url = omitted ? "" : urlFromLinkRef(ref);
   if (!url) {
     let className: string;
     switch (props.reference.reference.kind) {

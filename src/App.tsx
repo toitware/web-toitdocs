@@ -11,6 +11,7 @@ import {
     BrowserRouter,
     Redirect,
     Route,
+    Switch,
     RouteComponentProps,
     useLocation,
 } from "react-router-dom";
@@ -18,6 +19,8 @@ import { makeStyles } from "tss-react/mui";
 import { length, sideBarTheme, theme } from "./assets/theme";
 import "./assets/typography.css";
 import ErrorBoundary from "./components/ErrorPage";
+import PageMetadata from "./components/PageMetadata";
+import MissingPage from "./components/main/MissingPage";
 import HeaderBar from "./components/header/HeaderBar";
 import { ClassInfoParams } from "./components/main/ClassInfoView";
 import { LibraryInfoParams } from "./components/main/LibraryInfoView";
@@ -146,6 +149,7 @@ export function getMetaValue(key: string, def = ""): string {
 
 function getBaseURL(): string {
   const def = process.env.PUBLIC_URL;
+  if (typeof document === "undefined") return def || "/";
   const obj = document.querySelector("base[href]");
   return obj?.getAttribute("href") || def;
 }
@@ -177,7 +181,7 @@ export function setContainsSdk(newContainsSdk: boolean): void {
 
 class App extends Component<AppProps> {
   componentDidMount(): void {
-    this.props.fetchDoc();
+    if (!this.props.libraries) this.props.fetchDoc();
   }
 
   render(): JSX.Element {
@@ -201,7 +205,7 @@ const FixedNavigationView = styled(NavigationView)`
   left: 0;
 `;
 
-function AppContent(props: AppProps): JSX.Element {
+export function AppContent(props: AppProps): JSX.Element {
   const { classes } = useStyles();
 
   const { pathname } = useLocation();
@@ -216,24 +220,15 @@ function AppContent(props: AppProps): JSX.Element {
       ? `/${Object.keys(props.libraries)[0]}/library-summary`
       : "";
 
-  // Set the title of the window.
-  switch (viewMode) {
-    case ViewMode.Package:
-      document.title = `${packageName}`;
-      break;
-    case ViewMode.SDK:
-      document.title = "Standard libraries";
-      break;
-    case ViewMode.Folder:
-      document.title = `Toitdocs`;
-      break;
-  }
+  const siteTitle = viewMode === ViewMode.Package ? packageName || "Toitdocs"
+    : viewMode === ViewMode.SDK ? "Standard libraries — Toit" : "Toitdocs";
 
   return (
     <>
       {globalStyles}
       {props.libraries !== undefined ? (
         <>
+          <PageMetadata libraries={props.libraries} siteTitle={siteTitle} />
           <div className={classes.appContainer}>
             <ErrorBoundary>
               <HeaderBar />
@@ -258,36 +253,39 @@ function AppContent(props: AppProps): JSX.Element {
             <ContentWrapper>
               <Content>
                 <ErrorBoundary>
-                  {(() => {
-                    switch (viewMode) {
-                      case ViewMode.Package:
-                        return (
-                          <Route exact path="/">
-                            <Redirect to={defaultURL} />
-                          </Route>
-                        );
-                      case ViewMode.SDK:
-                        return <Route exact path="/" component={WelcomePage} />;
-                      case ViewMode.Folder:
-                        return (
-                          <Route exact path="/" component={WelcomeFolderPage} />
-                        );
-                    }
-                  })()}
-                  <Route
-                    exact
-                    path="/:libraryName+/library-summary"
-                    render={(
-                      routeProps: RouteComponentProps<LibraryInfoParams>
-                    ): React.ReactNode => <LibraryInfo {...routeProps} />}
-                  />
-                  <Route
-                    exact
-                    path="/:libraryName+/class-:className"
-                    render={(
-                      routeProps: RouteComponentProps<ClassInfoParams>
-                    ): React.ReactNode => <ClassInfo {...routeProps} />}
-                  />
+                  <Switch>
+                    {(() => {
+                      switch (viewMode) {
+                        case ViewMode.Package:
+                          return (
+                            <Route exact path="/">
+                              <Redirect to={defaultURL} />
+                            </Route>
+                          );
+                        case ViewMode.SDK:
+                          return <Route exact path="/" component={WelcomePage} />;
+                        case ViewMode.Folder:
+                          return (
+                            <Route exact path="/" component={WelcomeFolderPage} />
+                          );
+                      }
+                    })()}
+                    <Route
+                      exact
+                      path="/:libraryName+/library-summary"
+                      render={(
+                        routeProps: RouteComponentProps<LibraryInfoParams>
+                      ): React.ReactNode => <LibraryInfo {...routeProps} />}
+                    />
+                    <Route
+                      exact
+                      path="/:libraryName+/class-:className"
+                      render={(
+                        routeProps: RouteComponentProps<ClassInfoParams>
+                      ): React.ReactNode => <ClassInfo {...routeProps} />}
+                    />
+                    <Route component={MissingPage} />
+                  </Switch>
                 </ErrorBoundary>
               </Content>
             </ContentWrapper>

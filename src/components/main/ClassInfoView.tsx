@@ -5,7 +5,7 @@
 import Typography from "@mui/material/Typography";
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { classFrom, classUrlFromRef } from "../../misc/util";
+import { classFrom, classUrlFromRef, libraryFrom } from "../../misc/util";
 import {
     CLASS_KIND_CLASS,
     CLASS_KIND_INTERFACE,
@@ -17,6 +17,7 @@ import Functions from "../doc/Functions";
 import Toitdocs from "../doc/Toitdocs";
 import { TypeReference } from "../doc/Type";
 import ClassOverview from "./ClassOverview";
+import MissingPage from "./MissingPage";
 
 export interface ClassInfoParams {
   libraryName: string;
@@ -109,10 +110,7 @@ export default class ClassInfoView extends Component<ClassInfoProps> {
   }
 
   notFound(className: string): JSX.Element {
-    return (
-      <Typography variant="h4">
-        {"Error: Class " + className + " not found"}
-      </Typography>
-    );
+    const library = libraryFrom(this.props.match.params.libraryName, this.props.libraries);
+    return <MissingPage privateClass={library && className.endsWith("_") ? className : undefined} />;
   }
 }
