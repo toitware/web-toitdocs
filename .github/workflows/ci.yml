@@ -138,6 +138,27 @@ jobs:
         run: |
           echo "TOITLANG_RUN_ID=${{ github.event.inputs.toitlang-run-id }}" >> $GITHUB_ENV
 
+      - name: Align libs-dev production branch
+        if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Direct Upload projects configure their production branch through the API.
+          URL="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/libs-dev"
+          PROJECT=$(curl --fail --silent --show-error "$URL" \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
+          echo "$PROJECT" | jq --exit-status '.success == true' > /dev/null
+          BRANCH=$(echo "$PROJECT" | jq --raw-output '.result.production_branch')
+          echo "libs-dev production branch: $BRANCH"
+          if [[ "$BRANCH" != "master" ]]; then
+            curl --fail --silent --show-error --request PATCH "$URL" \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --header "Content-Type: application/json" \
+              --data '{"production_branch":"master"}' \
+              | jq --exit-status '.success == true and .result.production_branch == "master"'
+          fi
+
       - name: Publish to Cloudflare Pages
         if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
         uses: cloudflare/pages-action@v1
