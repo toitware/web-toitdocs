@@ -33,6 +33,19 @@ If you haven't installed `node` yet, install `node` from [nodejs.org](https://no
 The version of `node` must be >= v12.16.1, but see above for how to use
 nvm to get the right version.
 
+## Dependency security updates
+
+The Yarn resolutions in `package.json` upgrade `@svgr/webpack` to v6 so that
+`react-scripts` uses SVGO v2 instead of the vulnerable v1 dependency. SVGR v6
+supports the Webpack 5 and file-loader setup used here. The `qs` resolution
+selects the patched v6 release for consumers that still constrain older v6
+minor versions, including Express, body-parser, and Cypress's request library.
+Recheck these overrides when upgrading `react-scripts` or Cypress.
+
+Keep the v3 and v4 entries for `js-yaml`, and the v6 and v7 entries for
+`postcss-selector-parser`, updated separately in `yarn.lock`; their consumers
+require different major versions.
+
 ## Linting and imports in VS Code
 
 - Add the ESLint extension to VS Code to get linting directly in the code. https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint.
